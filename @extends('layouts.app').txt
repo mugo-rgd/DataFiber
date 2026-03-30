@@ -1,0 +1,135 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-upload me-2"></i>Upload Signed Document for {{ $customer->name }}
+                    </h5>
+                </div>
+                             <div class="card-body">
+                    <form action="{{ route('account-manager.customers.documents.store', $customer) }}"
+                          method="POST"
+                          enctype="multipart/form-data">
+                        @csrf
+
+                        <!-- Document Type -->
+                        <!-- Document Type -->
+<!-- Related Lease -->
+<!-- Related Lease -->
+<div class="mb-3">
+    <label for="lease_id" class="form-label">Related Lease (Optional)</label>
+
+    @if($leases->isNotEmpty())
+        <select class="form-select @error('lease_id') is-invalid @enderror"
+                id="lease_id"
+                name="lease_id">
+            <option value="">No specific lease</option>
+            @foreach($leases as $lease)
+                <option value="{{ $lease->id }}"
+                        {{ old('lease_id') == $lease->id ? 'selected' : '' }}>
+                    {{ $lease->lease_number }} -
+                    {{ $lease->title ?? $lease->property_name ?? 'Untitled' }}
+                    ({{ ucfirst($lease->status) }})
+                    @if($lease->start_date)
+                        - Started: {{ \Carbon\Carbon::parse($lease->start_date)->format('M Y') }}
+                    @endif
+                </option>
+            @endforeach
+        </select>
+        <small class="text-muted">
+            <i class="fas fa-file-contract me-1"></i>
+            {{ $leases->count() }} lease(s) available for this customer
+        </small>
+    @else
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            No leases found for this customer.
+            <a href="{{ route('account-manager.leases.create', ['customer_id' => $customer->id]) }}"
+               class="alert-link">Create a lease</a>
+        </div>
+        <input type="hidden" name="lease_id" value="">
+    @endif
+
+    @error('lease_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label for="document_file" class="form-label required">Document File</label>
+                            <input type="file"
+                                   class="form-control @error('document_file') is-invalid @enderror"
+                                   id="document_file"
+                                   name="document_file"
+                                   accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+                            <div class="form-text">
+                                Accepted formats: PDF, DOC, DOCX, JPG, PNG. Max size: 10MB
+                            </div>
+                            @error('document_file')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control @error('description') is-invalid @enderror"
+                                      id="description"
+                                      name="description"
+                                      rows="3">{{ old('description') }}</textarea>
+                            @error('description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Auto Approve Option -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox"
+                                   class="form-check-input"
+                                   id="auto_approve"
+                                   name="auto_approve"
+                                   value="1"
+                                   {{ old('auto_approve') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="auto_approve">
+                                Auto-approve this document (for signed documents)
+                            </label>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ route('account-manager.customers.documents.manage', $customer) }}"
+                               class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload me-1"></i> Upload Document
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('styles')
+<style>
+    .required:after {
+        content: " *";
+        color: #dc3545;
+    }
+    .card {
+        border: 1px solid #e0e0e0;
+    }
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+    }
+</style>
+@endpush

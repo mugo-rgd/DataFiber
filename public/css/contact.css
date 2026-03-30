@@ -1,0 +1,42 @@
+/* Add these styles to your main CSS file */
+
+.contact-visualization {
+    position: relative;
+    height: 400px;
+}
+
+.contact-node {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.contact-node:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .contact-visualization {
+        height: 300px;
+        margin-top: 2rem;
+    }
+
+    .contact-node {
+        width: 60px;
+        height: 60px;
+    }
+
+    .contact-node i {
+        font-size: 1.5rem;
+    }
+}

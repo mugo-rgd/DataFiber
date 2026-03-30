@@ -1,0 +1,561 @@
+<?php
+
+use App\Http\Controllers\AccountManager\DocumentApprovalController;
+use App\Http\Controllers\AccountManagerController;
+use App\Http\Controllers\Admin\AdminQuotationController;
+use App\Http\Controllers\Admin\DesignRequestController;
+use App\Http\Controllers\SurveyorController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DesignerController;
+use App\Http\Controllers\FinanceController;
+use App\Http\Controllers\DesignItemController;
+use App\Http\Controllers\SurveyResultController;
+use App\Http\Controllers\SurveyRouteController;
+use App\Http\Controllers\Admin\SurveyRequestController;
+use App\Http\Controllers\CustomerDocumentController;
+use App\Http\Controllers\CustomerLeaseController;
+use App\Http\Controllers\CustomerProfileController;
+use App\Http\Controllers\FinancialParameterController;
+use App\Http\Controllers\LeaseController;
+use App\Http\Controllers\MaintenanceController;
+use App\Http\Controllers\PaymentFollowupController;
+use App\Http\Controllers\SupportTicketController;
+use App\Http\Controllers\TechnicianController;
+use App\Models\DesignRequest;
+use App\Models\Lease;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
+
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// ==========================
+// Public Routes
+// ==========================
+Route::get('/', function () {
+    return view('app');
+})->name('home');
+
+// Authentication Routes
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register/customer', [AuthController::class, 'registerCustomer'])->name('register.customer');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ==========================
+// Protected Routes
+// ==========================
+Route::middleware(['auth'])->group(function () {
+
+   // ==========================
+// Admin Routes
+// ==========================
+    Route::prefix('admin')->middleware('can:isAdmin')->name('admin.')->group(function () {
+    // Dashboard & Settings
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
+
+    // User Management
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+    Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('users.show');
+    Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::put('/users/{user}/role', [AdminController::class, 'updateRole'])->name('users.update-role');
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+
+    // Lease Management
+    Route::get('/leases', [AdminController::class, 'leases'])->name('leases');
+    Route::get('/leases/create', [AdminController::class, 'createLease'])->name('leases.create');
+    Route::post('/leases', [AdminController::class, 'storeLease'])->name('leases.store');
+    Route::get('/leases/{lease}', [AdminController::class, 'showLease'])->name('leases.show');
+    Route::get('/leases/{lease}/edit', [AdminController::class, 'editLease'])->name('leases.edit');
+    Route::put('/leases/{lease}', [AdminController::class, 'updateLease'])->name('leases.update');
+    Route::delete('/leases/{lease}', [AdminController::class, 'destroyLease'])->name('leases.destroy');
+    Route::get('/customers/{customer}/quotations', [AdminController::class, 'getCustomerQuotations']);
+
+    // Quotation Management
+    Route::resource('quotations', AdminQuotationController::class);
+    Route::patch('/quotations/{quotation}/update-status', [AdminQuotationController::class, 'updateStatus'])->name('quotations.update-status');
+    Route::post('/quotations/{quotation}/approve-and-send', [AdminQuotationController::class, 'approveAndSend'])->name('quotations.approve-and-send');
+    Route::post('/quotations/{quotation}/send', [AdminQuotationController::class, 'sendToCustomer'])->name('quotations.send');
+    Route::get('/quotations/{quotation}/download-pdf', [AdminQuotationController::class, 'downloadPdf'])->name('quotations.download-pdf');
+
+    // Customer Assignment Routes
+    Route::get('/customers/assign', [AdminController::class, 'showCustomerAssignment'])->name('customers.assign');
+    Route::post('/customers/assign', [AdminController::class, 'storeCustomerAssignment'])->name('customers.assign.store');
+    Route::get('/customers/assignments', [AdminController::class, 'customerAssignments'])->name('customers.assignments');
+    Route::delete('/customers/assignments/{customer}', [AdminController::class, 'destroyAssignment'])->name('customers.assignments.destroy');
+
+    // System Management
+    Route::get('/tickets', [AdminController::class, 'tickets'])->name('tickets');
+    Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+
+    // Survey Requests
+    Route::get('/survey-requests', [SurveyRequestController::class, 'index'])->name('survey-requests');
+
+    // Design Requests Management - CLEANED UP VERSION
+    Route::prefix('design-requests')->name('design-requests.')->group(function () {
+        // Basic CRUD routes
+        Route::get('/', [DesignRequestController::class, 'index'])->name('index');
+        Route::get('/create', [DesignRequestController::class, 'create'])->name('create');
+        Route::post('/', [DesignRequestController::class, 'store'])->name('store');
+        Route::get('/{designRequest}', [DesignRequestController::class, 'show'])->name('show');
+        Route::get('/{designRequest}/edit', [DesignRequestController::class, 'edit'])->name('edit');
+        Route::put('/{designRequest}', [DesignRequestController::class, 'update'])->name('update');
+        Route::delete('/{designRequest}', [DesignRequestController::class, 'destroy'])->name('destroy');
+
+        // Designer assignment
+        Route::get('/{designRequest}/assign-designer', [DesignRequestController::class, 'assignDesignerForm'])->name('assign-designer-form');
+        Route::post('/{designRequest}/assign-designer', [DesignRequestController::class, 'assignDesigner'])->name('assign-designer');
+        Route::delete('/{designRequest}/unassign-designer', [DesignRequestController::class, 'unassignDesigner'])->name('unassign-designer');
+
+        // Surveyor assignment
+        Route::post('/{designRequest}/assign-surveyor', [DesignRequestController::class, 'assignSurveyor'])->name('assign-surveyor');
+        Route::delete('/{designRequest}/unassign-surveyor', [DesignRequestController::class, 'unassignSurveyor'])->name('unassign-surveyor');
+        Route::get('/{designRequest}/assign-surveyor', [DesignRequestController::class, 'assignSurveyorForm'])->name('assign-surveyor-form'); // ADD THIS LINE
+        // Status updates
+        Route::post('/{designRequest}/update-status', [DesignRequestController::class, 'updateStatus'])->name('update-status');
+        Route::post('/{designRequest}/update-survey-status', [DesignRequestController::class, 'updateSurveyStatus'])->name('update-survey-status');
+        Route::post('/{designRequest}/complete', [DesignRequestController::class, 'completeDesign'])->name('complete');
+    });
+
+      // Additional lease management routes
+    Route::put('/leases/{id}/activate', [AdminController::class, 'activateLease'])->name('leases.activate');
+    Route::put('/leases/{id}/terminate', [AdminController::class, 'terminateLease'])->name('leases.terminate');
+    Route::get('/leases/{id}/invoice', [AdminController::class, 'generateInvoice'])->name('leases.invoice');
+
+      // Payment routes
+    Route::get('/payments', [AdminController::class, 'payments'])->name('payments.index');
+    Route::post('/payments', [AdminController::class, 'storePayment'])->name('payments.store');
+    Route::get('/payments/create', [AdminController::class, 'createPayment'])->name('payments.create');
+    Route::get('/payments/{id}', [AdminController::class, 'showPayment'])->name('payments.show');
+    Route::get('/payments/{id}/edit', [AdminController::class, 'editPayment'])->name('payments.edit');
+    Route::put('/payments/{id}', [AdminController::class, 'updatePayment'])->name('payments.update');
+    Route::delete('/payments/{id}', [AdminController::class, 'deletePayment'])->name('payments.destroy');
+
+    // Additional lease management routes
+    Route::put('/leases/{lease}/activate', [AdminController::class, 'activateLease'])->name('leases.activate');
+    Route::put('/leases/{lease}/terminate', [AdminController::class, 'terminateLease'])->name('leases.terminate');
+    Route::get('/leases/{lease}/acceptance-certificate', [AdminController::class, 'generateAcceptanceCertificate'])->name('leases.acceptancecert');
+
+// Lease routes
+    Route::put('/leases/{lease}/activate', [AdminController::class, 'activateLease'])->name('admin.leases.activate');
+    Route::put('/leases/{lease}/terminate', [AdminController::class, 'terminateLease'])->name('admin.leases.terminate');
+    Route::get('/leases/{lease}/acceptance-certificate', [AdminController::class, 'generateAcceptanceCertificate'])->name('admin.leases.acceptancecert');
+
+    // FIXED: Invoice generation routes with unique names
+    Route::get('/leases/{lease}/invoice', [AdminController::class, 'generateInvoice'])->name('admin.leases.invoice.view'); // GET for viewing
+    Route::post('/leases/{lease}/invoice', [LeaseController::class, 'generateInvoice'])->name('admin.leases.invoice.generate'); // POST for creating
+
+    // Other invoice routes
+    Route::get('/leases/{lease}/invoice/create', [AdminController::class, 'createCustomInvoice'])->name('admin.leases.invoice.create');
+    Route::post('/leases/{lease}/invoice/store', [AdminController::class, 'storeCustomInvoice'])->name('admin.leases.invoice.store');
+    Route::get('/invoices/{invoice}', [AdminController::class, 'showInvoice'])->name('admin.invoices.show');
+    Route::get('/invoices/{invoice}/download', [AdminController::class, 'downloadInvoice'])->name('admin.invoices.download');
+    Route::post('/invoices/{invoice}/send', [AdminController::class, 'sendInvoice'])->name('admin.invoices.send');
+});
+
+    // ==========================
+    // Customer Routes
+    // ==========================
+    Route::prefix('customer')->middleware('can:isCustomer')->name('customer.')->group(function () {
+        Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
+        Route::get('/leases', [CustomerController::class, 'leases'])->name('leases');
+        Route::get('/tickets', [CustomerController::class, 'tickets'])->name('tickets');
+        Route::get('/billing', [CustomerController::class, 'billing'])->name('billing');
+        Route::get('/invoices', [CustomerController::class, 'invoices'])->name('invoices');
+        Route::get('/invoices/{id}', [CustomerController::class, 'showInvoice'])->name('invoices.show');
+        Route::get('/invoices/{id}/download', [CustomerController::class, 'downloadInvoice'])->name('invoices.download');
+        Route::get('/design-requests', [CustomerController::class, 'designRequests'])->name('design-requests');
+        Route::get('/design-requests/create', [CustomerController::class, 'createDesignRequest'])->name('design-requests.create');
+        Route::post('/design-requests', [CustomerController::class, 'storeDesignRequest'])->name('design-requests.store');
+        Route::get('/design-requests/{designRequest}', [CustomerController::class, 'showDesignRequest'])->name('design-requests.show');
+    Route::get('/leases', [CustomerController::class, 'leases'])->name('leases');
+    Route::get('/leases/{id}', [CustomerController::class, 'showLease'])->name('leases.show');
+
+    // Customer routes
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/my-leases/{lease}', [CustomerLeaseController::class, 'show'])
+        ->name('customer.leases.show')
+        ->middleware('can:view,lease');
+    });
+
+    });
+
+    // ==========================
+    // Profile Management Routes
+    // ==========================
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/customer/profile/create', [CustomerProfileController::class, 'create'])->name('customer.profile.create');
+        Route::post('/customer/profile', [CustomerProfileController::class, 'store'])->name('customer.profile.store');
+        Route::get('/customer/profile/edit', [CustomerProfileController::class, 'edit'])->name('customer.profile.edit');
+        Route::put('/customer/profile', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
+    });
+
+    // ==========================
+    // Document Management Routes
+    // ==========================
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/customer/documents/upload', [CustomerDocumentController::class, 'create'])
+            ->name('customer.documents.upload');
+        Route::post('/customer/documents', [CustomerDocumentController::class, 'store'])
+            ->name('customer.documents.store');
+        Route::get('/customer/documents/{id}', [CustomerDocumentController::class, 'show'])
+            ->name('customer.documents.show');
+        Route::get('/customer/documents/{id}/download', [CustomerDocumentController::class, 'download'])
+            ->name('customer.documents.download');
+        Route::get('/customer/documents/{id}/view', [CustomerDocumentController::class, 'view'])
+            ->name('customer.documents.view');
+        Route::put('/customer/documents/{id}', [CustomerDocumentController::class, 'update'])
+            ->name('customer.documents.update');
+        Route::delete('/customer/documents/{id}', [CustomerDocumentController::class, 'destroy'])
+            ->name('customer.documents.destroy');
+        Route::get('/customer/documents/status/check', [CustomerDocumentController::class, 'getUploadStatus'])
+            ->name('customer.documents.status');
+    });
+
+  // ==========================
+// Finance Routes
+// ==========================
+Route::prefix('finance')->middleware('can:isFinance')->name('finance.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [FinanceController::class, 'dashboard'])->name('dashboard');
+    Route::get('/financial-reports', [FinanceController::class, 'financialReports'])->name('financial-reports');
+    Route::get('/reports', [FinanceController::class, 'reports'])->name('reports');
+
+    // Financial Management
+    Route::get('/invoices', [FinanceController::class, 'invoices'])->name('invoices');
+    Route::get('/payments', [FinanceController::class, 'payments'])->name('payments');
+    Route::get('/transactions', [FinanceController::class, 'transactions'])->name('transactions');
+
+    // Billing
+    Route::get('/billing', [FinanceController::class, 'billing'])->name('billing');
+    Route::get('/billing/create', [FinanceController::class, 'createBilling'])->name('billing.create');
+    Route::post('/billing', [FinanceController::class, 'storeBilling'])->name('billing.store');
+    Route::get('/billing/{id}', [FinanceController::class, 'showBilling'])->name('billing.show');
+    Route::get('/billing/{id}/edit', [FinanceController::class, 'editBilling'])->name('billing.edit');
+    Route::put('/billing/{id}', [FinanceController::class, 'updateBilling'])->name('billing.update');
+    Route::delete('/billing/{id}/delete', [FinanceController::class, 'deleteBilling'])->name('billing.delete');
+    Route::get('/billing/{id}/download', [FinanceController::class, 'downloadBilling'])->name('billing.download');
+    Route::get('/billing/{id}/view', [FinanceController::class, 'viewBilling'])->name('billing.view');
+
+    // Transactions
+    Route::get('/transactions', [FinanceController::class, 'transactions'])->name('transactions');
+    Route::get('/transactions/create', [FinanceController::class, 'createTransaction'])->name('transactions.create');
+    Route::post('/transactions', [FinanceController::class, 'storeTransaction'])->name('transactions.store');
+    Route::get('/transactions/{id}', [FinanceController::class, 'showTransaction'])->name('transactions.show');
+    Route::get('/transactions/{id}/edit', [FinanceController::class, 'editTransaction'])->name('transactions.edit');
+    Route::put('/transactions/{id}', [FinanceController::class, 'updateTransaction'])->name('transactions.update');
+    Route::delete('/transactions/{id}', [FinanceController::class, 'destroyTransaction'])->name('transactions.destroy');
+    Route::post('/transactions/{id}/complete', [FinanceController::class, 'completeTransaction'])->name('transactions.complete');
+
+    // Automated billing routes
+    Route::get('/auto-billing', [FinanceController::class, 'autoBilling'])->name('auto-billing');
+    Route::post('/generate-invoices', [FinanceController::class, 'generateInvoicesManually'])->name('generate-invoices');
+    Route::put('/customers/{customerId}/billing-settings', [FinanceController::class, 'updateBillingSettings'])->name('update-billing-settings');
+
+    // Status update routes
+    Route::post('/billing/{id}/mark-paid', [FinanceController::class, 'markBillingPaid'])->name('billing.mark-paid');
+    Route::post('/billing/{id}/mark-pending', [FinanceController::class, 'markBillingPending'])->name('billing.mark-pending');
+    Route::post('/billing/{id}/mark-overdue', [FinanceController::class, 'markBillingOverdue'])->name('billing.mark-overdue');
+    Route::post('/billing/{id}/update-status', [FinanceController::class, 'updateBillingStatus'])->name('billing.update-status');
+    Route::post('/billing/bulk-update-status', [FinanceController::class, 'bulkUpdateStatus'])->name('billing.bulk-update-status');
+
+    // ==========================
+    // Financial Parameters Routes
+    // ==========================
+    Route::prefix('financial-parameters')->name('financial-parameters.')->group(function () {
+        Route::get('/', [FinancialParameterController::class, 'index'])->name('index');
+        Route::get('/create', [FinancialParameterController::class, 'create'])->name('create');
+        Route::post('/', [FinancialParameterController::class, 'store'])->name('store');
+        Route::get('/{financialParameter}/edit', [FinancialParameterController::class, 'edit'])->name('edit');
+        Route::put('/{financialParameter}', [FinancialParameterController::class, 'update'])->name('update');
+        Route::delete('/{financialParameter}', [FinancialParameterController::class, 'destroy'])->name('destroy');
+        Route::get('/api/current-rates', [FinancialParameterController::class, 'getCurrentRates'])->name('current-rates');
+    });
+
+});
+
+});
+
+    // ==========================
+    // Designer Routes
+    // ==========================
+    Route::prefix('designer')->middleware('can:isDesigner')->name('designer.')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [DesignerController::class, 'dashboard'])->name('dashboard');
+        Route::get('/profile', [DesignerController::class, 'profile'])->name('profile');
+
+        // Design Requests
+        Route::get('/requests', [DesignerController::class, 'requests'])->name('requests');
+        Route::get('/requests/{designRequest}', [DesignItemController::class, 'showDesignRequest'])->name('requests.show');
+        Route::put('/requests/{designRequest}', [DesignerController::class, 'updateDesign'])->name('requests.update');
+        Route::put('/requests/{designRequest}/specifications', [DesignItemController::class, 'updateDesignSpecifications'])->name('requests.update-specifications');
+
+        // Quotations
+        Route::get('/quotations', [DesignerController::class, 'quotations'])->name('quotations');
+        Route::get('/requests/{designRequest}/quotation', [DesignerController::class, 'createQuotation'])->name('quotations.create');
+        Route::get('/quotations/{quotation}', [DesignerController::class, 'showQuotation'])->name('quotations.show');
+        Route::post('/quotations/{designRequest}', [DesignerController::class, 'storeQuotation'])->name('quotations.store');
+
+        // Design Items
+        Route::post('/design-items', [DesignItemController::class, 'storeDesignItems'])->name('design-items.store');
+        Route::delete('/design-items/{designItem}', [DesignItemController::class, 'destroyDesignItem'])->name('design-items.destroy');
+
+        // Colocation routes
+        Route::post('/colocation', [DesignerController::class, 'storeColocation'])->name('colocation.store');
+        Route::delete('/colocation/{colocationService}', [DesignerController::class, 'destroyColocation'])->name('colocation.destroy');
+    });
+
+   // ==========================
+// Surveyor Routes
+// ==========================
+Route::prefix('surveyor')->middleware(['auth', 'can:isSurveyor'])->name('surveyor.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [SurveyorController::class, 'dashboard'])->name('dashboard');
+
+    // Assignments
+    Route::get('/assignments', [SurveyorController::class, 'assignments'])->name('assignments');
+    Route::get('/assignments/{id}', [SurveyorController::class, 'showAssignment'])->name('assignment.show');
+
+    // Routes - ADD THIS LINE (it will automatically become 'surveyor.routes')
+    Route::get('/routes', [SurveyorController::class, 'routes'])->name('routes');
+
+    // Reports
+    Route::get('/reports/create', [SurveyorController::class, 'createReport'])->name('reports.create');
+    Route::post('/reports', [SurveyorController::class, 'storeReport'])->name('reports.store');
+    Route::get('/reports', [SurveyorController::class, 'reports'])->name('reports.index');
+
+    // Availability
+    Route::get('/availability', [SurveyorController::class, 'availability'])->name('availability');
+    Route::post('/availability', [SurveyorController::class, 'updateAvailability'])->name('availability.update');
+
+    // Profile
+    Route::get('/profile', [SurveyorController::class, 'profile'])->name('profile');
+    Route::put('/profile', [SurveyorController::class, 'updateProfile'])->name('profile.update');
+
+    // Status
+    Route::post('/status', [SurveyorController::class, 'updateStatus'])->name('status.update');
+    Route::post('/assignments/{id}/complete', [SurveyorController::class, 'completeAssignment'])->name('assignment.complete');
+    Route::post('/routes', [SurveyorController::class, 'storeRoute'])->name('routes.store');
+    Route::post('/assignments/{id}/update-status', [SurveyorController::class, 'updateSurveyStatus'])->name('assignment.update-status');
+
+    // Route management routes
+    Route::get('/routes/{id}', [SurveyorController::class, 'showRoute'])->name('routes.show');
+    Route::get('/routes/{id}/segments/create', [SurveyorController::class, 'createSegment'])->name('route-segments.create');
+    Route::post('/routes/{id}/segments', [SurveyorController::class, 'storeSegment'])->name('route-segments.store');
+
+// Add this route
+    Route::get('/design-requests/{id}', [SurveyorController::class, 'showDesignRequest'])
+         ->name('design-requests.show');
+});
+
+    // ==========================
+    // Technician Routes
+    // ==========================
+    Route::prefix('technician')->middleware(['auth', 'can:isTechnician'])->name('technician.')->group(function () {
+        // Dashboard
+        Route::get('/dashboard', [TechnicianController::class, 'dashboard'])->name('dashboard');
+
+        // Profile
+        Route::get('/profile', [TechnicianController::class, 'profile'])->name('profile');
+        Route::put('/profile', [TechnicianController::class, 'updateProfile'])->name('profile.update');
+
+        // Work Orders
+        Route::get('/work-orders', [TechnicianController::class, 'workOrders'])->name('work-orders');
+        Route::get('/work-orders/{id}', [TechnicianController::class, 'showWorkOrder'])->name('work-orders.show');
+        Route::put('/work-orders/{id}/status', [TechnicianController::class, 'updateWorkOrderStatus'])->name('work-orders.update-status');
+        Route::put('/work-orders/{id}/complete', [TechnicianController::class, 'completeWorkOrder'])->name('work-orders.complete');
+        Route::put('/work-orders/{id}/start', [TechnicianController::class, 'startWorkOrder'])->name('work-orders.start');
+
+        // Equipment
+        Route::get('/equipment', [TechnicianController::class, 'equipment'])->name('equipment');
+        Route::get('/equipment/{id}', [TechnicianController::class, 'showEquipment'])->name('equipment.show');
+        Route::post('/equipment/{id}/checkout', [TechnicianController::class, 'checkoutEquipment'])->name('equipment.checkout');
+        Route::post('/equipment/{id}/return', [TechnicianController::class, 'returnEquipment'])->name('equipment.return');
+        Route::put('/equipment/{id}/status', [TechnicianController::class, 'updateEquipmentStatus'])->name('equipment.update-status');
+
+        // Maintenance Requests
+        Route::get('/maintenance-requests', [TechnicianController::class, 'maintenanceRequests'])->name('maintenance-requests');
+        Route::get('/maintenance-requests/{id}', [TechnicianController::class, 'showMaintenanceRequest'])->name('maintenance-requests.show');
+    });
+
+    // ==========================
+    // Maintenance Routes
+    // ==========================
+    Route::prefix('maintenance')->name('maintenance.')->group(function () {
+        // Dashboard - accessible to all with view-maintenance permission
+        Route::get('/dashboard', [MaintenanceController::class, 'dashboard'])
+            ->name('dashboard')
+            ->middleware(['auth', 'can:view-maintenance']);
+
+        // Work order routes
+        Route::get('/work-orders', [MaintenanceController::class, 'workOrders'])->name('work-orders.index');
+        Route::get('/work-orders/create', [MaintenanceController::class, 'createWorkOrder'])->name('work-orders.create');
+        Route::post('/work-orders', [MaintenanceController::class, 'storeWorkOrder'])->name('work-orders.store');
+        Route::get('/work-orders/{id}', [MaintenanceController::class, 'showWorkOrder'])->name('work-orders.show');
+
+        Route::get('/equipment', [MaintenanceController::class, 'equipment'])->name('equipment.index');
+        Route::get('/equipment/create', [MaintenanceController::class, 'createEquipment'])->name('equipment.create');
+        Route::post('/equipment', [MaintenanceController::class, 'storeEquipment'])->name('equipment.store');
+        Route::get('/equipment/{id}', [MaintenanceController::class, 'showEquipment'])->name('equipment.show');
+        Route::get('/equipment/{id}/edit', [MaintenanceController::class, 'editEquipment'])->name('equipment.edit');
+        Route::put('/equipment/{id}', [MaintenanceController::class, 'updateEquipment'])->name('equipment.update');
+
+        // Maintenance Requests
+        Route::get('/requests', [MaintenanceController::class, 'index'])
+            ->name('requests.index')
+            ->middleware(['auth', 'can:view-maintenance']);
+
+        Route::get('/requests/create', [MaintenanceController::class, 'create'])
+            ->name('requests.create')
+            ->middleware(['auth', 'can:create-maintenance-request']);
+
+        Route::post('/requests', [MaintenanceController::class, 'store'])
+            ->name('requests.store')
+            ->middleware(['auth', 'can:create-maintenance-request']);
+
+        Route::get('/requests/{id}', [MaintenanceController::class, 'show'])
+            ->name('requests.show')
+            ->middleware(['auth', 'can:view-maintenance']);
+
+        // Work Order Status Updates
+        Route::put('/work-orders/{id}/status', [MaintenanceController::class, 'updateWorkOrderStatus'])
+            ->name('work-orders.update-status')
+            ->middleware(['auth', 'can:update-work-order-status']);
+
+        Route::put('/work-orders/{id}/complete', [MaintenanceController::class, 'completeWorkOrder'])
+            ->name('work-orders.complete')
+            ->middleware(['auth', 'can:update-work-order-status']);
+
+        // API Routes
+        Route::get('/api/stats', [MaintenanceController::class, 'getStats'])
+            ->name('api.stats')
+            ->middleware(['auth', 'can:view-maintenance']);
+
+        Route::get('/api/open-requests', [MaintenanceController::class, 'getOpenRequests'])
+            ->name('api.open-requests')
+            ->middleware(['auth', 'can:view-maintenance']);
+
+        // Maintenance Reports
+        Route::get('/reports', [MaintenanceController::class, 'reports'])
+            ->name('reports')
+            ->middleware(['auth', 'can:view-maintenance-reports']);
+    });
+
+    // ==========================
+    // Account Manager Routes
+    // ==========================
+    Route::prefix('account-manager')->middleware(['auth', 'can:isAccountManager'])->name('account-manager.')->group(function () {
+        // Customer management routes
+        Route::get('/customers', [AccountManagerController::class, 'myCustomers'])->name('customers.index');
+        Route::get('/customers/{user}', [AccountManagerController::class, 'customerDetail'])->name('customers.show');
+
+        // Document approval routes
+        Route::prefix('users/{user}')->name('documents.')->group(function () {
+            Route::get('/approve', [DocumentApprovalController::class, 'showCustomerDocuments'])
+                ->name('approve');
+            Route::post('/bulk-approve', [DocumentApprovalController::class, 'bulkApproveCustomerDocuments'])
+                ->name('bulk-approve');
+        });
+
+        // Document-specific routes
+        Route::prefix('documents')->name('documents.')->group(function () {
+            Route::post('/{document}/approve', [DocumentApprovalController::class, 'approveDocument'])
+                ->name('approve-single');
+            Route::post('/{document}/reject', [DocumentApprovalController::class, 'rejectDocument'])
+                ->name('reject');
+        });
+
+        // Dashboard
+        Route::get('/dashboard', [AccountManagerController::class, 'dashboard'])->name('dashboard');
+
+        // Support Tickets
+        Route::get('/tickets', [SupportTicketController::class, 'index'])->name('tickets.index');
+        Route::get('/tickets/create', [SupportTicketController::class, 'create'])->name('tickets.create');
+        Route::post('/tickets', [SupportTicketController::class, 'store'])->name('tickets.store');
+        Route::get('/tickets/{ticket}', [SupportTicketController::class, 'show'])->name('tickets.show');
+        Route::patch('/tickets/{ticket}/status', [SupportTicketController::class, 'updateStatus'])->name('tickets.update-status');
+
+        // Payment Followups
+        Route::get('/payments', [PaymentFollowupController::class, 'index'])->name('payments.index');
+        Route::get('/payments/create', [PaymentFollowupController::class, 'create'])->name('payments.create');
+        Route::post('/payments', [PaymentFollowupController::class, 'store'])->name('payments.store');
+        Route::post('/payments/{followup}/remind', [PaymentFollowupController::class, 'markReminded'])->name('payments.remind');
+        Route::post('/payments/{followup}/paid', [PaymentFollowupController::class, 'markPaid'])->name('payments.paid');
+    });
+
+    // ==========================
+    // API Routes (for Design Items)
+    // ==========================
+    Route::prefix('api/design-items')->group(function () {
+        Route::get('/', [DesignItemController::class, 'index']);
+        Route::post('/', [DesignItemController::class, 'store']);
+        Route::get('/{id}', [DesignItemController::class, 'showDesignItem']);
+        Route::put('/{id}', [DesignItemController::class, 'update']);
+        Route::delete('/{id}', [DesignItemController::class, 'destroy']);
+
+        // Extra APIs
+        Route::get('/customer/{customerId}', [DesignItemController::class, 'getByCustomer']);
+        Route::get('/designer/{designerId}', [DesignItemController::class, 'getByDesigner']);
+        Route::get('/{id}/calculate-total-cost', [DesignItemController::class, 'calculateTotalCost']);
+        Route::get('/stats/technology', [DesignItemController::class, 'getTechnologyStats']);
+        Route::get('/stats/link-class', [DesignItemController::class, 'getLinkClassStats']);
+        Route::get('/search', [DesignItemController::class, 'search']);
+    });
+
+    // Debug route
+    Route::post('/debug-surveyor-assignment/{designRequest}', function(Request $request, DesignRequest $designRequest) {
+        logger('DEBUG SURVEYOR ASSIGNMENT:', [
+            'design_request_id' => $designRequest->id,
+            'submitted_data' => $request->all(),
+            'current_surveyor_id' => $designRequest->surveyor_id,
+            'current_survey_status' => $designRequest->survey_status
+        ]);
+
+        return response()->json([
+            'message' => 'Check your logs for debug info',
+            'submitted' => $request->all()
+        ]);
+    });
+
+
+Route::get('/leases/{lease}/acceptance-pdf', function (Lease $lease) {
+    $pdf = Pdf::loadView('leases.acceptance', [
+        'lease' => $lease,
+        'customerName' => $lease->customer->name,
+        'customerCompany' => $lease->customer->company,
+    ]);
+
+    $filename = 'Acceptance-Certificate-Lease-' . $lease->id . '.pdf';
+
+    return $pdf->download($filename);
+});
+
+Route::get('/leases/{lease}/generate-pdf', [LeaseController::class, 'generateAcceptancePdf']);
+Route::post('/leases/{lease}/upload-test-report', [LeaseController::class, 'uploadTestReport'])
+    ->name('admin.leases.upload-test-report');
+    // Certificate routes
+Route::post('/leases/{lease}/generate-certificate', [LeaseController::class, 'generateAcceptancePdf'])
+    ->name('admin.leases.generate-certificate');
+
+Route::post('/leases/{lease}/regenerate-certificate', [LeaseController::class, 'regenerateAcceptancePdf'])
+    ->name('admin.leases.regenerate-certificate');
+
+Route::delete('/leases/{lease}/delete-certificate', [LeaseController::class, 'deleteAcceptanceCertificate'])
+    ->name('admin.leases.delete-certificate');
+// });
+

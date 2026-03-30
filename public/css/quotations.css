@@ -1,0 +1,68 @@
+/* Additional styles for quotations page */
+.quotation-row-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+tr:hover .quotation-row-actions {
+    opacity: 1;
+}
+
+.status-badge {
+    min-width: 100px;
+    text-align: center;
+}
+
+/* Loading states */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Animation for status changes */
+@keyframes highlightRow {
+    0% { background-color: rgba(25, 135, 84, 0.1); }
+    100% { background-color: transparent; }
+}
+
+.highlight-success {
+    animation: highlightRow 2s ease;
+}
+
+@keyframes pulseWarning {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.pulse-warning {
+    animation: pulseWarning 2s infinite;
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .table {
+        border-collapse: collapse;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #dee2e6;
+    }
+}

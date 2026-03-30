@@ -1,0 +1,12 @@
+{
+  "icons": {
+    "dashboard": "uil uil-dashboard",
+    "calculator": "uil uil-calculator-alt",
+    "calendar": "uil uil-calendar-alt",
+    "file": "uil uil-file-contract",
+    "chart": "uil uil-chart-bar",
+    "user": "uil uil-user",
+    "settings": "uil uil-setting",
+    "logout": "uil uil-sign-out-alt"
+  }
+}

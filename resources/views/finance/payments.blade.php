@@ -1,0 +1,14 @@
+@extends('layouts.app')
+
+@section('title', 'Payments')
+
+@section('content')
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 text-gray-800"><i class="fas fa-file-invoice-dollar text-primary"></i> Payments Management</h1>
+        </div>
+    </div>
+    <!-- payments content here -->
+</div>
+@endsection
