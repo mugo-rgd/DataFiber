@@ -139,7 +139,7 @@ Route::middleware('auth:sanctum')->prefix('')->group(function () {
     Route::post('/messages', [ApiMessageController::class, 'store']);
     Route::post('/chat/{conversationId}/read', [ApiMessageController::class, 'markAsRead']);
 });
-
+Route::post('/messages', [ChatController::class, 'sendMessage'])->name('api.messages.send');
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -163,19 +163,6 @@ Route::get('/customers/{customerId}/unpaid-billings', function($customerId) {
         ], 500);
     }
 })->middleware('auth:sanctum');
-// Chat routes
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/chat/search/users', [ChatController::class, 'searchUsers']);
-    Route::get('/chat/{conversation}', [ChatController::class, 'show']);
-    Route::post('/chat/start', [ChatController::class, 'startConversation']);
-    Route::post('/chat/{conversation}/read', [ChatController::class, 'markAsRead']);
-    Route::post('/messages', [ChatController::class, 'sendMessage']);
-});
-
-// Message routes
-Route::post('/messages', [ChatController::class, 'sendMessage'])->name('api.messages.send');
-
-
 
 // Fiber Nodes API
 Route::prefix('nodes')->group(function () {
