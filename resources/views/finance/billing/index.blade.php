@@ -17,7 +17,7 @@ use Carbon\Carbon;
                     <i class="fas fa-file-invoice-dollar me-2"></i>Manage Consolidated Billings
                 </h1>
                 <div class="btn-group">
-                    <a href="{{ route('finance.billing.create-single') }}" class="btn btn-primary">
+                    <a href="{{ route('finance.billing.createSingle') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>Create Manual Billing
                     </a>
                     <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filterModal">
@@ -107,6 +107,21 @@ use Carbon\Carbon;
         </div>
     </div>
 
+    <div class="mb-3">
+    <div class="btn-group">
+        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown">
+            <i class="fas fa-bell me-1"></i> Bulk Email Actions
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="sendOverdueNotices()">
+                <i class="fas fa-exclamation-triangle me-2"></i> Send Overdue Notices
+            </a></li>
+            <li><a class="dropdown-item" href="#" onclick="sendDueReminders()">
+                <i class="fas fa-clock me-2"></i> Send Due Reminders
+            </a></li>
+        </ul>
+    </div>
+</div>
     <!-- Billings Table -->
    <!-- Billings Table -->
     <div class="card shadow-sm">
@@ -338,6 +353,20 @@ use Carbon\Carbon;
                                     </ul>
                                 </div>
                             </td>
+
+                            <td class="text-center">
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-sm btn-info" onclick="sendReminder({{ $billing->id }})" title="Send Reminder">
+            <i class="fas fa-bell"></i>
+        </button>
+        <button type="button" class="btn btn-sm btn-primary" onclick="sendInvoice({{ $billing->id }})" title="Email Invoice">
+            <i class="fas fa-envelope"></i>
+        </button>
+        <a href="{{ route('finance.billing.show', $billing->id) }}" class="btn btn-sm btn-secondary" title="View">
+            <i class="fas fa-eye"></i>
+        </a>
+    </div>
+</td>
                         </tr>
                         @empty
                         <tr>
@@ -924,4 +953,91 @@ function showError(message) {
         cursor: pointer;
     }
 </style>
+@endpush
+
+@push('scripts')
+<script>
+function sendReminder(billingId) {
+    if (confirm('Send payment reminder to customer?')) {
+        fetch(`/finance/emails/billing/${billingId}/reminder`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('✅ ' + data.message);
+            } else {
+                alert('❌ ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error sending email. Check console for details.');
+        });
+    }
+}
+
+function sendInvoice(billingId) {
+    if (confirm('Send invoice email to customer?')) {
+        fetch(`/finance/emails/billing/${billingId}/invoice`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('✅ ' + data.message);
+            } else {
+                alert('❌ ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error sending email. Check console for details.');
+        });
+    }
+}
+
+function sendOverdueNotices() {
+    if (confirm('Send overdue notices to ALL customers with overdue invoices?')) {
+        fetch('/finance/emails/overdue-notices', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('✅ ' + data.message);
+            if (data.errors && data.errors.length) {
+                console.log('Errors:', data.errors);
+            }
+        });
+    }
+}
+
+function sendDueReminders() {
+    if (confirm('Send due reminders to customers with invoices due in next 3 days?')) {
+        fetch('/finance/emails/due-reminders', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('✅ ' + data.message);
+        });
+    }
+}
+</script>
 @endpush

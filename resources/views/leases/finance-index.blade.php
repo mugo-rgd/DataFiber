@@ -10,16 +10,21 @@
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0"><i class="fas fa-file-contract"></i> Leases Management - Finance View</h4>
                     <div>
-                        <span class="badge bg-light text-dark me-2">Finance Access</span>
+
                         @if(\Illuminate\Support\Facades\Route::has('leases.export.finance'))
                             <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
                                 <i class="fas fa-download"></i> Export
                             </button>
                         @else
-                            <span class="badge bg-secondary" title="Export route not configured">
+                            {{-- <span class="badge bg-secondary" title="Export route not configured">
                                 <i class="fas fa-download"></i> Export (Setup Required)
-                            </span>
+                            </span> --}}
+
+                            <button class="badge bg-secondary" onclick="window.print()">
+                                <i class="fas fa-print me-1"></i>Print Report
+                            </button>
                         @endif
+ <span class="badge bg-light text-dark me-2">Finance Access</span>
                     </div>
                 </div>
 

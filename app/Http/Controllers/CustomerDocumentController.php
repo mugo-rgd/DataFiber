@@ -37,50 +37,49 @@ class CustomerDocumentController extends Controller
 /**
  * Store document request
  */
+/**
+ * Store a new document request
+ */
 public function storeRequest(Request $request)
 {
-    $request->validate([
-        'lease_id' => 'required|exists:leases,id',
-        'document_types' => 'required|array|min:1',
-        'document_types.*' => 'string|in:quotation,contract,acceptance_certificate,conditional_certificate,lease,report',
-        'notes' => 'nullable|string|max:1000',
-    ]);
-
-    $customer = Auth::user();
-
     try {
-        // Verify lease belongs to customer
-        $lease = Lease::where('id', $request->lease_id)
-            ->where('customer_id', $customer->id)
-            ->firstOrFail();
+        // Set execution time limit
+        set_time_limit(60);
 
-        // Check for existing pending request for same documents
-        $existingRequest = DocumentRequest::where('user_id', $customer->id)
-            ->where('lease_id', $lease->id)
-            ->where('status', 'pending')
-            ->whereJsonContains('document_types', $request->document_types)
-            ->first();
+        $validated = $request->validate([
+            'lease_id' => 'nullable|exists:leases,id',
+            'document_types' => 'required|array',
+            'document_types.*' => 'string',
+            'additional_notes' => 'nullable|string',
+        ]);
 
-        if ($existingRequest) {
-            return redirect()->back()
-                ->with('warning', 'You already have a pending request for these documents.');
-        }
+        $customer = auth()->user();
 
-        // Create document request
+        // Create document request with chunking for large data
         $docRequest = DocumentRequest::create([
             'user_id' => $customer->id,
-            'lease_id' => $lease->id,
-            'document_types' => $request->document_types,
-            'notes' => $request->notes,
+            'lease_id' => $validated['lease_id'] ?? null,
+            'document_types' => json_encode($validated['document_types']),
+            'additional_notes' => $validated['additional_notes'] ?? null,
             'status' => 'pending',
             'requested_at' => now(),
         ]);
 
-        // Send notification to admin
-        $this->notifyAdmins($docRequest);
-
-        // Send confirmation email to customer
-        $customer->notify(new \App\Notifications\DocumentRequestSubmitted($docRequest));
+        // Send notifications in background (queue)
+        if (config('queue.default') !== 'sync') {
+            dispatch(function() use ($docRequest, $customer) {
+                $this->notifyAdmins($docRequest);
+                $this->sendCustomerConfirmation($customer, $docRequest);
+            })->onQueue('low');
+        } else {
+            // Fallback to synchronous but with error suppression
+            try {
+                $this->notifyAdmins($docRequest);
+                $this->sendCustomerConfirmation($customer, $docRequest);
+            } catch (\Exception $e) {
+                \Log::error('Notification failed: ' . $e->getMessage());
+            }
+        }
 
         return redirect()->route('customer.documents.index')
             ->with('success', 'Document request submitted successfully! We will process it within 2-3 business days.');
@@ -89,36 +88,72 @@ public function storeRequest(Request $request)
         \Log::error('Document request error: ' . $e->getMessage());
 
         return redirect()->back()
-            ->with('error', 'Something went wrong. Please try again.')
+            ->with('error', 'Unable to submit document request: ' . $e->getMessage())
             ->withInput();
     }
 }
 
 /**
+ * Send confirmation email to customer
+ */
+private function sendCustomerConfirmation($customer, $docRequest)
+{
+    try {
+        if (class_exists('\App\Notifications\DocumentRequestSubmitted')) {
+            $customer->notify(new \App\Notifications\DocumentRequestSubmitted($docRequest));
+        }
+    } catch (\Exception $e) {
+        \Log::error('Failed to send customer confirmation: ' . $e->getMessage());
+    }
+}
+/**
  * Notify admins about new document request
  */
-private function notifyAdmins(DocumentRequest $request)
+private function notifyAdmins($docRequest)
 {
-    $admins = \App\Models\User::where('role', 'admin')
-        ->orWhere('role', 'account_manager')
-        ->get();
+    try {
+        // Get admin users
+        $admins = User::whereIn('role', ['admin', 'super_admin', 'finance'])
+            ->orWhere('is_admin', true)
+            ->get();
 
-    foreach ($admins as $admin) {
-        // Send email notification
-        $admin->notify(new \App\Notifications\NewDocumentRequest($request));
+        // Decode document types for notification
+        $documentTypes = $docRequest->document_types;
+        if (is_string($documentTypes)) {
+            $documentTypes = json_decode($documentTypes, true);
+        }
 
-        // Or send in-app notification
-        \App\Models\Notification::create([
-            'user_id' => $admin->id,
-            'type' => 'document_request',
-            'data' => [
-                'request_id' => $request->id,
-                'customer_name' => $request->user->company_name ?? $request->user->name,
-                'lease_title' => $request->lease->title ?? 'N/A',
-                'document_types' => $request->document_types,
-            ],
-            'read_at' => null,
+        foreach ($admins as $admin) {
+            // Send email notification if notification class exists
+            if (class_exists('\App\Notifications\NewDocumentRequest')) {
+                $admin->notify(new \App\Notifications\NewDocumentRequest($docRequest));
+            }
+
+            // Create in-app notification
+            \App\Models\Notification::create([
+                'user_id' => $admin->id,
+                'type' => 'document_request',
+                'data' => [
+                    'request_id' => $docRequest->id,
+                    'customer_name' => $docRequest->user->company_name ?? $docRequest->user->name ?? 'N/A',
+                    'lease_title' => $docRequest->lease->title ?? 'N/A',
+                    'document_types' => $documentTypes ?? [],
+                    'additional_notes' => $docRequest->additional_notes,
+                    'message' => 'New document request submitted by ' . ($docRequest->user->company_name ?? $docRequest->user->name ?? 'Customer')
+                ],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        \Log::info('Admins notified for document request', [
+            'request_id' => $docRequest->id,
+            'admin_count' => $admins->count()
         ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Failed to notify admins: ' . $e->getMessage());
+        // Don't throw exception - notification failure shouldn't break the request
     }
 }
     /**

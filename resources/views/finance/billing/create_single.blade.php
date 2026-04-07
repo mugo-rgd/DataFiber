@@ -24,7 +24,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('finance.billing.store-single') }}" method="POST" id="billingForm">
+                    <form action="{{ route('finance.billing.storeSingle') }}" method="POST" id="billingForm">
                         @csrf
 
                         <div class="row">

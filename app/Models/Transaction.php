@@ -71,6 +71,14 @@ class Transaction extends Model
         return $this->belongsTo(ConsolidatedBilling::class, 'reference', 'billing_number');
     }
 
+    /**
+     * Alias for consolidatedBilling() - for compatibility with views
+     */
+    public function billing()
+    {
+        return $this->belongsTo(ConsolidatedBilling::class, 'reference', 'billing_number');
+    }
+
     // ==================== SCOPES ====================
 
     /**

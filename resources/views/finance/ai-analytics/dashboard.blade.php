@@ -18,8 +18,8 @@
                     </div>
                     <div class="col-md-4 text-end">
                         <a href="{{ route('finance.ai.report') }}" class="btn btn-outline-primary">
-                            <i class="fas fa-file-pdf me-1"></i> Generate Report
-                        </a>
+    <i class="fas fa-file-pdf me-1"></i> Generate Report
+</a>
                     </div>
                 </div>
             </div>
@@ -239,12 +239,14 @@
                             <i class="fas fa-search me-2"></i>Key Findings
                         </h6>
                         <div class="list-group list-group-flush">
-                            @foreach($insights['key_findings'] as $finding)
+                            @forelse($insights['key_findings'] ?? [] as $finding)
                             <div class="list-group-item d-flex align-items-start">
                                 <i class="fas fa-check-circle text-success mt-1 me-2"></i>
                                 <span>{{ $finding }}</span>
                             </div>
-                            @endforeach
+                            @empty
+                            <div class="list-group-item text-muted">No key findings available</div>
+                            @endforelse
                         </div>
                     </div>
 
@@ -254,7 +256,7 @@
                             <i class="fas fa-exclamation-triangle me-2"></i>Risk Analysis
                         </h6>
                         <div class="row">
-                            @foreach($insights['risk_analysis'] as $risk)
+                            @forelse($insights['risk_analysis'] ?? [] as $risk)
                             <div class="col-md-6 mb-2">
                                 <div class="card border-warning">
                                     <div class="card-body py-2">
@@ -262,7 +264,11 @@
                                     </div>
                                 </div>
                             </div>
-                            @endforeach
+                            @empty
+                            <div class="col-12">
+                                <p class="text-muted">No risk analysis available</p>
+                            </div>
+                            @endforelse
                         </div>
                     </div>
 
@@ -272,7 +278,7 @@
                             <i class="fas fa-bullseye me-2"></i>Recommended Actions
                         </h6>
                         <div class="list-group">
-                            @foreach($insights['recommendations'] as $index => $recommendation)
+                            @forelse($insights['recommendations'] ?? [] as $index => $recommendation)
                             <a href="#" class="list-group-item list-group-item-action">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h6 class="mb-1">Action {{ $index + 1 }}</h6>
@@ -280,7 +286,9 @@
                                 </div>
                                 <p class="mb-1">{{ $recommendation }}</p>
                             </a>
-                            @endforeach
+                            @empty
+                            <div class="list-group-item text-muted">No recommendations available</div>
+                            @endforelse
                         </div>
                     </div>
                 </div>
@@ -368,7 +376,7 @@
                 </div>
             </div>
 
-            <!-- Top Debtors with Currency Split -->
+            <!-- Top Debtors with Currency Split - FIXED SECTION -->
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
@@ -377,29 +385,45 @@
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
-                        @foreach($topDebtors as $debtor)
-                        <a href="{{ route('finance.ai.customer', $debtor['id']) }}"
+                        @forelse(($topDebtors ?? []) as $debtor)
+                        <a href="{{ route('finance.ai.customer', $debtor['id'] ?? 0) }}"
                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="mb-0">{{ $debtor['name'] }}</h6>
-                                <small class="text-muted">{{ $debtor['email'] }}</small>
+                                <h6 class="mb-0">{{ $debtor['name'] ?? 'Unknown' }}</h6>
+                                <small class="text-muted">{{ $debtor['email'] ?? 'No email' }}</small>
                             </div>
                             <div class="text-end">
-                                <span class="badge bg-{{ $debtor['risk_level'] == 'critical' ? 'danger' : ($debtor['risk_level'] == 'high' ? 'warning' : 'secondary') }} rounded-pill mb-1">
-                                    {{ $debtor['risk_level'] }}
+                                @php
+                                    $riskLevel = $debtor['risk_level'] ?? 'low';
+                                    $badgeColor = $riskLevel == 'critical' ? 'danger' : ($riskLevel == 'high' ? 'warning' : 'secondary');
+                                    $outstandingUsd = isset($debtor['outstanding_usd']) ? floatval($debtor['outstanding_usd']) : 0;
+                                    $outstandingKsh = isset($debtor['outstanding_ksh']) ? floatval($debtor['outstanding_ksh']) : 0;
+                                    $overdueInvoices = $debtor['overdue_invoices'] ?? 0;
+                                @endphp
+
+                                <span class="badge bg-{{ $badgeColor }} rounded-pill mb-1">
+                                    {{ ucfirst($riskLevel) }}
                                 </span>
                                 <div>
-                                    @if($debtor['outstanding_usd'] > 0)
-                                        <strong>${{ number_format($debtor['outstanding_usd'], 0) }}</strong>
+                                    @if($outstandingUsd > 0)
+                                        <strong>${{ number_format($outstandingUsd, 0) }}</strong>
                                     @endif
-                                    @if($debtor['outstanding_ksh'] > 0)
-                                        <br><strong>KSH {{ number_format($debtor['outstanding_ksh'], 0) }}</strong>
+                                    @if($outstandingKsh > 0)
+                                        @if($outstandingUsd > 0)<br>@endif
+                                        <strong>KSH {{ number_format($outstandingKsh, 0) }}</strong>
                                     @endif
-                                    <small class="text-muted d-block">{{ $debtor['overdue_invoices'] }} overdue</small>
+                                    @if($outstandingUsd == 0 && $outstandingKsh == 0)
+                                        <strong class="text-muted">$0</strong>
+                                    @endif
+                                    <small class="text-muted d-block">{{ $overdueInvoices }} overdue</small>
                                 </div>
                             </div>
                         </a>
-                        @endforeach
+                        @empty
+                        <div class="list-group-item text-center text-muted">
+                            No debtor data available
+                        </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
@@ -451,9 +475,9 @@
                                         @endphp
                                         <h4 class="{{ $trend['direction'] == 'up' ? 'text-success' : ($trend['direction'] == 'down' ? 'text-danger' : 'text-secondary') }}">
                                             <i class="fas fa-arrow-{{ $trend['direction'] }} me-1"></i>
-                                            {{ $trend['percentage'] }}%
+                                            {{ $trend['percentage'] ?? 0 }}%
                                         </h4>
-                                        <small class="text-muted">{{ $trend['message'] }}</small>
+                                        <small class="text-muted">{{ $trend['message'] ?? 'No trend data' }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -477,91 +501,94 @@
     }
 
     // Collection Trend Chart with Dual Currency
-    const ctx = document.getElementById('collectionChart').getContext('2d');
-    const collectionChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: @json($collectionTrends['labels'] ?? []),
-            datasets: [
-                {
-                    label: 'USD Collections ($)',
-                    data: @json($collectionTrends['amounts_usd'] ?? []),
-                    borderColor: 'rgb(54, 162, 235)',
-                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y-usd'
-                },
-                {
-                    label: 'KSH Collections',
-                    data: @json($collectionTrends['amounts_ksh'] ?? []),
-                    borderColor: 'rgb(40, 167, 69)',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y-ksh'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            interaction: {
-                mode: 'index',
-                intersect: false,
+    const chartElement = document.getElementById('collectionChart');
+    if (chartElement) {
+        const collectionChart = new Chart(chartElement.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: @json($collectionTrends['labels'] ?? []),
+                datasets: [
+                    {
+                        label: 'USD Collections ($)',
+                        data: @json($collectionTrends['amounts_usd'] ?? []),
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        yAxisID: 'y-usd'
+                    },
+                    {
+                        label: 'KSH Collections',
+                        data: @json($collectionTrends['amounts_ksh'] ?? []),
+                        borderColor: 'rgb(40, 167, 69)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        yAxisID: 'y-ksh'
+                    }
+                ]
             },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
                 },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const label = context.dataset.label || '';
-                            const value = context.parsed.y || 0;
-                            if (label.includes('USD')) {
-                                return label + ': $' + value.toLocaleString();
-                            } else {
-                                return label + ': KSH ' + value.toLocaleString();
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.parsed.y || 0;
+                                if (label.includes('USD')) {
+                                    return label + ': $' + value.toLocaleString();
+                                } else {
+                                    return label + ': KSH ' + value.toLocaleString();
+                                }
                             }
                         }
                     }
-                }
-            },
-            scales: {
-                'y-usd': {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    title: {
-                        display: true,
-                        text: 'USD Amount ($)'
-                    },
-                    ticks: {
-                        callback: function(value) {
-                            return '$' + value.toLocaleString();
-                        }
-                    }
                 },
-                'y-ksh': {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    title: {
+                scales: {
+                    'y-usd': {
+                        type: 'linear',
                         display: true,
-                        text: 'KSH Amount'
-                    },
-                    ticks: {
-                        callback: function(value) {
-                            return 'KSH ' + value.toLocaleString();
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'USD Amount ($)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
                         }
                     },
-                    grid: {
-                        drawOnChartArea: false,
+                    'y-ksh': {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'KSH Amount'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return 'KSH ' + value.toLocaleString();
+                            }
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }
 </script>
 @endsection

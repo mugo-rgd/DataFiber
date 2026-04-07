@@ -14,7 +14,9 @@ use App\Http\Controllers\CustomerCertificateController;
 use App\Http\Controllers\CustomerSapController;
 use App\Http\Controllers\DarkfireController;
 use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\FinancialSyncController;
 use App\Http\Controllers\ICTEngineerCertificateController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SurveyorController;
 use Illuminate\Support\Facades\Route;
@@ -71,6 +73,8 @@ use App\Http\Controllers\PaymentStatementController;
 use App\Http\Controllers\CustomerPortal\StatementController;
 use App\Http\Middleware\CheckProfileCompletion;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,12 +83,39 @@ use Illuminate\Support\Facades\Gate;
 */
 
 // ==========================
-// Password Reset
+// Rate Limiting Configuration
+// ==========================
+Route::pattern('id', '[0-9]+');
+Route::pattern('uuid', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
+
+// Configure rate limiters
+RateLimiter::for('login', function ($job) {
+    return Limit::perMinute(5)->by($job->ip());
+});
+
+RateLimiter::for('registration', function ($job) {
+    return Limit::perMinute(3)->by($job->ip());
+});
+
+RateLimiter::for('api', function ($job) {
+    return Limit::perMinute(60)->by($job->user()?->id ?: $job->ip());
+});
+
+RateLimiter::for('password-reset', function ($job) {
+    return Limit::perMinute(3)->by($job->ip());
+});
+
+// ==========================
+// Password Reset Routes (with rate limiting)
 // ==========================
 Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->middleware('throttle:password-reset')
+    ->name('password.email');
 Route::get('password/reset/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('password/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
+Route::post('password/reset', [ForgotPasswordController::class, 'reset'])
+    ->middleware('throttle:password-reset')
+    ->name('password.update');
 
 // ==========================
 // Public Routes
@@ -120,21 +151,31 @@ Route::get('/status', function () {
     return view('status');
 })->name('status');
 
-// Authentication Routes
+// Authentication Routes (with rate limiting)
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware('throttle:login')
+    ->name('login.post');
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Customer Registration Routes
+// Customer Registration Routes (with rate limiting)
 Route::get('/register/customer', [AuthController::class, 'showCustomerRegistrationForm'])->name('register.customer.form');
-Route::post('/register/customer', [AuthController::class, 'registerCustomer'])->name('register.customer');
+Route::post('/register/customer', [AuthController::class, 'registerCustomer'])
+    ->middleware('throttle:registration')
+    ->name('register.customer');
 
-// Public routes for quotation email links (no auth required)
-Route::get('/quotations/{quotation}/view/{token}', [QuotationController::class, 'publicView'])->name('quotations.public.view');
-Route::get('/quotations/{quotation}/accept/{token}', [QuotationController::class, 'publicAccept'])->name('quotations.public.accept');
+// Public routes for quotation email links (with signed URLs and rate limiting)
+Route::get('/quotations/{quotation}/view/{token}', [QuotationController::class, 'publicView'])
+    ->middleware(['signed', 'throttle:20,60'])
+    ->name('quotations.public.view');
+
+Route::get('/quotations/{quotation}/accept/{token}', [QuotationController::class, 'publicAccept'])
+    ->middleware(['signed', 'throttle:5,60'])
+    ->name('quotations.public.accept');
 
 // Conditional Certificate Routes
 Route::get('/certificate/create', [CertificateController::class, 'create'])->name('certificates.create');
@@ -278,7 +319,6 @@ Route::middleware(['auth'])->group(function () {
 
         // Design Requests
         Route::get('/requests', [ICTEngineerController::class, 'requests'])->name('requests.index');
-        // Route::get('/requests', [ICTEngineerController::class, 'requests'])->name('requests');
         Route::get('/requests/{request}', [ICTEngineerController::class, 'showRequest'])->name('requests.show');
         Route::put('/requests/{request}', [ICTEngineerController::class, 'updateRequest'])->name('requests.update');
         Route::post('/requests/{id}/update-status', [ICTEngineerController::class, 'updateStatus'])->name('requests.update-status');
@@ -354,11 +394,11 @@ Route::middleware(['auth'])->group(function () {
         // Dashboard & Settings
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
-         Route::prefix('account-managers')->name('account-managers.')->group(function () {
-        Route::get('/{id}/customers', [App\Http\Controllers\AccountManagerController::class, 'getManagerCustomers'])
-            ->name('customers');
 
-    });
+        Route::prefix('account-managers')->name('account-managers.')->group(function () {
+            Route::get('/{id}/customers', [App\Http\Controllers\AccountManagerController::class, 'getManagerCustomers'])
+                ->name('customers');
+        });
 
         // User Management
         Route::get('/users', [AdminController::class, 'usersIndex'])->name('users');
@@ -506,10 +546,9 @@ Route::middleware(['auth'])->group(function () {
     // Customer Routes (Profile Completion Check Applied)
     // ==========================
     Route::prefix('customer')->middleware(['can:isCustomer'])->name('customer.')->group(function () {
-  // Dashboard
+        // Dashboard
         Route::get('/customer-dashboard', [CustomerController::class, 'dashboard'])->name('customer-dashboard');
         Route::get('/', [CustomerController::class, 'index'])->name('index');
-
 
         // Public customer routes (no profile completion check)
         Route::get('/welcome', [App\Http\Controllers\Customer\CustomerDashboardController::class, 'welcome'])->name('welcome');
@@ -654,17 +693,20 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/tickets', [CustomerController::class, 'tickets'])->name('tickets');
         });
     });
-// Add these routes to your web.php file
-Route::get('/kenya-fibre/networks', [App\Http\Controllers\FiberNetworkController::class, 'index'])
-    ->name('fiber.networks.index');
 
-Route::get('/kenya-fibre/networks/{id}', [App\Http\Controllers\FiberNetworkController::class, 'show'])
-    ->name('fiber.networks.show');
+    // Add these routes to your web.php file
+    Route::get('/kenya-fibre/networks', [App\Http\Controllers\FiberNetworkController::class, 'index'])
+        ->name('fiber.networks.index');
 
-Route::post('/kenya-fibre/networks/{id}/status', [App\Http\Controllers\FiberNetworkController::class, 'updateStatus'])
-    ->name('fiber.networks.status');
+    Route::get('/kenya-fibre/networks/{id}', [App\Http\Controllers\FiberNetworkController::class, 'show'])
+        ->name('fiber.networks.show');
+
+    Route::post('/kenya-fibre/networks/{id}/status', [App\Http\Controllers\FiberNetworkController::class, 'updateStatus'])
+        ->name('fiber.networks.status');
+
     Route::get('/kenya-fibre/dashboard', [App\Http\Controllers\KenyaFibreDashboardController::class, 'dashboard'])
-    ->name('kenya-fibre.dashboard');
+        ->name('kenya-fibre.dashboard');
+
     // Customer quotations view (outside the main customer group for policy-based access)
     Route::get('/customer/quotations/{quotation}', [QuotationController::class, 'show'])
         ->name('customer.quotations.show')
@@ -752,8 +794,8 @@ Route::post('/kenya-fibre/networks/{id}/status', [App\Http\Controllers\FiberNetw
             Route::get('/', 'index')->name('index');
             Route::get('/create', 'create')->name('create');
             Route::post('/', 'store')->name('store');
-            Route::get('/create-single', 'createSingle')->name('create-single');
-            Route::post('/store-single', 'storeSingle')->name('store-single');
+            Route::get('/create-single', 'createSingle')->name('createSingle');
+            Route::post('/store-single', 'storeSingle')->name('storeSingle');
             Route::get('/{id}', 'show')->name('show');
             Route::get('/{id}/edit', 'edit')->name('edit');
             Route::put('/{id}', 'update')->name('update');
@@ -819,16 +861,16 @@ Route::post('/kenya-fibre/networks/{id}/status', [App\Http\Controllers\FiberNetw
         Route::get('/statements/{id}', [StatementController::class, 'show'])->name('statements.show');
     });
 
-    // AI Analytics Routes
-    Route::prefix('finance/ai-analytics')->name('finance.ai.')->middleware(['auth'])->group(function () {
-        Route::get('/dashboard', [AiAnalyticsController::class, 'dashboard'])->name('dashboard');
-        Route::get('/customer/{id}', [AiAnalyticsController::class, 'customerIntelligence'])->name('customer');
-        Route::get('/predictive', [AiAnalyticsController::class, 'predictiveAnalytics'])->name('predictive');
-        Route::get('/recommendations', [AiAnalyticsController::class, 'recommendations'])->name('recommendations');
-        Route::match(['get', 'post'], '/report', [AiAnalyticsController::class, 'generateReport'])->name('report');
-    });
+    // AI Analytics Routes - Single definition
+Route::prefix('finance/ai-analytics')->name('finance.ai.')->middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [AiAnalyticsController::class, 'dashboard'])->name('dashboard');
+    Route::get('/customer/{id}', [AiAnalyticsController::class, 'customerIntelligence'])->name('customer');
+    Route::get('/predictive', [AiAnalyticsController::class, 'predictiveAnalytics'])->name('predictive');
+    Route::get('/recommendations', [AiAnalyticsController::class, 'recommendations'])->name('recommendations');
+    Route::match(['get', 'post'], '/report', [AiAnalyticsController::class, 'generateReport'])->name('report');
+});
 
-    // Financial Analytics Routes
+// Financial Analytics Routes
     Route::prefix('finance/financial-analytics')->name('finance.financial-analytics.')->middleware(['auth'])->group(function () {
         Route::get('/dashboard', [FinancialAnalyticsController::class, 'dashboard'])->name('dashboard');
         Route::match(['get', 'post'], '/report', [FinancialAnalyticsController::class, 'generateReport'])->name('report');
@@ -1114,40 +1156,39 @@ Route::post('/kenya-fibre/networks/{id}/status', [App\Http\Controllers\FiberNetw
     });
 
     // Data conversion Routes
-// Custom routes FIRST
-Route::get('/conversion-data/summary-view', [ConversionDataController::class, 'customers'])
-    ->name('conversion-data.summary-view');
+    // Custom routes FIRST
+    Route::get('/conversion-data/summary-view', [ConversionDataController::class, 'customers'])
+        ->name('conversion-data.summary-view');
 
-Route::get('/conversion-data/summary', [ConversionDataController::class, 'summary'])
-    ->name('conversion-data.summary');
+    Route::get('/conversion-data/summary', [ConversionDataController::class, 'summary'])
+        ->name('conversion-data.summary');
 
-Route::get('/conversion-data/summary/report', [ConversionDataController::class, 'summaryReport'])
-    ->name('conversion-data.summary-report');
+    Route::get('/conversion-data/summary/report', [ConversionDataController::class, 'summaryReport'])
+        ->name('conversion-data.summary-report');
 
-Route::get('/conversion-data/summary/pdf', [ConversionDataController::class, 'downloadSummaryPdf'])
-    ->name('conversion-data.summary.pdf');
+    Route::get('/conversion-data/summary/pdf', [ConversionDataController::class, 'downloadSummaryPdf'])
+        ->name('conversion-data.summary.pdf');
 
-// Export routes
-Route::get('/conversion-data/export/excel', [ConversionDataController::class, 'exportExcel'])
-    ->name('conversion-data.export.excel');
-Route::get('/conversion-data/export/csv', [ConversionDataController::class, 'exportCsv'])
-    ->name('conversion-data.export.csv');
-Route::get('/conversion-data/export/pdf', [ConversionDataController::class, 'exportPdf'])
-    ->name('conversion-data.export.pdf');
-Route::get('/conversion-data/export/{format}', [ConversionDataController::class, 'export'])
-    ->name('conversion-data.export');
+    // Export routes
+    Route::get('/conversion-data/export/excel', [ConversionDataController::class, 'exportExcel'])
+        ->name('conversion-data.export.excel');
+    Route::get('/conversion-data/export/csv', [ConversionDataController::class, 'exportCsv'])
+        ->name('conversion-data.export.csv');
+    Route::get('/conversion-data/export/pdf', [ConversionDataController::class, 'exportPdf'])
+        ->name('conversion-data.export.pdf');
+    Route::get('/conversion-data/export/{format}', [ConversionDataController::class, 'export'])
+        ->name('conversion-data.export');
 
-// Bulk operations
-Route::post('/conversion-data/bulk-delete', [ConversionDataController::class, 'bulkDelete'])
-    ->name('conversion-data.bulk-delete');
+    // Bulk operations
+    Route::post('/conversion-data/bulk-delete', [ConversionDataController::class, 'bulkDelete'])
+        ->name('conversion-data.bulk-delete');
 
-// Duplicate route
-Route::post('/conversion-data/{id}/duplicate', [ConversionDataController::class, 'duplicate'])
-    ->name('conversion-data.duplicate');
+    // Duplicate route
+    Route::post('/conversion-data/{id}/duplicate', [ConversionDataController::class, 'duplicate'])
+        ->name('conversion-data.duplicate');
 
-// Resource route LAST
-Route::resource('conversion-data', ConversionDataController::class);
-
+    // Resource route LAST
+    Route::resource('conversion-data', ConversionDataController::class);
 
     // ==========================
     // Commercial Routes
@@ -1186,23 +1227,6 @@ Route::resource('conversion-data', ConversionDataController::class);
         Route::get('/search', [DesignItemController::class, 'search']);
     });
 
-    // ==========================
-    // Debug Routes
-    // ==========================
-    Route::post('/debug-surveyor-assignment/{designRequest}', function(Request $request, DesignRequest $designRequest) {
-        logger('DEBUG SURVEYOR ASSIGNMENT:', [
-            'design_request_id' => $designRequest->id,
-            'submitted_data' => $request->all(),
-            'current_surveyor_id' => $designRequest->surveyor_id,
-            'current_survey_status' => $designRequest->survey_status
-        ]);
-
-        return response()->json([
-            'message' => 'Check your logs for debug info',
-            'submitted' => $request->all()
-        ]);
-    });
-
     // PDF Routes
     Route::get('/leases/{lease}/acceptance-pdf', function (Lease $lease) {
         $pdf = Pdf::loadView('leases.acceptance', [
@@ -1221,104 +1245,52 @@ Route::resource('conversion-data', ConversionDataController::class);
     // Customer show route
     Route::get('/customers/{id}', [CustomerController::class, 'show'])->name('customer.show');
 
-    // Test routes
-    Route::get('/test-sap-access', function () {
-        $user = auth()->user();
-
-        return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'role' => $user->role,
-                'is_finance' => $user->isFinance(),
-                'is_admin' => $user->isAdmin(),
-            ],
-            'gates' => [
-                'access-finance' => Gate::allows('access-finance'),
-                'isFinance' => Gate::allows('isFinance'),
-                'isAdmin' => Gate::allows('isAdmin'),
-            ],
-            'allowed_for_sap' => in_array($user->role, ['finance', 'finance_admin', 'admin', 'system_admin'])
-        ]);
-    })->middleware('auth');
-
-    Route::get('/test-approve/{quotation}', function(Quotation $quotation) {
-        $user = auth()->user();
-
-        return response()->json([
-            'user_id' => $user->id,
-            'user_role' => $user->role,
-            'quotation_id' => $quotation->id,
-            'quotation_status' => $quotation->status,
-            'gate_allows_approve' => Gate::allows('approve-quotations'),
-            'policy_allows' => Gate::allows('approve', $quotation),
-            'is_admin' => in_array($user->role, ['admin', 'system_admin', 'accountmanager_admin'])
-        ]);
-    })->middleware('auth');
-
-    Route::get('/debug-lease/{lease}', function(Lease $lease) {
-        return response()->json([
-            'lease' => $lease->toArray(),
-            'user_id' => $lease->user_id,
-            'monthly_rent' => $lease->monthly_rent,
-            'monthly_rent_type' => gettype($lease->monthly_rent),
-            'exists' => $lease->exists,
-        ]);
+    // Kenya Dark Fibre Dashboard Routes
+    Route::middleware(['auth'])->prefix('kenya-fibre')->name('kenya.fibre.')->group(function () {
+        Route::get('/dashboard', [KenyaFibreDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/api/networks', [KenyaFibreDashboardController::class, 'getNetworkData']);
+        Route::get('/api/nodes', [KenyaFibreDashboardController::class, 'getNodeData']);
+        Route::get('/api/stats', [KenyaFibreDashboardController::class, 'getStats']);
+        Route::get('/network/{id}', [KenyaFibreDashboardController::class, 'getNetworkDetail']);
+        Route::post('/network/{id}/status', [KenyaFibreDashboardController::class, 'updateNetworkStatus']);
     });
 
-    // Kenya Dark Fibre Dashboard Routes
-    // Route::get('/kenya-fibre-dashboard', [KenyaFibreDashboardController::class, 'index'])->name('kenya.fibre.dashboard');
-    // Route::get('/kenya-fibre-data', [KenyaFibreDashboardController::class, 'getDashboardData'])->name('kenya.fibre.data');
-    // Route::get('/clear-dashboard-cache', [KenyaFibreDashboardController::class, 'clearCache']);
-// Kenya Fibre Dashboard Routes
-Route::middleware(['auth'])->prefix('kenya-fibre')->name('kenya.fibre.')->group(function () {
-    Route::get('/dashboard', [KenyaFibreDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/api/networks', [KenyaFibreDashboardController::class, 'getNetworkData']);
-    Route::get('/api/nodes', [KenyaFibreDashboardController::class, 'getNodeData']);
-    Route::get('/api/stats', [KenyaFibreDashboardController::class, 'getStats']);
-    Route::get('/network/{id}', [KenyaFibreDashboardController::class, 'getNetworkDetail']);
-    Route::post('/network/{id}/status', [KenyaFibreDashboardController::class, 'updateNetworkStatus']);
 });
 
+// ==========================
+// Chat Web Routes (for Blade views)
+// ==========================
+Route::middleware(['auth'])->group(function () {
+    // Chat routes
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::get('/', [ChatController::class, 'index'])->name('index');
+        Route::get('/create', [ChatController::class, 'create'])->name('create');
+        Route::post('/start', [ChatController::class, 'startConversation'])->name('start');
+        Route::get('/search/users', [ChatController::class, 'searchUsers'])->name('search.users');
+        Route::get('/unread-count', [ChatController::class, 'getUnreadCount'])->name('unread-count');
+        Route::get('/{conversationId}/messages', [ChatController::class, 'getConversation'])->name('messages');
+        Route::post('/{conversationId}/messages', [ChatController::class, 'store'])->name('store');
+        Route::post('/{conversationId}/read', [ChatController::class, 'markAsRead'])->name('read');
+        Route::get('/download/{messageId}', [ChatController::class, 'downloadFile'])->name('download');
+        Route::get('/{conversationId}', [ChatController::class, 'show'])->name('show');
+        Route::get('/profile/{userId}', [ChatController::class, 'startFromProfile'])->name('start-from-profile');
+    });
+});
+// Email Routes
+Route::prefix('finance/emails')->name('finance.emails.')->middleware(['auth'])->group(function () {
+    Route::get('/settings', [MailController::class, 'settings'])->name('settings');
+    Route::post('/test', [MailController::class, 'testEmail'])->name('test');
+    Route::post('/billing/{billingId}/reminder', [MailController::class, 'sendBillingReminder'])->name('send-reminder');
+    Route::post('/billing/{billingId}/invoice', [MailController::class, 'sendInvoiceEmail'])->name('send-invoice');
+    Route::post('/payment/{transactionId}/receipt', [MailController::class, 'sendPaymentReceipt'])->name('send-receipt');
+    Route::post('/overdue-notices', [MailController::class, 'sendOverdueNotices'])->name('send-overdue-notices');
+    Route::post('/due-reminders', [MailController::class, 'sendDueReminders'])->name('send-due-reminders');
 });
 
-
-
-// Email test route (outside auth for testing)
-Route::get('/test-email-connection', function () {
-    try {
-        Mail::raw('Test email from DarkFibre CRM', function ($message) {
-            $message->to('test@example.com')
-                    ->subject('Test Email - SMTP Configuration')
-                    ->from(
-                        config('mail.from.address'),
-                        config('mail.from.name')
-                    );
-        });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Email test initiated',
-            'config' => [
-                'host' => config('mail.mailers.smtp.host'),
-                'port' => config('mail.mailers.smtp.port'),
-                'encryption' => config('mail.mailers.smtp.encryption'),
-                'username' => config('mail.mailers.smtp.username'),
-                'from' => config('mail.from.address'),
-            ]
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage(),
-            'config_used' => [
-                'host' => config('mail.mailers.smtp.host'),
-                'port' => config('mail.mailers.smtp.port'),
-                'username' => config('mail.mailers.smtp.username'),
-            ]
-        ], 500);
-    }
+Route::prefix('finance/sync')->name('finance.sync.')->middleware(['auth'])->group(function () {
+    Route::post('/to-settings', [FinancialSyncController::class, 'syncToSettings'])->name('to-settings');
+    Route::post('/to-parameters', [FinancialSyncController::class, 'syncToParameters'])->name('to-parameters');
+    Route::get('/status', [FinancialSyncController::class, 'getStatus'])->name('status');
 });
-
 // Include API routes
 require __DIR__.'/api.php';

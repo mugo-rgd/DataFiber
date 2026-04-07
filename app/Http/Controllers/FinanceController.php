@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Lease;
 use App\Services\AutomatedBillingService;
+use App\Traits\CurrencyHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +21,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\BillingReminder;
 
+
+
 class FinanceController extends Controller
 {
+    use CurrencyHelper;
     /**
      * Display finance dashboard with comprehensive analytics
      */
@@ -252,37 +256,384 @@ class FinanceController extends Controller
      * Generate and display various financial reports
      */
     public function reports(Request $request)
-    {
-        $reportType = $request->get('report_type', 'financial_summary');
-        $period = $request->get('period', 'this_month');
+{
+    $reportType = $request->get('report_type', 'financial_summary');
+    $period = $request->get('period', 'this_month');
+    $export = $request->get('export'); // Check for export parameter
 
-        list($startDate, $endDate) = $this->getDateRange($period, $request->start_date, $request->end_date);
+    list($startDate, $endDate) = $this->getDateRange($period, $request->start_date, $request->end_date);
 
-        try {
-            $reportData = $this->generateReport($reportType, $startDate, $endDate);
+    try {
+        $reportData = $this->generateReport($reportType, $startDate, $endDate);
 
-            // Add additional data needed by the blade template
-            $reportData['report_type'] = $reportType;
-            $reportData['start_date'] = $startDate;
-            $reportData['end_date'] = $endDate;
-
-            if ($request->has('export')) {
-                return $this->exportReport($reportType, $reportData, $startDate, $endDate);
+        // Ensure aging report data is properly structured
+        if ($reportType === 'aging_report') {
+            if (!isset($reportData['aging_report_ksh'])) {
+                $reportData['aging_report_ksh'] = collect();
+            }
+            if (!isset($reportData['aging_report_usd'])) {
+                $reportData['aging_report_usd'] = collect();
             }
 
-            return view('finance.reports.reports', compact(
-                'reportData',
-                'reportType',
-                'period',
-                'startDate',
-                'endDate'
-            ));
+            \Log::info('Aging Report Data', [
+                'ksh_count' => $reportData['aging_report_ksh']->count(),
+                'usd_count' => $reportData['aging_report_usd']->count(),
+            ]);
+        }
 
-        } catch (\Exception $e) {
-            Log::error('Finance reports error: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Unable to generate reports. Please try again.');
+        $reportData['report_type'] = $reportType;
+        $reportData['start_date'] = $startDate;
+        $reportData['end_date'] = $endDate;
+
+        // Handle export if requested
+        if ($export === 'csv') {
+            return $this->exportToCsv($reportData, $reportType, $startDate, $endDate);
+        }
+
+        return view('finance.reports.reports', compact(
+            'reportData',
+            'reportType',
+            'period',
+            'startDate',
+            'endDate'
+        ));
+
+    } catch (\Exception $e) {
+        Log::error('Finance reports error: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Unable to generate reports. Please try again.');
+    }
+}
+
+/**
+ * Export report data to CSV
+ */
+private function exportToCsv($reportData, $reportType, $startDate, $endDate)
+{
+    $filename = "financial_report_{$reportType}_{$startDate}_to_{$endDate}.csv";
+
+    $callback = function() use ($reportData, $reportType) {
+        $file = fopen('php://output', 'w');
+
+        // Add UTF-8 BOM for Excel compatibility
+        fwrite($file, "\xEF\xBB\xBF");
+
+        // Header information
+        fputcsv($file, ['Financial Report - ' . strtoupper(str_replace('_', ' ', $reportType))]);
+        fputcsv($file, ['Generated: ' . now()->toDateTimeString()]);
+        fputcsv($file, ['Period: ' . ($reportData['start_date'] ?? 'N/A') . ' to ' . ($reportData['end_date'] ?? 'N/A')]);
+        fputcsv($file, []);
+
+        // Export based on report type
+        switch($reportType) {
+            case 'aging_report':
+                $this->exportAgingReportToCsv($file, $reportData);
+                break;
+            case 'debt_aging':
+                $this->exportDebtAgingToCsv($file, $reportData);
+                break;
+            default:
+                $this->exportGenericToCsv($file, $reportData);
+                break;
+        }
+
+        fclose($file);
+    };
+
+    return response()->stream($callback, 200, [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+    ]);
+}
+
+/**
+ * Export Aging Report to CSV
+ */
+private function exportAgingReportToCsv($file, $reportData)
+{
+    // Debug: Log what we have
+    \Log::info('Exporting Aging Report - Data keys: ' . json_encode(array_keys($reportData)));
+
+    // KSH Aging
+    fputcsv($file, ['ACCOUNTS RECEIVABLE AGING REPORT - KSH']);
+    fputcsv($file, ['Customer', 'Current (KSH)', '1-30 Days (KSH)', '31-60 Days (KSH)', '61-90+ Days (KSH)', 'Total Outstanding (KSH)']);
+
+    $kshData = $reportData['aging_report_ksh'] ?? collect();
+    \Log::info('KSH Data count for export: ' . $kshData->count());
+
+    if ($kshData->count() > 0) {
+        foreach ($kshData as $row) {
+            // Handle both object and array formats
+            if (is_object($row)) {
+                $customerName = $row->customer_name ?? 'Unknown';
+                $current = $row->current ?? 0;
+                $days30 = $row->days_30 ?? 0;
+                $days60 = $row->days_60 ?? 0;
+                $days90Plus = $row->days_90_plus ?? 0;
+            } else {
+                $customerName = $row['customer_name'] ?? 'Unknown';
+                $current = $row['current'] ?? 0;
+                $days30 = $row['days_30'] ?? 0;
+                $days60 = $row['days_60'] ?? 0;
+                $days90Plus = $row['days_90_plus'] ?? 0;
+            }
+
+            $total = $current + $days30 + $days60 + $days90Plus;
+
+            fputcsv($file, [
+                $customerName,
+                number_format($current, 2),
+                number_format($days30, 2),
+                number_format($days60, 2),
+                number_format($days90Plus, 2),
+                number_format($total, 2)
+            ]);
+        }
+    } else {
+        fputcsv($file, ['No KSH aging data available for the selected period.', '', '', '', '', '']);
+    }
+
+    fputcsv($file, []);
+    fputcsv($file, []);
+
+    // USD Aging
+    fputcsv($file, ['ACCOUNTS RECEIVABLE AGING REPORT - USD']);
+    fputcsv($file, ['Customer', 'Current (USD)', '1-30 Days (USD)', '31-60 Days (USD)', '61-90+ Days (USD)', 'Total Outstanding (USD)']);
+
+    $usdData = $reportData['aging_report_usd'] ?? collect();
+    \Log::info('USD Data count for export: ' . $usdData->count());
+
+    if ($usdData->count() > 0) {
+        foreach ($usdData as $row) {
+            // Handle both object and array formats
+            if (is_object($row)) {
+                $customerName = $row->customer_name ?? 'Unknown';
+                $current = $row->current ?? 0;
+                $days30 = $row->days_30 ?? 0;
+                $days60 = $row->days_60 ?? 0;
+                $days90Plus = $row->days_90_plus ?? 0;
+            } else {
+                $customerName = $row['customer_name'] ?? 'Unknown';
+                $current = $row['current'] ?? 0;
+                $days30 = $row['days_30'] ?? 0;
+                $days60 = $row['days_60'] ?? 0;
+                $days90Plus = $row['days_90_plus'] ?? 0;
+            }
+
+            $total = $current + $days30 + $days60 + $days90Plus;
+
+            fputcsv($file, [
+                $customerName,
+                number_format($current, 2),
+                number_format($days30, 2),
+                number_format($days60, 2),
+                number_format($days90Plus, 2),
+                number_format($total, 2)
+            ]);
+        }
+    } else {
+        fputcsv($file, ['No USD aging data available for the selected period.', '', '', '', '', '']);
+    }
+}
+
+/**
+ * Export Debt Aging Report to CSV
+ */
+private function exportDebtAgingToCsv($file, $reportData)
+{
+    fputcsv($file, ['DETAILED DEBT AGING ANALYSIS']);
+    fputcsv($file, ['Customer', 'Currency', 'Total Due', 'Current', '1-30 Days', '31-60 Days', '61-90 Days', '>90 Days', 'Risk Level']);
+
+    $detailedData = $reportData['detailed_aging'] ?? collect();
+
+    if ($detailedData->count() > 0) {
+        foreach ($detailedData as $row) {
+            if (is_object($row)) {
+                $currency = $row->currency ?? 'USD';
+                $currencySymbol = $currency == 'KSH' ? 'KSH' : '$';
+                $customerName = $row->customer_name ?? 'Unknown';
+                $totalDue = $row->total_due ?? 0;
+                $current = $row->current ?? 0;
+                $days30 = $row->days_30 ?? 0;
+                $days60 = $row->days_60 ?? 0;
+                $days90 = $row->days_90 ?? 0;
+                $daysOver90 = $row->days_over_90 ?? 0;
+                $riskLevel = $row->risk_level ?? 'low';
+            } else {
+                $currency = $row['currency'] ?? 'USD';
+                $currencySymbol = $currency == 'KSH' ? 'KSH' : '$';
+                $customerName = $row['customer_name'] ?? 'Unknown';
+                $totalDue = $row['total_due'] ?? 0;
+                $current = $row['current'] ?? 0;
+                $days30 = $row['days_30'] ?? 0;
+                $days60 = $row['days_60'] ?? 0;
+                $days90 = $row['days_90'] ?? 0;
+                $daysOver90 = $row['days_over_90'] ?? 0;
+                $riskLevel = $row['risk_level'] ?? 'low';
+            }
+
+            fputcsv($file, [
+                $customerName,
+                $currency,
+                $currencySymbol . ' ' . number_format($totalDue, 2),
+                $currencySymbol . ' ' . number_format($current, 2),
+                $currencySymbol . ' ' . number_format($days30, 2),
+                $currencySymbol . ' ' . number_format($days60, 2),
+                $currencySymbol . ' ' . number_format($days90, 2),
+                $currencySymbol . ' ' . number_format($daysOver90, 2),
+                ucfirst($riskLevel)
+            ]);
+        }
+    } else {
+        fputcsv($file, ['No debt aging data available for the selected period.', '', '', '', '', '', '', '', '']);
+    }
+}
+
+/**
+ * Export Generic Report to CSV (fallback)
+ */
+private function exportGenericToCsv($file, $reportData)
+{
+    fputcsv($file, ['Report Data Export']);
+    fputcsv($file, ['Key', 'Value']);
+
+    foreach ($reportData as $key => $value) {
+        if (is_scalar($value)) {
+            fputcsv($file, [$key, $value]);
+        } elseif ($value instanceof \Illuminate\Support\Collection) {
+            fputcsv($file, [$key, 'Collection with ' . $value->count() . ' items']);
+        } else {
+            fputcsv($file, [$key, gettype($value)]);
         }
     }
+}
+
+/**
+ * Export Aging Report
+ */
+private function exportAgingReport($file, $reportData)
+{
+    // KSH Aging
+    fputcsv($file, ['ACCOUNTS RECEIVABLE AGING REPORT - KSH']);
+    fputcsv($file, ['Customer', 'Current (KSH)', '1-30 Days (KSH)', '31-60 Days (KSH)', '61-90+ Days (KSH)', 'Total Outstanding (KSH)']);
+
+    foreach (($reportData['aging_report_ksh'] ?? []) as $row) {
+        fputcsv($file, [
+            $row->customer_name ?? 'Unknown',
+            number_format($row->current ?? 0, 2),
+            number_format($row->days_30 ?? 0, 2),
+            number_format($row->days_60 ?? 0, 2),
+            number_format($row->days_90_plus ?? 0, 2),
+            number_format(($row->current ?? 0) + ($row->days_30 ?? 0) + ($row->days_60 ?? 0) + ($row->days_90_plus ?? 0), 2)
+        ]);
+    }
+
+    fputcsv($file, []);
+    fputcsv($file, []);
+
+    // USD Aging
+    fputcsv($file, ['ACCOUNTS RECEIVABLE AGING REPORT - USD']);
+    fputcsv($file, ['Customer', 'Current (USD)', '1-30 Days (USD)', '31-60 Days (USD)', '61-90+ Days (USD)', 'Total Outstanding (USD)']);
+
+    foreach (($reportData['aging_report_usd'] ?? []) as $row) {
+        fputcsv($file, [
+            $row->customer_name ?? 'Unknown',
+            number_format($row->current ?? 0, 2),
+            number_format($row->days_30 ?? 0, 2),
+            number_format($row->days_60 ?? 0, 2),
+            number_format($row->days_90_plus ?? 0, 2),
+            number_format(($row->current ?? 0) + ($row->days_30 ?? 0) + ($row->days_60 ?? 0) + ($row->days_90_plus ?? 0), 2)
+        ]);
+    }
+}
+
+/**
+ * Export Debt Aging Report
+ */
+private function exportDebtAgingReport($file, $reportData)
+{
+    fputcsv($file, ['DETAILED DEBT AGING ANALYSIS']);
+    fputcsv($file, ['Customer', 'Currency', 'Total Due', 'Current', '1-30 Days', '31-60 Days', '61-90 Days', '>90 Days', 'Risk Level']);
+
+    foreach (($reportData['detailed_aging'] ?? []) as $row) {
+        $currencySymbol = ($row->currency ?? 'USD') == 'KSH' ? 'KSH' : '$';
+        fputcsv($file, [
+            $row->customer_name ?? 'Unknown',
+            $row->currency ?? 'USD',
+            $currencySymbol . ' ' . number_format($row->total_due ?? 0, 2),
+            $currencySymbol . ' ' . number_format($row->current ?? 0, 2),
+            $currencySymbol . ' ' . number_format($row->days_30 ?? 0, 2),
+            $currencySymbol . ' ' . number_format($row->days_60 ?? 0, 2),
+            $currencySymbol . ' ' . number_format($row->days_90 ?? 0, 2),
+            $currencySymbol . ' ' . number_format($row->days_over_90 ?? 0, 2),
+            ucfirst($row->risk_level ?? 'low')
+        ]);
+    }
+}
+
+/**
+ * Export Financial Summary
+ */
+private function exportFinancialSummary($file, $reportData)
+{
+    fputcsv($file, ['FINANCIAL SUMMARY - KSH']);
+    fputcsv($file, ['Metric', 'Amount (KSH)']);
+    fputcsv($file, ['Total Revenue', number_format($reportData['total_revenue_ksh'] ?? 0, 2)]);
+    fputcsv($file, ['Pending Invoices', $reportData['pending_invoices_ksh'] ?? 0]);
+    fputcsv($file, ['Pending Amount', number_format($reportData['pending_amount_ksh'] ?? 0, 2)]);
+    fputcsv($file, ['Overdue Invoices', $reportData['overdue_invoices_ksh'] ?? 0]);
+    fputcsv($file, ['Overdue Amount', number_format($reportData['overdue_amount_ksh'] ?? 0, 2)]);
+
+    fputcsv($file, []);
+    fputcsv($file, ['FINANCIAL SUMMARY - USD']);
+    fputcsv($file, ['Metric', 'Amount (USD)']);
+    fputcsv($file, ['Total Revenue', number_format($reportData['total_revenue_usd'] ?? 0, 2)]);
+    fputcsv($file, ['Pending Invoices', $reportData['pending_invoices_usd'] ?? 0]);
+    fputcsv($file, ['Pending Amount', number_format($reportData['pending_amount_usd'] ?? 0, 2)]);
+    fputcsv($file, ['Overdue Invoices', $reportData['overdue_invoices_usd'] ?? 0]);
+    fputcsv($file, ['Overdue Amount', number_format($reportData['overdue_amount_usd'] ?? 0, 2)]);
+}
+
+/**
+ * Export Revenue Analysis
+ */
+private function exportRevenueAnalysis($file, $reportData)
+{
+    fputcsv($file, ['TOP CUSTOMERS BY REVENUE - KSH']);
+    fputcsv($file, ['Customer', 'Revenue (KSH)', 'Invoice Count']);
+
+    foreach (($reportData['revenue_by_customer_ksh'] ?? []) as $row) {
+        fputcsv($file, [
+            $row->customer_name ?? 'Unknown',
+            number_format($row->revenue ?? 0, 2),
+            $row->invoice_count ?? 0
+        ]);
+    }
+
+    fputcsv($file, []);
+    fputcsv($file, ['TOP CUSTOMERS BY REVENUE - USD']);
+    fputcsv($file, ['Customer', 'Revenue (USD)', 'Invoice Count']);
+
+    foreach (($reportData['revenue_by_customer_usd'] ?? []) as $row) {
+        fputcsv($file, [
+            $row->customer_name ?? 'Unknown',
+            number_format($row->revenue ?? 0, 2),
+            $row->invoice_count ?? 0
+        ]);
+    }
+}
+
+/**
+ * Export Generic Report (fallback)
+ */
+private function exportGenericReport($file, $reportData)
+{
+    fputcsv($file, ['Report Data']);
+    foreach ($reportData as $key => $value) {
+        if (is_scalar($value)) {
+            fputcsv($file, [$key, $value]);
+        }
+    }
+}
 
     // ==========================
     // BILLING MANAGEMENT
@@ -678,334 +1029,387 @@ class FinanceController extends Controller
     /**
      * Get financial metrics for dashboard with currency separation
      */
-    private function getFinancialMetrics(): array
-    {
-        try {
-            $monthStart = now()->startOfMonth();
-            $monthEnd = now()->endOfMonth();
-            $lastMonthStart = now()->subMonth()->startOfMonth();
-            $lastMonthEnd = now()->subMonth()->endOfMonth();
+   /**
+ * Get financial metrics for dashboard
+ */
+private function getFinancialMetrics(): array
+{
+    try {
+        $today = Carbon::now();
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
+        $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth();
 
-            // ============ KSH METRICS ============
+        // ============ USD METRICS ============
 
-            $totalRevenueKsh = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'KSH')
-                ->sum('paid_amount') ?: 0;
+        // Total Revenue USD
+        $totalRevenueUsd = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'USD')
+            ->sum('paid_amount');
 
-            $revenueThisMonthKsh = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'KSH')
-                ->whereBetween('billing_date', [$monthStart, $monthEnd])
-                ->sum('paid_amount') ?: 0;
+        // Monthly Revenue USD
+        $monthlyRevenueUsd = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'USD')
+            ->whereBetween('payment_date', [$startOfMonth, $today])
+            ->sum('paid_amount');
 
-            $revenueLastMonthKsh = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'KSH')
-                ->whereBetween('billing_date', [$lastMonthStart, $lastMonthEnd])
-                ->sum('paid_amount') ?: 0;
+        // Previous Month Revenue USD
+        $lastMonthRevenueUsd = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'USD')
+            ->whereBetween('payment_date', [$lastMonthStart, $lastMonthEnd])
+            ->sum('paid_amount');
 
-            $pendingAmountKsh = DB::table('consolidated_billings')
-                ->whereIn('status', ['pending', 'sent'])
-                ->where('currency', 'KSH')
-                ->sum('total_amount') ?: 0;
+        // Revenue change percentage USD
+        $revenueChangeUsd = $lastMonthRevenueUsd > 0
+            ? (($monthlyRevenueUsd - $lastMonthRevenueUsd) / $lastMonthRevenueUsd) * 100
+            : 0;
 
-            $pendingInvoicesKsh = DB::table('consolidated_billings')
-                ->whereIn('status', ['pending', 'sent'])
-                ->where('currency', 'KSH')
-                ->count();
+        // Pending Invoices USD
+        $pendingInvoicesUsd = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'USD')
+            ->where('total_amount', '>', DB::raw('COALESCE(paid_amount, 0)'))
+            ->count();
 
-            $paidInvoicesKsh = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'KSH')
-                ->count();
+        $pendingAmountUsd = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'USD')
+            ->where('total_amount', '>', DB::raw('COALESCE(paid_amount, 0)'))
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)'));
 
-            $overdueAmountKsh = DB::table('consolidated_billings')
-                ->where(function($query) {
-                    $query->where('status', 'overdue')
-                        ->orWhere(function($q) {
-                            $q->whereIn('status', ['pending', 'sent'])
-                                ->where('due_date', '<', now());
-                        });
-                })
-                ->where('currency', 'KSH')
-                ->sum('total_amount') ?: 0;
+        // Overdue Payments USD
+        $overduePaymentsUsd = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'USD')
+            ->where('due_date', '<', $today)
+            ->where('total_amount', '>', DB::raw('COALESCE(paid_amount, 0)'))
+            ->count();
 
-            $overdueCountKsh = DB::table('consolidated_billings')
-                ->where(function($query) {
-                    $query->where('status', 'overdue')
-                        ->orWhere(function($q) {
-                            $q->whereIn('status', ['pending', 'sent'])
-                                ->where('due_date', '<', now());
-                        });
-                })
-                ->where('currency', 'KSH')
-                ->count();
+        $overdueAmountUsd = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'USD')
+            ->where('due_date', '<', $today)
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)'));
 
-            // ============ USD METRICS ============
+        // Paid Invoices USD
+        $paidInvoicesUsd = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'USD')
+            ->count();
 
-            $totalRevenueUsd = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'USD')
-                ->sum('paid_amount') ?: 0;
+        // Invoiced Amount USD
+        $invoicedAmountUsd = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'paid', 'partial'])
+            ->where('currency', 'USD')
+            ->sum('total_amount');
 
-            $revenueThisMonthUsd = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'USD')
-                ->whereBetween('billing_date', [$monthStart, $monthEnd])
-                ->sum('paid_amount') ?: 0;
+        // ============ KSH METRICS ============
 
-            $revenueLastMonthUsd = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'USD')
-                ->whereBetween('billing_date', [$lastMonthStart, $lastMonthEnd])
-                ->sum('paid_amount') ?: 0;
+        // Total Revenue KSH
+        $totalRevenueKsh = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'KSH')
+            ->sum('paid_amount');
 
-            $pendingAmountUsd = DB::table('consolidated_billings')
-                ->whereIn('status', ['pending', 'sent'])
-                ->where('currency', 'USD')
-                ->sum('total_amount') ?: 0;
+        // Monthly Revenue KSH
+        $monthlyRevenueKsh = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'KSH')
+            ->whereBetween('payment_date', [$startOfMonth, $today])
+            ->sum('paid_amount');
 
-            $pendingInvoicesUsd = DB::table('consolidated_billings')
-                ->whereIn('status', ['pending', 'sent'])
-                ->where('currency', 'USD')
-                ->count();
+        // Previous Month Revenue KSH
+        $lastMonthRevenueKsh = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'KSH')
+            ->whereBetween('payment_date', [$lastMonthStart, $lastMonthEnd])
+            ->sum('paid_amount');
 
-            $paidInvoicesUsd = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->where('currency', 'USD')
-                ->count();
+        // Revenue change percentage KSH
+        $revenueChangeKsh = $lastMonthRevenueKsh > 0
+            ? (($monthlyRevenueKsh - $lastMonthRevenueKsh) / $lastMonthRevenueKsh) * 100
+            : 0;
 
-            $overdueAmountUsd = DB::table('consolidated_billings')
-                ->where(function($query) {
-                    $query->where('status', 'overdue')
-                        ->orWhere(function($q) {
-                            $q->whereIn('status', ['pending', 'sent'])
-                                ->where('due_date', '<', now());
-                        });
-                })
-                ->where('currency', 'USD')
-                ->sum('total_amount') ?: 0;
+        // Pending Invoices KSH
+        $pendingInvoicesKsh = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'KSH')
+            ->where('total_amount', '>', DB::raw('COALESCE(paid_amount, 0)'))
+            ->count();
 
-            $overdueCountUsd = DB::table('consolidated_billings')
-                ->where(function($query) {
-                    $query->where('status', 'overdue')
-                        ->orWhere(function($q) {
-                            $q->whereIn('status', ['pending', 'sent'])
-                                ->where('due_date', '<', now());
-                        });
-                })
-                ->where('currency', 'USD')
-                ->count();
+        $pendingAmountKsh = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'KSH')
+            ->where('total_amount', '>', DB::raw('COALESCE(paid_amount, 0)'))
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)'));
 
-            // ============ COMMON METRICS ============
+        // Overdue Payments KSH
+        $overduePaymentsKsh = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'KSH')
+            ->where('due_date', '<', $today)
+            ->where('total_amount', '>', DB::raw('COALESCE(paid_amount, 0)'))
+            ->count();
 
-            $activeCustomers = DB::table('users')
-                ->where('role', 'customer')
-                ->where('status', 'active')
-                ->count();
+        $overdueAmountKsh = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'KSH')
+            ->where('due_date', '<', $today)
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)'));
 
-            $totalCustomers = DB::table('users')
-                ->where('role', 'customer')
-                ->count();
+        // Paid Invoices KSH
+        $paidInvoicesKsh = ConsolidatedBilling::where('status', 'paid')
+            ->where('currency', 'KSH')
+            ->count();
 
-            $totalBilled = DB::table('consolidated_billings')
-                ->where('status', '!=', 'cancelled')
-                ->where('status', '!=', 'draft')
-                ->sum('total_amount') ?: 1;
+        // Invoiced Amount KSH
+        $invoicedAmountKsh = ConsolidatedBilling::whereIn('status', ['pending', 'sent', 'paid', 'partial'])
+            ->where('currency', 'KSH')
+            ->sum('total_amount');
 
-            $totalCollected = DB::table('consolidated_billings')
-                ->where('status', 'paid')
-                ->sum('paid_amount') ?: 0;
+        // ============ COMBINED METRICS (USD Equivalent for comparison) ============
 
-            $collectionRate = $totalBilled > 0 ? ($totalCollected / $totalBilled) * 100 : 0;
+        // Exchange rate (you can make this dynamic)
+        $exchangeRate = 130; // 1 USD = 130 KSH
 
-            $kshTrend = $revenueLastMonthKsh > 0
-                ? (($revenueThisMonthKsh - $revenueLastMonthKsh) / $revenueLastMonthKsh) * 100
-                : 0;
+        $totalRevenueCombined = $totalRevenueUsd + ($totalRevenueKsh / $exchangeRate);
+        $pendingAmountCombined = $pendingAmountUsd + ($pendingAmountKsh / $exchangeRate);
+        $overdueAmountCombined = $overdueAmountUsd + ($overdueAmountKsh / $exchangeRate);
+        $invoicedAmountCombined = $invoicedAmountUsd + ($invoicedAmountKsh / $exchangeRate);
+        $monthlyRevenueCombined = $monthlyRevenueUsd + ($monthlyRevenueKsh / $exchangeRate);
 
-            $usdTrend = $revenueLastMonthUsd > 0
-                ? (($revenueThisMonthUsd - $revenueLastMonthUsd) / $revenueLastMonthUsd) * 100
-                : 0;
+        // ============ CUSTOMER METRICS ============
 
-        } catch (\Exception $e) {
-            Log::error('Error getting financial metrics: ' . $e->getMessage());
+        // Active Customers
+        $activeCustomers = User::where('role', 'customer')
+            ->where('status', 'active')
+            ->count();
 
-            $totalRevenueKsh = 0;
-            $totalRevenueUsd = 0;
-            $revenueThisMonthKsh = 0;
-            $revenueThisMonthUsd = 0;
-            $revenueLastMonthKsh = 0;
-            $revenueLastMonthUsd = 0;
-            $pendingAmountKsh = 0;
-            $pendingAmountUsd = 0;
-            $pendingInvoicesKsh = 0;
-            $pendingInvoicesUsd = 0;
-            $paidInvoicesKsh = 0;
-            $paidInvoicesUsd = 0;
-            $overdueAmountKsh = 0;
-            $overdueAmountUsd = 0;
-            $overdueCountKsh = 0;
-            $overdueCountUsd = 0;
-            $activeCustomers = 0;
-            $totalCustomers = 0;
-            $collectionRate = 0;
-            $kshTrend = 0;
-            $usdTrend = 0;
+        // New Customers this month
+        $newCustomers = User::where('role', 'customer')
+            ->whereBetween('created_at', [$startOfMonth, $today])
+            ->count();
+
+        // Customer change
+        $lastMonthCustomers = User::where('role', 'customer')
+            ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
+            ->count();
+
+        $customerChange = $lastMonthCustomers > 0
+            ? $newCustomers - $lastMonthCustomers
+            : $newCustomers;
+
+        // ============ COLLECTION METRICS ============
+
+        // Collection Rate USD
+        $totalBilledUsd = ConsolidatedBilling::where('currency', 'USD')->sum('total_amount');
+        $totalCollectedUsd = ConsolidatedBilling::where('currency', 'USD')->where('status', 'paid')->sum('paid_amount');
+        $collectionRateUsd = $totalBilledUsd > 0 ? ($totalCollectedUsd / $totalBilledUsd) * 100 : 0;
+
+        // Collection Rate KSH
+        $totalBilledKsh = ConsolidatedBilling::where('currency', 'KSH')->sum('total_amount');
+        $totalCollectedKsh = ConsolidatedBilling::where('currency', 'KSH')->where('status', 'paid')->sum('paid_amount');
+        $collectionRateKsh = $totalBilledKsh > 0 ? ($totalCollectedKsh / $totalBilledKsh) * 100 : 0;
+
+        // Overall Collection Rate
+        $totalBilledCombined = $totalBilledUsd + ($totalBilledKsh / $exchangeRate);
+        $totalCollectedCombined = $totalCollectedUsd + ($totalCollectedKsh / $exchangeRate);
+        $collectionRateCombined = $totalBilledCombined > 0 ? ($totalCollectedCombined / $totalBilledCombined) * 100 : 0;
+
+        // Average Payment Days
+        $paidInvoicesWithDates = ConsolidatedBilling::where('status', 'paid')
+            ->whereNotNull('payment_date')
+            ->whereNotNull('billing_date')
+            ->get();
+
+        $totalDays = 0;
+        $countWithDates = 0;
+        foreach ($paidInvoicesWithDates as $invoice) {
+            $billingDate = Carbon::parse($invoice->billing_date);
+            $paymentDate = Carbon::parse($invoice->payment_date);
+            $daysDiff = $billingDate->diffInDays($paymentDate);
+            $totalDays += $daysDiff;
+            $countWithDates++;
         }
+        $avgPaymentDays = $countWithDates > 0 ? round($totalDays / $countWithDates) : 0;
+
+        // Payment trend
+        $lastMonthPaidInvoices = ConsolidatedBilling::where('status', 'paid')
+            ->whereBetween('payment_date', [$lastMonthStart, $lastMonthEnd])
+            ->get();
+
+        $lastMonthTotalDays = 0;
+        $lastMonthCount = 0;
+        foreach ($lastMonthPaidInvoices as $invoice) {
+            if ($invoice->billing_date && $invoice->payment_date) {
+                $lastMonthTotalDays += Carbon::parse($invoice->billing_date)->diffInDays(Carbon::parse($invoice->payment_date));
+                $lastMonthCount++;
+            }
+        }
+        $lastMonthAvgDays = $lastMonthCount > 0 ? round($lastMonthTotalDays / $lastMonthCount) : 0;
+
+        $paymentTrend = $avgPaymentDays <= $lastMonthAvgDays ? 'positive' : 'negative';
+        $trendIcon = $avgPaymentDays <= $lastMonthAvgDays ? 'arrow-down' : 'arrow-up';
+        $trendColor = $avgPaymentDays <= $lastMonthAvgDays ? 'success' : 'danger';
+
+        // ============ BUILD METRICS ARRAY ============
 
         return [
-            'ksh' => [
-                'total_revenue' => [
-                    'value' => $totalRevenueKsh,
-                    'formatted' => 'KSh ' . number_format($totalRevenueKsh, 2),
-                    'title' => 'Total Revenue (KSH)',
-                    'icon' => 'fa-coins',
-                    'color' => 'success',
-                    'trend' => round($kshTrend, 1)
-                ],
-                'revenue_this_month' => [
-                    'value' => $revenueThisMonthKsh,
-                    'formatted' => 'KSh ' . number_format($revenueThisMonthKsh, 2),
-                    'title' => 'This Month (KSH)',
-                    'icon' => 'fa-calendar',
-                    'color' => 'info',
-                    'trend' => round($kshTrend, 1)
-                ],
-                'pending_invoices' => [
-                    'count' => $pendingInvoicesKsh,
-                    'amount' => $pendingAmountKsh,
-                    'formatted' => 'KSh ' . number_format($pendingAmountKsh, 2),
-                    'title' => 'Pending (KSH)',
-                    'icon' => 'fa-clock',
-                    'color' => 'warning'
-                ],
-                'paid_invoices' => [
-                    'count' => $paidInvoicesKsh,
-                    'title' => 'Paid (KSH)',
-                    'icon' => 'fa-check-circle',
-                    'color' => 'success'
-                ],
-                'overdue' => [
-                    'count' => $overdueCountKsh,
-                    'amount' => $overdueAmountKsh,
-                    'formatted' => 'KSh ' . number_format($overdueAmountKsh, 2),
-                    'title' => 'Overdue (KSH)',
-                    'icon' => 'fa-exclamation-triangle',
-                    'color' => 'danger'
-                ],
-            ],
+            // USD Metrics
             'usd' => [
                 'total_revenue' => [
                     'value' => $totalRevenueUsd,
                     'formatted' => '$' . number_format($totalRevenueUsd, 2),
-                    'title' => 'Total Revenue (USD)',
-                    'icon' => 'fa-dollar-sign',
-                    'color' => 'success',
-                    'trend' => round($usdTrend, 1)
-                ],
-                'revenue_this_month' => [
-                    'value' => $revenueThisMonthUsd,
-                    'formatted' => '$' . number_format($revenueThisMonthUsd, 2),
-                    'title' => 'This Month (USD)',
-                    'icon' => 'fa-calendar',
-                    'color' => 'info',
-                    'trend' => round($usdTrend, 1)
+                    'change' => round($revenueChangeUsd, 1),
                 ],
                 'pending_invoices' => [
-                    'count' => $pendingInvoicesUsd,
+                    'value' => $pendingInvoicesUsd,
                     'amount' => $pendingAmountUsd,
-                    'formatted' => '$' . number_format($pendingAmountUsd, 2),
-                    'title' => 'Pending (USD)',
-                    'icon' => 'fa-clock',
-                    'color' => 'warning'
+                    'formatted_amount' => '$' . number_format($pendingAmountUsd, 2),
                 ],
-                'paid_invoices' => [
-                    'count' => $paidInvoicesUsd,
-                    'title' => 'Paid (USD)',
-                    'icon' => 'fa-check-circle',
-                    'color' => 'success'
-                ],
-                'overdue' => [
-                    'count' => $overdueCountUsd,
+                'overdue_payments' => [
+                    'value' => $overduePaymentsUsd,
                     'amount' => $overdueAmountUsd,
-                    'formatted' => '$' . number_format($overdueAmountUsd, 2),
-                    'title' => 'Overdue (USD)',
-                    'icon' => 'fa-exclamation-triangle',
-                    'color' => 'danger'
+                    'formatted_amount' => '$' . number_format($overdueAmountUsd, 2),
                 ],
+                'paid_invoices' => ['value' => $paidInvoicesUsd],
+                'monthly_revenue' => [
+                    'value' => $monthlyRevenueUsd,
+                    'formatted' => '$' . number_format($monthlyRevenueUsd, 2),
+                ],
+                'invoiced_amount' => [
+                    'value' => $invoicedAmountUsd,
+                    'formatted' => '$' . number_format($invoicedAmountUsd, 2),
+                ],
+                'collection_rate' => ['value' => round($collectionRateUsd, 1)],
             ],
-            'common' => [
-                'collection_rate' => [
-                    'value' => round($collectionRate, 2),
-                    'formatted' => round($collectionRate, 2) . '%',
-                    'title' => 'Collection Rate',
-                    'icon' => 'fa-percent',
-                    'color' => 'primary'
+
+            // KSH Metrics
+            'ksh' => [
+                'total_revenue' => [
+                    'value' => $totalRevenueKsh,
+                    'formatted' => 'KSH ' . number_format($totalRevenueKsh, 2),
+                    'change' => round($revenueChangeKsh, 1),
                 ],
-                'active_customers' => [
-                    'value' => $activeCustomers,
-                    'title' => 'Active Customers',
-                    'icon' => 'fa-users',
-                    'color' => 'info'
+                'pending_invoices' => [
+                    'value' => $pendingInvoicesKsh,
+                    'amount' => $pendingAmountKsh,
+                    'formatted_amount' => 'KSH ' . number_format($pendingAmountKsh, 2),
                 ],
-                'total_customers' => [
-                    'value' => $totalCustomers,
-                    'title' => 'Total Customers',
-                    'icon' => 'fa-user',
-                    'color' => 'secondary'
+                'overdue_payments' => [
+                    'value' => $overduePaymentsKsh,
+                    'amount' => $overdueAmountKsh,
+                    'formatted_amount' => 'KSH ' . number_format($overdueAmountKsh, 2),
                 ],
+                'paid_invoices' => ['value' => $paidInvoicesKsh],
+                'monthly_revenue' => [
+                    'value' => $monthlyRevenueKsh,
+                    'formatted' => 'KSH ' . number_format($monthlyRevenueKsh, 2),
+                ],
+                'invoiced_amount' => [
+                    'value' => $invoicedAmountKsh,
+                    'formatted' => 'KSH ' . number_format($invoicedAmountKsh, 2),
+                ],
+                'collection_rate' => ['value' => round($collectionRateKsh, 1)],
+            ],
+
+            // Combined Metrics (USD Equivalent)
+            'combined' => [
+                'total_revenue' => [
+                    'value' => $totalRevenueCombined,
+                    'formatted' => '$' . number_format($totalRevenueCombined, 2),
+                ],
+                'pending_amount' => [
+                    'value' => $pendingAmountCombined,
+                    'formatted' => '$' . number_format($pendingAmountCombined, 2),
+                ],
+                'overdue_amount' => [
+                    'value' => $overdueAmountCombined,
+                    'formatted' => '$' . number_format($overdueAmountCombined, 2),
+                ],
+                'invoiced_amount' => [
+                    'value' => $invoicedAmountCombined,
+                    'formatted' => '$' . number_format($invoicedAmountCombined, 2),
+                ],
+                'monthly_revenue' => [
+                    'value' => $monthlyRevenueCombined,
+                    'formatted' => '$' . number_format($monthlyRevenueCombined, 2),
+                ],
+                'collection_rate' => ['value' => round($collectionRateCombined, 1)],
+                'exchange_rate' => $exchangeRate,
+            ],
+
+            // Common Metrics
+            'active_customers' => ['value' => $activeCustomers, 'change' => $customerChange],
+            'new_customers' => ['value' => $newCustomers],
+            'avg_payment_days' => [
+                'value' => $avgPaymentDays,
+                'trend' => $paymentTrend,
+                'trend_icon' => $trendIcon,
+                'trend_color' => $trendColor,
+                'subtitle' => $paymentTrend == 'positive' ? 'Faster payments' : 'Slower payments',
             ],
         ];
+
+    } catch (\Exception $e) {
+        \Log::error('Error getting financial metrics: ' . $e->getMessage());
+        \Log::error($e->getTraceAsString());
+
+        // Return empty metrics
+        $emptyCurrency = [
+            'total_revenue' => ['value' => 0, 'formatted' => '$0.00', 'change' => 0],
+            'pending_invoices' => ['value' => 0, 'amount' => 0, 'formatted_amount' => '$0.00'],
+            'overdue_payments' => ['value' => 0, 'amount' => 0, 'formatted_amount' => '$0.00'],
+            'paid_invoices' => ['value' => 0],
+            'monthly_revenue' => ['value' => 0, 'formatted' => '$0.00'],
+            'invoiced_amount' => ['value' => 0, 'formatted' => '$0.00'],
+            'collection_rate' => ['value' => 0],
+        ];
+
+        return [
+            'usd' => $emptyCurrency,
+            'ksh' => array_merge($emptyCurrency, ['total_revenue' => ['value' => 0, 'formatted' => 'KSH 0.00', 'change' => 0]]),
+            'combined' => [
+                'total_revenue' => ['value' => 0, 'formatted' => '$0.00'],
+                'pending_amount' => ['value' => 0, 'formatted' => '$0.00'],
+                'overdue_amount' => ['value' => 0, 'formatted' => '$0.00'],
+                'invoiced_amount' => ['value' => 0, 'formatted' => '$0.00'],
+                'monthly_revenue' => ['value' => 0, 'formatted' => '$0.00'],
+                'collection_rate' => ['value' => 0],
+                'exchange_rate' => 130,
+            ],
+            'active_customers' => ['value' => 0, 'change' => 0],
+            'new_customers' => ['value' => 0],
+            'avg_payment_days' => ['value' => 0, 'trend' => 'neutral', 'subtitle' => 'No data'],
+        ];
     }
+}
 
     /**
      * Get revenue trends for charts with currency separation
      */
-    private function getRevenueTrends(): array
-    {
+    /**
+ * Get revenue trends for charts
+ */
+private function getRevenueTrends(): array
+{
+    try {
         $months = [];
-        $revenuesKsh = [];
-        $revenuesUsd = [];
+        $revenues = [];
 
-        try {
-            for ($i = 5; $i >= 0; $i--) {
-                $date = now()->subMonths($i);
-                $monthName = $date->format('M Y');
-                $months[] = $monthName;
+        for ($i = 5; $i >= 0; $i--) {
+            $date = Carbon::now()->subMonths($i);
+            $monthName = $date->format('M Y');
+            $months[] = $monthName;
 
-                $revenueKsh = DB::table('consolidated_billings')
-                    ->where('status', 'paid')
-                    ->where('currency', 'KSH')
-                    ->whereYear('billing_date', $date->year)
-                    ->whereMonth('billing_date', $date->month)
-                    ->sum('paid_amount') ?: 0;
+            $revenue = ConsolidatedBilling::where('status', 'paid')
+                ->whereYear('payment_date', $date->year)
+                ->whereMonth('payment_date', $date->month)
+                ->sum('paid_amount');
 
-                $revenueUsd = DB::table('consolidated_billings')
-                    ->where('status', 'paid')
-                    ->where('currency', 'USD')
-                    ->whereYear('billing_date', $date->year)
-                    ->whereMonth('billing_date', $date->month)
-                    ->sum('paid_amount') ?: 0;
-
-                $revenuesKsh[] = $revenueKsh;
-                $revenuesUsd[] = $revenueUsd;
-            }
-        } catch (\Exception $e) {
-            Log::error('Error getting revenue trends: ' . $e->getMessage());
-            $revenuesKsh = array_fill(0, 6, 0);
-            $revenuesUsd = array_fill(0, 6, 0);
+            $revenues[] = $revenue;
         }
 
         return [
             'months' => $months,
-            'ksh' => $revenuesKsh,
-            'usd' => $revenuesUsd,
-            'combined' => array_map(function($ksh, $usd) {
-                return $ksh + $usd;
-            }, $revenuesKsh, $revenuesUsd),
+            'revenues' => $revenues,
+        ];
+
+    } catch (\Exception $e) {
+        \Log::error('Error getting revenue trends: ' . $e->getMessage());
+        return [
+            'months' => [],
+            'revenues' => [],
         ];
     }
+}
 
     /**
      * Get top customers by revenue with currency separation
@@ -1523,155 +1927,294 @@ class FinanceController extends Controller
      * Generate debt aging report with currency separation
      */
     private function generateDebtAgingReport($startDate, $endDate): array
-    {
-        try {
-            $agingReportKsh = DB::table('consolidated_billings')
-                ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
-                ->leftJoin('billing_line_items', 'consolidated_billings.id', '=', 'billing_line_items.consolidated_billing_id')
-                ->where('users.role', 'customer')
-                ->where('consolidated_billings.currency', 'KSH')
-                ->whereIn('consolidated_billings.status', ['pending', 'sent', 'overdue'])
-                ->selectRaw('
-                    consolidated_billings.user_id,
-                    users.name as customer_name,
-                    consolidated_billings.currency,
-                    SUM(CASE WHEN consolidated_billings.due_date >= CURDATE() THEN billing_line_items.amount ELSE 0 END) as current,
-                    SUM(CASE WHEN consolidated_billings.due_date < CURDATE() AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN billing_line_items.amount ELSE 0 END) as days_30,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_60,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_90_plus')
-                ->groupBy('consolidated_billings.user_id', 'users.name', 'consolidated_billings.currency')
-                ->get();
+{
+    try {
+        // Get all pending invoices
+        $invoices = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->where('users.role', 'customer')
+            ->whereIn('consolidated_billings.status', ['pending', 'sent', 'overdue', 'partial'])
+            ->select(
+                'consolidated_billings.*',
+                'users.name as customer_name'
+            )
+            ->get();
 
-            $agingReportUsd = DB::table('consolidated_billings')
-                ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
-                ->leftJoin('billing_line_items', 'consolidated_billings.id', '=', 'billing_line_items.consolidated_billing_id')
-                ->where('users.role', 'customer')
-                ->where('consolidated_billings.currency', 'USD')
-                ->whereIn('consolidated_billings.status', ['pending', 'sent', 'overdue'])
-                ->selectRaw('
-                    consolidated_billings.user_id,
-                    users.name as customer_name,
-                    consolidated_billings.currency,
-                    SUM(CASE WHEN consolidated_billings.due_date >= CURDATE() THEN billing_line_items.amount ELSE 0 END) as current,
-                    SUM(CASE WHEN consolidated_billings.due_date < CURDATE() AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN billing_line_items.amount ELSE 0 END) as days_30,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_60,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_90_plus')
-                ->groupBy('consolidated_billings.user_id', 'users.name', 'consolidated_billings.currency')
-                ->get();
+        $debtKsh = [
+            'total_receivables' => 0,
+            'current' => 0,
+            'days_30' => 0,
+            'days_60' => 0,
+            'days_90' => 0,
+            'days_over_90' => 0,
+            'overdue' => 0,
+        ];
 
-            $currentKsh = $agingReportKsh->sum('current');
-            $days30Ksh = $agingReportKsh->sum('days_30');
-            $days60Ksh = $agingReportKsh->sum('days_60');
-            $days90PlusKsh = $agingReportKsh->sum('days_90_plus');
-            $totalReceivablesKsh = $currentKsh + $days30Ksh + $days60Ksh + $days90PlusKsh;
-            $overdueKsh = $days30Ksh + $days60Ksh + $days90PlusKsh;
+        $debtUsd = [
+            'total_receivables' => 0,
+            'current' => 0,
+            'days_30' => 0,
+            'days_60' => 0,
+            'days_90' => 0,
+            'days_over_90' => 0,
+            'overdue' => 0,
+        ];
 
-            $currentUsd = $agingReportUsd->sum('current');
-            $days30Usd = $agingReportUsd->sum('days_30');
-            $days60Usd = $agingReportUsd->sum('days_60');
-            $days90PlusUsd = $agingReportUsd->sum('days_90_plus');
-            $totalReceivablesUsd = $currentUsd + $days30Usd + $days60Usd + $days90PlusUsd;
-            $overdueUsd = $days30Usd + $days60Usd + $days90PlusUsd;
+        $detailedAging = [];
+        $today = Carbon::now();
 
-            $detailedAging = [];
+        foreach ($invoices as $invoice) {
+            // Calculate remaining amount
+            $remainingAmount = floatval($invoice->total_amount) - floatval($invoice->paid_amount ?? 0);
 
-            foreach ($agingReportKsh as $item) {
-                $totalDue = $item->current + $item->days_30 + $item->days_60 + $item->days_90_plus;
-                $riskLevel = $item->days_90_plus > 0 ? 'critical' :
-                            ($item->days_60 > 0 ? 'high' :
-                            ($item->days_30 > 0 ? 'medium' : 'low'));
-
-                $detailedAging[] = (object)[
-                    'customer_name' => $item->customer_name,
-                    'currency' => 'KSH',
-                    'total_due' => $totalDue,
-                    'current' => $item->current,
-                    'days_30' => $item->days_30,
-                    'days_60' => $item->days_60,
-                    'days_over_90' => $item->days_90_plus,
-                    'risk_level' => $riskLevel
-                ];
+            if ($remainingAmount <= 0) {
+                continue;
             }
 
-            foreach ($agingReportUsd as $item) {
-                $totalDue = $item->current + $item->days_30 + $item->days_60 + $item->days_90_plus;
-                $riskLevel = $item->days_90_plus > 0 ? 'critical' :
-                            ($item->days_60 > 0 ? 'high' :
-                            ($item->days_30 > 0 ? 'medium' : 'low'));
+            $dueDate = Carbon::parse($invoice->due_date);
 
-                $detailedAging[] = (object)[
-                    'customer_name' => $item->customer_name,
-                    'currency' => 'USD',
-                    'total_due' => $totalDue,
-                    'current' => $item->current,
-                    'days_30' => $item->days_30,
-                    'days_60' => $item->days_60,
-                    'days_over_90' => $item->days_90_plus,
-                    'risk_level' => $riskLevel
-                ];
+            // Calculate days overdue (positive number for overdue invoices)
+            if ($dueDate->lt($today)) {
+                $daysOverdue = $dueDate->diffInDays($today);
+            } else {
+                $daysOverdue = 0;
             }
 
-            return [
-                'ksh' => [
-                    'total_receivables' => $totalReceivablesKsh,
-                    'current' => $currentKsh,
-                    'current_percentage' => $totalReceivablesKsh > 0 ? ($currentKsh / $totalReceivablesKsh) * 100 : 0,
-                    'days_30' => $days30Ksh,
-                    'days_30_percentage' => $totalReceivablesKsh > 0 ? ($days30Ksh / $totalReceivablesKsh) * 100 : 0,
-                    'days_60' => $days60Ksh,
-                    'days_60_percentage' => $totalReceivablesKsh > 0 ? ($days60Ksh / $totalReceivablesKsh) * 100 : 0,
-                    'days_over_90' => $days90PlusKsh,
-                    'over_90_percentage' => $totalReceivablesKsh > 0 ? ($days90PlusKsh / $totalReceivablesKsh) * 100 : 0,
-                    'overdue' => $overdueKsh,
-                    'overdue_percentage' => $totalReceivablesKsh > 0 ? ($overdueKsh / $totalReceivablesKsh) * 100 : 0,
-                ],
-                'usd' => [
-                    'total_receivables' => $totalReceivablesUsd,
-                    'current' => $currentUsd,
-                    'current_percentage' => $totalReceivablesUsd > 0 ? ($currentUsd / $totalReceivablesUsd) * 100 : 0,
-                    'days_30' => $days30Usd,
-                    'days_30_percentage' => $totalReceivablesUsd > 0 ? ($days30Usd / $totalReceivablesUsd) * 100 : 0,
-                    'days_60' => $days60Usd,
-                    'days_60_percentage' => $totalReceivablesUsd > 0 ? ($days60Usd / $totalReceivablesUsd) * 100 : 0,
-                    'days_over_90' => $days90PlusUsd,
-                    'over_90_percentage' => $totalReceivablesUsd > 0 ? ($days90PlusUsd / $totalReceivablesUsd) * 100 : 0,
-                    'overdue' => $overdueUsd,
-                    'overdue_percentage' => $totalReceivablesUsd > 0 ? ($overdueUsd / $totalReceivablesUsd) * 100 : 0,
-                ],
-                'detailed' => $detailedAging,
-            ];
-        } catch (\Exception $e) {
-            Log::error('Error generating debt aging report: ' . $e->getMessage());
-
-            $empty = [
-                'total_receivables' => 0,
+            // Prepare aging data
+            $agingData = [
+                'customer_name' => $invoice->customer_name,
+                'currency' => $invoice->currency,
+                'total_due' => $remainingAmount,
                 'current' => 0,
-                'current_percentage' => 0,
                 'days_30' => 0,
-                'days_30_percentage' => 0,
                 'days_60' => 0,
-                'days_60_percentage' => 0,
+                'days_90' => 0,
                 'days_over_90' => 0,
-                'over_90_percentage' => 0,
-                'overdue' => 0,
-                'overdue_percentage' => 0,
             ];
 
-            return [
-                'ksh' => $empty,
-                'usd' => $empty,
-                'detailed' => [],
-            ];
+            // Categorize by days overdue
+            if ($daysOverdue == 0) {
+                $agingData['current'] = $remainingAmount;
+                if ($invoice->currency === 'KSH') {
+                    $debtKsh['current'] += $remainingAmount;
+                } else {
+                    $debtUsd['current'] += $remainingAmount;
+                }
+            } elseif ($daysOverdue <= 30) {
+                $agingData['days_30'] = $remainingAmount;
+                if ($invoice->currency === 'KSH') {
+                    $debtKsh['days_30'] += $remainingAmount;
+                    $debtKsh['overdue'] += $remainingAmount;
+                } else {
+                    $debtUsd['days_30'] += $remainingAmount;
+                    $debtUsd['overdue'] += $remainingAmount;
+                }
+            } elseif ($daysOverdue <= 60) {
+                $agingData['days_60'] = $remainingAmount;
+                if ($invoice->currency === 'KSH') {
+                    $debtKsh['days_60'] += $remainingAmount;
+                    $debtKsh['overdue'] += $remainingAmount;
+                } else {
+                    $debtUsd['days_60'] += $remainingAmount;
+                    $debtUsd['overdue'] += $remainingAmount;
+                }
+            } elseif ($daysOverdue <= 90) {
+                $agingData['days_90'] = $remainingAmount;
+                if ($invoice->currency === 'KSH') {
+                    $debtKsh['days_90'] += $remainingAmount;
+                    $debtKsh['overdue'] += $remainingAmount;
+                } else {
+                    $debtUsd['days_90'] += $remainingAmount;
+                    $debtUsd['overdue'] += $remainingAmount;
+                }
+            } else {
+                $agingData['days_over_90'] = $remainingAmount;
+                if ($invoice->currency === 'KSH') {
+                    $debtKsh['days_over_90'] += $remainingAmount;
+                    $debtKsh['overdue'] += $remainingAmount;
+                } else {
+                    $debtUsd['days_over_90'] += $remainingAmount;
+                    $debtUsd['overdue'] += $remainingAmount;
+                }
+            }
+
+            // Calculate risk level based on aging
+            if ($daysOverdue > 90) {
+                $agingData['risk_level'] = 'critical';
+            } elseif ($daysOverdue > 60) {
+                $agingData['risk_level'] = 'high';
+            } elseif ($daysOverdue > 30) {
+                $agingData['risk_level'] = 'medium';
+            } elseif ($daysOverdue > 0) {
+                $agingData['risk_level'] = 'medium';
+            } else {
+                $agingData['risk_level'] = 'low';
+            }
+
+            $detailedAging[] = (object) $agingData;
         }
+
+        // Calculate KSH totals
+        $debtKsh['total_receivables'] = $debtKsh['current'] + $debtKsh['days_30'] + $debtKsh['days_60'] + $debtKsh['days_90'] + $debtKsh['days_over_90'];
+        $debtKsh['current_percentage'] = $debtKsh['total_receivables'] > 0 ? ($debtKsh['current'] / $debtKsh['total_receivables']) * 100 : 0;
+        $debtKsh['overdue_percentage'] = $debtKsh['total_receivables'] > 0 ? ($debtKsh['overdue'] / $debtKsh['total_receivables']) * 100 : 0;
+        $debtKsh['bad_debt_provision'] = $debtKsh['days_over_90'] * 0.5;
+        $debtKsh['bad_debt_percentage'] = $debtKsh['total_receivables'] > 0 ? ($debtKsh['bad_debt_provision'] / $debtKsh['total_receivables']) * 100 : 0;
+
+        // Calculate USD totals
+        $debtUsd['total_receivables'] = $debtUsd['current'] + $debtUsd['days_30'] + $debtUsd['days_60'] + $debtUsd['days_90'] + $debtUsd['days_over_90'];
+        $debtUsd['current_percentage'] = $debtUsd['total_receivables'] > 0 ? ($debtUsd['current'] / $debtUsd['total_receivables']) * 100 : 0;
+        $debtUsd['overdue_percentage'] = $debtUsd['total_receivables'] > 0 ? ($debtUsd['overdue'] / $debtUsd['total_receivables']) * 100 : 0;
+        $debtUsd['bad_debt_provision'] = $debtUsd['days_over_90'] * 0.5;
+        $debtUsd['bad_debt_percentage'] = $debtUsd['total_receivables'] > 0 ? ($debtUsd['bad_debt_provision'] / $debtUsd['total_receivables']) * 100 : 0;
+
+        // Calculate collection metrics
+        $collectionMetricsKsh = $this->calculateCollectionMetrics('KSH');
+        $collectionMetricsUsd = $this->calculateCollectionMetrics('USD');
+
+        // Debug logging
+        \Log::info('Debt Aging Report - KSH', $debtKsh);
+        \Log::info('Debt Aging Report - USD', $debtUsd);
+
+        return [
+            'debt_summary_ksh' => $debtKsh,
+            'debt_summary_usd' => $debtUsd,
+            'collection_metrics_ksh' => $collectionMetricsKsh,
+            'collection_metrics_usd' => $collectionMetricsUsd,
+            'detailed_aging' => collect($detailedAging),
+        ];
+
+    } catch (\Exception $e) {
+        \Log::error('Error generating debt aging report: ' . $e->getMessage());
+        \Log::error($e->getTraceAsString());
+
+        $emptyDebt = [
+            'total_receivables' => 0,
+            'current' => 0,
+            'days_30' => 0,
+            'days_60' => 0,
+            'days_90' => 0,
+            'days_over_90' => 0,
+            'overdue' => 0,
+            'current_percentage' => 0,
+            'overdue_percentage' => 0,
+            'bad_debt_provision' => 0,
+            'bad_debt_percentage' => 0,
+        ];
+
+        $emptyMetrics = [
+            'average_collection_period' => 0,
+            'collection_efficiency' => 0,
+            'dsr' => 0,
+            'recovery_rate' => 0,
+        ];
+
+        return [
+            'debt_summary_ksh' => $emptyDebt,
+            'debt_summary_usd' => $emptyDebt,
+            'collection_metrics_ksh' => $emptyMetrics,
+            'collection_metrics_usd' => $emptyMetrics,
+            'detailed_aging' => collect(),
+        ];
+    }
+}
+
+/**
+ * Calculate collection metrics for a specific currency
+ */
+private function calculateCollectionMetrics(string $currency): array
+{
+    try {
+        $today = Carbon::now();
+        $yearStart = Carbon::now()->startOfYear();
+
+        // Get total sales for the year
+        $totalSales = DB::table('consolidated_billings')
+            ->where('status', 'paid')
+            ->where('currency', $currency)
+            ->whereBetween('billing_date', [$yearStart, $today])
+            ->sum('total_amount');
+
+        // Get current receivables
+        $receivables = DB::table('consolidated_billings')
+            ->where('currency', $currency)
+            ->whereIn('status', ['pending', 'sent', 'overdue', 'partial'])
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)'));
+
+        // Calculate DSR (Days Sales Outstanding)
+        $averageDailySales = $totalSales / 365;
+        $dsr = $averageDailySales > 0 ? $receivables / $averageDailySales : 0;
+
+        // Calculate collection efficiency
+        $totalBilled = DB::table('consolidated_billings')
+            ->where('currency', $currency)
+            ->whereBetween('billing_date', [$yearStart, $today])
+            ->sum('total_amount');
+
+        $totalCollected = DB::table('consolidated_billings')
+            ->where('currency', $currency)
+            ->where('status', 'paid')
+            ->whereBetween('payment_date', [$yearStart, $today])
+            ->sum('paid_amount');
+
+        $collectionEfficiency = $totalBilled > 0 ? ($totalCollected / $totalBilled) * 100 : 0;
+
+        // Calculate recovery rate
+        $totalDue = DB::table('consolidated_billings')
+            ->where('currency', $currency)
+            ->whereIn('status', ['pending', 'sent', 'overdue', 'partial', 'paid'])
+            ->sum('total_amount');
+
+        $recoveryRate = $totalDue > 0 ? ($totalCollected / $totalDue) * 100 : 0;
+
+        return [
+            'average_collection_period' => round($dsr),
+            'collection_efficiency' => round($collectionEfficiency, 1),
+            'dsr' => round($dsr, 1),
+            'recovery_rate' => round($recoveryRate, 1),
+        ];
+
+    } catch (\Exception $e) {
+        \Log::error('Error calculating collection metrics: ' . $e->getMessage());
+        return [
+            'average_collection_period' => 0,
+            'collection_efficiency' => 0,
+            'dsr' => 0,
+            'recovery_rate' => 0,
+        ];
+    }
+}
+
+/**
+ * Calculate risk level based on aging data
+ */
+private function calculateRiskLevel(array $agingData): string
+{
+    if ($agingData['days_over_90'] > 0) {
+        return 'critical';
     }
 
+    if ($agingData['days_90'] > 0) {
+        return 'high';
+    }
+
+    if ($agingData['days_60'] > 0) {
+        return 'medium';
+    }
+
+    if ($agingData['days_30'] > 0) {
+        return 'medium';
+    }
+
+    return 'low';
+}
     /**
      * Generate cash flow report with currency separation
      */
     private function generateCashFlowReport($startDate, $endDate): array
     {
         try {
-            $exchangeRate = 130; // 1 USD = 130 KSH
+            $exchangeRate = $this->getExchangeRate(); // Use the helper method
 
             // Cash from customers (KSH)
             $cashFromCustomersKsh = DB::table('consolidated_billings')
@@ -1719,99 +2262,95 @@ class FinanceController extends Controller
                 ->whereBetween('transaction_date', [$startDate, $endDate])
                 ->sum('amount') ?: 0;
 
-            // Equipment purchases (KSH)
-            $equipmentPurchaseKsh = DB::table('transactions')
-                ->where('type', 'expense')
-                ->where('category', 'equipment')
-                ->where('currency', 'KSH')
-                ->whereBetween('transaction_date', [$startDate, $endDate])
-                ->sum('amount') ?: 0;
-
-            // Equipment purchases (USD)
-            $equipmentPurchaseUsd = DB::table('transactions')
-                ->where('type', 'expense')
-                ->where('category', 'equipment')
-                ->where('currency', 'USD')
-                ->whereBetween('transaction_date', [$startDate, $endDate])
-                ->sum('amount') ?: 0;
-
-            // Loan proceeds (KSH)
-            $loanProceedsKsh = DB::table('transactions')
-                ->where('type', 'income')
-                ->where('category', 'loan')
-                ->where('currency', 'KSH')
-                ->whereBetween('transaction_date', [$startDate, $endDate])
-                ->sum('amount') ?: 0;
-
-            // Loan proceeds (USD)
-            $loanProceedsUsd = DB::table('transactions')
-                ->where('type', 'income')
-                ->where('category', 'loan')
-                ->where('currency', 'USD')
-                ->whereBetween('transaction_date', [$startDate, $endDate])
-                ->sum('amount') ?: 0;
-
             // Operating cash flow
             $operatingKsh = $cashFromCustomersKsh - $cashToSuppliersKsh - $cashForExpensesKsh;
             $operatingUsd = $cashFromCustomersUsd - $cashToSuppliersUsd - $cashForExpensesUsd;
 
-            // Investing cash flow
-            $investingKsh = -$equipmentPurchaseKsh;
-            $investingUsd = -$equipmentPurchaseUsd;
-
-            // Financing cash flow
-            $financingKsh = $loanProceedsKsh;
-            $financingUsd = $loanProceedsUsd;
-
             // Net cash flow
-            $netCashFlowKsh = $operatingKsh + $investingKsh + $financingKsh;
-            $netCashFlowUsd = $operatingUsd + $investingUsd + $financingUsd;
+            $netCashFlowKsh = $operatingKsh;
+            $netCashFlowUsd = $operatingUsd;
 
             return [
-                'ksh' => [
+                'cash_flow_summary_ksh' => [
                     'operating' => $operatingKsh,
-                    'investing' => $investingKsh,
-                    'financing' => $financingKsh,
-                    'net' => $netCashFlowKsh,
-                    'details' => [
-                        'cash_from_customers' => $cashFromCustomersKsh,
-                        'cash_to_suppliers' => -$cashToSuppliersKsh,
-                        'cash_for_expenses' => -$cashForExpensesKsh,
-                        'equipment_purchase' => -$equipmentPurchaseKsh,
-                        'loan_proceeds' => $loanProceedsKsh,
-                    ]
+                    'investing' => 0,
+                    'financing' => 0,
+                    'net_cash_flow' => $netCashFlowKsh,
                 ],
-                'usd' => [
+                'cash_flow_summary_usd' => [
                     'operating' => $operatingUsd,
-                    'investing' => $investingUsd,
-                    'financing' => $financingUsd,
-                    'net' => $netCashFlowUsd,
-                    'details' => [
-                        'cash_from_customers' => $cashFromCustomersUsd,
-                        'cash_to_suppliers' => -$cashToSuppliersUsd,
-                        'cash_for_expenses' => -$cashForExpensesUsd,
-                        'equipment_purchase' => -$equipmentPurchaseUsd,
-                        'loan_proceeds' => $loanProceedsUsd,
-                    ]
+                    'investing' => 0,
+                    'financing' => 0,
+                    'net_cash_flow' => $netCashFlowUsd,
                 ],
-                'combined' => [
-                    'operating' => $operatingKsh + $operatingUsd,
-                    'investing' => $investingKsh + $investingUsd,
-                    'financing' => $financingKsh + $financingUsd,
-                    'net' => $netCashFlowKsh + $netCashFlowUsd,
+                'cash_flow_details_ksh' => [
+                    'cash_from_customers' => $cashFromCustomersKsh,
+                    'cash_to_suppliers' => $cashToSuppliersKsh,
+                    'cash_for_expenses' => $cashForExpensesKsh,
+                    'interest_paid' => 0,
+                    'taxes_paid' => 0,
+                    'equipment_purchase' => 0,
+                    'infrastructure_investment' => 0,
+                    'property_purchase' => 0,
+                    'investment_income' => 0,
+                    'asset_sales' => 0,
+                    'loan_proceeds' => 0,
+                    'equity_issuance' => 0,
+                    'dividends_paid' => 0,
+                    'debt_repayment' => 0,
+                ],
+                'cash_flow_details_usd' => [
+                    'cash_from_customers' => $cashFromCustomersUsd,
+                    'cash_to_suppliers' => $cashToSuppliersUsd,
+                    'cash_for_expenses' => $cashForExpensesUsd,
+                    'interest_paid' => 0,
+                    'taxes_paid' => 0,
+                    'equipment_purchase' => 0,
+                    'infrastructure_investment' => 0,
+                    'property_purchase' => 0,
+                    'investment_income' => 0,
+                    'asset_sales' => 0,
+                    'loan_proceeds' => 0,
+                    'equity_issuance' => 0,
+                    'dividends_paid' => 0,
+                    'debt_repayment' => 0,
+                ],
+                'cash_flow_summary' => [
+                    'operating' => $this->convertCurrency($operatingKsh, 'KSH', 'USD') + $operatingUsd,
+                    'investing' => 0,
+                    'financing' => 0,
+                    'net_cash_flow' => $this->convertCurrency($netCashFlowKsh, 'KSH', 'USD') + $netCashFlowUsd,
                 ],
                 'exchange_rate' => $exchangeRate,
             ];
         } catch (\Exception $e) {
             Log::error('Error generating cash flow report: ' . $e->getMessage());
-
-            return [
-                'ksh' => ['operating' => 0, 'investing' => 0, 'financing' => 0, 'net' => 0, 'details' => []],
-                'usd' => ['operating' => 0, 'investing' => 0, 'financing' => 0, 'net' => 0, 'details' => []],
-                'combined' => ['operating' => 0, 'investing' => 0, 'financing' => 0, 'net' => 0],
-                'exchange_rate' => 130,
-            ];
+            return $this->getEmptyCashFlowReport();
         }
+    }
+
+    /**
+     * Get empty cash flow report structure
+     */
+    private function getEmptyCashFlowReport(): array
+    {
+        $empty = ['operating' => 0, 'investing' => 0, 'financing' => 0, 'net_cash_flow' => 0];
+        $emptyDetails = [
+            'cash_from_customers' => 0, 'cash_to_suppliers' => 0, 'cash_for_expenses' => 0,
+            'interest_paid' => 0, 'taxes_paid' => 0, 'equipment_purchase' => 0,
+            'infrastructure_investment' => 0, 'property_purchase' => 0, 'investment_income' => 0,
+            'asset_sales' => 0, 'loan_proceeds' => 0, 'equity_issuance' => 0,
+            'dividends_paid' => 0, 'debt_repayment' => 0,
+        ];
+
+        return [
+            'cash_flow_summary_ksh' => $empty,
+            'cash_flow_summary_usd' => $empty,
+            'cash_flow_details_ksh' => $emptyDetails,
+            'cash_flow_details_usd' => $emptyDetails,
+            'cash_flow_summary' => $empty,
+            'exchange_rate' => 130,
+        ];
     }
 
     /**
@@ -1996,118 +2535,310 @@ class FinanceController extends Controller
      * Generate financial summary report with currency separation
      */
     private function generateFinancialSummary($startDate, $endDate): array
-    {
+{
+    try {
+        // ============ REVENUE (Paid Invoices) ============
         $totalRevenueKsh = DB::table('consolidated_billings')
             ->where('status', 'paid')
             ->where('currency', 'KSH')
-            ->whereBetween('billing_date', [$startDate, $endDate])
+            ->whereBetween('payment_date', [$startDate, $endDate])
             ->sum('paid_amount') ?: 0;
 
         $totalRevenueUsd = DB::table('consolidated_billings')
             ->where('status', 'paid')
             ->where('currency', 'USD')
-            ->whereBetween('billing_date', [$startDate, $endDate])
+            ->whereBetween('payment_date', [$startDate, $endDate])
             ->sum('paid_amount') ?: 0;
 
+        // ============ PENDING INVOICES (Not paid, regardless of date) ============
         $pendingAmountKsh = DB::table('consolidated_billings')
-            ->whereIn('status', ['pending', 'sent'])
+            ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
             ->where('currency', 'KSH')
-            ->whereBetween('billing_date', [$startDate, $endDate])
-            ->sum('total_amount') ?: 0;
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
 
         $pendingAmountUsd = DB::table('consolidated_billings')
-            ->whereIn('status', ['pending', 'sent'])
+            ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
             ->where('currency', 'USD')
-            ->whereBetween('billing_date', [$startDate, $endDate])
-            ->sum('total_amount') ?: 0;
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
 
-        $overdueAmountKsh = DB::table('consolidated_billings')
-            ->where(function($query) {
-                $query->where('status', 'overdue')
-                    ->orWhere(function($q) {
-                        $q->whereIn('status', ['pending', 'sent'])
-                            ->where('due_date', '<', now());
-                    });
-            })
+        $pendingInvoicesKsh = DB::table('consolidated_billings')
+            ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
             ->where('currency', 'KSH')
-            ->whereBetween('billing_date', [$startDate, $endDate])
-            ->sum('total_amount') ?: 0;
+            ->where(DB::raw('total_amount - COALESCE(paid_amount, 0)'), '>', 0)
+            ->count();
+
+        $pendingInvoicesUsd = DB::table('consolidated_billings')
+            ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
+            ->where('currency', 'USD')
+            ->where(DB::raw('total_amount - COALESCE(paid_amount, 0)'), '>', 0)
+            ->count();
+
+        // ============ OVERDUE INVOICES ============
+        $today = date('Y-m-d');
+        $overdueAmountKsh = DB::table('consolidated_billings')
+            ->whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'KSH')
+            ->where('due_date', '<', $today)
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
 
         $overdueAmountUsd = DB::table('consolidated_billings')
-            ->where(function($query) {
-                $query->where('status', 'overdue')
-                    ->orWhere(function($q) {
-                        $q->whereIn('status', ['pending', 'sent'])
-                            ->where('due_date', '<', now());
-                    });
-            })
+            ->whereIn('status', ['pending', 'sent', 'partial'])
             ->where('currency', 'USD')
-            ->whereBetween('billing_date', [$startDate, $endDate])
-            ->sum('total_amount') ?: 0;
+            ->where('due_date', '<', $today)
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
 
+        $overdueInvoicesKsh = DB::table('consolidated_billings')
+            ->whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'KSH')
+            ->where('due_date', '<', $today)
+            ->where(DB::raw('total_amount - COALESCE(paid_amount, 0)'), '>', 0)
+            ->count();
+
+        $overdueInvoicesUsd = DB::table('consolidated_billings')
+            ->whereIn('status', ['pending', 'sent', 'partial'])
+            ->where('currency', 'USD')
+            ->where('due_date', '<', $today)
+            ->where(DB::raw('total_amount - COALESCE(paid_amount, 0)'), '>', 0)
+            ->count();
+
+        // ============ AVG INVOICE VALUE ============
+        $avgValueKsh = $pendingInvoicesKsh > 0 ? $pendingAmountKsh / $pendingInvoicesKsh : 0;
+        $avgValueUsd = $pendingInvoicesUsd > 0 ? $pendingAmountUsd / $pendingInvoicesUsd : 0;
+
+        // ============ REVENUE BY CURRENCY ============
         $revenueByCurrency = DB::table('consolidated_billings')
             ->select(
                 'currency',
-                DB::raw('SUM(paid_amount) as total_revenue'),
+                DB::raw('SUM(COALESCE(paid_amount, 0)) as total_revenue'),
                 DB::raw('COUNT(*) as invoice_count'),
-                DB::raw('AVG(paid_amount) as avg_invoice_amount')
+                DB::raw('AVG(COALESCE(paid_amount, 0)) as avg_invoice_amount')
             )
             ->where('status', 'paid')
-            ->whereBetween('billing_date', [$startDate, $endDate])
+            ->whereBetween('payment_date', [$startDate, $endDate])
             ->groupBy('currency')
             ->get();
 
+        // ============ REVENUE BY SERVICE TYPE ============
+        $revenueByTypeKsh = DB::table('billing_line_items')
+            ->join('consolidated_billings', 'billing_line_items.consolidated_billing_id', '=', 'consolidated_billings.id')
+            ->where('consolidated_billings.status', 'paid')
+            ->where('consolidated_billings.currency', 'KSH')
+            ->whereBetween('consolidated_billings.payment_date', [$startDate, $endDate])
+            ->select(
+                'billing_line_items.billing_cycle',
+                DB::raw('SUM(billing_line_items.amount) as revenue'),
+                DB::raw('COUNT(DISTINCT consolidated_billings.id) as count')
+            )
+            ->groupBy('billing_line_items.billing_cycle')
+            ->get();
+
+        $revenueByTypeUsd = DB::table('billing_line_items')
+            ->join('consolidated_billings', 'billing_line_items.consolidated_billing_id', '=', 'consolidated_billings.id')
+            ->where('consolidated_billings.status', 'paid')
+            ->where('consolidated_billings.currency', 'USD')
+            ->whereBetween('consolidated_billings.payment_date', [$startDate, $endDate])
+            ->select(
+                'billing_line_items.billing_cycle',
+                DB::raw('SUM(billing_line_items.amount) as revenue'),
+                DB::raw('COUNT(DISTINCT consolidated_billings.id) as count')
+            )
+            ->groupBy('billing_line_items.billing_cycle')
+            ->get();
+
+        // ============ MONTHLY REVENUE TREND ============
         $monthlyTrendKsh = DB::table('consolidated_billings')
             ->select(
-                DB::raw('YEAR(billing_date) as year'),
-                DB::raw('MONTH(billing_date) as month'),
+                DB::raw('YEAR(payment_date) as year'),
+                DB::raw('MONTH(payment_date) as month'),
                 DB::raw('SUM(paid_amount) as monthly_revenue'),
                 DB::raw('COUNT(*) as invoices_count')
             )
             ->where('status', 'paid')
             ->where('currency', 'KSH')
-            ->whereBetween('billing_date', [$startDate, $endDate])
-            ->groupBy(DB::raw('YEAR(billing_date)'), DB::raw('MONTH(billing_date)'))
-            ->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
+            ->whereNotNull('payment_date')
+            ->whereBetween('payment_date', [$startDate, $endDate])
+            ->groupBy(DB::raw('YEAR(payment_date)'), DB::raw('MONTH(payment_date)'))
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
             ->get();
 
         $monthlyTrendUsd = DB::table('consolidated_billings')
             ->select(
-                DB::raw('YEAR(billing_date) as year'),
-                DB::raw('MONTH(billing_date) as month'),
+                DB::raw('YEAR(payment_date) as year'),
+                DB::raw('MONTH(payment_date) as month'),
                 DB::raw('SUM(paid_amount) as monthly_revenue'),
                 DB::raw('COUNT(*) as invoices_count')
             )
             ->where('status', 'paid')
             ->where('currency', 'USD')
-            ->whereBetween('billing_date', [$startDate, $endDate])
-            ->groupBy(DB::raw('YEAR(billing_date)'), DB::raw('MONTH(billing_date)'))
-            ->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
+            ->whereNotNull('payment_date')
+            ->whereBetween('payment_date', [$startDate, $endDate])
+            ->groupBy(DB::raw('YEAR(payment_date)'), DB::raw('MONTH(payment_date)'))
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        // ============ TOP CUSTOMERS ============
+        $topCustomersKsh = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->where('consolidated_billings.status', 'paid')
+            ->where('consolidated_billings.currency', 'KSH')
+            ->whereBetween('consolidated_billings.payment_date', [$startDate, $endDate])
+            ->select(
+                'users.name',
+                DB::raw('SUM(consolidated_billings.paid_amount) as total_spent'),
+                DB::raw('COUNT(consolidated_billings.id) as invoices_count')
+            )
+            ->groupBy('users.id', 'users.name')
+            ->orderBy('total_spent', 'desc')
+            ->limit(5)
+            ->get();
+
+        $topCustomersUsd = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->where('consolidated_billings.status', 'paid')
+            ->where('consolidated_billings.currency', 'USD')
+            ->whereBetween('consolidated_billings.payment_date', [$startDate, $endDate])
+            ->select(
+                'users.name',
+                DB::raw('SUM(consolidated_billings.paid_amount) as total_spent'),
+                DB::raw('COUNT(consolidated_billings.id) as invoices_count')
+            )
+            ->groupBy('users.id', 'users.name')
+            ->orderBy('total_spent', 'desc')
+            ->limit(5)
+            ->get();
+
+        // ============ MOST DELAYED INVOICES ============
+        $mostDelayedKsh = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->whereIn('consolidated_billings.status', ['pending', 'sent', 'partial', 'overdue'])
+            ->where('consolidated_billings.currency', 'KSH')
+            ->where('consolidated_billings.due_date', '<', $today)
+            ->where(DB::raw('consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0)'), '>', 0)
+            ->select(
+                'consolidated_billings.billing_number',
+                'users.name as customer_name',
+                'consolidated_billings.total_amount',
+                DB::raw('DATEDIFF(NOW(), consolidated_billings.due_date) as days_late')
+            )
+            ->orderBy('days_late', 'desc')
+            ->limit(5)
+            ->get();
+
+        $mostDelayedUsd = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->whereIn('consolidated_billings.status', ['pending', 'sent', 'partial', 'overdue'])
+            ->where('consolidated_billings.currency', 'USD')
+            ->where('consolidated_billings.due_date', '<', $today)
+            ->where(DB::raw('consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0)'), '>', 0)
+            ->select(
+                'consolidated_billings.billing_number',
+                'users.name as customer_name',
+                'consolidated_billings.total_amount',
+                DB::raw('DATEDIFF(NOW(), consolidated_billings.due_date) as days_late')
+            )
+            ->orderBy('days_late', 'desc')
+            ->limit(5)
+            ->get();
+
+        // ============ UPCOMING DUE DATES ============
+        $upcomingDueKsh = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->whereIn('consolidated_billings.status', ['pending', 'sent', 'partial'])
+            ->where('consolidated_billings.currency', 'KSH')
+            ->where('consolidated_billings.due_date', '>=', $today)
+            ->where('consolidated_billings.due_date', '<=', now()->addDays(7))
+            ->where(DB::raw('consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0)'), '>', 0)
+            ->select(
+                'consolidated_billings.billing_number',
+                'users.name as customer_name',
+                'consolidated_billings.total_amount',
+                'consolidated_billings.due_date',
+                DB::raw('DATEDIFF(consolidated_billings.due_date, NOW()) as days_until_due')
+            )
+            ->orderBy('days_until_due', 'asc')
+            ->get();
+
+        $upcomingDueUsd = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->whereIn('consolidated_billings.status', ['pending', 'sent', 'partial'])
+            ->where('consolidated_billings.currency', 'USD')
+            ->where('consolidated_billings.due_date', '>=', $today)
+            ->where('consolidated_billings.due_date', '<=', now()->addDays(7))
+            ->where(DB::raw('consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0)'), '>', 0)
+            ->select(
+                'consolidated_billings.billing_number',
+                'users.name as customer_name',
+                'consolidated_billings.total_amount',
+                'consolidated_billings.due_date',
+                DB::raw('DATEDIFF(consolidated_billings.due_date, NOW()) as days_until_due')
+            )
+            ->orderBy('days_until_due', 'asc')
             ->get();
 
         return [
-            'ksh' => [
-                'total_revenue' => $totalRevenueKsh,
-                'pending_amount' => $pendingAmountKsh,
-                'overdue_amount' => $overdueAmountKsh,
-                'monthly_trend' => $monthlyTrendKsh,
-            ],
-            'usd' => [
-                'total_revenue' => $totalRevenueUsd,
-                'pending_amount' => $pendingAmountUsd,
-                'overdue_amount' => $overdueAmountUsd,
-                'monthly_trend' => $monthlyTrendUsd,
-            ],
-            'combined' => [
-                'total_revenue' => $totalRevenueKsh + $totalRevenueUsd,
-                'pending_amount' => $pendingAmountKsh + $pendingAmountUsd,
-                'overdue_amount' => $overdueAmountKsh + $overdueAmountUsd,
-            ],
+            // KSH Summary
+            'total_revenue_ksh' => $totalRevenueKsh,
+            'pending_amount_ksh' => $pendingAmountKsh,
+            'pending_invoices_ksh' => $pendingInvoicesKsh,
+            'overdue_amount_ksh' => $overdueAmountKsh,
+            'overdue_invoices_ksh' => $overdueInvoicesKsh,
+            'avg_invoice_value_ksh' => $avgValueKsh,
+
+            // USD Summary
+            'total_revenue_usd' => $totalRevenueUsd,
+            'pending_amount_usd' => $pendingAmountUsd,
+            'pending_invoices_usd' => $pendingInvoicesUsd,
+            'overdue_amount_usd' => $overdueAmountUsd,
+            'overdue_invoices_usd' => $overdueInvoicesUsd,
+            'avg_invoice_value_usd' => $avgValueUsd,
+
+            // Other data
             'revenue_by_currency' => $revenueByCurrency,
+            'revenue_by_type_ksh' => $revenueByTypeKsh,
+            'revenue_by_type_usd' => $revenueByTypeUsd,
+            'monthly_trend_ksh' => $monthlyTrendKsh,
+            'monthly_trend_usd' => $monthlyTrendUsd,
+            'top_customers_ksh' => $topCustomersKsh,
+            'top_customers_usd' => $topCustomersUsd,
+            'most_delayed_invoices_ksh' => $mostDelayedKsh,
+            'most_delayed_invoices_usd' => $mostDelayedUsd,
+            'upcoming_due_dates_ksh' => $upcomingDueKsh,
+            'upcoming_due_dates_usd' => $upcomingDueUsd,
+        ];
+
+    } catch (\Exception $e) {
+        \Log::error('Error generating financial summary: ' . $e->getMessage());
+        \Log::error($e->getTraceAsString());
+
+        return [
+            'total_revenue_ksh' => 0,
+            'total_revenue_usd' => 0,
+            'pending_amount_ksh' => 0,
+            'pending_amount_usd' => 0,
+            'pending_invoices_ksh' => 0,
+            'pending_invoices_usd' => 0,
+            'overdue_amount_ksh' => 0,
+            'overdue_amount_usd' => 0,
+            'overdue_invoices_ksh' => 0,
+            'overdue_invoices_usd' => 0,
+            'avg_invoice_value_ksh' => 0,
+            'avg_invoice_value_usd' => 0,
+            'revenue_by_currency' => collect(),
+            'revenue_by_type_ksh' => collect(),
+            'revenue_by_type_usd' => collect(),
+            'monthly_trend_ksh' => collect(),
+            'monthly_trend_usd' => collect(),
+            'top_customers_ksh' => collect(),
+            'top_customers_usd' => collect(),
+            'most_delayed_invoices_ksh' => collect(),
+            'most_delayed_invoices_usd' => collect(),
+            'upcoming_due_dates_ksh' => collect(),
+            'upcoming_due_dates_usd' => collect(),
         ];
     }
+}
 
     /**
      * Generate revenue analysis report with currency separation
@@ -2244,95 +2975,133 @@ class FinanceController extends Controller
     /**
      * Generate aging report with currency separation
      */
-    private function generateAgingReport(): array
-    {
-        try {
-            $agingReportKsh = DB::table('consolidated_billings')
-                ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
-                ->leftJoin('billing_line_items', 'consolidated_billings.id', '=', 'billing_line_items.consolidated_billing_id')
-                ->where('users.role', 'customer')
-                ->where('consolidated_billings.currency', 'KSH')
-                ->whereIn('consolidated_billings.status', ['pending', 'sent', 'overdue'])
-                ->selectRaw('
-                    consolidated_billings.user_id,
-                    users.name as customer_name,
-                    SUM(CASE WHEN consolidated_billings.due_date >= CURDATE() THEN billing_line_items.amount ELSE 0 END) as current,
-                    SUM(CASE WHEN consolidated_billings.due_date < CURDATE() AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN billing_line_items.amount ELSE 0 END) as days_30,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_60,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_90_plus')
-                ->groupBy('consolidated_billings.user_id', 'users.name')
-                ->get();
+private function generateAgingReport(): array
+{
+    try {
+        \Log::info('=== Starting Aging Report Generation ===');
 
-            $agingReportUsd = DB::table('consolidated_billings')
-                ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
-                ->leftJoin('billing_line_items', 'consolidated_billings.id', '=', 'billing_line_items.consolidated_billing_id')
-                ->where('users.role', 'customer')
-                ->where('consolidated_billings.currency', 'USD')
-                ->whereIn('consolidated_billings.status', ['pending', 'sent', 'overdue'])
-                ->selectRaw('
-                    consolidated_billings.user_id,
-                    users.name as customer_name,
-                    SUM(CASE WHEN consolidated_billings.due_date >= CURDATE() THEN billing_line_items.amount ELSE 0 END) as current,
-                    SUM(CASE WHEN consolidated_billings.due_date < CURDATE() AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN billing_line_items.amount ELSE 0 END) as days_30,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND consolidated_billings.due_date >= DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_60,
-                    SUM(CASE WHEN consolidated_billings.due_date < DATE_SUB(CURDATE(), INTERVAL 60 DAY) THEN billing_line_items.amount ELSE 0 END) as days_90_plus')
-                ->groupBy('consolidated_billings.user_id', 'users.name')
-                ->get();
+        $invoices = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->leftJoin('billing_line_items', 'consolidated_billings.id', '=', 'billing_line_items.consolidated_billing_id')
+            ->where('users.role', 'customer')
+            ->whereIn('consolidated_billings.status', ['pending', 'sent', 'overdue', 'partial'])
+            ->select(
+                'consolidated_billings.id',
+                'consolidated_billings.user_id',
+                'consolidated_billings.currency',
+                'consolidated_billings.due_date',
+                'consolidated_billings.total_amount',
+                'consolidated_billings.paid_amount',
+                'users.name as customer_name',
+                DB::raw('COALESCE(billing_line_items.amount, consolidated_billings.total_amount) as amount')
+            )
+            ->get();
 
-            $totalCurrentKsh = $agingReportKsh->sum('current');
-            $totalDays30Ksh = $agingReportKsh->sum('days_30');
-            $totalDays60Ksh = $agingReportKsh->sum('days_60');
-            $totalDays90PlusKsh = $agingReportKsh->sum('days_90_plus');
-            $totalOutstandingKsh = $totalCurrentKsh + $totalDays30Ksh + $totalDays60Ksh + $totalDays90PlusKsh;
+        $agingDataKsh = [];
+        $agingDataUsd = [];
+        $today = Carbon::now();
 
-            $totalCurrentUsd = $agingReportUsd->sum('current');
-            $totalDays30Usd = $agingReportUsd->sum('days_30');
-            $totalDays60Usd = $agingReportUsd->sum('days_60');
-            $totalDays90PlusUsd = $agingReportUsd->sum('days_90_plus');
-            $totalOutstandingUsd = $totalCurrentUsd + $totalDays30Usd + $totalDays60Usd + $totalDays90PlusUsd;
+        foreach ($invoices as $invoice) {
+            $remainingAmount = floatval($invoice->total_amount) - floatval($invoice->paid_amount ?? 0);
 
-            return [
-                'ksh' => [
-                    'details' => $agingReportKsh,
-                    'summary' => [
-                        'current' => $totalCurrentKsh,
-                        'days_30' => $totalDays30Ksh,
-                        'days_60' => $totalDays60Ksh,
-                        'days_90_plus' => $totalDays90PlusKsh,
-                        'total' => $totalOutstandingKsh,
-                    ]
-                ],
-                'usd' => [
-                    'details' => $agingReportUsd,
-                    'summary' => [
-                        'current' => $totalCurrentUsd,
-                        'days_30' => $totalDays30Usd,
-                        'days_60' => $totalDays60Usd,
-                        'days_90_plus' => $totalDays90PlusUsd,
-                        'total' => $totalOutstandingUsd,
-                    ]
-                ],
-            ];
-        } catch (\Exception $e) {
-            Log::error('Error generating aging report: ' . $e->getMessage());
+            if ($remainingAmount <= 0) {
+                continue;
+            }
 
-            $empty = [
-                'details' => collect(),
-                'summary' => [
-                    'current' => 0,
-                    'days_30' => 0,
-                    'days_60' => 0,
-                    'days_90_plus' => 0,
-                    'total' => 0,
-                ]
-            ];
+            $dueDate = Carbon::parse($invoice->due_date);
 
-            return [
-                'ksh' => $empty,
-                'usd' => $empty,
-            ];
+            // Calculate days overdue (positive number for overdue invoices)
+            if ($dueDate->lt($today)) {
+                $daysOverdue = $dueDate->diffInDays($today);
+            } else {
+                $daysOverdue = 0; // Not overdue yet
+            }
+
+            // Determine aging bucket based on days overdue
+            if ($daysOverdue == 0) {
+                $agingBucket = 'current';
+            } elseif ($daysOverdue <= 30) {
+                $agingBucket = 'days_30';
+            } elseif ($daysOverdue <= 60) {
+                $agingBucket = 'days_60';
+            } else {
+                $agingBucket = 'days_90_plus';
+            }
+
+            // Debug logging
+            \Log::info('Aging calculation', [
+                'customer' => $invoice->customer_name,
+                'due_date' => $invoice->due_date,
+                'days_overdue' => $daysOverdue,
+                'bucket' => $agingBucket,
+                'amount' => $remainingAmount
+            ]);
+
+            if ($invoice->currency === 'KSH') {
+                if (!isset($agingDataKsh[$invoice->customer_name])) {
+                    $agingDataKsh[$invoice->customer_name] = [
+                        'customer_name' => $invoice->customer_name,
+                        'current' => 0,
+                        'days_30' => 0,
+                        'days_60' => 0,
+                        'days_90_plus' => 0,
+                    ];
+                }
+                $agingDataKsh[$invoice->customer_name][$agingBucket] += $remainingAmount;
+            } else {
+                if (!isset($agingDataUsd[$invoice->customer_name])) {
+                    $agingDataUsd[$invoice->customer_name] = [
+                        'customer_name' => $invoice->customer_name,
+                        'current' => 0,
+                        'days_30' => 0,
+                        'days_60' => 0,
+                        'days_90_plus' => 0,
+                    ];
+                }
+                $agingDataUsd[$invoice->customer_name][$agingBucket] += $remainingAmount;
+            }
         }
+
+        $kshCollection = collect($agingDataKsh)->values();
+        $usdCollection = collect($agingDataUsd)->values();
+
+        \Log::info('Final KSH Collection', ['data' => $kshCollection->toArray()]);
+        \Log::info('Final USD Collection (first 3)', ['data' => $usdCollection->take(3)->toArray()]);
+
+        return [
+            'aging_report_ksh' => $kshCollection,
+            'aging_report_usd' => $usdCollection,
+        ];
+
+    } catch (\Exception $e) {
+        \Log::error('Error generating aging report: ' . $e->getMessage());
+        \Log::error($e->getTraceAsString());
+
+        return [
+            'aging_report_ksh' => collect(),
+            'aging_report_usd' => collect(),
+        ];
     }
+}
+
+/**
+ * Get aging bucket based on days overdue
+ */
+private function getAgingBucket($daysOverdue): string
+{
+    // $daysOverdue is negative if due date is in the future
+    // Positive if due date is in the past (overdue)
+
+    if ($daysOverdue <= 0) {
+        return 'current';  // Not overdue yet
+    } elseif ($daysOverdue <= 30) {
+        return 'days_30';   // 1-30 days overdue
+    } elseif ($daysOverdue <= 60) {
+        return 'days_60';   // 31-60 days overdue
+    } else {
+        return 'days_90_plus'; // 61+ days overdue
+    }
+}
 
     /**
      * Generate tax report with Kenya tax rates
@@ -2516,4 +3285,82 @@ class FinanceController extends Controller
             throw $e;
         }
     }
+
+    /**
+ * Display financial reports page
+ */
+public function financialReports(Request $request)
+{
+    try {
+        $reportType = $request->get('report_type', 'financial_summary');
+        $period = $request->get('period', 'this_month');
+
+        list($startDate, $endDate) = $this->getDateRange($period, $request->start_date, $request->end_date);
+
+        // Get report data
+        $reportData = $this->generateReport($reportType, $startDate, $endDate);
+
+        // Get financial parameters for reference
+        $financialParameters = DB::table('financial_parameters')
+            ->where('effective_from', '<=', now())
+            ->where(function($q) {
+                $q->whereNull('effective_to')->orWhere('effective_to', '>=', now());
+            })
+            ->orderBy('parameter_name')
+            ->get();
+
+        // Get settings
+        $settings = DB::table('settings')->get();
+
+        $reportData['report_type'] = $reportType;
+        $reportData['start_date'] = $startDate;
+        $reportData['end_date'] = $endDate;
+
+        return view('finance.financial-reports', compact(
+            'reportData',
+            'reportType',
+            'period',
+            'startDate',
+            'endDate',
+            'financialParameters',
+            'settings'
+        ));
+
+    } catch (\Exception $e) {
+        Log::error('Financial Reports Error: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Unable to load financial reports: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Export financial reports
+ */
+public function exportFinancialReport(Request $request)
+{
+    try {
+        $reportType = $request->get('report_type', 'financial_summary');
+        $format = $request->get('format', 'pdf');
+        $period = $request->get('period', 'this_month');
+
+        list($startDate, $endDate) = $this->getDateRange($period, $request->start_date, $request->end_date);
+
+        $reportData = $this->generateReport($reportType, $startDate, $endDate);
+
+        if ($format === 'csv') {
+            return $this->exportToCsv($reportData, $reportType, $startDate, $endDate);
+        }
+
+        // For PDF export (requires barryvdh/laravel-dompdf)
+        if (class_exists('Barryvdh\DomPDF\Facade\Pdf')) {
+            $pdf = Pdf::loadView('finance.reports.pdf', compact('reportData', 'reportType', 'startDate', 'endDate'));
+            return $pdf->download("financial_report_{$reportType}_{$startDate}_to_{$endDate}.pdf");
+        }
+
+        return redirect()->back()->with('error', 'PDF export not available. Please install barryvdh/laravel-dompdf');
+
+    } catch (\Exception $e) {
+        Log::error('Export Financial Report Error: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Unable to export report: ' . $e->getMessage());
+    }
+}
 }

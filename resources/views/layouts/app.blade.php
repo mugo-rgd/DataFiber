@@ -594,6 +594,12 @@
                                 <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                             </a>
                         </li>
+                          <li class="nav-item">
+            <a class="nav-link" href="{{ route('finance.emails.settings') }}">
+                <i class="fas fa-envelope me-2"></i>
+                <span>Email Settings</span>
+            </a>
+        </li>
                         @endif
 
                         @if(Auth::user()->role === 'designer')
@@ -788,148 +794,167 @@
                         @endif
 
                         <!-- Finance Menu Items - Dropdown -->
-                        @if(Auth::user()->role === 'finance')
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-chart-line me-1"></i>
-                                    <span class="d-none d-lg-inline">Finance</span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
-                                    <li class="dropdown-header">
-                                        <div class="d-flex align-items-center">
-                                            <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
-                                                <i class="fas fa-chart-line text-white"></i>
-                                            </div>
-                                            <div>
-                                                <strong>Finance Dashboard</strong>
-                                                <div class="text-muted small">Manage all financial operations</div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('leases.finance.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-file-contract text-primary"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Leases Management</div>
-                                                    <small class="text-muted">View, search and manage all leases</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.billing.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-file-invoice-dollar text-success"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Lease Billings</div>
-                                                    <small class="text-muted">Manage billing cycles and invoices</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.payments.followups') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-money-check text-info"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Payment Management</div>
-                                                    <small class="text-muted">Track and process payments</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.transactions.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-exchange-alt text-warning"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Transactions</div>
-                                                    <small class="text-muted">View all financial transactions</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.auto-billing') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-robot text-secondary"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Auto Billing</div>
-                                                    <small class="text-muted">Automated billing configurations</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.reports') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-chart-bar text-danger"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Financial Reports</div>
-                                                    <small class="text-muted">Generate detailed financial reports</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.ai.dashboard') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-brain text-purple"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Debtors Analytics</div>
-                                                    <small class="text-muted">AI-powered debt analysis</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.financial-analytics.dashboard') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-chart-pie text-info"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Finance Analytics</div>
-                                                    <small class="text-muted">Comprehensive financial analytics</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="{{ route('finance.financial-parameters.index') }}">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3">
-                                                    <i class="fas fa-cog text-dark"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-medium">Financial Parameters</div>
-                                                    <small class="text-muted">Configure financial settings</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        @endif
+                       @if(Auth::user()->role === 'finance')
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-chart-line me-1"></i>
+        <span class="d-none d-lg-inline">Finance</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+        <li class="dropdown-header">
+            <div class="d-flex align-items-center">
+                <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                    <i class="fas fa-chart-line text-white"></i>
+                </div>
+                <div>
+                    <strong>Finance Dashboard</strong>
+                    <div class="text-muted small">Manage all financial operations</div>
+                </div>
+            </div>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <!-- Existing Finance Items -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('leases.finance.index') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-file-contract text-primary"></i></div>
+                    <div><div class="fw-medium">Leases Management</div><small class="text-muted">View, search and manage all leases</small></div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.billing.index') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-file-invoice-dollar text-success"></i></div>
+                    <div><div class="fw-medium">Lease Billings</div><small class="text-muted">Manage billing cycles and invoices</small></div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.payments.followups') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-money-check text-info"></i></div>
+                    <div><div class="fw-medium">Payment Management</div><small class="text-muted">Track and process payments</small></div>
+                </div>
+            </a>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.transactions.index') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-exchange-alt text-warning"></i></div>
+                    <div><div class="fw-medium">Transactions</div><small class="text-muted">View all financial transactions</small></div>
+                </div>
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.auto-billing') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-robot text-secondary"></i></div>
+                    <div><div class="fw-medium">Auto Billing</div><small class="text-muted">Automated billing configurations</small></div>
+                </div>
+            </a>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <!-- Financial Reports -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.reports') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-chart-bar text-danger"></i></div>
+                    <div><div class="fw-medium">Financial Reports</div><small class="text-muted">Generate detailed financial reports</small></div>
+                </div>
+            </a>
+        </li>
+
+        <!-- AI Analytics Section Header -->
+        <li class="dropdown-header mt-2">
+            <div class="text-muted small text-uppercase">AI Analytics</div>
+        </li>
+
+        <!-- AI Dashboard -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.ai.dashboard') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-brain text-purple"></i></div>
+                    <div>
+                        <div class="fw-medium">Debtors Analytics</div>
+                        <small class="text-muted">AI-powered debt analysis dashboard</small>
+                    </div>
+                </div>
+            </a>
+        </li>
+
+        <!-- Predictive Analytics -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.ai.predictive') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-chart-line text-warning"></i></div>
+                    <div>
+                        <div class="fw-medium">Predictive Analytics</div>
+                        <small class="text-muted">Forecasts and predictions</small>
+                    </div>
+                </div>
+            </a>
+        </li>
+
+        <!-- Recommendations -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.ai.recommendations') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-lightbulb text-success"></i></div>
+                    <div>
+                        <div class="fw-medium">AI Recommendations</div>
+                        <small class="text-muted">Actionable insights</small>
+                    </div>
+                </div>
+            </a>
+        </li>
+
+        <!-- Generate Report -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.ai.report') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-file-pdf text-danger"></i></div>
+                    <div>
+                        <div class="fw-medium">Generate Report</div>
+                        <small class="text-muted">Export analysis report</small>
+                    </div>
+                </div>
+            </a>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <!-- Finance Analytics -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.financial-analytics.dashboard') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-chart-pie text-info"></i></div>
+                    <div><div class="fw-medium">Finance Analytics</div><small class="text-muted">Comprehensive financial analytics</small></div>
+                </div>
+            </a>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <!-- Financial Parameters -->
+        <li>
+            <a class="dropdown-item py-2" href="{{ route('finance.financial-parameters.index') }}">
+                <div class="d-flex align-items-center">
+                    <div class="icon-container me-3"><i class="fas fa-cog text-dark"></i></div>
+                    <div><div class="fw-medium">Financial Parameters</div><small class="text-muted">Configure financial settings</small></div>
+                </div>
+            </a>
+        </li>
+    </ul>
+</li>
+@endif
 
                         <!-- Designer Menu Items -->
                         @if(Auth::user()->role === 'designer')
@@ -1078,17 +1103,21 @@
                     </li>
 
                         <!-- Chat Link -->
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-fix" href="{{ route('chat.index') }}">
-                                <i class="fas fa-comments me-1"></i> WeChat
-                                @php
-                                    $unreadCount = auth()->user()->totalUnreadMessages();
-                                @endphp
-                                @if($unreadCount > 0)
-                                    <span class="badge bg-danger ms-1">{{ $unreadCount }}</span>
-                                @endif
-                            </a>
-                        </li>
+                        @can('use-chat')
+<li class="nav-item">
+    <a class="nav-link nav-link-fix" href="{{ route('chat.index') }}">
+        <i class="fas fa-comments me-1"></i> WeChat
+        @auth
+            @php
+                $unreadCount = auth()->user()->totalUnreadMessages();
+            @endphp
+            @if($unreadCount > 0)
+                <span class="badge bg-danger ms-1">{{ $unreadCount }}</span>
+            @endif
+        @endauth
+    </a>
+</li>
+@endcan
 
                         <!-- Notifications Dropdown -->
                         @auth

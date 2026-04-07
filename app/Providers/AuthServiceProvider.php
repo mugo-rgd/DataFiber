@@ -7,6 +7,7 @@ use App\Models\Lease;
 use App\Models\User;
 use App\Models\DesignRequest;
 use App\Models\Quotation;
+use App\Models\Conversation;
 use App\Policies\ContractPolicy;
 use App\Policies\DesignRequestPolicy;
 use App\Policies\LeasePolicy;
@@ -26,7 +27,6 @@ class AuthServiceProvider extends ServiceProvider
         Lease::class => LeasePolicy::class,
         \App\Models\FinancialParameter::class => \App\Policies\FinancialParameterPolicy::class,
         Contract::class => ContractPolicy::class,
-        // Remove or comment out these lines until policies are created:
         DesignRequest::class => DesignRequestPolicy::class,
         Quotation::class => QuotationPolicy::class,
     ];
@@ -39,82 +39,78 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('view-system-documents', function ($user) {
-        return in_array($user->role, [
-            'admin',
-            'system_admin',
-            'technical_admin',
-            'account_manager',
-            'accountmanager_admin',
-            'finance',
-            'ict_engineer'
-        ]);
-    });
+            return in_array($user->role, [
+                'admin',
+                'system_admin',
+                'technical_admin',
+                'account_manager',
+                'accountmanager_admin',
+                'finance',
+                'ict_engineer'
+            ]);
+        });
 
-    // Also define the isAccountManager gate if not already defined
-    Gate::define('isAccountManager', function ($user) {
-        return $user->role === 'account_manager';
-    });
+        Gate::define('isAccountManager', function ($user) {
+            return $user->role === 'account_manager';
+        });
 
-           Gate::define('accessAdminPanel', function (User $user) {
-        return in_array($user->role, ['admin', 'account_manager']);
-    });
+        Gate::define('accessAdminPanel', function (User $user) {
+            return in_array($user->role, ['admin', 'account_manager']);
+        });
 
         // ===== QUOTATION GATES =====
         Gate::define('manage-quotations', function (?User $user) {
-            return $user && in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin','designer']);
+            return $user && in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin', 'designer']);
         });
 
         Gate::define('view-quotations', function (?User $user) {
-            return $user && in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin','designer']);
+            return $user && in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin', 'designer']);
         });
 
         Gate::define('create-quotations', function (?User $user) {
-            return $user && in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin','designer']);
+            return $user && in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin', 'designer']);
         });
 
         Gate::define('edit-quotations', function (?User $user, $quotation = null) {
             if (!$user) return false;
 
-            // If no specific quotation provided, check general permission
             if (!$quotation) {
-                return in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin','designer']);
+                return in_array($user->role, ['admin', 'account_manager', 'accountmanager_admin', 'designer']);
             }
 
-            // Account managers can only edit their own draft quotations
-            if (in_array($user->role, ['account_manager', 'accountmanager_admin','designer'])) {
+            if (in_array($user->role, ['account_manager', 'accountmanager_admin', 'designer'])) {
                 return $quotation->status === 'draft' && $quotation->account_manager_id === $user->id;
             }
 
-            // Admins can edit any draft quotation
             return $user->role === 'admin' && $quotation->status === 'draft';
         });
 
-       Gate::define('send-quotations', function (?User $user) {
-    return $user && in_array($user->role, [
-        'admin',
-        'system_admin',
-        'account_manager',
-        'accountmanager_admin'
-    ]);
-});
+        Gate::define('send-quotations', function (?User $user) {
+            return $user && in_array($user->role, [
+                'admin',
+                'system_admin',
+                'account_manager',
+                'accountmanager_admin'
+            ]);
+        });
 
-Gate::define('reject-quotations', function (?User $user) {
-    return $user && in_array($user->role, [
-        'admin',
-        'system_admin',
-        'account_manager',
-        'accountmanager_admin'
-    ]);
-});
+        Gate::define('reject-quotations', function (?User $user) {
+            return $user && in_array($user->role, [
+                'admin',
+                'system_admin',
+                'account_manager',
+                'accountmanager_admin'
+            ]);
+        });
 
         Gate::define('approve-quotations', function (?User $user) {
-    return $user && in_array($user->role, [
-        'admin',
-        'system_admin',
-        'account_manager',
-        'accountmanager_admin'
-    ]);
-});
+            return $user && in_array($user->role, [
+                'admin',
+                'system_admin',
+                'account_manager',
+                'accountmanager_admin'
+            ]);
+        });
 
         // ===== LEASE-RELATED GATES =====
         Gate::define('access-leases', function (?User $user) {
@@ -129,7 +125,6 @@ Gate::define('reject-quotations', function (?User $user) {
             }
 
             if ($user->role === 'account_manager') {
-                // Check if this customer belongs to the account manager
                 return $user->managedCustomers()->where('id', $customerId)->exists();
             }
 
@@ -137,98 +132,66 @@ Gate::define('reject-quotations', function (?User $user) {
         });
 
         Gate::define('manage-customers', function ($user) {
-        return $user->isAccountManager();
+            return $user->isAccountManager();
         });
 
         Gate::define('finance-access', function (?User $user) {
-            return $user && in_array($user->role, ['admin', 'finance', 'accountmanager_admin','debt_manager']);
+            return $user && in_array($user->role, ['admin', 'finance', 'accountmanager_admin', 'debt_manager']);
         });
 
         // ===== CONTRACT GATES =====
         Gate::define('sendToCustomer', function (User $user) {
-            // Allow admins and account manager admins to send contracts
             return in_array($user->role, [
                 'admin',
                 'technical_admin',
-                'system_admin','account_manager','debt_manager',
+                'system_admin',
+                'account_manager',
+                'debt_manager',
                 'accountmanager_admin'
             ]);
         });
 
         // ===== CUSTOMER QUOTATION GATES =====
         Gate::define('customerView', function (User $user, Quotation $quotation) {
-            // Customers can only view their own quotations
             return $user->role === 'customer' && $quotation->customer_id === $user->id;
         });
 
         Gate::define('customerViewAny', function (User $user) {
-            // Customers can view quotations index
             return $user->role === 'customer';
         });
-     Gate::define('isICTEngineer', function ($user) {
-        // return $user->role === 'ict_engineer';
-        return in_array($user->role, ['ict_engineer', 'account_manager']);
-    });
 
-     Gate::define('isEngineer', function ($user) {
-        return in_array($user->role, ['ict_engineer', 'designer', 'technician', 'surveyor']);
-    });
+        Gate::define('isICTEngineer', function ($user) {
+            return in_array($user->role, ['ict_engineer', 'account_manager']);
+        });
+
+        Gate::define('isEngineer', function ($user) {
+            return in_array($user->role, ['ict_engineer', 'designer', 'technician', 'surveyor']);
+        });
+
         Gate::define('customerApprove', function (User $user, Quotation $quotation) {
-            // Customers can only approve their own sent quotations
             return $user->role === 'customer'
                 && $quotation->customer_id === $user->id
                 && $quotation->status === 'sent';
         });
 
         Gate::define('customerReject', function (User $user, Quotation $quotation) {
-            // Customers can only reject their own sent quotations
             return $user->role === 'customer'
                 && $quotation->customer_id === $user->id
                 && $quotation->status === 'sent';
         });
 
         Gate::define('customerRequestRevision', function (User $user, Quotation $quotation) {
-            // Customers can request revisions for their own sent quotations
             return $user->role === 'customer'
                 && $quotation->customer_id === $user->id
                 && $quotation->status === 'sent';
         });
 
-        // Allow designers to create quotations for their assigned requests
-    Gate::define('create-quotations', function ($user) {
-        return in_array($user->role, ['admin', 'account_manager', 'designer']);
-    });
+        Gate::define('access-quotations', function ($user) {
+            return $user->hasRole('admin') || $user->hasRole('designer');
+        });
 
-    Gate::define('access-quotations', function ($user) {
-        return $user->hasRole('admin') || $user->hasRole('designer');
-    });
-
-    Gate::define('view-quotations', function ($user, $quotation = null) {
-        // Allow viewing if user is admin, account manager, or designer assigned to the request
-        if (in_array($user->role, ['admin', 'account_manager', 'designer'])) {
-            return true;
-        }
-
-        if ($user->role === 'designer' && $quotation) {
-            return $quotation->designRequest->designer_id === $user->id;
-        }
-
-        return false;
-    });
-
-    Gate::define('edit-quotations', function ($user, $quotation) {
-        if (in_array($user->role, ['admin', 'account_manager', 'designer'])) {
-            return true;
-        }
-
-        // Designers can only edit draft quotations for their assigned requests
-        if ($user->role === 'designer') {
-            return $quotation->status === 'draft' &&
-                   $quotation->designRequest->designer_id === $user->id;
-        }
-
-        return false;
-    });
+        // ===== CHAT GATES =====
+        $this->defineChatGates();
 
         // ===== ROLE-SPECIFIC GATES =====
         $this->defineRoleGates();
@@ -249,7 +212,7 @@ Gate::define('reject-quotations', function (?User $user) {
     protected function defineRoleGates(): void
     {
         $roles = [
-            'isAdmin' => ['admin', 'designer','technical_admin', 'system_admin', 'accountmanager_admin','account_manager','debt_manager'],
+            'isAdmin' => ['admin', 'designer', 'technical_admin', 'system_admin', 'accountmanager_admin', 'account_manager', 'debt_manager'],
             'isCustomer' => ['customer'],
             'isFinance' => ['finance'],
             'isDesigner' => ['designer'],
@@ -260,7 +223,7 @@ Gate::define('reject-quotations', function (?User $user) {
             'isMarketingAdmin' => ['accountmanager_admin'],
             'isAccountManager' => ['account_manager'],
             'isDebtManager' => ['debt_manager'],
-            'isUser' => ['admin', 'technical_admin', 'system_admin', 'customer', 'finance', 'designer', 'surveyor', 'technician', 'debt_manager' ,'account_manager', 'accountmanager_admin'],
+            'isUser' => ['admin', 'technical_admin', 'system_admin', 'customer', 'finance', 'designer', 'surveyor', 'technician', 'debt_manager', 'account_manager', 'accountmanager_admin'],
         ];
 
         foreach ($roles as $gateName => $allowedRoles) {
@@ -268,6 +231,71 @@ Gate::define('reject-quotations', function (?User $user) {
                 return $user && in_array($user->role, $allowedRoles);
             });
         }
+    }
+
+    /**
+     * Define chat module gates
+     */
+    protected function defineChatGates(): void
+    {
+        // Who can use the chat feature
+        Gate::define('use-chat', function (?User $user) {
+            if (!$user) return false;
+
+            $allowedRoles = [
+                'admin',
+                'system_admin',
+                'technical_admin',
+                'account_manager',
+                'accountmanager_admin',
+                'customer',
+                'finance',
+                'designer',
+                'surveyor',
+                'technician',
+                'debt_manager',
+                'ict_engineer'
+            ];
+
+            return in_array($user->role, $allowedRoles);
+        });
+
+        // Who can send messages
+        Gate::define('send-messages', function (?User $user) {
+            return Gate::allows('use-chat', $user);
+        });
+
+        // Who can start new conversations
+        Gate::define('start-conversation', function (?User $user) {
+            return Gate::allows('use-chat', $user);
+        });
+
+        // View a specific conversation
+        Gate::define('view-conversation', function (?User $user, $conversation) {
+            if (!$user) return false;
+
+            // Admins can view all conversations
+            if (in_array($user->role, ['admin', 'system_admin', 'technical_admin', 'accountmanager_admin'])) {
+                return true;
+            }
+
+            // Check if user is a participant in the conversation
+            if ($conversation instanceof Conversation) {
+                return $conversation->participants()->where('user_id', $user->id)->exists();
+            }
+
+            // If conversation ID is passed instead of model
+            $conversationId = is_numeric($conversation) ? $conversation : $conversation->id;
+            return Conversation::where('id', $conversationId)
+                ->whereHas('participants', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->exists();
+        });
+
+        // Delete conversations (restricted to admins only)
+        Gate::define('delete-conversation', function (?User $user) {
+            return $user && in_array($user->role, ['admin', 'system_admin', 'technical_admin']);
+        });
     }
 
     /**
@@ -316,7 +344,6 @@ Gate::define('reject-quotations', function (?User $user) {
             });
         }
 
-        // Customer-specific gate for viewing their own requests
         Gate::define('view-own-design-requests', function (?User $user, $designRequest) {
             if (!$user) return false;
 
@@ -330,7 +357,6 @@ Gate::define('reject-quotations', function (?User $user) {
             ]);
         });
     }
-
 
     /**
      * Define technical admin gates
@@ -349,5 +375,4 @@ Gate::define('reject-quotations', function (?User $user) {
             });
         }
     }
-
 }

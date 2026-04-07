@@ -1,8 +1,8 @@
 <?php
-// app/Models/FinancialParameter.php
 
 namespace App\Models;
 
+use App\Services\FinancialParameterSyncService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,6 +34,27 @@ class FinancialParameter extends Model
     const KES_TO_USD = 'kes_to_usd';
     const EUR_TO_USD = 'eur_to_usd';
     const GBP_TO_USD = 'gbp_to_usd';
+
+    /**
+     * Boot the model
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // After creating a financial parameter, sync to settings
+        static::created(function ($parameter) {
+            FinancialParameterSyncService::syncToSettings($parameter);
+        });
+
+        // After updating a financial parameter, sync to settings
+        static::updated(function ($parameter) {
+            // Only sync if value changed
+            if ($parameter->isDirty('parameter_value')) {
+                FinancialParameterSyncService::syncToSettings($parameter);
+            }
+        });
+    }
 
     /**
      * Scope for active parameters at a given date
@@ -78,10 +99,12 @@ class FinancialParameter extends Model
      */
     public static function getCurrentVatRate($date = null)
     {
-        return self::forParameter(self::VAT_RATE)
+        $parameter = self::forParameter(self::VAT_RATE)
             ->forKenya()
             ->activeAt($date)
             ->first();
+
+        return $parameter ? $parameter->parameter_value : 0.16;
     }
 
     /**
@@ -91,10 +114,21 @@ class FinancialParameter extends Model
     {
         $parameterName = strtolower($currencyCode) . '_to_usd';
 
-        return self::forParameter($parameterName)
+        $parameter = self::forParameter($parameterName)
             ->forCurrency($currencyCode)
             ->activeAt($date)
             ->first();
+
+        return $parameter ? $parameter->parameter_value : null;
+    }
+
+    /**
+     * Get USD to KES exchange rate
+     */
+    public static function getUsdToKesRate($date = null)
+    {
+        $kesToUsd = self::getCurrentExchangeRate('KES', $date);
+        return $kesToUsd ? 1 / $kesToUsd : 130.04;
     }
 
     /**

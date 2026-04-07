@@ -35,20 +35,25 @@ use Carbon\Carbon;
         </div>
     </div>
 
-    <!-- Summary Cards -->
-    <div class="row mb-4">
+    <!-- USD Summary Cards -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h5 class="mb-3">
+                <span class="badge bg-primary me-2">USD</span> US Dollar Summary
+            </h5>
+        </div>
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card summary-card bg-gradient-primary text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 opacity-75">TOTAL REVENUE</h6>
-                            <h2 class="card-title mb-0">${{ number_format($financialMetrics['total_revenue']['value'] ?? 0, 2) }}</h2>
-                            @if(isset($financialMetrics['total_revenue']['change']))
+                            <h6 class="card-subtitle mb-2 opacity-75">TOTAL REVENUE (USD)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['usd']['total_revenue']['formatted'] ?? '$0.00' }}</h2>
+                            @if(isset($financialMetrics['usd']['total_revenue']['change']) && $financialMetrics['usd']['total_revenue']['change'] != 0)
                                 <div class="mt-2">
                                     <span class="badge bg-white text-primary">
-                                        <i class="fas fa-arrow-{{ $financialMetrics['total_revenue']['change'] > 0 ? 'up' : 'down' }} me-1"></i>
-                                        {{ abs($financialMetrics['total_revenue']['change']) }}%
+                                        <i class="fas fa-arrow-{{ $financialMetrics['usd']['total_revenue']['change'] > 0 ? 'up' : 'down' }} me-1"></i>
+                                        {{ abs($financialMetrics['usd']['total_revenue']['change']) }}%
                                     </span>
                                     <small class="opacity-75">vs last month</small>
                                 </div>
@@ -67,11 +72,11 @@ use Carbon\Carbon;
                 <div class="card-body text-dark">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 opacity-75">PENDING BILLINGS</h6>
-                            <h2 class="card-title mb-0">{{ $financialMetrics['pending_invoices']['value'] ?? 0 }}</h2>
-                            @if(isset($financialMetrics['pending_invoices']['amount']))
+                            <h6 class="card-subtitle mb-2 opacity-75">PENDING BILLINGS (USD)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['usd']['pending_invoices']['value'] ?? 0 }}</h2>
+                            @if(isset($financialMetrics['usd']['pending_invoices']['amount']))
                                 <div class="mt-2">
-                                    <small class="opacity-75">Amount: ${{ number_format($financialMetrics['pending_invoices']['amount'], 2) }}</small>
+                                    <small class="opacity-75">Amount: {{ $financialMetrics['usd']['pending_invoices']['formatted_amount'] ?? '$0.00' }}</small>
                                 </div>
                             @endif
                         </div>
@@ -88,11 +93,11 @@ use Carbon\Carbon;
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 opacity-75">OVERDUE PAYMENTS</h6>
-                            <h2 class="card-title mb-0">{{ $financialMetrics['overdue_payments']['value'] ?? 0 }}</h2>
-                            @if(isset($financialMetrics['overdue_payments']['amount']))
+                            <h6 class="card-subtitle mb-2 opacity-75">OVERDUE PAYMENTS (USD)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['usd']['overdue_payments']['value'] ?? 0 }}</h2>
+                            @if(isset($financialMetrics['usd']['overdue_payments']['amount']))
                                 <div class="mt-2">
-                                    <small class="opacity-75">Amount: ${{ number_format($financialMetrics['overdue_payments']['amount'], 2) }}</small>
+                                    <small class="opacity-75">Amount: {{ $financialMetrics['usd']['overdue_payments']['formatted_amount'] ?? '$0.00' }}</small>
                                 </div>
                             @endif
                         </div>
@@ -105,30 +110,200 @@ use Carbon\Carbon;
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card summary-card bg-gradient-success text-white">
+            <div class="card summary-card" style="background: linear-gradient(45deg, #36b9cc 0%, #258391 100%); color: white;">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h6 class="card-subtitle mb-2 opacity-75">ACTIVE CUSTOMERS</h6>
-                            <h2 class="card-title mb-0">{{ $financialMetrics['active_customers']['value'] ?? 0 }}</h2>
-                            @if(isset($financialMetrics['active_customers']['change']))
-                                <div class="mt-2">
-                                    <span class="badge bg-white text-success">
-                                        <i class="fas fa-arrow-{{ $financialMetrics['active_customers']['change'] > 0 ? 'up' : 'down' }} me-1"></i>
-                                        {{ abs($financialMetrics['active_customers']['change']) }}
-                                    </span>
-                                    <small class="opacity-75">this month</small>
-                                </div>
-                            @endif
+                            <h6 class="card-subtitle mb-2 opacity-75">INVOICED AMOUNT (USD)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['usd']['invoiced_amount']['formatted'] ?? '$0.00' }}</h2>
                         </div>
                         <div class="icon-circle bg-white-20">
-                            <i class="fas fa-sync-alt fa-2x"></i>
+                            <i class="fas fa-chart-pie fa-2x"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- KSH Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h5 class="mb-3">
+                <span class="badge bg-success me-2">KSH</span> Kenyan Shilling Summary
+            </h5>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card" style="background: linear-gradient(45deg, #20c997 0%, #0f8a6c 100%); color: white;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 opacity-75">TOTAL REVENUE (KSH)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['ksh']['total_revenue']['formatted'] ?? 'KSH 0.00' }}</h2>
+                            @if(isset($financialMetrics['ksh']['total_revenue']['change']) && $financialMetrics['ksh']['total_revenue']['change'] != 0)
+                                <div class="mt-2">
+                                    <span class="badge bg-white text-success">
+                                        <i class="fas fa-arrow-{{ $financialMetrics['ksh']['total_revenue']['change'] > 0 ? 'up' : 'down' }} me-1"></i>
+                                        {{ abs($financialMetrics['ksh']['total_revenue']['change']) }}%
+                                    </span>
+                                    <small class="opacity-75">vs last month</small>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="icon-circle bg-white-20">
+                            <i class="fas fa-shilling-sign fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card bg-gradient-warning">
+                <div class="card-body text-dark">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 opacity-75">PENDING BILLINGS (KSH)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['ksh']['pending_invoices']['value'] ?? 0 }}</h2>
+                            @if(isset($financialMetrics['ksh']['pending_invoices']['amount']))
+                                <div class="mt-2">
+                                    <small class="opacity-75">Amount: {{ $financialMetrics['ksh']['pending_invoices']['formatted_amount'] ?? 'KSH 0.00' }}</small>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="icon-circle bg-warning-20">
+                            <i class="fas fa-file-invoice fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card bg-gradient-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 opacity-75">OVERDUE PAYMENTS (KSH)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['ksh']['overdue_payments']['value'] ?? 0 }}</h2>
+                            @if(isset($financialMetrics['ksh']['overdue_payments']['amount']))
+                                <div class="mt-2">
+                                    <small class="opacity-75">Amount: {{ $financialMetrics['ksh']['overdue_payments']['formatted_amount'] ?? 'KSH 0.00' }}</small>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="icon-circle bg-white-20">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card summary-card" style="background: linear-gradient(45deg, #fd7e14 0%, #dc710a 100%); color: white;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-2 opacity-75">INVOICED AMOUNT (KSH)</h6>
+                            <h2 class="card-title mb-0">{{ $financialMetrics['ksh']['invoiced_amount']['formatted'] ?? 'KSH 0.00' }}</h2>
+                        </div>
+                        <div class="icon-circle bg-white-20">
+                            <i class="fas fa-chart-pie fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Combined Summary (USD Equivalent) -->
+    <div class="row mb-4">
+    <div class="col-12">
+        <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="card-body">
+                <div class="row text-center">
+                    <!-- Total Revenue -->
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <div class="p-3 rounded" style="background: rgba(255,255,255,0.15);">
+                            <h6 class="text-white-50 mb-2">
+                                <i class="fas fa-chart-line me-1"></i>Total Revenue
+                            </h6>
+                            <h3 class="mb-0 text-white">{{ $financialMetrics['combined']['total_revenue']['formatted'] ?? '$0.00' }}</h3>
+                            <small class="text-white-50">
+                                <i class="fas fa-exchange-alt me-1"></i>
+                                KSH {{ number_format(($financialMetrics['combined']['total_revenue']['value'] ?? 0) * ($financialMetrics['combined']['exchange_rate'] ?? 130), 2) }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Pending Amount -->
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <div class="p-3 rounded" style="background: rgba(255,255,255,0.15);">
+                            <h6 class="text-white-50 mb-2">
+                                <i class="fas fa-clock me-1"></i>Pending Amount
+                            </h6>
+                            <h3 class="mb-0 text-warning">{{ $financialMetrics['combined']['pending_amount']['formatted'] ?? '$0.00' }}</h3>
+                            <small class="text-white-50">
+                                <i class="fas fa-exchange-alt me-1"></i>
+                                KSH {{ number_format(($financialMetrics['combined']['pending_amount']['value'] ?? 0) * ($financialMetrics['combined']['exchange_rate'] ?? 130), 2) }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Overdue Amount -->
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <div class="p-3 rounded" style="background: rgba(255,255,255,0.15);">
+                            <h6 class="text-white-50 mb-2">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Overdue Amount
+                            </h6>
+                            <h3 class="mb-0 text-danger">{{ $financialMetrics['combined']['overdue_amount']['formatted'] ?? '$0.00' }}</h3>
+                            <small class="text-white-50">
+                                <i class="fas fa-exchange-alt me-1"></i>
+                                KSH {{ number_format(($financialMetrics['combined']['overdue_amount']['value'] ?? 0) * ($financialMetrics['combined']['exchange_rate'] ?? 130), 2) }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Invoiced Amount -->
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <div class="p-3 rounded" style="background: rgba(255,255,255,0.15);">
+                            <h6 class="text-white-50 mb-2">
+                                <i class="fas fa-file-invoice me-1"></i>Invoiced Amount
+                            </h6>
+                            <h3 class="mb-0 text-info">{{ $financialMetrics['combined']['invoiced_amount']['formatted'] ?? '$0.00' }}</h3>
+                            <small class="text-white-50">
+                                <i class="fas fa-exchange-alt me-1"></i>
+                                KSH {{ number_format(($financialMetrics['combined']['invoiced_amount']['value'] ?? 0) * ($financialMetrics['combined']['exchange_rate'] ?? 130), 2) }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exchange Rate Info -->
+                <div class="text-center mt-3 pt-2 border-top border-white-20">
+                    <small class="text-white-50">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Exchange Rate: 1 USD = {{ number_format($financialMetrics['combined']['exchange_rate'] ?? 130, 2) }} KSH
+                        <span class="mx-2">•</span>
+                        <i class="fas fa-sync-alt me-1"></i>
+                        Last updated: {{ now()->format('M d, Y H:i') }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.border-white-20 {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+</style>
 
     <!-- Additional Metrics -->
     <div class="row mb-4">
@@ -138,8 +313,9 @@ use Carbon\Carbon;
                     <div class="text-primary mb-2">
                         <i class="fas fa-check-circle fa-2x"></i>
                     </div>
-                    <div class="h4 mb-1">{{ $financialMetrics['paid_invoices']['value'] ?? 0 }}</div>
+                    <div class="h4 mb-1">{{ ($financialMetrics['usd']['paid_invoices']['value'] ?? 0) + ($financialMetrics['ksh']['paid_invoices']['value'] ?? 0) }}</div>
                     <small class="text-muted">Paid Invoices</small>
+                    <div class="small text-muted">USD: {{ $financialMetrics['usd']['paid_invoices']['value'] ?? 0 }} | KSH: {{ $financialMetrics['ksh']['paid_invoices']['value'] ?? 0 }}</div>
                 </div>
             </div>
         </div>
@@ -149,9 +325,9 @@ use Carbon\Carbon;
                     <div class="text-success mb-2">
                         <i class="fas fa-cash-register fa-2x"></i>
                     </div>
-                    <div class="h4 mb-1">${{ number_format($financialMetrics['monthly_revenue']['value'] ?? 0, 2) }}</div>
-                    {{-- ${{ number_format($financialMetrics['monthly_revenue']['value'] ?? 0, 2) }} --}}
+                    <div class="h5 mb-0">{{ $financialMetrics['usd']['monthly_revenue']['formatted'] ?? '$0.00' }}</div>
                     <small class="text-muted">Monthly Revenue</small>
+                    <div class="small text-muted">{{ $financialMetrics['ksh']['monthly_revenue']['formatted'] ?? 'KSH 0.00' }}</div>
                 </div>
             </div>
         </div>
@@ -159,7 +335,7 @@ use Carbon\Carbon;
             <div class="card border h-100">
                 <div class="card-body text-center p-3">
                     <div class="text-info mb-2">
-                        <i class="fas fa-users fa-2x"></i>
+                        <i class="fas fa-user-plus fa-2x"></i>
                     </div>
                     <div class="h4 mb-1">{{ $financialMetrics['new_customers']['value'] ?? 0 }}</div>
                     <small class="text-muted">New Customers</small>
@@ -172,8 +348,9 @@ use Carbon\Carbon;
                     <div class="text-warning mb-2">
                         <i class="fas fa-percentage fa-2x"></i>
                     </div>
-                    <div class="h4 mb-1">{{ $financialMetrics['collection_rate']['value'] ?? 0 }}%</div>
+                    <div class="h4 mb-1">{{ $financialMetrics['combined']['collection_rate']['value'] ?? 0 }}%</div>
                     <small class="text-muted">Collection Rate</small>
+                    <div class="small text-muted">USD: {{ $financialMetrics['usd']['collection_rate']['value'] ?? 0 }}% | KSH: {{ $financialMetrics['ksh']['collection_rate']['value'] ?? 0 }}%</div>
                 </div>
             </div>
         </div>
@@ -185,41 +362,40 @@ use Carbon\Carbon;
                     </div>
                     <div class="h4 mb-1">{{ $financialMetrics['avg_payment_days']['value'] ?? 0 }}</div>
                     <small class="text-muted">Avg Payment Days</small>
-                    @if(isset($financialMetrics['avg_payment_days']['trend']))
-                    @if($financialMetrics['avg_payment_days']['trend'] == 'positive')
-                        <span class="badge bg-success ms-2">
-                            <i class="fas fa-arrow-down"></i> Improving
-                        </span>
-                    @elseif($financialMetrics['avg_payment_days']['trend'] == 'negative')
-                        <span class="badge bg-danger ms-2">
-                            <i class="fas fa-arrow-up"></i> Slowing
+                    @if(isset($financialMetrics['avg_payment_days']['trend']) && $financialMetrics['avg_payment_days']['trend'] != 'neutral')
+                        <span class="badge bg-{{ $financialMetrics['avg_payment_days']['trend_color'] ?? 'secondary' }} ms-2">
+                            <i class="fas fa-{{ $financialMetrics['avg_payment_days']['trend_icon'] ?? 'minus' }}"></i>
+                            {{ $financialMetrics['avg_payment_days']['trend'] == 'positive' ? 'Improving' : 'Slowing' }}
                         </span>
                     @endif
-                     @endif
                 </div>
-
-              @if(isset($financialMetrics['avg_payment_days']['subtitle']))
-              <div class="mt-2 small text-muted">
-                <i class="fas fa-info-circle"></i> {{ $financialMetrics['avg_payment_days']['subtitle'] }}
-               </div>
-                 @endif
+                @if(isset($financialMetrics['avg_payment_days']['subtitle']))
+                <div class="mt-2 small text-muted text-center">
+                    <i class="fas fa-info-circle"></i> {{ $financialMetrics['avg_payment_days']['subtitle'] }}
+                </div>
+                @endif
             </div>
- </div>
-
-         <div class="col-xl-2 col-md-4 col-6 mb-3">
+        </div>
+        <div class="col-xl-2 col-md-4 col-6 mb-3">
             <div class="card border h-100">
                 <div class="card-body text-center p-3">
                     <div class="text-purple mb-2">
-                        <i class="fas fa-chart-pie fa-2x"></i>
+                        <i class="fas fa-users fa-2x"></i>
                     </div>
-                    <div class="h4 mb-1">${{ number_format($financialMetrics['invoiced_amount']['value'] ?? 0, 2) }}</div>
-                    <small class="text-muted">Invoiced Amount</small>
+                    <div class="h4 mb-1">{{ $financialMetrics['active_customers']['value'] ?? 0 }}</div>
+                    <small class="text-muted">Active Customers</small>
+                    @if(isset($financialMetrics['active_customers']['change']) && $financialMetrics['active_customers']['change'] != 0)
+                        <div class="small text-{{ $financialMetrics['active_customers']['change'] > 0 ? 'success' : 'danger' }}">
+                            <i class="fas fa-arrow-{{ $financialMetrics['active_customers']['change'] > 0 ? 'up' : 'down' }}"></i>
+                            {{ abs($financialMetrics['active_customers']['change']) }} this month
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
- </div>
-    <!-- Quick Actions & Recent Transactions -->
+
+     <!-- Quick Actions & Recent Transactions -->
     <div class="row">
         <!-- Quick Actions -->
         <div class="col-lg-8 mb-4">
@@ -382,7 +558,7 @@ use Carbon\Carbon;
         </div>
     </div>
 
-    <!-- Charts Section (Placeholder) -->
+    <!-- Charts Section -->
     <div class="row mb-4">
         <div class="col-lg-6 mb-4">
             <div class="card shadow h-100">
@@ -392,11 +568,15 @@ use Carbon\Carbon;
                     </h5>
                 </div>
                 <div class="card-body">
-                    <div class="text-center py-5">
-                        <i class="fas fa-chart-line fa-4x text-muted mb-3"></i>
-                        <p class="text-muted">Revenue chart would appear here</p>
-                        <small class="text-muted">Connect to your data source to display charts</small>
-                    </div>
+                    @if(isset($revenueTrends) && count($revenueTrends['months'] ?? []) > 0)
+                        <canvas id="revenueChart" height="250"></canvas>
+                    @else
+                        <div class="text-center py-5">
+                            <i class="fas fa-chart-line fa-4x text-muted mb-3"></i>
+                            <p class="text-muted">Revenue chart would appear here</p>
+                            <small class="text-muted">Connect to your data source to display charts</small>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -438,6 +618,7 @@ use Carbon\Carbon;
                                     <th>Customer</th>
                                     <th>Due Date</th>
                                     <th>Amount</th>
+                                    <th>Currency</th>
                                     <th>Overdue Days</th>
                                     <th>Action</th>
                                 </tr>
@@ -448,7 +629,18 @@ use Carbon\Carbon;
                                     <td>{{ $invoice->invoice_number }}</td>
                                     <td>{{ $invoice->customer_name }}</td>
                                     <td class="text-danger fw-bold">{{ \Carbon\Carbon::parse($invoice->due_date)->format('M d, Y') }}</td>
-                                    <td>${{ number_format($invoice->amount, 2) }}</td>
+                                    <td class="fw-bold">
+                                        @if($invoice->currency == 'USD')
+                                            ${{ number_format($invoice->amount, 2) }}
+                                        @else
+                                            KSH {{ number_format($invoice->amount, 2) }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ $invoice->currency == 'USD' ? 'primary' : 'success' }}">
+                                            {{ $invoice->currency }}
+                                        </span>
+                                    </td>
                                     <td>
                                         <span class="badge bg-danger">
                                             {{ \Carbon\Carbon::parse($invoice->due_date)->diffInDays(now()) }} days
@@ -472,6 +664,7 @@ use Carbon\Carbon;
 </div>
 
 <style>
+    /* Keep your existing styles */
     .summary-card {
         border: none;
         border-radius: 10px;
@@ -536,6 +729,7 @@ use Carbon\Carbon;
 </style>
 
 @section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize tooltips
@@ -543,22 +737,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
     // Refresh button
-    document.getElementById('refreshBtn').addEventListener('click', function() {
-        const icon = this.querySelector('i');
-        icon.classList.add('fa-spin');
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            icon.classList.add('fa-spin');
+            setTimeout(() => {
+                icon.classList.remove('fa-spin');
+                location.reload();
+            }, 500);
+        });
+    }
 
-        setTimeout(() => {
-            icon.classList.remove('fa-spin');
-            // In a real application, you would fetch updated data here
-            console.log('Refreshing data...');
-        }, 1000);
-    });
-
-    // Auto-refresh every 5 minutes (300000 ms)
-    setInterval(() => {
-        console.log('Auto-refresh triggered');
-        // Add auto-refresh logic here
-    }, 300000);
+    // Revenue Chart
+    @if(isset($revenueTrends) && count($revenueTrends['months'] ?? []) > 0)
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx) {
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: @json($revenueTrends['months'] ?? []),
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: @json($revenueTrends['revenues'] ?? []),
+                    borderColor: 'rgb(54, 162, 235)',
+                    backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    @endif
 });
 </script>
 @endsection

@@ -32,22 +32,42 @@ class Conversation extends Model
         return $this->hasMany(Participant::class);
     }
 
-    // public function users(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(User::class, 'participants')
-    //         ->withPivot(['joined_at', 'last_read_at', 'role'])
-    //         ->withTimestamps();
-    // }
+  /**
+ * Get the other participant in a direct conversation
+ */
+public function getOtherParticipant($userId)
+{
+    return $this->participants()
+        ->where('user_id', '!=', $userId)
+        ->first();
+}
 
-    // public function messages(): HasMany
-    // {
-    //     return $this->hasMany(Message::class);
-    // }
+/**
+ * Get unread message count for a user
+ */
+public function unreadCount($userId = null)
+{
+    $userId = $userId ?? auth()->id();
 
-    // public function lastMessage(): BelongsTo
-    // {
-    //     return $this->belongsTo(Message::class, 'last_message_id');
-    // }
+    return $this->messages()
+        ->where('user_id', '!=', $userId)
+        ->whereNull('read_at')
+        ->count();
+}
+
+/**
+ * Scope for direct conversations between two users
+ */
+public function scopeDirectConversations($query, $userId1, $userId2)
+{
+    return $query->where('type', 'direct')
+        ->whereHas('participants', function ($q) use ($userId1) {
+            $q->where('user_id', $userId1);
+        })
+        ->whereHas('participants', function ($q) use ($userId2) {
+            $q->where('user_id', $userId2);
+        });
+}
 
     // Scopes
     public function scopeForUser($query, $userId)
@@ -57,22 +77,22 @@ class Conversation extends Model
         });
     }
 
-    public function scopeDirectConversations($query, $userId1, $userId2)
-    {
-        return $query->where('type', 'direct')
-            ->whereHas('participants', function ($q) use ($userId1) {
-                $q->where('user_id', $userId1);
-            })
-            ->whereHas('participants', function ($q) use ($userId2) {
-                $q->where('user_id', $userId2);
-            });
-    }
+    // public function scopeDirectConversations($query, $userId1, $userId2)
+    // {
+    //     return $query->where('type', 'direct')
+    //         ->whereHas('participants', function ($q) use ($userId1) {
+    //             $q->where('user_id', $userId1);
+    //         })
+    //         ->whereHas('participants', function ($q) use ($userId2) {
+    //             $q->where('user_id', $userId2);
+    //         });
+    // }
 
     // Helper methods
-    public function getOtherParticipant($userId)
-    {
-        return $this->users()->where('users.id', '!=', $userId)->first();
-    }
+    // public function getOtherParticipant($userId)
+    // {
+    //     return $this->users()->where('users.id', '!=', $userId)->first();
+    // }
 
     public function markAsReadForUser($userId)
     {

@@ -113,7 +113,7 @@
                                         <li><i class="fas fa-check text-success me-2"></i>Transaction categorization</li>
                                         <li><i class="fas fa-check text-success me-2"></i>Payment method breakdown</li>
                                     </ul>
-                                    <a href="{{ route('finance.transactions') }}" class="btn btn-success w-100">
+                                    <a href="{{ route('finance.transactions.index') }}" class="btn btn-success w-100">
                                         View Transaction Reports
                                     </a>
                                 </div>
@@ -184,13 +184,13 @@
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="{{ route('finance.billing') }}"
+                                            <a href="{{ route('finance.billing.index') }}"
                                                class="btn btn-outline-secondary w-100">
                                                 <i class="fas fa-file-invoice me-2"></i>All Invoices
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="{{ route('finance.transactions') }}"
+                                            <a href="{{ route('finance.transactions.index') }}"
                                                class="btn btn-outline-dark w-100">
                                                 <i class="fas fa-list me-2"></i>All Transactions
                                             </a>
@@ -243,36 +243,62 @@
                         </div>
                         <div class="col-md-6">
                             <div class="card">
-                                <div class="card-header">
-                                    <h6 class="card-title mb-0">Recent Transactions</h6>
-                                </div>
-                                <div class="card-body">
-                                    @php
-                                        $recentTransactions = \App\Models\Transaction::with('billing')
-                                            ->orderBy('created_at', 'desc')
-                                            ->limit(5)
-                                            ->get();
-                                    @endphp
-                                    @if($recentTransactions->count() > 0)
-                                        <div class="list-group list-group-flush">
-                                            @foreach($recentTransactions as $transaction)
-                                                <div class="list-group-item px-0">
-                                                    <div class="d-flex w-100 justify-content-between">
-                                                        <h6 class="mb-1">{{ $transaction->description }}</h6>
-                                                        <span class="badge bg-{{ $transaction->type == 'income' ? 'success' : 'danger' }}">
-                                                            {{ ucfirst($transaction->type) }}
-                                                        </span>
-                                                    </div>
-                                                    <p class="mb-1">${{ number_format($transaction->amount, 2) }}</p>
-                                                    <small class="text-muted">{{ $transaction->created_at->diffForHumans() }}</small>
-                                                </div>
-                                            @endforeach
-                                        </div>
+    <div class="card-header">
+        <h6 class="card-title mb-0">
+            <i class="fas fa-history me-2"></i>Recent Transactions
+        </h6>
+    </div>
+    <div class="card-body">
+        @if(isset($recentTransactions) && $recentTransactions->count() > 0)
+            <div class="list-group list-group-flush">
+                @foreach($recentTransactions as $transaction)
+                    <div class="list-group-item px-0">
+                        <div class="d-flex w-100 justify-content-between">
+                            <div>
+                                <h6 class="mb-1">{{ $transaction->description ?? 'Transaction' }}</h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    {{ \Carbon\Carbon::parse($transaction->transaction_date)->format('M d, Y') }}
+                                </small>
+                                @if($transaction->billing)
+                                    <small class="text-muted ms-2">
+                                        <i class="fas fa-file-invoice me-1"></i>
+                                        Invoice: {{ $transaction->billing->billing_number ?? 'N/A' }}
+                                    </small>
+                                @endif
+                            </div>
+                            <div class="text-end">
+                                <div class="h6 mb-1 {{ $transaction->direction === 'out' ? 'text-danger' : 'text-success' }}">
+                                    @if($transaction->currency === 'USD')
+                                        ${{ number_format($transaction->amount, 2) }}
                                     @else
-                                        <p class="text-muted text-center">No recent transactions</p>
+                                        KSH {{ number_format($transaction->amount, 2) }}
                                     @endif
                                 </div>
+                                <span class="badge bg-{{ $transaction->status === 'completed' ? 'success' : ($transaction->status === 'pending' ? 'warning' : 'secondary') }}">
+                                    {{ ucfirst($transaction->status ?? 'pending') }}
+                                </span>
                             </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="mt-3 text-center">
+                <a href="{{ route('finance.transactions.index') }}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-list me-1"></i> View All Transactions
+                </a>
+            </div>
+        @else
+            <div class="text-center py-4">
+                <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No recent transactions found.</p>
+                <a href="{{ route('finance.transactions.create') }}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus me-1"></i> Add Transaction
+                </a>
+            </div>
+        @endif
+    </div>
+</div>
                         </div>
                     </div>
                 </div>

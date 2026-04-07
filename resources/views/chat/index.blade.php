@@ -19,8 +19,16 @@
                     <div class="list-group list-group-flush" id="conversationsList">
                         @forelse($conversations as $conversation)
                             @php
-                                $otherUser = $conversation->users->firstWhere('id', '!=', auth()->id());
-                                $unreadCount = $conversation->unreadCountForUser(auth()->id()) ?? 0;
+                                $otherUser = null;
+                                if (isset($conversation->other_participant)) {
+                                    $otherUser = $conversation->other_participant;
+                                } elseif ($conversation->participants) {
+                                    $otherUser = $conversation->participants->firstWhere('id', '!=', auth()->id());
+                                }
+                                $unreadCount = $conversation->unread_count ?? 0;
+                                $userName = $otherUser->name ?? ($conversation->other_user_name ?? 'Unknown User');
+                                $userRole = $otherUser->role ?? ($conversation->other_user_role ?? '');
+                                $userEmail = $otherUser->email ?? ($conversation->other_user_email ?? '');
                             @endphp
 
                             <a href="#"
@@ -30,20 +38,24 @@
                                     <div class="avatar me-3">
                                         <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
                                              style="width: 40px; height: 40px;">
-                                           {{ substr($otherUser->name ?? '?', 0, 1) }}
+                                           {{ substr($userName, 0, 1) }}
                                         </div>
                                     </div>
                                     <div>
-                                        <h6 class="mb-0">{{ $otherUser->name ?? 'Unknown User' }}</h6>
+                                        <h6 class="mb-0">{{ $userName }}</h6>
                                         <small class="text-muted">
                                             @if($conversation->lastMessage)
-                                                {{ Str::limit($conversation->lastMessage->body, 30) }}
+                                                @if($conversation->lastMessage->type === 'file')
+                                                    📎 {{ Str::limit($conversation->lastMessage->file_name, 30) }}
+                                                @else
+                                                    {{ Str::limit($conversation->lastMessage->body, 30) }}
+                                                @endif
                                             @else
                                                 No messages yet
                                             @endif
                                         </small>
                                         <br>
-                                        <small class="text-muted">{{ $otherUser->role ?? '' }}</small>
+                                        <small class="text-muted">{{ $userRole }}</small>
                                     </div>
                                 </div>
                                 @if($unreadCount > 0)
@@ -59,7 +71,7 @@
                     </div>
                 </div>
 
-                @if(method_exists($conversations, 'links'))
+                @if(isset($conversations) && method_exists($conversations, 'links'))
                 <div class="card-footer" id="pagination">
                     {{ $conversations->links() }}
                 </div>
@@ -111,7 +123,23 @@
                 </div>
 
                 <div class="card-footer">
+                    <!-- File Upload Preview Area -->
+                    <div id="filePreviewArea" class="mb-2" style="display: none;">
+                        <div class="alert alert-info mb-2 p-2 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-file me-2"></i>
+                                <span id="selectedFileName"></span>
+                                <small class="text-muted ms-2" id="selectedFileSize"></small>
+                            </div>
+                            <button type="button" class="btn-close" onclick="clearFileSelection()"></button>
+                        </div>
+                    </div>
+
                     <div class="input-group">
+                        <button class="btn btn-outline-secondary" type="button" onclick="triggerFileUpload()" title="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="fileInput" style="display: none;" onchange="handleFileSelect(event)">
                         <textarea
                             class="form-control"
                             id="messageInput"
@@ -123,6 +151,9 @@
                         <button class="btn btn-primary" onclick="sendMessage()" id="sendButton">
                             <i class="fas fa-paper-plane"></i> Send
                         </button>
+                    </div>
+                    <div class="small text-muted mt-2">
+                        <i class="fas fa-info-circle"></i> Supported files: Images, PDF, DOC, DOCX, XLS, XLSX, ZIP (Max: 10MB)
                     </div>
                 </div>
             </div>
@@ -157,12 +188,8 @@
                     <small class="text-muted">Type at least 2 characters to search</small>
                 </div>
 
-                <!-- Search Results -->
-                <div id="searchResults" class="list-group" style="max-height: 350px; overflow-y: auto;">
-                    <!-- Results will appear here -->
-                </div>
+                <div id="searchResults" class="list-group" style="max-height: 350px; overflow-y: auto;"></div>
 
-                <!-- Quick Filters (Optional) -->
                 <div class="mt-3">
                     <small class="text-muted d-block mb-2">Quick filter by role:</small>
                     <div class="d-flex gap-2 flex-wrap">
@@ -187,6 +214,8 @@ let currentPage = 1;
 let messagesPagination = null;
 let loadingMessages = false;
 let hasMoreMessages = true;
+let selectedFile = null;
+
 let currentUser = {
     id: {{ auth()->id() }},
     name: "{{ auth()->user()->name }}",
@@ -194,7 +223,6 @@ let currentUser = {
 };
 
 // ==================== INITIALIZATION ====================
-// Auto-resize textarea as user types
 function autoResizeTextarea() {
     const textarea = document.getElementById('messageInput');
     if (textarea) {
@@ -207,25 +235,22 @@ function autoResizeTextarea() {
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Chat initialized');
-    // Attach click handlers to existing conversation items
     attachConversationClickHandlers();
 
-    // Check for conversation ID in URL (from redirect)
     const urlParams = new URLSearchParams(window.location.search);
     const conversationId = urlParams.get('conversation');
     if (conversationId) {
-        // Small delay to ensure DOM is ready
         setTimeout(() => {
             openConversation(conversationId);
         }, 100);
     }
 
-    // Setup infinite scroll for messages
     setupInfiniteScroll();
     autoResizeTextarea();
+    updateNotificationBadge();
+    setInterval(updateNotificationBadge, 30000);
 });
 
-// Attach click handlers to conversation items
 function attachConversationClickHandlers() {
     document.querySelectorAll('.conversation-item').forEach(item => {
         item.addEventListener('click', function(e) {
@@ -238,16 +263,77 @@ function attachConversationClickHandlers() {
     });
 }
 
+// ==================== FILE UPLOAD FUNCTIONS ====================
+function triggerFileUpload() {
+    document.getElementById('fileInput').click();
+}
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+        alert('File size exceeds 10MB limit. Please choose a smaller file.');
+        clearFileSelection();
+        return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp',
+                          'application/pdf', 'application/msword',
+                          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                          'application/vnd.ms-excel',
+                          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                          'application/zip', 'application/x-zip-compressed'];
+
+    if (!allowedTypes.includes(file.type) && !file.name.match(/\.(jpg|jpeg|png|gif|webp|pdf|doc|docx|xls|xlsx|zip)$/i)) {
+        alert('File type not supported. Please upload images, PDF, DOC, DOCX, XLS, XLSX, or ZIP files.');
+        clearFileSelection();
+        return;
+    }
+
+    selectedFile = file;
+
+    const previewArea = document.getElementById('filePreviewArea');
+    const fileNameSpan = document.getElementById('selectedFileName');
+    const fileSizeSpan = document.getElementById('selectedFileSize');
+
+    fileNameSpan.textContent = file.name;
+    fileSizeSpan.textContent = formatFileSize(file.size);
+    previewArea.style.display = 'block';
+}
+
+function clearFileSelection() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('filePreviewArea').style.display = 'none';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function getFileIcon(mimeType) {
+    if (!mimeType) return 'fa-file';
+    const type = mimeType.toLowerCase();
+    if (type.includes('image')) return 'fa-file-image';
+    if (type.includes('pdf')) return 'fa-file-pdf';
+    if (type.includes('word') || type.includes('document')) return 'fa-file-word';
+    if (type.includes('excel') || type.includes('sheet')) return 'fa-file-excel';
+    if (type.includes('zip') || type.includes('rar')) return 'fa-file-archive';
+    return 'fa-file';
+}
+
 // ==================== SHOW NEW CHAT MODAL ====================
 function showNewChatModal() {
     const modal = new bootstrap.Modal(document.getElementById('newChatModal'));
     modal.show();
-
-    // Clear previous search results and input
     document.getElementById('searchUsersInput').value = '';
     document.getElementById('searchResults').innerHTML = '';
-
-    // Focus on search input
     setTimeout(() => {
         document.getElementById('searchUsersInput').focus();
     }, 500);
@@ -257,14 +343,10 @@ function showNewChatModal() {
 function openConversation(conversationId) {
     console.log('Opening conversation:', conversationId);
 
-    // Update URL without page reload
     updateUrlWithConversation(conversationId);
-
-    // Show chat area, hide empty state
     document.getElementById('chatArea').style.display = 'block';
     document.getElementById('noChatSelected').style.display = 'none';
 
-    // Show loading state
     document.getElementById('messages').innerHTML = `
         <div class="text-center text-muted py-5">
             <div class="spinner-border text-primary mb-3" role="status">
@@ -274,52 +356,47 @@ function openConversation(conversationId) {
         </div>
     `;
 
-    // On mobile, hide sidebar
     if (window.innerWidth <= 768) {
         document.querySelector('.col-md-4').style.display = 'none';
     }
 
-    // Fetch conversation and messages
-    fetch(`/api/chat/${conversationId}`, {
+    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+
+    fetch(`/chat/${conversationId}/messages`, {
+        method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        }
+            'X-CSRF-TOKEN': token,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'same-origin'
     })
-    .then(response => {
+    .then(async response => {
         if (!response.ok) {
-            throw new Error('Failed to load conversation');
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         return response.json();
     })
     .then(data => {
         console.log('Conversation data loaded:', data);
 
-        // Store current conversation
+        if (!data.success) {
+            throw new Error(data.error || 'Failed to load conversation');
+        }
+
         currentConversation = data.conversation;
         messagesPagination = data.messages;
-        hasMoreMessages = data.messages.current_page < data.messages.last_page;
+        hasMoreMessages = messagesPagination?.current_page < messagesPagination?.last_page;
 
-        // Get the other user from the conversation users array
-        const otherUser = data.other_user || data.conversation.users.find(u => u.id !== currentUser.id);
-
-        // Update chat header with user info
+        const otherUser = data.other_user;
         updateChatHeader(otherUser);
-
-        // Render messages
-        renderMessages(data.messages.data);
-
-        // Mark conversation as active in list
+        renderMessages(messagesPagination?.data || []);
         updateActiveConversation(conversationId);
-
-        // Focus on message input
-        document.getElementById('messageInput').focus();
-
-        // Mark messages as read
         markMessagesAsRead(conversationId);
-
-        // Scroll to bottom
         scrollToBottom();
+        document.getElementById('messageInput').focus();
     })
     .catch(error => {
         console.error('Error loading conversation:', error);
@@ -327,7 +404,8 @@ function openConversation(conversationId) {
             <div class="text-center text-muted py-5">
                 <i class="fas fa-exclamation-circle fa-2x mb-3 text-danger"></i>
                 <p>Failed to load messages.</p>
-                <button class="btn btn-sm btn-primary" onclick="openConversation(${conversationId})">
+                <p class="small text-muted">Error: ${error.message}</p>
+                <button class="btn btn-sm btn-primary mt-2" onclick="openConversation(${conversationId})">
                     Try Again
                 </button>
             </div>
@@ -335,15 +413,11 @@ function openConversation(conversationId) {
     });
 }
 
-// Update chat header with user info
 function updateChatHeader(user) {
     if (!user) return;
-
     document.getElementById('chatUserName').textContent = user.name || 'Unknown User';
     document.getElementById('chatUserRole').textContent = user.role || '';
     document.getElementById('chatUserEmail').textContent = user.email || '';
-
-    // Update avatar
     const avatar = document.getElementById('chatAvatar');
     if (avatar) {
         avatar.textContent = getInitials(user.name);
@@ -353,7 +427,6 @@ function updateChatHeader(user) {
 // ==================== RENDER MESSAGES ====================
 function renderMessages(messages) {
     const container = document.getElementById('messages');
-
     if (!messages || messages.length === 0) {
         container.innerHTML = `
             <div class="text-center text-muted py-5">
@@ -364,23 +437,51 @@ function renderMessages(messages) {
         return;
     }
 
-    // Messages come from API in descending order (newest first)
-    // We want to display them in ascending order (oldest first)
     const sortedMessages = [...messages].reverse();
+    container.innerHTML = sortedMessages.map(msg => {
+        // Check if message has a file attachment
+        if ((msg.type === 'file' || msg.type === 'image') && msg.attachment_path) {
+            const fileIcon = getFileIcon(msg.mime_type);
+            const fileName = msg.attachment_name || 'File';
+            const fileSize = msg.file_size;
+            const fileId = msg.id;
 
-    container.innerHTML = sortedMessages.map(msg => `
-        <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
-            <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
-                 style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
-                <div class="message-text">${escapeHtml(msg.body)}</div>
-                <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
-                    <span>${formatTime(msg.created_at)}</span>
-                    ${msg.user_id === currentUser.id && msg.read_at ?
-                        '<span class="ms-1" title="Read">✓✓</span>' : ''}
+            return `
+                <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
+                    <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
+                         style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                        <div class="message-file text-center">
+                            <i class="fas ${fileIcon} fa-2x mb-2"></i>
+                            <div class="message-text">
+                                <a href="/chat/download/${fileId}" target="_blank" class="${msg.user_id === currentUser.id ? 'text-white' : 'text-primary'} text-decoration-underline">
+                                    ${escapeHtml(fileName)}
+                                </a>
+                            </div>
+                            <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
+                                <span>${formatFileSize(fileSize)}</span>
+                                <span class="ms-2">${formatTime(msg.created_at)}</span>
+                                ${msg.user_id === currentUser.id && msg.read_at ? '<span class="ms-1" title="Read">✓✓</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    `).join('');
+            `;
+        } else {
+            // Text message
+            return `
+                <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
+                    <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
+                         style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                        <div class="message-text">${escapeHtml(msg.body)}</div>
+                        <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
+                            <span>${formatTime(msg.created_at)}</span>
+                            ${msg.user_id === currentUser.id && msg.read_at ? '<span class="ms-1" title="Read">✓✓</span>' : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }).join('');
 }
 
 // ==================== SEND MESSAGE ====================
@@ -388,63 +489,75 @@ function sendMessage() {
     const input = document.getElementById('messageInput');
     const message = input.value.trim();
 
-    if (!message) {
-        return;
-    }
+    if ((!message && !selectedFile) || !currentConversation) return;
 
-    if (!currentConversation) {
-        alert('Please select a conversation first');
-        return;
-    }
-
-    // Disable input and button
     input.disabled = true;
     const sendButton = document.getElementById('sendButton');
     sendButton.disabled = true;
-    sendButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...';
+    sendButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Sending...';
 
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
+    let formData = new FormData();
 
-    fetch(`/api/messages`, {
+    // Always send body even if empty (for file messages)
+    formData.append('body', message || '');
+    formData.append('type', selectedFile ? 'file' : 'text');
+
+    if (selectedFile) {
+        formData.append('file', selectedFile);
+    }
+
+    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+
+    // Log what we're sending
+    console.log('Sending message:', {
+        conversation_id: currentConversation.id,
+        has_file: !!selectedFile,
+        file_name: selectedFile?.name,
+        message_length: message.length
+    });
+
+    fetch(`/chat/${currentConversation.id}/messages`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': token,
             'X-Requested-With': 'XMLHttpRequest'
+            // Don't set Content-Type header - let browser set it with boundary for FormData
         },
-        body: JSON.stringify({
-            conversation_id: currentConversation.id,
-            body: message,
-            type: 'text'
-        })
+        body: formData
     })
     .then(async response => {
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error || 'Failed to send message');
+        const text = await response.text();
+        console.log('Response:', response.status, text);
+
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch(e) {
+            console.error('JSON parse error:', e);
+            throw new Error('Invalid response from server');
         }
-        return response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to send message');
+        }
+        return data;
     })
     .then(data => {
-        console.log('Message sent:', data);
-
-        // Add message to UI
-        addMessageToUI(data);
-
-        // Clear input and reset height
-        input.value = '';
-        input.style.height = 'auto';
-
-        // Update conversation last message in sidebar
-        updateConversationLastMessage(currentConversation.id, data.body);
+        const newMessage = data.message || data.data?.message;
+        if (newMessage) {
+            addMessageToUI(newMessage);
+            input.value = '';
+            input.style.height = 'auto';
+            clearFileSelection();
+            const previewText = (newMessage.type === 'file' || newMessage.type === 'image') ? '📎 ' + (newMessage.attachment_name || 'File') : newMessage.body;
+            updateConversationLastMessage(currentConversation.id, previewText);
+        }
     })
     .catch(error => {
         console.error('Error sending message:', error);
         alert('Failed to send message: ' + error.message);
     })
     .finally(() => {
-        // Re-enable input and button
         input.disabled = false;
         sendButton.disabled = false;
         sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
@@ -452,45 +565,56 @@ function sendMessage() {
     });
 }
 
-// Add new message to UI
 function addMessageToUI(message) {
     const container = document.getElementById('messages');
-    const messageHtml = `
-        <div class="message mb-3 text-end" data-id="${message.id}">
-            <div class="d-inline-block bg-primary text-white"
-                 style="max-width: 70%; padding: 10px 15px; border-radius: 18px; border-bottom-right-radius: 4px;">
-                <div class="message-text">${escapeHtml(message.body)}</div>
-                <div class="message-meta" style="font-size: 11px; margin-top: 5px; color: rgba(255,255,255,0.8)">
-                    <span>Just now</span>
+    let messageHtml;
+
+    if ((message.type === 'file' || message.type === 'image') && message.attachment_path) {
+        const fileIcon = getFileIcon(message.mime_type);
+        const fileName = message.attachment_name || 'File';
+        const fileSize = message.file_size;
+        const fileId = message.id;
+
+        messageHtml = `
+            <div class="message mb-3 text-end" data-id="${message.id}">
+                <div class="d-inline-block bg-primary text-white"
+                     style="max-width: 70%; padding: 10px 15px; border-radius: 18px; border-bottom-right-radius: 4px;">
+                    <div class="message-file text-center">
+                        <i class="fas ${fileIcon} fa-2x mb-2"></i>
+                        <div class="message-text">
+                            <a href="/chat/download/${fileId}" target="_blank" class="text-white text-decoration-underline">
+                                ${escapeHtml(fileName)}
+                            </a>
+                        </div>
+                        <div class="message-meta" style="font-size: 11px; margin-top: 5px; color: rgba(255,255,255,0.8)">
+                            <span>${formatFileSize(fileSize)}</span>
+                            <span class="ms-2">Just now</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
+    } else {
+        messageHtml = `
+            <div class="message mb-3 text-end" data-id="${message.id}">
+                <div class="d-inline-block bg-primary text-white"
+                     style="max-width: 70%; padding: 10px 15px; border-radius: 18px; border-bottom-right-radius: 4px;">
+                    <div class="message-text">${escapeHtml(message.body)}</div>
+                    <div class="message-meta" style="font-size: 11px; margin-top: 5px; color: rgba(255,255,255,0.8)">
+                        <span>Just now</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
     container.insertAdjacentHTML('beforeend', messageHtml);
     scrollToBottom();
 }
 
-// Update conversation last message in sidebar
-function updateConversationLastMessage(conversationId, message) {
-    const conversationItem = document.querySelector(`.conversation-item[data-id="${conversationId}"]`);
-    if (conversationItem) {
-        const messagePreview = conversationItem.querySelector('small.text-muted');
-        if (messagePreview) {
-            messagePreview.textContent = truncateText(message, 30);
-        }
-    }
-}
-
-// Helper function to truncate text
-function truncateText(text, length) {
-    if (!text) return '';
-    return text.length > length ? text.substring(0, length) + '...' : text;
-}
-
 // ==================== MARK MESSAGES AS READ ====================
 function markMessagesAsRead(conversationId) {
-    fetch(`/api/chat/${conversationId}/read`, {
+    fetch(`/chat/${conversationId}/read`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -499,7 +623,6 @@ function markMessagesAsRead(conversationId) {
         }
     })
     .then(() => {
-        // Remove unread badge from sidebar
         const conversationItem = document.querySelector(`.conversation-item[data-id="${conversationId}"]`);
         if (conversationItem) {
             const badge = conversationItem.querySelector('.unread-badge');
@@ -519,55 +642,28 @@ function searchUsers(query) {
         return;
     }
 
-    // Show loading state
     resultsEl.innerHTML = `
         <div class="list-group-item text-center py-3">
-            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
             <span class="ms-2 small">Searching users...</span>
         </div>
     `;
 
-    // Get CSRF token
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
-
-    if (!token) {
-        console.error('CSRF token not found');
-        resultsEl.innerHTML = `
-            <div class="list-group-item text-center py-4">
-                <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
-                <p class="text-danger mb-0">Security token not found. Please refresh the page.</p>
-            </div>
-        `;
-        return;
-    }
-
-    // Construct the full URL
-    const url = `/api/chat/search/users?search=${encodeURIComponent(query)}`;
-    console.log('Fetching users from:', url);
-
-    fetch(url, {
+    fetch(`/chat/search/users?search=${encodeURIComponent(query)}`, {
+        method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': token,
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         }
     })
     .then(async response => {
-        console.log('Response status:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('Error response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error('Search failed');
         return response.json();
     })
     .then(users => {
-        console.log('Users received:', users);
+        const usersArray = users.data || users;
 
-        if (users.length === 0) {
+        if (usersArray.length === 0) {
             resultsEl.innerHTML = `
                 <div class="list-group-item text-center py-4">
                     <i class="fas fa-user-slash fa-2x text-muted mb-2"></i>
@@ -575,20 +671,17 @@ function searchUsers(query) {
                 </div>
             `;
         } else {
-            resultsEl.innerHTML = users.map(user => `
+            resultsEl.innerHTML = usersArray.map(user => `
                 <a href="javascript:void(0)"
                    class="list-group-item list-group-item-action py-3"
                    onclick="startNewConversation(${user.id})">
                     <div class="d-flex align-items-center">
-                        <!-- User Avatar -->
                         <div class="avatar me-3">
                             <div class="bg-${getUserColor(user.role)} rounded-circle text-white d-flex align-items-center justify-content-center"
                                  style="width: 45px; height: 45px; font-size: 16px;">
-                                ${user.initial || getInitials(user.name)}
+                                ${getInitials(user.name)}
                             </div>
                         </div>
-
-                        <!-- User Info -->
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-1 fw-bold">${escapeHtml(user.name)}</h6>
@@ -597,11 +690,6 @@ function searchUsers(query) {
                             <p class="mb-0 small text-muted">
                                 <i class="fas fa-envelope me-1"></i>${escapeHtml(user.email)}
                             </p>
-                            ${user.company_name ? `
-                                <p class="mb-0 small text-muted mt-1">
-                                    <i class="fas fa-building me-1"></i>${escapeHtml(user.company_name)}
-                                </p>
-                            ` : ''}
                         </div>
                     </div>
                 </a>
@@ -615,6 +703,7 @@ function searchUsers(query) {
                 <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
                 <p class="text-danger mb-0">Failed to search users. Please try again.</p>
                 <small class="text-muted">${error.message}</small>
+                <button class="btn btn-sm btn-outline-primary mt-2" onclick="searchUsers('${query}')">Retry</button>
             </div>
         `;
     });
@@ -622,28 +711,20 @@ function searchUsers(query) {
 
 // ==================== START NEW CONVERSATION ====================
 function startNewConversation(userId) {
-    console.log('Starting conversation with user:', userId);
-
-    // Show loading state in the modal
     const resultsEl = document.getElementById('searchResults');
     resultsEl.innerHTML = `
         <div class="list-group-item text-center py-3">
-            <div class="spinner-border spinner-border-sm text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
             <span class="ms-2 small">Creating conversation...</span>
         </div>
     `;
 
-    const token = document.querySelector('meta[name="csrf-token"]')?.content;
-
-    fetch(`/api/chat/start`, {
+    fetch(`/chat/start`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': token,
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         },
         body: JSON.stringify({ user_id: userId })
     })
@@ -655,306 +736,67 @@ function startNewConversation(userId) {
         return response.json();
     })
     .then(data => {
-        console.log('Conversation created:', data);
-
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('newChatModal'));
-        modal.hide();
-
-        // Open the conversation
-        openConversation(data.conversation.id);
+        const conversation = data.conversation || data.data?.conversation;
+        if (conversation) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newChatModal'));
+            modal.hide();
+            openConversation(conversation.id);
+        }
     })
     .catch(error => {
         console.error('Error starting conversation:', error);
         alert('Failed to start conversation: ' + error.message);
-
-        // Restore search results
         document.getElementById('searchUsersInput').value = '';
         document.getElementById('searchResults').innerHTML = '';
     });
 }
 
-// Helper function to get user avatar color based on role
-function getUserColor(role) {
-    const colors = {
-        'admin': 'danger',
-        'system_admin': 'dark',
-        'account_manager': 'info',
-        'finance': 'success',
-        'customer': 'primary',
-        'ict_engineer': 'warning',
-        'technician': 'secondary',
-        'surveyor': 'info'
-    };
-
-    return colors[role] || 'secondary';
-}
-
-// Helper function to get badge color based on role
-function getRoleBadgeColor(role) {
-    const colors = {
-        'admin': 'danger',
-        'system_admin': 'dark',
-        'account_manager': 'info',
-        'finance': 'success',
-        'customer': 'primary',
-        'ict_engineer': 'warning',
-        'technician': 'secondary',
-        'surveyor': 'info'
-    };
-
-    return colors[role] || 'secondary';
-}
-
-// ==================== REAL-TIME NOTIFICATIONS ====================
-// ==================== REAL-TIME NOTIFICATIONS ====================
-// Initialize Echo (only if Pusher is configured)
-let echoInitialized = false;
-
-function initializeEcho() {
-    if (echoInitialized) return;
-
-    // Check if Pusher JS is loaded
-    if (typeof Pusher === 'undefined') {
-        console.log('Pusher not loaded, real-time features disabled');
-        return;
-    }
-
-    window.Echo = new Echo({
-        broadcaster: 'pusher',
-        key: document.querySelector('meta[name="pusher-key"]')?.content || '',
-        cluster: document.querySelector('meta[name="pusher-cluster"]')?.content || 'mt1',
-        forceTLS: true,
-        authEndpoint: '/broadcasting/auth',
-        auth: {
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
-            }
-        }
-    });
-
-    echoInitialized = true;
-    listenForMessages();
-}
-
-// Listen for new messages
-function listenForMessages() {
-    if (!window.Echo) return;
-
-    // Listen on user's private channel
-    window.Echo.private(`user.${currentUser.id}`)
-        .listen('.message.sent', (e) => {
-            console.log('New message received:', e);
-
-            // If the message is for the current conversation, add it to the chat
-            if (currentConversation && e.conversation && e.conversation.id === currentConversation.id) {
-                addMessageToUI(e.message);
-                markMessagesAsRead(currentConversation.id);
-            } else {
-                // Show notification
-                showNotification(e);
-            }
-
-            // Update conversation list
-            if (e.conversation && e.message) {
-                updateConversationList(e.conversation, e.message);
-            }
-
-            // Update notification badge
-            updateNotificationBadge();
-        });
-
-    // Listen on conversation channel if in a conversation
-    if (currentConversation) {
-        window.Echo.private(`conversation.${currentConversation.id}`)
-            .listen('.message.sent', (e) => {
-                console.log('Message on conversation channel:', e);
-            });
-    }
-}
-
-// Show browser notification
-function showNotification(data) {
-    // Check if browser notifications are supported
-    if (!("Notification" in window)) {
-        console.log("This browser does not support desktop notification");
-        return;
-    }
-
-    const messageData = data.message || {};
-    const conversationData = data.conversation || {};
-    const senderName = messageData.user?.name || 'Someone';
-
-    if (Notification.permission === "granted") {
-        const notification = new Notification(`New message from ${senderName}`, {
-            body: messageData.body || 'You have a new message',
-            icon: '/favicon.ico',
-            tag: 'chat-message',
-            silent: false
-        });
-
-        notification.onclick = function() {
-            window.focus();
-            if (conversationData.id) {
-                openConversation(conversationData.id);
-            }
-            notification.close();
-        };
-
-        // Auto close after 5 seconds
-        setTimeout(() => notification.close(), 5000);
-    } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                showNotification(data);
-            }
-        });
-    }
-}
-
-// Update notification badge
+// ==================== NOTIFICATION FUNCTIONS ====================
 function updateNotificationBadge() {
-    fetch('/notifications/unread-count', {
+    fetch(`/chat/unread-count`, {
         headers: {
             'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
         }
     })
     .then(response => response.json())
     .then(data => {
-        const badge = document.querySelector('.notification-badge');
-        if (badge) {
-            if (data.count > 0) {
-                badge.textContent = data.count;
-                badge.style.display = 'inline';
-            } else {
-                badge.style.display = 'none';
+        const count = data.unread_count || data.data?.unread_count || 0;
+        const chatLink = document.querySelector('a[href*="chat.index"]');
+        if (chatLink) {
+            const existingBadge = chatLink.querySelector('.badge');
+            if (count > 0) {
+                if (existingBadge) {
+                    existingBadge.textContent = count;
+                } else {
+                    chatLink.insertAdjacentHTML('beforeend', `<span class="badge bg-danger ms-1">${count}</span>`);
+                }
+            } else if (existingBadge) {
+                existingBadge.remove();
             }
         }
     })
     .catch(error => console.error('Error updating notification badge:', error));
 }
 
-// Update conversation list when new message arrives
-function updateConversationList(conversation, message) {
-    const conversationsList = document.getElementById('conversationsList');
-    if (!conversationsList) return;
-
-    // Check if conversation already exists in list
-    const existingItem = document.querySelector(`.conversation-item[data-id="${conversation.id}"]`);
-
-    if (existingItem) {
-        // Update existing conversation item
-        const messagePreview = existingItem.querySelector('small.text-muted');
-        if (messagePreview) {
-            messagePreview.textContent = truncateText(message.body, 30);
-        }
-
-        // Move conversation to top (if it's a new message)
-        const listItem = existingItem.closest('.list-group-item');
-        if (listItem) {
-            conversationsList.prepend(listItem);
-        }
-    } else {
-        // Add new conversation item
-        const otherUser = conversation.users?.find(u => u.id !== currentUser.id);
-        if (otherUser) {
-            const newItem = createConversationItem(conversation, otherUser, message);
-            conversationsList.insertAdjacentHTML('afterbegin', newItem);
-
-            // Attach click handler to new item
-            const newConversationItem = document.querySelector(`.conversation-item[data-id="${conversation.id}"]`);
-            if (newConversationItem) {
-                newConversationItem.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    openConversation(conversation.id);
-                });
-            }
-        }
-    }
-}
-
-// Create conversation item HTML
-function createConversationItem(conversation, user, lastMessage) {
-    return `
-        <a href="#"
-           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center conversation-item bg-light"
-           data-id="${conversation.id}">
-            <div class="d-flex align-items-center">
-                <div class="avatar me-3">
-                    <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-                         style="width: 40px; height: 40px;">
-                       ${getInitials(user.name)}
-                    </div>
-                </div>
-                <div>
-                    <h6 class="mb-0">${escapeHtml(user.name)}</h6>
-                    <small class="text-muted">${truncateText(lastMessage.body, 30)}</small>
-                    <br>
-                    <small class="text-muted">${user.role || ''}</small>
-                </div>
-            </div>
-            <span class="badge bg-danger rounded-pill unread-badge">1</span>
-        </a>
-    `;
-}
-
-// Initialize Echo when user is authenticated and page is loaded
-if (currentUser.id) {
-    // Only initialize if Pusher is available
-    if (typeof Pusher !== 'undefined') {
-        initializeEcho();
-    } else {
-        // Load Pusher dynamically if not available
-        const script = document.createElement('script');
-        script.src = 'https://js.pusher.com/7.2/pusher.min.js';
-        script.onload = () => {
-            // Load Echo after Pusher
-            const echoScript = document.createElement('script');
-            echoScript.src = 'https://laravel.com/js/echo.js';
-            echoScript.onload = initializeEcho;
-            document.head.appendChild(echoScript);
-        };
-        document.head.appendChild(script);
-    }
-
-    updateNotificationBadge();
-
-    // Periodically update notification badge (fallback for when WebSockets fail)
-    setInterval(updateNotificationBadge, 30000);
-}
-
 // ==================== HELPER FUNCTIONS ====================
 function getInitials(name) {
     if (!name) return '?';
-    return name.split(' ')
-        .map(n => n[0])
-        .join('')
-        .substring(0, 2)
-        .toUpperCase();
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 }
 
 function formatTime(timestamp) {
     if (!timestamp) return '';
-
     const date = new Date(timestamp);
     const now = new Date();
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-
     if (date.toDateString() === now.toDateString()) {
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
-
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
     if (date.toDateString() === yesterday.toDateString()) {
         return 'Yesterday';
     }
-
-    const daysDiff = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-    if (daysDiff < 7) {
-        return date.toLocaleDateString([], { weekday: 'short' });
-    }
-
     return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
@@ -967,7 +809,9 @@ function escapeHtml(text) {
 
 function scrollToBottom() {
     const container = document.getElementById('messagesContainer');
-    container.scrollTop = container.scrollHeight;
+    if (container) {
+        container.scrollTop = container.scrollHeight;
+    }
 }
 
 function handleMessageKeydown(event) {
@@ -979,8 +823,9 @@ function handleMessageKeydown(event) {
 
 function toggleSidebar() {
     const sidebar = document.querySelector('.col-md-4');
-    const currentDisplay = sidebar.style.display;
-    sidebar.style.display = currentDisplay === 'none' ? 'block' : 'none';
+    if (sidebar) {
+        sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+    }
 }
 
 function updateUrlWithConversation(conversationId) {
@@ -992,32 +837,47 @@ function updateUrlWithConversation(conversationId) {
 function updateActiveConversation(conversationId) {
     document.querySelectorAll('.conversation-item').forEach(item => {
         if (item.dataset.id == conversationId) {
-            item.classList.add('active');
+            item.classList.add('active', 'bg-light');
         } else {
-            item.classList.remove('active');
+            item.classList.remove('active', 'bg-light');
         }
     });
+}
+
+function updateConversationLastMessage(conversationId, message) {
+    const conversationItem = document.querySelector(`.conversation-item[data-id="${conversationId}"]`);
+    if (conversationItem) {
+        const messagePreview = conversationItem.querySelector('small.text-muted:first-of-type');
+        if (messagePreview) {
+            messagePreview.textContent = truncateText(message, 30);
+        }
+    }
+}
+
+function truncateText(text, length) {
+    if (!text) return '';
+    return text.length > length ? text.substring(0, length) + '...' : text;
 }
 
 function setupInfiniteScroll() {
     const messagesContainer = document.getElementById('messagesContainer');
-
-    messagesContainer.addEventListener('scroll', function() {
-        if (this.scrollTop === 0 && hasMoreMessages && !loadingMessages) {
-            loadMoreMessages();
-        }
-    });
+    if (messagesContainer) {
+        messagesContainer.addEventListener('scroll', function() {
+            if (this.scrollTop === 0 && hasMoreMessages && !loadingMessages && currentConversation) {
+                loadMoreMessages();
+            }
+        });
+    }
 }
 
 function loadMoreMessages() {
     if (loadingMessages || !hasMoreMessages || !currentConversation) return;
-
     loadingMessages = true;
-    document.getElementById('loadingMore').style.display = 'block';
+    const loadingDiv = document.getElementById('loadingMore');
+    if (loadingDiv) loadingDiv.style.display = 'block';
+    const nextPage = (messagesPagination?.current_page || 1) + 1;
 
-    const nextPage = messagesPagination.current_page + 1;
-
-    fetch(`/api/chat/${currentConversation.id}?page=${nextPage}`, {
+    fetch(`/chat/${currentConversation.id}/messages?page=${nextPage}`, {
         headers: {
             'Accept': 'application/json',
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
@@ -1025,63 +885,93 @@ function loadMoreMessages() {
     })
     .then(response => response.json())
     .then(data => {
-        messagesPagination = data.messages;
-        hasMoreMessages = data.messages.current_page < data.messages.last_page;
-
-        const container = document.getElementById('messages');
-        const olderMessages = data.messages.data.reverse().map(msg => `
-            <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
-                <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
-                     style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
-                    <div class="message-text">${escapeHtml(msg.body)}</div>
-                    <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
-                        <span>${formatTime(msg.created_at)}</span>
+        messagesPagination = data.messages || data.data?.messages;
+        hasMoreMessages = messagesPagination?.current_page < messagesPagination?.last_page;
+        const olderMessages = (messagesPagination?.data || []).reverse().map(msg => {
+            if ((msg.type === 'file' || msg.type === 'image') && msg.attachment_path) {
+                const fileIcon = getFileIcon(msg.mime_type);
+                const fileName = msg.attachment_name || 'File';
+                const fileSize = msg.file_size;
+                const fileId = msg.id;
+                return `
+                    <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
+                        <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
+                             style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                            <div class="message-file text-center">
+                                <i class="fas ${fileIcon} fa-2x mb-2"></i>
+                                <div class="message-text">
+                                    <a href="/chat/download/${fileId}" target="_blank" class="${msg.user_id === currentUser.id ? 'text-white' : 'text-primary'} text-decoration-underline">
+                                        ${escapeHtml(fileName)}
+                                    </a>
+                                </div>
+                                <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
+                                    <span>${formatFileSize(fileSize)}</span>
+                                    <span class="ms-2">${formatTime(msg.created_at)}</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        `).join('');
-
-        container.insertAdjacentHTML('afterbegin', olderMessages);
+                `;
+            } else {
+                return `
+                    <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
+                        <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
+                             style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                            <div class="message-text">${escapeHtml(msg.body)}</div>
+                            <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
+                                <span>${formatTime(msg.created_at)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }).join('');
+        const container = document.getElementById('messages');
+        if (container && olderMessages) {
+            container.insertAdjacentHTML('afterbegin', olderMessages);
+        }
     })
     .catch(error => console.error('Error loading more messages:', error))
     .finally(() => {
         loadingMessages = false;
-        document.getElementById('loadingMore').style.display = 'none';
+        const loadingDiv = document.getElementById('loadingMore');
+        if (loadingDiv) loadingDiv.style.display = 'none';
     });
 }
 
-// Quick filter by role
+function getUserColor(role) {
+    const colors = {
+        'admin': 'danger',
+        'system_admin': 'dark',
+        'account_manager': 'info',
+        'finance': 'success',
+        'customer': 'primary',
+        'ict_engineer': 'warning',
+        'technician': 'secondary',
+        'surveyor': 'info'
+    };
+    return colors[role] || 'secondary';
+}
+
+function getRoleBadgeColor(role) {
+    return getUserColor(role);
+}
+
 function filterByRole(role) {
     const searchInput = document.getElementById('searchUsersInput');
-
-    // Set placeholder text based on role
-    const roleLabels = {
-        'customer': 'Customers',
-        'account_manager': 'Account Managers',
-        'finance': 'Finance',
-        'ict_engineer': 'ICT Engineers',
-        'technician': 'Technicians'
-    };
-
     searchInput.value = '';
-    searchInput.placeholder = `Search ${roleLabels[role] || role}...`;
-
-    // You can implement role-based search if your API supports it
-    // For now, we'll just focus the input
+    searchInput.placeholder = `Search ${role}...`;
     searchInput.focus();
 }
 
-// Handle browser back/forward buttons
 window.addEventListener('popstate', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const conversationId = urlParams.get('conversation');
-
     if (conversationId) {
         openConversation(conversationId);
     } else {
         document.getElementById('chatArea').style.display = 'none';
         document.getElementById('noChatSelected').style.display = 'block';
-
         if (window.innerWidth <= 768) {
             document.querySelector('.col-md-4').style.display = 'block';
         }
@@ -1100,7 +990,6 @@ window.addEventListener('popstate', function() {
     opacity: 0.8;
 }
 
-/* Search results styling */
 #searchResults .list-group-item {
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
@@ -1116,18 +1005,40 @@ window.addEventListener('popstate', function() {
     background-color: #e7f1ff;
 }
 
-/* Message styling */
 .message .d-inline-block {
     word-wrap: break-word;
     max-width: 70%;
 }
 
-/* Avatar styling */
 .avatar div {
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+}
+
+.message-file {
+    text-align: center;
+    min-width: 150px;
+}
+
+.message-file a {
+    text-decoration: underline;
+    word-break: break-all;
+}
+
+.message-file a:hover {
+    opacity: 0.8;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #e9ecef;
+}
+
+#filePreviewArea .alert {
+    border-radius: 8px;
+    background-color: #e7f1ff;
+    border-color: #b6d4fe;
 }
 </style>
 @endpush

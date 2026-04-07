@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Controllers\CustomerProfileController;
+use App\Notifications\CustomResetPassword;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,6 +19,7 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Models\Conversation;
 use App\Models\Message;
 use Illuminate\Support\Facades\DB;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 
 
 /**
@@ -1031,17 +1033,16 @@ public function scopeByRegion($query, $region)
         });
     }
 
-    /**
-     * Get total unread messages across all conversations
-     */
-    public function totalUnreadMessages()
-    {
-        $total = 0;
-        foreach ($this->conversations as $conversation) {
-            $total += $conversation->unreadCountForUser($this->id);
-        }
-        return $total;
-    }
+//    /**
+//      * Send the password reset notification.
+//      *
+//      * @param  string  $token
+//      * @return void
+//      */
+//     public function sendPasswordResetNotification($token)
+//     {
+//         $this->notify(new ResetPasswordNotification($token));
+//     }
 
     /**
      * Check if user can chat with another user
@@ -1308,7 +1309,29 @@ public function documents()
 {
     return $this->hasMany(Document::class, 'user_id');
 }
+/**
+ * Get total unread messages count across all conversations
+ */
+public function totalUnreadMessages()
+{
+    return \App\Models\Message::whereHas('conversation.participants', function ($query) {
+            $query->where('user_id', $this->id);
+        })
+        ->where('user_id', '!=', $this->id)
+        ->whereNull('read_at')
+        ->count();
+}
 
+/**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPassword($token));
+    }
 
 }
 

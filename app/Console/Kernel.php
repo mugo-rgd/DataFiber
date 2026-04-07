@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\ImportCompanyUsers::class,
         \App\Console\Commands\ProcessNewLeases::class, // Add this
         \App\Console\Commands\ImportCompanyProfiles::class,
+        \App\Console\Commands\SyncFinancialParameters::class,
     ];
 
     /**
@@ -29,7 +30,7 @@ class Kernel extends ConsoleKernel
              ->everyThirtyMinutes()
              ->withoutOverlapping(15)
              ->appendOutputTo(storage_path('logs/new-leases.log'));
-             
+
         // Process lease billing every hour (to catch new leases quickly)
         $schedule->command('leases:process-billing')
                  ->hourly()
@@ -56,6 +57,7 @@ class Kernel extends ConsoleKernel
 
         // Your existing billing commands
         $schedule->command('billing:process-daily')->dailyAt('03:00');
+        $schedule->command('billing:sync-transactions')->dailyAt('05:00');
         $schedule->command('billing:generate')->dailyAt('04:00');
         $schedule->command('tevin:monitor')->everyThirtyMinutes();
 

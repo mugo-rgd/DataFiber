@@ -431,7 +431,9 @@
                 <div class="auth-tabs">
                     <div class="auth-tab active" data-tab="login">Login</div>
                     <div class="auth-tab" data-tab="customer-signup">Customer Registration</div>
-                    <div class="auth-tab" data-tab="admin-signup">Admin Registration</div>
+                    @if(app()->environment('local'))
+    <div class="auth-tab" data-tab="admin-signup">Admin Registration</div>
+@endif
                 </div>
 
                 <!-- Login Form -->

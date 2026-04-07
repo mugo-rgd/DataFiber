@@ -47,7 +47,8 @@
         "files": [
             "app/Helpers/NumberToWordsHelper.php",
             "app/Helpers/activity.php",
-            "app/Helpers/helpers.php"
+            "app/Helpers/helpers.php",
+            "app/Helpers/FinancialHelper.php"
         ]
     },
     "autoload-dev": {

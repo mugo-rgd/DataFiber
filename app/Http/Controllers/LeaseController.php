@@ -250,9 +250,18 @@ public function storeForAccountManager(Request $request)
         }
 
         // Calculate total_contract_value if not provided
+        // if (!isset($validated['total_contract_value']) || $validated['total_contract_value'] === null) {
+        //     $validated['total_contract_value'] = ($validated['monthly_cost'] * $validated['contract_term_months']) + ($validated['installation_fee'] ?? 0);
+        // }
+
         if (!isset($validated['total_contract_value']) || $validated['total_contract_value'] === null) {
-            $validated['total_contract_value'] = ($validated['monthly_cost'] * $validated['contract_term_months']) + ($validated['installation_fee'] ?? 0);
-        }
+    $validated['total_contract_value'] = $this->calculateTotalContractValue(
+        $validated['monthly_cost'],
+        $validated['contract_term_months'],
+        $validated['billing_cycle'],
+        $validated['installation_fee'] ?? 0
+    );
+}
 
         \Log::info('Final data before create:', $validated);
 
@@ -297,6 +306,35 @@ public function storeForAccountManager(Request $request)
 
         return back()->withInput()
             ->with('error', 'Error creating lease: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Calculate total contract value based on billing cycle
+ */
+private function calculateTotalContractValue($costAmount, $termMonths, $billingCycle, $installationFee = 0)
+{
+    switch ($billingCycle) {
+        case 'monthly':
+            // costAmount is monthly price
+            return ($costAmount * $termMonths) + $installationFee;
+
+        case 'quarterly':
+            // costAmount is quarterly price
+            $numberOfQuarters = ceil($termMonths / 3);
+            return ($costAmount * $numberOfQuarters) + $installationFee;
+
+        case 'annually':
+            // costAmount is annual price
+            $numberOfYears = ceil($termMonths / 12);
+            return ($costAmount * $numberOfYears) + $installationFee;
+
+        case 'one_time':
+            // costAmount is one-time price
+            return $costAmount + $installationFee;
+
+        default:
+            return ($costAmount * $termMonths) + $installationFee;
     }
 }
 /**

@@ -517,16 +517,19 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    <p class="small text-muted">
-                        <strong>Quotation Integration:</strong> Select an approved quotation to automatically populate all lease details.
-                    </p>
-                    <p class="small text-muted">
-                        <strong>Auto-Calculation:</strong> Total Contract Value = (Monthly Cost × Contract Term) + Installation Fee
-                    </p>
-                    <p class="small text-muted">
-                        <strong>Note:</strong> All fields marked with <span class="text-danger">*</span> are required.
-                    </p>
-                </div>
+    <p class="small text-muted">
+        <strong>Quotation Integration:</strong> Select an approved quotation to automatically populate all lease details.
+    </p>
+    <p class="small text-muted">
+        <strong>Auto-Calculation:</strong> Total Contract Value = (Recurring Cost × Term) + Installation Fee
+    </p>
+    <p class="small text-muted">
+        <strong>Recurring Cost:</strong> Depends on billing cycle (Monthly/Quarterly/Annual/One-time)
+    </p>
+    <p class="small text-muted">
+        <strong>Note:</strong> All fields marked with <span class="text-danger">*</span> are required.
+    </p>
+</div>
             </div>
         </div>
     </div>
@@ -546,62 +549,65 @@ document.addEventListener('DOMContentLoaded', function() {
     const costValidationMessage = document.getElementById('costValidationMessage');
 
     function updateCostLabel() {
-        const selectedCycle = billingCycleSelect.value;
-        let labelText = '';
-        let placeholderText = '';
-        let helpText = '';
-        let validationMessage = '';
+    const selectedCycle = billingCycleSelect.value;
+    let labelText = '';
+    let placeholderText = '';
+    let helpText = '';
+    let validationMessage = '';
 
-        switch(selectedCycle) {
-            case 'monthly':
-                labelText = 'Monthly Cost';
-                placeholderText = '0.00 (per month)';
-                helpText = 'Monthly recurring charge';
-                validationMessage = 'Please enter a valid monthly cost';
-                break;
-            case 'quarterly':
-                labelText = 'Quarterly Cost';
-                placeholderText = '0.00 (per quarter)';
-                helpText = 'Quarterly recurring charge (every 3 months)';
-                validationMessage = 'Please enter a valid quarterly cost';
-                break;
-            case 'annually':
-                labelText = 'Annual Cost';
-                placeholderText = '0.00 (per year)';
-                helpText = 'Annual recurring charge (once per year)';
-                validationMessage = 'Please enter a valid annual cost';
-                break;
-            case 'one_time':
-                labelText = 'One-Time Cost';
-                placeholderText = '0.00 (one-time fee)';
-                helpText = 'One-time setup or installation fee';
-                validationMessage = 'Please enter a valid one-time fee';
-                break;
-            default:
-                labelText = 'Cost';
-                placeholderText = '0.00';
-                helpText = 'Enter the cost amount';
-                validationMessage = 'Please enter a valid cost amount';
-        }
-
-        // Update label with asterisk
-        costLabel.innerHTML = `${labelText} <span class="text-danger">*</span>`;
-
-        // Update placeholder
-        costInput.placeholder = placeholderText;
-
-        // Update help text if it exists
-        if (costHelpText) {
-            costHelpText.textContent = helpText;
-        }
-
-        // Update validation message
-        if (costValidationMessage) {
-            costValidationMessage.textContent = validationMessage;
-        }
-
-        console.log(`Billing cycle changed to: ${selectedCycle}, label updated to: ${labelText}`);
+    switch(selectedCycle) {
+        case 'monthly':
+            labelText = 'Monthly Cost';
+            placeholderText = '0.00 (per month)';
+            helpText = 'Monthly recurring charge';
+            validationMessage = 'Please enter a valid monthly cost';
+            break;
+        case 'quarterly':
+            labelText = 'Quarterly Cost';
+            placeholderText = '0.00 (per quarter)';
+            helpText = 'Quarterly recurring charge (every 3 months)';
+            validationMessage = 'Please enter a valid quarterly cost';
+            break;
+        case 'annually':
+            labelText = 'Annual Cost';
+            placeholderText = '0.00 (per year)';
+            helpText = 'Annual recurring charge (once per year)';
+            validationMessage = 'Please enter a valid annual cost';
+            break;
+        case 'one_time':
+            labelText = 'One-Time Cost';
+            placeholderText = '0.00 (one-time fee)';
+            helpText = 'One-time setup or installation fee';
+            validationMessage = 'Please enter a valid one-time fee';
+            break;
+        default:
+            labelText = 'Cost';
+            placeholderText = '0.00';
+            helpText = 'Enter the cost amount';
+            validationMessage = 'Please enter a valid cost amount';
     }
+
+    // Update label with asterisk
+    costLabel.innerHTML = `${labelText} <span class="text-danger">*</span>`;
+
+    // Update placeholder
+    costInput.placeholder = placeholderText;
+
+    // Update help text if it exists
+    if (costHelpText) {
+        costHelpText.textContent = helpText;
+    }
+
+    // Update validation message
+    if (costValidationMessage) {
+        costValidationMessage.textContent = validationMessage;
+    }
+
+    // Recalculate total when label changes (since the meaning of the cost field changes)
+    calculateTotalContractValue();
+
+    console.log(`Billing cycle changed to: ${selectedCycle}, label updated to: ${labelText}`);
+}
 
     // Initial update
     if (billingCycleSelect) {
@@ -793,8 +799,9 @@ function setupForm() {
 
     // Event Listeners
     const contractTermField = document.getElementById('contract_term_months');
-    const monthlyCostField = document.getElementById('monthly_cost');
+    const costField = document.getElementById('monthly_cost');
     const installationFeeField = document.getElementById('installation_fee');
+    const billingCycleField = document.getElementById('billing_cycle');
 
     if (contractTermField) {
         contractTermField.addEventListener('input', function() {
@@ -803,12 +810,17 @@ function setupForm() {
         });
     }
 
-    if (monthlyCostField) {
-        monthlyCostField.addEventListener('input', calculateTotalContractValue);
+    if (costField) {
+        costField.addEventListener('input', calculateTotalContractValue);
     }
 
     if (installationFeeField) {
         installationFeeField.addEventListener('input', calculateTotalContractValue);
+    }
+
+    // Add event listener for billing cycle changes
+    if (billingCycleField) {
+        billingCycleField.addEventListener('change', calculateTotalContractValue);
     }
 
     // Handle manual quotation selection
@@ -845,20 +857,62 @@ function calculateEndDate() {
 }
 
 function calculateTotalContractValue() {
-    const monthlyCostField = document.getElementById('monthly_cost');
+    const costField = document.getElementById('monthly_cost');
     const contractTermField = document.getElementById('contract_term_months');
+    const billingCycleField = document.getElementById('billing_cycle');
     const installationFeeField = document.getElementById('installation_fee');
     const totalValueField = document.getElementById('total_contract_value');
 
-    if (!monthlyCostField || !contractTermField || !totalValueField) return;
+    if (!costField || !contractTermField || !billingCycleField || !totalValueField) return;
 
     try {
-        const monthlyCost = parseFloat(monthlyCostField.value) || 0;
+        let costAmount = parseFloat(costField.value) || 0;
+        const termMonths = parseInt(contractTermField.value) || 0;
+        const billingCycle = billingCycleField.value;
         const installationFee = parseFloat(installationFeeField?.value) || 0;
-        const contractTerm = parseInt(contractTermField.value) || 0;
 
-        const totalValue = (monthlyCost * contractTerm) + installationFee;
+        let totalRecurringCost = 0;
+
+        // Calculate based on billing cycle
+        switch (billingCycle) {
+            case 'monthly':
+                // costAmount is monthly price
+                totalRecurringCost = costAmount * termMonths;
+                break;
+
+            case 'quarterly':
+                // costAmount is quarterly price
+                const numberOfQuarters = Math.ceil(termMonths / 3);
+                totalRecurringCost = costAmount * numberOfQuarters;
+                break;
+
+            case 'annually':
+                // costAmount is annual price
+                const numberOfYears = Math.ceil(termMonths / 12);
+                totalRecurringCost = costAmount * numberOfYears;
+                break;
+
+            case 'one_time':
+                // costAmount is one-time price
+                totalRecurringCost = costAmount;
+                break;
+
+            default:
+                totalRecurringCost = costAmount * termMonths;
+        }
+
+        const totalValue = totalRecurringCost + installationFee;
         totalValueField.value = totalValue.toFixed(2);
+
+        console.log('Total contract value calculated:', {
+            cost_amount: costAmount,
+            term_months: termMonths,
+            billing_cycle: billingCycle,
+            total_recurring_cost: totalRecurringCost,
+            installation_fee: installationFee,
+            total_value: totalValue
+        });
+
     } catch (error) {
         console.error('Error calculating total contract value:', error);
     }

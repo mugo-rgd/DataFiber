@@ -11,14 +11,14 @@
                     <h5 class="card-title mb-0">
                         <i class="fas fa-chart-line me-2"></i>Financial Reports & Analytics
                     </h5>
-                    <div class="btn-group">
-                        <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
-                            <i class="fas fa-print me-1"></i>Print Report
-                        </button>
-                        <button class="btn btn-outline-primary btn-sm" id="exportBtn">
-                            <i class="fas fa-download me-1"></i>Export Data
-                        </button>
-                    </div>
+<div class="btn-group">
+    <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+        <i class="fas fa-print me-1"></i>Print Report
+    </button>
+    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-outline-primary btn-sm">
+    <i class="fas fa-download me-1"></i>Export Data
+</a>
+</div>
                 </div>
                 <div class="card-body">
                     <!-- Report Filters -->
@@ -744,348 +744,417 @@
                             </div>
                         </div>
 
-                    <!-- Aging Report with Both Currencies -->
-                    @elseif($reportType === 'aging_report')
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">Accounts Receivable Aging Report- KSH</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Customer</th>
-                                                <th>Current (KSH)</th>
-                                                <th>1-30 Days (KSH)</th>
-                                                <th>31-60 Days (KSH)</th>
-                                                <th>61-90+ Days (KSH)</th>
-                                                <th>Total Outstanding (KSH)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse(($reportData['aging_report_ksh'] ?? []) as $aging)
-                                                <tr>
-                                                    <td>{{ $aging->customer_name ?? 'Unknown' }}</td>
-                                                    <td class="text-success">KSH {{ number_format($aging->current ?? 0, 2) }}</td>
-                                                    <td class="text-warning">KSH {{ number_format($aging->days_30 ?? 0, 2) }}</td>
-                                                    <td class="text-warning">KSH {{ number_format($aging->days_60 ?? 0, 2) }}</td>
-                                                    <td class="text-danger">KSH {{ number_format($aging->days_90_plus ?? 0, 2) }}</td>
-                                                    <td class="fw-bold">
-                                                        KSH {{ number_format(($aging->current ?? 0) + ($aging->days_30 ?? 0) + ($aging->days_60 ?? 0) + ($aging->days_90_plus ?? 0), 2) }}
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="6" class="text-center text-muted">No KSH aging data available.</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                   <!-- Aging Report with Both Currencies -->
+<!-- Aging Report with Both Currencies -->
+@elseif($reportType === 'aging_report')
+    @php
+        // Get the data directly from reportData
+        $kshAgingData = $reportData['aging_report_ksh'] ?? collect();
+        $usdAgingData = $reportData['aging_report_usd'] ?? collect();
+    @endphp
 
-                        <div class="card mt-4">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">Accounts Receivable Aging Report - USD</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Customer</th>
-                                                <th>Current (USD)</th>
-                                                <th>1-30 Days (USD)</th>
-                                                <th>31-60 Days (USD)</th>
-                                                <th>61-90+ Days (USD)</th>
-                                                <th>Total Outstanding (USD)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @forelse(($reportData['aging_report_usd'] ?? []) as $aging)
-                                                <tr>
-                                                    <td>{{ $aging->customer_name ?? 'Unknown' }}</td>
-                                                    <td class="text-success">$ {{ number_format($aging->current ?? 0, 2) }}</td>
-                                                    <td class="text-warning">$ {{ number_format($aging->days_30 ?? 0, 2) }}</td>
-                                                    <td class="text-warning">$ {{ number_format($aging->days_60 ?? 0, 2) }}</td>
-                                                    <td class="text-danger">$ {{ number_format($aging->days_90_plus ?? 0, 2) }}</td>
-                                                    <td class="fw-bold">
-                                                        $ {{ number_format(($aging->current ?? 0) + ($aging->days_30 ?? 0) + ($aging->days_60 ?? 0) + ($aging->days_90_plus ?? 0), 2) }}
-                                                    </td>
-                                                </tr>
-                                            @empty
-                                                <tr>
-                                                    <td colspan="6" class="text-center text-muted">No USD aging data available.</td>
-                                                </tr>
-                                            @endforelse
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+    <!-- KSH Aging Report -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="card-title mb-0">
+                <i class="fas fa-chart-pie me-2"></i>
+                Accounts Receivable Aging Report - KSH
+                @if($kshAgingData->count() > 0)
+                    <span class="badge bg-primary ms-2">{{ $kshAgingData->count() }} customers</span>
+                @endif
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Customer</th>
+                            <th class="text-end">Current (KSH)</th>
+                            <th class="text-end">1-30 Days (KSH)</th>
+                            <th class="text-end">31-60 Days (KSH)</th>
+                            <th class="text-end">61-90+ Days (KSH)</th>
+                            <th class="text-end">Total Outstanding (KSH)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($kshAgingData as $customer)
+                            @php
+                                // Handle both object and array formats
+                                if(is_object($customer)) {
+                                    $customerName = $customer->customer_name ?? 'Unknown';
+                                    $current = $customer->current ?? 0;
+                                    $days30 = $customer->days_30 ?? 0;
+                                    $days60 = $customer->days_60 ?? 0;
+                                    $days90Plus = $customer->days_90_plus ?? 0;
+                                } else {
+                                    $customerName = $customer['customer_name'] ?? 'Unknown';
+                                    $current = $customer['current'] ?? 0;
+                                    $days30 = $customer['days_30'] ?? 0;
+                                    $days60 = $customer['days_60'] ?? 0;
+                                    $days90Plus = $customer['days_90_plus'] ?? 0;
+                                }
+                                $total = $current + $days30 + $days60 + $days90Plus;
+                            @endphp
+                            <tr>
+                                <td>
+                                    <strong>{{ $customerName }}</strong>
+                                    @if($total > 0)
+                                        <br><small class="text-muted">Total: {{ number_format($total, 2) }}</small>
+                                    @endif
+                                </td>
+                                <td class="text-end {{ $current > 0 ? 'text-success fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($current, 2) }}
+                                </td>
+                                <td class="text-end {{ $days30 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($days30, 2) }}
+                                </td>
+                                <td class="text-end {{ $days60 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($days60, 2) }}
+                                </td>
+                                <td class="text-end {{ $days90Plus > 0 ? 'text-danger fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($days90Plus, 2) }}
+                                </td>
+                                <td class="text-end fw-bold text-primary">
+                                    {{ number_format($total, 2) }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                    No KSH aging data available for the selected period.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    @if($kshAgingData->count() > 0)
+                    <tfoot class="table-light fw-bold">
+                        <tr>
+                            <td class="text-end bg-light">TOTAL:</td>
+                            <td class="text-end bg-light">{{ number_format($kshAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->current ?? 0) : ($item['current'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light">{{ number_format($kshAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->days_30 ?? 0) : ($item['days_30'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light">{{ number_format($kshAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->days_60 ?? 0) : ($item['days_60'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light">{{ number_format($kshAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->days_90_plus ?? 0) : ($item['days_90_plus'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light text-primary fw-bold">
+                                {{ number_format(
+                                    $kshAgingData->sum(function($item) { return is_object($item) ? ($item->current ?? 0) : ($item['current'] ?? 0); }) +
+                                    $kshAgingData->sum(function($item) { return is_object($item) ? ($item->days_30 ?? 0) : ($item['days_30'] ?? 0); }) +
+                                    $kshAgingData->sum(function($item) { return is_object($item) ? ($item->days_60 ?? 0) : ($item['days_60'] ?? 0); }) +
+                                    $kshAgingData->sum(function($item) { return is_object($item) ? ($item->days_90_plus ?? 0) : ($item['days_90_plus'] ?? 0); }), 2)
+                                }}
+                            </td>
+                        </tr>
+                    </tfoot>
+                    @endif
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- USD Aging Report -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h6 class="card-title mb-0">
+                <i class="fas fa-chart-pie me-2"></i>
+                Accounts Receivable Aging Report - USD
+                @if($usdAgingData->count() > 0)
+                    <span class="badge bg-primary ms-2">{{ $usdAgingData->count() }} customers</span>
+                @endif
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Customer</th>
+                            <th class="text-end">Current (USD)</th>
+                            <th class="text-end">1-30 Days (USD)</th>
+                            <th class="text-end">31-60 Days (USD)</th>
+                            <th class="text-end">61-90+ Days (USD)</th>
+                            <th class="text-end">Total Outstanding (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($usdAgingData as $customer)
+                            @php
+                                if(is_object($customer)) {
+                                    $customerName = $customer->customer_name ?? 'Unknown';
+                                    $current = $customer->current ?? 0;
+                                    $days30 = $customer->days_30 ?? 0;
+                                    $days60 = $customer->days_60 ?? 0;
+                                    $days90Plus = $customer->days_90_plus ?? 0;
+                                } else {
+                                    $customerName = $customer['customer_name'] ?? 'Unknown';
+                                    $current = $customer['current'] ?? 0;
+                                    $days30 = $customer['days_30'] ?? 0;
+                                    $days60 = $customer['days_60'] ?? 0;
+                                    $days90Plus = $customer['days_90_plus'] ?? 0;
+                                }
+                                $total = $current + $days30 + $days60 + $days90Plus;
+                            @endphp
+                            <tr>
+                                <td>
+                                    <strong>{{ $customerName }}</strong>
+                                    @if($total > 0)
+                                        <br><small class="text-muted">Total: ${{ number_format($total, 2) }}</small>
+                                    @endif
+                                </td>
+                                <td class="text-end {{ $current > 0 ? 'text-success fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($current, 2) }}
+                                </td>
+                                <td class="text-end {{ $days30 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($days30, 2) }}
+                                </td>
+                                <td class="text-end {{ $days60 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($days60, 2) }}
+                                </td>
+                                <td class="text-end {{ $days90Plus > 0 ? 'text-danger fw-bold' : 'text-secondary' }}">
+                                    {{ number_format($days90Plus, 2) }}
+                                </td>
+                                <td class="text-end fw-bold text-primary">
+                                    {{ number_format($total, 2) }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                    No USD aging data available for the selected period.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    @if($usdAgingData->count() > 0)
+                    <tfoot class="table-light fw-bold">
+                        <tr>
+                            <td class="text-end bg-light">TOTAL:</td>
+                            <td class="text-end bg-light">$ {{ number_format($usdAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->current ?? 0) : ($item['current'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light">$ {{ number_format($usdAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->days_30 ?? 0) : ($item['days_30'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light">$ {{ number_format($usdAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->days_60 ?? 0) : ($item['days_60'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light">$ {{ number_format($usdAgingData->sum(function($item) {
+                                return is_object($item) ? ($item->days_90_plus ?? 0) : ($item['days_90_plus'] ?? 0);
+                            }), 2) }}</td>
+                            <td class="text-end bg-light text-primary fw-bold">
+                                $ {{ number_format(
+                                    $usdAgingData->sum(function($item) { return is_object($item) ? ($item->current ?? 0) : ($item['current'] ?? 0); }) +
+                                    $usdAgingData->sum(function($item) { return is_object($item) ? ($item->days_30 ?? 0) : ($item['days_30'] ?? 0); }) +
+                                    $usdAgingData->sum(function($item) { return is_object($item) ? ($item->days_60 ?? 0) : ($item['days_60'] ?? 0); }) +
+                                    $usdAgingData->sum(function($item) { return is_object($item) ? ($item->days_90_plus ?? 0) : ($item['days_90_plus'] ?? 0); }), 2)
+                                }}
+                            </td>
+                        </tr>
+                    </tfoot>
+                    @endif
+                </table>
+            </div>
+        </div>
+    </div>
 
                     <!-- Debt Aging Analysis Report with Both Currencies -->
-                    @elseif($reportType === 'debt_aging')
-                        <!-- KSH Debt Aging Summary -->
-                        @if(isset($reportData['debt_summary_ksh']))
-                            <div class="row mb-4">
-                                <div class="col-md-12">
-                                    <h5 class="border-bottom pb-2 mb-3">
-                                        <span class="badge bg-primary me-2">KSH</span> Kenyan Shilling Debt Summary
-                                    </h5>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-primary text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Total Receivables (KSH)</h6>
-                                            <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['total_receivables'] ?? 0, 2) }}</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-success text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Current (KSH)</h6>
-                                            <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['current'] ?? 0, 2) }}</h3>
-                                            <small>{{ number_format($reportData['debt_summary_ksh']['current_percentage'] ?? 0, 1) }}%</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-warning text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Overdue (KSH)</h6>
-                                            <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['overdue'] ?? 0, 2) }}</h3>
-                                            <small>{{ number_format($reportData['debt_summary_ksh']['overdue_percentage'] ?? 0, 1) }}%</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-danger text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Bad Debt Provision (KSH)</h6>
-                                            <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['bad_debt_provision'] ?? 0, 2) }}</h3>
-                                            <small>{{ number_format($reportData['debt_summary_ksh']['bad_debt_percentage'] ?? 0, 1) }}%</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+@elseif($reportType === 'debt_aging')
+    <!-- KSH Debt Aging Summary -->
+    @if(isset($reportData['debt_summary_ksh']))
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h5 class="border-bottom pb-2 mb-3">
+                <span class="badge bg-primary me-2">KSH</span> Kenyan Shilling Debt Summary
+            </h5>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Receivables (KSH)</h6>
+                    <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['total_receivables'] ?? 0, 2) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Current (KSH)</h6>
+                    <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['current'] ?? 0, 2) }}</h3>
+                    <small>{{ number_format($reportData['debt_summary_ksh']['current_percentage'] ?? 0, 1) }}%</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Overdue (KSH)</h6>
+                    <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['overdue'] ?? 0, 2) }}</h3>
+                    <small>{{ number_format($reportData['debt_summary_ksh']['overdue_percentage'] ?? 0, 1) }}%</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Bad Debt Provision (KSH)</h6>
+                    <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['bad_debt_provision'] ?? 0, 2) }}</h3>
+                    <small>{{ number_format($reportData['debt_summary_ksh']['bad_debt_percentage'] ?? 0, 1) }}%</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
-                        <!-- USD Debt Aging Summary -->
-                        @if(isset($reportData['debt_summary_usd']))
-                            <div class="row mb-4">
-                                <div class="col-md-12">
-                                    <h5 class="border-bottom pb-2 mb-3">
-                                        <span class="badge bg-secondary me-2">USD</span> US Dollar Debt Summary
-                                    </h5>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-primary text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Total Receivables (USD)</h6>
-                                            <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['total_receivables'] ?? 0, 2) }}</h3>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-success text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Current (USD)</h6>
-                                            <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['current'] ?? 0, 2) }}</h3>
-                                            <small>{{ number_format($reportData['debt_summary_usd']['current_percentage'] ?? 0, 1) }}%</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-warning text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Overdue (USD)</h6>
-                                            <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['overdue'] ?? 0, 2) }}</h3>
-                                            <small>{{ number_format($reportData['debt_summary_usd']['overdue_percentage'] ?? 0, 1) }}%</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="card bg-danger text-white">
-                                        <div class="card-body text-center">
-                                            <h6 class="card-title">Bad Debt Provision (USD)</h6>
-                                            <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['bad_debt_provision'] ?? 0, 2) }}</h3>
-                                            <small>{{ number_format($reportData['debt_summary_usd']['bad_debt_percentage'] ?? 0, 1) }}%</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+    <!-- USD Debt Aging Summary -->
+    @if(isset($reportData['debt_summary_usd']))
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h5 class="border-bottom pb-2 mb-3">
+                <span class="badge bg-secondary me-2">USD</span> US Dollar Debt Summary
+            </h5>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Total Receivables (USD)</h6>
+                    <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['total_receivables'] ?? 0, 2) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Current (USD)</h6>
+                    <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['current'] ?? 0, 2) }}</h3>
+                    <small>{{ number_format($reportData['debt_summary_usd']['current_percentage'] ?? 0, 1) }}%</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Overdue (USD)</h6>
+                    <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['overdue'] ?? 0, 2) }}</h3>
+                    <small>{{ number_format($reportData['debt_summary_usd']['overdue_percentage'] ?? 0, 1) }}%</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h6 class="card-title">Bad Debt Provision (USD)</h6>
+                    <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['bad_debt_provision'] ?? 0, 2) }}</h3>
+                    <small>{{ number_format($reportData['debt_summary_usd']['bad_debt_percentage'] ?? 0, 1) }}%</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Debt Aging Distribution (KSH)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <canvas id="debtAgingChartKsh" height="250"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Debt Aging Distribution (USD)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <canvas id="debtAgingChartUsd" height="250"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Detailed Debt Aging Table -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="card-title mb-0">Detailed Debt Aging Analysis</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Customer</th>
+                            <th>Currency</th>
+                            <th class="text-end">Total Due</th>
+                            <th class="text-end">Current</th>
+                            <th class="text-end">1-30 Days</th>
+                            <th class="text-end">31-60 Days</th>
+                            <th class="text-end">61-90 Days</th>
+                            <th class="text-end">&gt;90 Days</th>
+                            <th>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse(($reportData['detailed_aging'] ?? []) as $debt)
+                            @php
+                                $currencySymbol = $debt->currency == 'KSH' ? 'KSH ' : '$ ';
+                                $isKsh = $debt->currency == 'KSH';
+                            @endphp
+                            <tr>
+                                <td>{{ $debt->customer_name ?? 'Unknown' }}</td>
+                                <td>
+                                    <span class="badge bg-{{ $isKsh ? 'primary' : 'secondary' }}">
+                                        {{ strtoupper($debt->currency ?? 'KSH') }}
+                                    </span>
+                                </td>
+                                <td class="text-end fw-bold">{{ $currencySymbol }}{{ number_format($debt->total_due ?? 0, 2) }}</td>
+                                <td class="text-end {{ ($debt->current ?? 0) > 0 ? 'text-success' : '' }}">
+                                    {{ $currencySymbol }}{{ number_format($debt->current ?? 0, 2) }}
+                                </td>
+                                <td class="text-end {{ ($debt->days_30 ?? 0) > 0 ? 'text-warning' : '' }}">
+                                    {{ $currencySymbol }}{{ number_format($debt->days_30 ?? 0, 2) }}
+                                </td>
+                                <td class="text-end {{ ($debt->days_60 ?? 0) > 0 ? 'text-warning' : '' }}">
+                                    {{ $currencySymbol }}{{ number_format($debt->days_60 ?? 0, 2) }}
+                                </td>
+                                <td class="text-end {{ ($debt->days_90 ?? 0) > 0 ? 'text-danger' : '' }}">
+                                    {{ $currencySymbol }}{{ number_format($debt->days_90 ?? 0, 2) }}
+                                </td>
+                                <td class="text-end {{ ($debt->days_over_90 ?? 0) > 0 ? 'text-danger fw-bold' : '' }}">
+                                    {{ $currencySymbol }}{{ number_format($debt->days_over_90 ?? 0, 2) }}
+                                </td>
+                                <td>
+                                    @php
+                                        $riskLevel = $debt->risk_level ?? 'low';
+                                        $badgeClass = [
+                                            'low' => 'bg-success',
+                                            'medium' => 'bg-warning',
+                                            'high' => 'bg-danger',
+                                            'critical' => 'bg-dark'
+                                        ][$riskLevel] ?? 'bg-secondary';
+                                    @endphp
+                                    <span class="badge {{ $badgeClass }} text-capitalize">{{ $riskLevel }}</span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-center text-muted py-4">
+                                    <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                    No debt aging data available for the selected period.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                    @if(($reportData['detailed_aging'] ?? collect())->count() > 0)
+                    <tfoot class="table-light fw-bold">
+                        <tr>
+                            <td colspan="2" class="text-end">TOTAL:</td>
+                            @php
+                                $totalKsh = collect($reportData['detailed_aging'] ?? [])->where('currency', 'KSH')->sum('total_due');
+                                $totalUsd = collect($reportData['detailed_aging'] ?? [])->where('currency', 'USD')->sum('total_due');
+                            @endphp
+                            <td class="text-end">
+                                KSH {{ number_format($totalKsh, 2) }}<br>
+                                $ {{ number_format($totalUsd, 2) }}
+                            </td>
+                            <td colspan="6"></td>
+                        </tr>
+                    </tfoot>
+                    @endif
+                </table>
+            </div>
+        </div>
+    </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Collection Metrics (KSH)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row text-center">
-                                            <div class="col-6 mb-3">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-primary">{{ $reportData['collection_metrics_ksh']['average_collection_period'] ?? 0 }} days</h4>
-                                                    <small class="text-muted">Avg Collection Period</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 mb-3">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-success">{{ number_format($reportData['collection_metrics_ksh']['collection_efficiency'] ?? 0, 1) }}%</h4>
-                                                    <small class="text-muted">Collection Efficiency</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-warning">{{ number_format($reportData['collection_metrics_ksh']['dsr'] ?? 0, 1) }}</h4>
-                                                    <small class="text-muted">Days Sales Outstanding</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-info">{{ number_format($reportData['collection_metrics_ksh']['recovery_rate'] ?? 0, 1) }}%</h4>
-                                                    <small class="text-muted">Recovery Rate</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Collection Metrics (USD)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row text-center">
-                                            <div class="col-6 mb-3">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-primary">{{ $reportData['collection_metrics_usd']['average_collection_period'] ?? 0 }} days</h4>
-                                                    <small class="text-muted">Avg Collection Period</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-6 mb-3">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-success">{{ number_format($reportData['collection_metrics_usd']['collection_efficiency'] ?? 0, 1) }}%</h4>
-                                                    <small class="text-muted">Collection Efficiency</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-warning">{{ number_format($reportData['collection_metrics_usd']['dsr'] ?? 0, 1) }}</h4>
-                                                    <small class="text-muted">Days Sales Outstanding</small>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="border rounded p-3">
-                                                    <h4 class="text-info">{{ number_format($reportData['collection_metrics_usd']['recovery_rate'] ?? 0, 1) }}%</h4>
-                                                    <small class="text-muted">Recovery Rate</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Detailed Debt Aging Table with Currency Column -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="card-title mb-0">Detailed Debt Aging Analysis</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Customer</th>
-                                                <th>Currency</th>
-                                                <th>Total Due</th>
-                                                <th>Current</th>
-                                                <th>1-30 Days</th>
-                                                <th>31-60 Days</th>
-                                                <th>61-90 Days</th>
-                                                <th>>90 Days</th>
-                                                <th>Risk Level</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach(($reportData['detailed_aging'] ?? []) as $debt)
-                                                <tr>
-                                                    <td>{{ $debt->customer_name ?? 'Unknown' }}</td>
-                                                    <td>
-                                                        <span class="badge bg-{{ $debt->currency == 'ksh' ? 'primary' : 'secondary' }}">
-                                                            {{ strtoupper($debt->currency ?? 'KSH') }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="fw-bold">
-                                                        {{ $debt->currency == 'ksh' ? 'KSH' : '$' }} {{ number_format($debt->total_due ?? 0, 2) }}
-                                                    </td>
-                                                    <td class="text-success">
-                                                        {{ $debt->currency == 'ksh' ? 'KSH' : '$' }} {{ number_format($debt->current ?? 0, 2) }}
-                                                    </td>
-                                                    <td class="text-warning">
-                                                        {{ $debt->currency == 'ksh' ? 'KSH' : '$' }} {{ number_format($debt->days_30 ?? 0, 2) }}
-                                                    </td>
-                                                    <td class="text-warning">
-                                                        {{ $debt->currency == 'ksh' ? 'KSH' : '$' }} {{ number_format($debt->days_60 ?? 0, 2) }}
-                                                    </td>
-                                                    <td class="text-danger">
-                                                        {{ $debt->currency == 'ksh' ? 'KSH' : '$' }} {{ number_format($debt->days_90 ?? 0, 2) }}
-                                                    </td>
-                                                    <td class="text-danger">
-                                                        {{ $debt->currency == 'ksh' ? 'KSH' : '$' }} {{ number_format($debt->days_over_90 ?? 0, 2) }}
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                            $riskLevel = $debt->risk_level ?? 'low';
-                                                            $badgeClass = [
-                                                                'low' => 'bg-success',
-                                                                'medium' => 'bg-warning',
-                                                                'high' => 'bg-danger',
-                                                                'critical' => 'bg-dark'
-                                                            ][$riskLevel] ?? 'bg-secondary';
-                                                        @endphp
-                                                        <span class="badge {{ $badgeClass }} text-capitalize">{{ $riskLevel }}</span>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-                    <!-- Tax Report with Both Currencies -->
-                    @elseif($reportType === 'tax_report')
+                     <!-- Tax Report with Both Currencies -->
+                      @elseif($reportType === 'tax_report')
                         @php
                             $taxSummaryKsh = $reportData['tax_summary_ksh'] ?? null;
                             $taxSummaryUsd = $reportData['tax_summary_usd'] ?? null;
@@ -2173,44 +2242,30 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Export functionality
-        document.getElementById('exportBtn').addEventListener('click', function() {
-            const tables = document.querySelectorAll('table');
-            if (tables.length) {
-                let csv = [];
-                tables.forEach((table, index) => {
-                    if (index > 0) csv.push(''); // Add separator between tables
-                    const rows = table.querySelectorAll('tr');
-                    rows.forEach(row => {
-                        let rowData = [];
-                        row.querySelectorAll('th, td').forEach(cell => {
-                            rowData.push(cell.innerText);
-                        });
-                        csv.push(rowData.join(','));
-                    });
+        // Safe chart initialization helper
+        function initChart(chartId, type, data, options = {}) {
+            const element = document.getElementById(chartId);
+            if (!element) return null;
+
+            try {
+                return new Chart(element.getContext('2d'), {
+                    type: type,
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        ...options
+                    }
                 });
-
-                const csvContent = csv.join('\n');
-                const blob = new Blob([csvContent], { type: 'text/csv' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.setAttribute('hidden', '');
-                a.setAttribute('href', url);
-                a.setAttribute('download', 'financial_report_{{ $reportType }}_{{ $startDate }}_to_{{ $endDate }}.csv');
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            } else {
-                alert('No table data available for export.');
+            } catch (error) {
+                console.error(`Error initializing chart ${chartId}:`, error);
+                return null;
             }
-        });
+        }
 
-        // Debt Aging Chart KSH
-        @if($reportType === 'debt_aging' && isset($reportData['debt_summary_ksh']))
-        const debtAgingCtxKsh = document.getElementById('debtAgingChartKsh').getContext('2d');
-        new Chart(debtAgingCtxKsh, {
-            type: 'doughnut',
-            data: {
+        @if($reportType === 'debt_aging')
+            // Debt Aging Chart KSH
+            const debtDataKsh = {
                 labels: ['Current', '1-30 Days', '31-60 Days', '61-90 Days', 'Over 90 Days'],
                 datasets: [{
                     data: [
@@ -2220,32 +2275,13 @@
                         {{ $reportData['debt_summary_ksh']['days_90'] ?? 0 }},
                         {{ $reportData['debt_summary_ksh']['days_over_90'] ?? 0 }}
                     ],
-                    backgroundColor: [
-                        '#28a745',
-                        '#ffc107',
-                        '#fd7e14',
-                        '#dc3545',
-                        '#6f42c1'
-                    ]
+                    backgroundColor: ['#28a745', '#ffc107', '#fd7e14', '#dc3545', '#6f42c1']
                 }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
-        @endif
+            };
+            initChart('debtAgingChartKsh', 'doughnut', debtDataKsh, { plugins: { legend: { position: 'bottom' } } });
 
-        // Debt Aging Chart USD
-        @if($reportType === 'debt_aging' && isset($reportData['debt_summary_usd']))
-        const debtAgingCtxUsd = document.getElementById('debtAgingChartUsd').getContext('2d');
-        new Chart(debtAgingCtxUsd, {
-            type: 'doughnut',
-            data: {
+            // Debt Aging Chart USD
+            const debtDataUsd = {
                 labels: ['Current', '1-30 Days', '31-60 Days', '61-90 Days', 'Over 90 Days'],
                 datasets: [{
                     data: [
@@ -2255,32 +2291,15 @@
                         {{ $reportData['debt_summary_usd']['days_90'] ?? 0 }},
                         {{ $reportData['debt_summary_usd']['days_over_90'] ?? 0 }}
                     ],
-                    backgroundColor: [
-                        '#28a745',
-                        '#ffc107',
-                        '#fd7e14',
-                        '#dc3545',
-                        '#6f42c1'
-                    ]
+                    backgroundColor: ['#28a745', '#ffc107', '#fd7e14', '#dc3545', '#6f42c1']
                 }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
+            };
+            initChart('debtAgingChartUsd', 'doughnut', debtDataUsd, { plugins: { legend: { position: 'bottom' } } });
         @endif
 
-        // Cash Flow Chart
         @if($reportType === 'cash_flow')
-        const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
-        new Chart(cashFlowCtx, {
-            type: 'bar',
-            data: {
+            // Cash Flow Chart
+            const cashFlowData = {
                 labels: ['Operating', 'Investing', 'Financing', 'Net Cash Flow'],
                 datasets: [{
                     label: 'Cash Flow ($)',
@@ -2290,53 +2309,170 @@
                         {{ $reportData['cash_flow_summary']['financing'] ?? 0 }},
                         {{ $reportData['cash_flow_summary']['net_cash_flow'] ?? 0 }}
                     ],
-                    backgroundColor: [
-                        '#28a745',
-                        '#17a2b8',
-                        '#ffc107',
-                        '#007bff'
-                    ]
+                    backgroundColor: ['#28a745', '#17a2b8', '#ffc107', '#007bff']
                 }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
+            };
+            initChart('cashFlowChart', 'bar', cashFlowData, { scales: { y: { beginAtZero: true } } });
         @endif
 
-        // Profitability Chart
-        @if($reportType === 'profitability' && isset($reportData['service_profitability']))
-        const profitabilityCtx = document.getElementById('profitabilityChart').getContext('2d');
-        new Chart(profitabilityCtx, {
-            type: 'bar',
-            data: {
-                labels: {!! json_encode(($reportData['service_profitability'] ?? collect())->pluck('service_type')) !!},
-                datasets: [{
-                    label: 'Profit Margin (%)',
-                    data: {!! json_encode(($reportData['service_profitability'] ?? collect())->pluck('profit_margin')) !!},
-                    backgroundColor: '#28a745'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100,
-                        title: {
-                            display: true,
-                            text: 'Profit Margin (%)'
+        @if($reportType === 'profitability' && isset($reportData['service_profitability']) && count($reportData['service_profitability']) > 0)
+            const serviceNames = {!! json_encode(collect($reportData['service_profitability'])->pluck('service_type')->toArray()) !!};
+            const profitMargins = {!! json_encode(collect($reportData['service_profitability'])->pluck('profit_margin')->toArray()) !!};
+
+            if (serviceNames.length > 0 && profitMargins.length > 0) {
+                const profitabilityData = {
+                    labels: serviceNames,
+                    datasets: [{
+                        label: 'Profit Margin (%)',
+                        data: profitMargins,
+                        backgroundColor: '#28a745'
+                    }]
+                };
+                initChart('profitabilityChart', 'bar', profitabilityData, {
+                    scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Profit Margin (%)' } } }
+                });
+            }
+        @endif
+
+        // ============================================
+        // EXPORT FUNCTIONALITY - FIXED
+        // ============================================
+        const exportBtn = document.getElementById('exportBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                try {
+                    // Find all tables on the page
+                    const tables = document.querySelectorAll('.card .table');
+
+                    if (!tables || tables.length === 0) {
+                        alert('No table data available for export.');
+                        return;
+                    }
+
+                    let csvRows = [];
+
+                    // Add report header
+                    const reportTitle = document.querySelector('.card-title')?.innerText || 'Financial Report';
+                    const reportPeriod = document.querySelector('.alert-info')?.innerText || '';
+
+                    csvRows.push(['"' + reportTitle + '"']);
+                    csvRows.push(['"' + reportPeriod.replace(/"/g, '""') + '"']);
+                    csvRows.push(['']); // Empty row
+                    csvRows.push(['Generated: ' + new Date().toLocaleString()]);
+                    csvRows.push(['']); // Empty row
+
+                    // Process each table
+                    tables.forEach((table, tableIndex) => {
+                        // Get table title from card header
+                        const cardHeader = table.closest('.card')?.querySelector('.card-header');
+                        const tableTitle = cardHeader?.innerText?.replace(/[^\w\s]/g, '')?.trim() || `Table ${tableIndex + 1}`;
+
+                        csvRows.push([`"${tableTitle}"`]);
+
+                        // Get all rows from this table
+                        const rows = table.querySelectorAll('tr');
+
+                        rows.forEach(row => {
+                            const rowData = [];
+                            const cells = row.querySelectorAll('th, td');
+
+                            cells.forEach(cell => {
+                                // Get cell text, clean it up
+                                let text = cell.innerText || '';
+                                // Remove extra whitespace
+                                text = text.replace(/\s+/g, ' ').trim();
+                                // Escape quotes by doubling them
+                                text = text.replace(/"/g, '""');
+                                // Wrap in quotes
+                                rowData.push(`"${text}"`);
+                            });
+
+                            if (rowData.length > 0) {
+                                csvRows.push(rowData.join(','));
+                            }
+                        });
+
+                        csvRows.push(['']); // Empty row between tables
+                        csvRows.push(['']); // Extra spacing
+                    });
+
+                    // Create CSV content
+                    const csvContent = csvRows.join('\n');
+
+                    // Create blob with UTF-8 BOM for proper encoding
+                    const blob = new Blob(["\uFEFF" + csvContent], {
+                        type: 'text/csv;charset=utf-8;'
+                    });
+
+                    // Create download link
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    const reportType = '{{ $reportType }}';
+                    const startDate = '{{ $startDate }}';
+                    const endDate = '{{ $endDate }}';
+                    const filename = `financial_report_${reportType}_${startDate}_to_${endDate}.csv`;
+
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+
+                    // Clean up
+                    URL.revokeObjectURL(url);
+
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+                    successMsg.style.zIndex = '9999';
+                    successMsg.innerHTML = `
+                        <strong><i class="fas fa-check-circle me-2"></i>Export Complete!</strong><br>
+                        File "${filename}" has been downloaded.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    document.body.appendChild(successMsg);
+
+                    setTimeout(() => {
+                        successMsg.remove();
+                    }, 3000);
+
+                } catch (error) {
+                    console.error('Export error:', error);
+                    alert('Error exporting data: ' + error.message);
+                }
+            });
+        }
+
+        // Optional: Add print styling
+        const printBtn = document.querySelector('[onclick="window.print()"]');
+        if (printBtn) {
+            printBtn.addEventListener('click', function(e) {
+                // Add print-specific styles
+                const style = document.createElement('style');
+                style.textContent = `
+                    @media print {
+                        .btn-group, .row.mb-4:first-child, .card-header .btn-group {
+                            display: none !important;
+                        }
+                        .card {
+                            break-inside: avoid;
+                            page-break-inside: avoid;
+                        }
+                        table {
+                            font-size: 10pt;
                         }
                     }
-                }
-            }
-        });
-        @endif
+                `;
+                document.head.appendChild(style);
+
+                setTimeout(() => {
+                    window.print();
+                    style.remove();
+                }, 100);
+            });
+        }
     });
 </script>
 @endsection
