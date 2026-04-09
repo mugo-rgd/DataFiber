@@ -441,7 +441,7 @@ private function exportAgingReportToCsv($file, $reportData)
 private function exportDebtAgingToCsv($file, $reportData)
 {
     fputcsv($file, ['DETAILED DEBT AGING ANALYSIS']);
-    fputcsv($file, ['Customer', 'Currency', 'Total Due', 'Current', '1-30 Days', '31-60 Days', '61-90 Days', '>90 Days', 'Risk Level']);
+    fputcsv($file, ['Customer', 'Currency', 'Total Due', 'Current', 'Period', '1-30 Days', '31-60 Days', '61-90 Days', '>90 Days', 'Risk Level']);
 
     $detailedData = $reportData['detailed_aging'] ?? collect();
 
@@ -453,6 +453,7 @@ private function exportDebtAgingToCsv($file, $reportData)
                 $customerName = $row->customer_name ?? 'Unknown';
                 $totalDue = $row->total_due ?? 0;
                 $current = $row->current ?? 0;
+                $periodDisplay = $row->period_display ?? $this->getPeriodDisplayFromRow($row);
                 $days30 = $row->days_30 ?? 0;
                 $days60 = $row->days_60 ?? 0;
                 $days90 = $row->days_90 ?? 0;
@@ -464,6 +465,7 @@ private function exportDebtAgingToCsv($file, $reportData)
                 $customerName = $row['customer_name'] ?? 'Unknown';
                 $totalDue = $row['total_due'] ?? 0;
                 $current = $row['current'] ?? 0;
+                $periodDisplay = $row['period_display'] ?? $this->getPeriodDisplayFromArray($row);
                 $days30 = $row['days_30'] ?? 0;
                 $days60 = $row['days_60'] ?? 0;
                 $days90 = $row['days_90'] ?? 0;
@@ -476,6 +478,7 @@ private function exportDebtAgingToCsv($file, $reportData)
                 $currency,
                 $currencySymbol . ' ' . number_format($totalDue, 2),
                 $currencySymbol . ' ' . number_format($current, 2),
+                $periodDisplay,
                 $currencySymbol . ' ' . number_format($days30, 2),
                 $currencySymbol . ' ' . number_format($days60, 2),
                 $currencySymbol . ' ' . number_format($days90, 2),
@@ -483,11 +486,201 @@ private function exportDebtAgingToCsv($file, $reportData)
                 ucfirst($riskLevel)
             ]);
         }
+
+        // Add totals row
+        fputcsv($file, ['']);
+        fputcsv($file, ['SUMMARY TOTALS']);
+
+        $totalKsh = 0;
+        $totalUsd = 0;
+        $totalCurrentKsh = 0;
+        $totalCurrentUsd = 0;
+        $totalOverdueKsh = 0;
+        $totalOverdueUsd = 0;
+
+        foreach ($detailedData as $row) {
+            if (is_object($row)) {
+                $currency = $row->currency ?? 'USD';
+                $totalDue = $row->total_due ?? 0;
+                $current = $row->current ?? 0;
+                $days30 = $row->days_30 ?? 0;
+                $days60 = $row->days_60 ?? 0;
+                $days90 = $row->days_90 ?? 0;
+                $daysOver90 = $row->days_over_90 ?? 0;
+            } else {
+                $currency = $row['currency'] ?? 'USD';
+                $totalDue = $row['total_due'] ?? 0;
+                $current = $row['current'] ?? 0;
+                $days30 = $row['days_30'] ?? 0;
+                $days60 = $row['days_60'] ?? 0;
+                $days90 = $row['days_90'] ?? 0;
+                $daysOver90 = $row['days_over_90'] ?? 0;
+            }
+
+            if ($currency == 'KSH') {
+                $totalKsh += $totalDue;
+                $totalCurrentKsh += $current;
+                $totalOverdueKsh += ($days30 + $days60 + $days90 + $daysOver90);
+            } else {
+                $totalUsd += $totalDue;
+                $totalCurrentUsd += $current;
+                $totalOverdueUsd += ($days30 + $days60 + $days90 + $daysOver90);
+            }
+        }
+
+        fputcsv($file, ['Total KSH:', 'KSH ' . number_format($totalKsh, 2)]);
+        fputcsv($file, ['Total USD:', '$ ' . number_format($totalUsd, 2)]);
+        fputcsv($file, ['']);
+        fputcsv($file, ['Total Current (KSH):', 'KSH ' . number_format($totalCurrentKsh, 2)]);
+        fputcsv($file, ['Total Current (USD):', '$ ' . number_format($totalCurrentUsd, 2)]);
+        fputcsv($file, ['Total Overdue (KSH):', 'KSH ' . number_format($totalOverdueKsh, 2)]);
+        fputcsv($file, ['Total Overdue (USD):', '$ ' . number_format($totalOverdueUsd, 2)]);
+
     } else {
-        fputcsv($file, ['No debt aging data available for the selected period.', '', '', '', '', '', '', '', '']);
+        fputcsv($file, ['No debt aging data available for the selected period.', '', '', '', '', '', '', '', '', '']);
     }
 }
 
+/**
+ * Helper method to get period display from object row
+ */
+private function getPeriodDisplayFromRow($row)
+{
+    if (isset($row->period_start) && $row->period_start) {
+        try {
+            $startDate = \Carbon\Carbon::parse($row->period_start);
+            $quarter = ceil($startDate->month / 3);
+            $year = $startDate->year;
+            return "Q{$quarter}-{$year}";
+        } catch (\Exception $e) {
+            return 'Invalid Date';
+        }
+    } elseif (isset($row->billing_date) && $row->billing_date) {
+        try {
+            $billingDate = \Carbon\Carbon::parse($row->billing_date);
+            $quarter = ceil($billingDate->month / 3);
+            $year = $billingDate->year;
+            return "Q{$quarter}-{$year}";
+        } catch (\Exception $e) {
+            return 'Invalid Date';
+        }
+    }
+
+    return 'N/A';
+}
+
+/**
+ * Helper method to get period display from array row
+ */
+private function getPeriodDisplayFromArray($row)
+{
+    if (isset($row['period_start']) && $row['period_start']) {
+        try {
+            $startDate = \Carbon\Carbon::parse($row['period_start']);
+            $quarter = ceil($startDate->month / 3);
+            $year = $startDate->year;
+            return "Q{$quarter}-{$year}";
+        } catch (\Exception $e) {
+            return 'Invalid Date';
+        }
+    } elseif (isset($row['billing_date']) && $row['billing_date']) {
+        try {
+            $billingDate = \Carbon\Carbon::parse($row['billing_date']);
+            $quarter = ceil($billingDate->month / 3);
+            $year = $billingDate->year;
+            return "Q{$quarter}-{$year}";
+        } catch (\Exception $e) {
+            return 'Invalid Date';
+        }
+    }
+
+    return 'N/A';
+}
+
+/**
+ * Generate detailed customer billing data with aging
+ */
+private function generateCustomerBillingData($startDate, $endDate)
+{
+    $today = Carbon::now();
+
+    // Get all billings within the period
+    $billings = DB::table('consolidated_billings')
+        ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+        ->leftJoin('billing_line_items', 'consolidated_billings.id', '=', 'billing_line_items.consolidated_billing_id')
+        ->whereBetween('consolidated_billings.billing_date', [$startDate, $endDate])
+        ->select(
+            'consolidated_billings.id',
+            'consolidated_billings.user_id',
+            'users.name as customer_name',
+            'consolidated_billings.currency',
+            'consolidated_billings.total_amount',
+            'consolidated_billings.paid_amount',
+            'consolidated_billings.status',
+            'consolidated_billings.due_date',
+            'billing_line_items.period_start',
+            'billing_line_items.period_end'
+        )
+        ->get();
+
+    // Process KSH billings
+    $kshCustomers = [];
+    $usdCustomers = [];
+
+    foreach ($billings as $billing) {
+        $remainingAmount = floatval($billing->total_amount) - floatval($billing->paid_amount ?? 0);
+
+        if ($remainingAmount <= 0) {
+            continue;
+        }
+
+        $dueDate = Carbon::parse($billing->due_date);
+        $daysOverdue = $dueDate->lt($today) ? $dueDate->diffInDays($today) : 0;
+
+        $isOverdue = $billing->status == 'overdue' || ($billing->status == 'pending' && $daysOverdue > 0);
+        $isPending = $billing->status == 'pending' && !$isOverdue;
+
+        $data = [
+            'customer_name' => $billing->customer_name,
+            'customer_id' => $billing->user_id,
+            'total_billings' => 1,
+            'paid_amount' => $billing->paid_amount ?? 0,
+            'pending_amount' => $isPending ? $remainingAmount : 0,
+            'overdue_amount' => $isOverdue ? $remainingAmount : 0,
+            'period_start' => $billing->period_start,
+            'period_end' => $billing->period_end,
+        ];
+
+        if ($billing->currency == 'KSH') {
+            if (!isset($kshCustomers[$billing->user_id])) {
+                $kshCustomers[$billing->user_id] = $data;
+            } else {
+                $kshCustomers[$billing->user_id]['total_billings']++;
+                $kshCustomers[$billing->user_id]['paid_amount'] += $data['paid_amount'];
+                $kshCustomers[$billing->user_id]['pending_amount'] += $data['pending_amount'];
+                $kshCustomers[$billing->user_id]['overdue_amount'] += $data['overdue_amount'];
+            }
+        } else {
+            if (!isset($usdCustomers[$billing->user_id])) {
+                $usdCustomers[$billing->user_id] = $data;
+            } else {
+                $usdCustomers[$billing->user_id]['total_billings']++;
+                $usdCustomers[$billing->user_id]['paid_amount'] += $data['paid_amount'];
+                $usdCustomers[$billing->user_id]['pending_amount'] += $data['pending_amount'];
+                $usdCustomers[$billing->user_id]['overdue_amount'] += $data['overdue_amount'];
+            }
+        }
+    }
+
+    // Convert to collections
+    $customerBillingKsh = collect(array_values($kshCustomers));
+    $customerBillingUsd = collect(array_values($usdCustomers));
+
+    return [
+        'customer_billing_ksh' => $customerBillingKsh,
+        'customer_billing_usd' => $customerBillingUsd,
+    ];
+}
 /**
  * Export Generic Report to CSV (fallback)
  */
@@ -551,22 +744,65 @@ private function exportAgingReport($file, $reportData)
  */
 private function exportDebtAgingReport($file, $reportData)
 {
+    // Header
     fputcsv($file, ['DETAILED DEBT AGING ANALYSIS']);
-    fputcsv($file, ['Customer', 'Currency', 'Total Due', 'Current', '1-30 Days', '31-60 Days', '61-90 Days', '>90 Days', 'Risk Level']);
+    fputcsv($file, ['']);
+    fputcsv($file, ['Generated: ' . now()->format('Y-m-d H:i:s')]);
+    fputcsv($file, ['']);
 
+    // Column headers
+    fputcsv($file, [
+        'Customer',
+        'Currency',
+        'Total Due',
+        'Current',
+        'Period',
+        '1-30 Days',
+        '31-60 Days',
+        '61-90 Days',
+        '>90 Days',
+        'Risk Level',
+        'Days Overdue'
+    ]);
+
+    // Data rows
     foreach (($reportData['detailed_aging'] ?? []) as $row) {
         $currencySymbol = ($row->currency ?? 'USD') == 'KSH' ? 'KSH' : '$';
+
         fputcsv($file, [
             $row->customer_name ?? 'Unknown',
             $row->currency ?? 'USD',
             $currencySymbol . ' ' . number_format($row->total_due ?? 0, 2),
             $currencySymbol . ' ' . number_format($row->current ?? 0, 2),
+            $row->period_display ?? 'N/A',
             $currencySymbol . ' ' . number_format($row->days_30 ?? 0, 2),
             $currencySymbol . ' ' . number_format($row->days_60 ?? 0, 2),
             $currencySymbol . ' ' . number_format($row->days_90 ?? 0, 2),
             $currencySymbol . ' ' . number_format($row->days_over_90 ?? 0, 2),
-            ucfirst($row->risk_level ?? 'low')
+            ucfirst($row->risk_level ?? 'low'),
+            ($row->days_overdue ?? 0) . ' days'
         ]);
+    }
+
+    // Totals row
+    if (($reportData['detailed_aging'] ?? collect())->count() > 0) {
+        fputcsv($file, ['']);
+        fputcsv($file, ['SUMMARY TOTALS']);
+
+        $totalKsh = collect($reportData['detailed_aging'] ?? [])->where('currency', 'KSH')->sum('total_due');
+        $totalUsd = collect($reportData['detailed_aging'] ?? [])->where('currency', 'USD')->sum('total_due');
+
+        fputcsv($file, ['Total KSH:', 'KSH ' . number_format($totalKsh, 2)]);
+        fputcsv($file, ['Total USD:', '$ ' . number_format($totalUsd, 2)]);
+
+        $totalCurrent = collect($reportData['detailed_aging'] ?? [])->sum('current');
+        $totalOverdue = collect($reportData['detailed_aging'] ?? [])->sum('days_30') +
+                       collect($reportData['detailed_aging'] ?? [])->sum('days_60') +
+                       collect($reportData['detailed_aging'] ?? [])->sum('days_90') +
+                       collect($reportData['detailed_aging'] ?? [])->sum('days_over_90');
+
+        fputcsv($file, ['Total Current:', 'KSH ' . number_format($totalCurrent, 2)]);
+        fputcsv($file, ['Total Overdue:', 'KSH ' . number_format($totalOverdue, 2)]);
     }
 }
 
@@ -1926,39 +2162,40 @@ private function getRevenueTrends(): array
     /**
      * Generate debt aging report with currency separation
      */
-    private function generateDebtAgingReport($startDate, $endDate): array
+ private function generateDebtAgingReport($startDate, $endDate): array
 {
     try {
-        // Get all pending invoices
+        // Get all pending invoices - use DISTINCT to avoid duplicates from line items join
         $invoices = DB::table('consolidated_billings')
             ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->leftJoin('billing_line_items', 'consolidated_billings.id', '=', 'billing_line_items.consolidated_billing_id')
             ->where('users.role', 'customer')
             ->whereIn('consolidated_billings.status', ['pending', 'sent', 'overdue', 'partial'])
             ->select(
-                'consolidated_billings.*',
-                'users.name as customer_name'
+                'consolidated_billings.id as billing_id',
+                'consolidated_billings.user_id',
+                'consolidated_billings.currency',
+                'consolidated_billings.total_amount',
+                'consolidated_billings.paid_amount',
+                'consolidated_billings.due_date',
+                'consolidated_billings.billing_date',
+                'consolidated_billings.billing_number',
+                'users.name as customer_name',
+                DB::raw('MIN(billing_line_items.period_start) as period_start'),
+                DB::raw('MIN(billing_line_items.period_end) as period_end')
+            )
+            ->groupBy(
+                'consolidated_billings.id',
+                'consolidated_billings.user_id',
+                'consolidated_billings.currency',
+                'consolidated_billings.total_amount',
+                'consolidated_billings.paid_amount',
+                'consolidated_billings.due_date',
+                'consolidated_billings.billing_date',
+                'consolidated_billings.billing_number',
+                'users.name'
             )
             ->get();
-
-        $debtKsh = [
-            'total_receivables' => 0,
-            'current' => 0,
-            'days_30' => 0,
-            'days_60' => 0,
-            'days_90' => 0,
-            'days_over_90' => 0,
-            'overdue' => 0,
-        ];
-
-        $debtUsd = [
-            'total_receivables' => 0,
-            'current' => 0,
-            'days_30' => 0,
-            'days_60' => 0,
-            'days_90' => 0,
-            'days_over_90' => 0,
-            'overdue' => 0,
-        ];
 
         $detailedAging = [];
         $today = Carbon::now();
@@ -1973,120 +2210,122 @@ private function getRevenueTrends(): array
 
             $dueDate = Carbon::parse($invoice->due_date);
 
-            // Calculate days overdue (positive number for overdue invoices)
+            // Calculate days overdue
             if ($dueDate->lt($today)) {
                 $daysOverdue = $dueDate->diffInDays($today);
             } else {
                 $daysOverdue = 0;
             }
 
-            // Prepare aging data
-            $agingData = [
-                'customer_name' => $invoice->customer_name,
-                'currency' => $invoice->currency,
-                'total_due' => $remainingAmount,
-                'current' => 0,
-                'days_30' => 0,
-                'days_60' => 0,
-                'days_90' => 0,
-                'days_over_90' => 0,
-            ];
+            // Format period from period_start
+            $periodDisplay = 'N/A';
+            $periodTooltip = '';
 
-            // Categorize by days overdue
+            if ($invoice->period_start) {
+                try {
+                    $periodStart = Carbon::parse($invoice->period_start);
+                    $quarter = ceil($periodStart->month / 3);
+                    $year = $periodStart->year;
+                    $periodDisplay = "Q{$quarter}-{$year}";
+
+                    if ($invoice->period_end) {
+                        $periodEnd = Carbon::parse($invoice->period_end);
+                        $periodTooltip = $periodStart->format('M j, Y') . ' - ' . $periodEnd->format('M j, Y');
+                    } else {
+                        $periodTooltip = $periodStart->format('M j, Y');
+                    }
+                } catch (\Exception $e) {
+                    $periodDisplay = 'Invalid Date';
+                }
+            } elseif ($invoice->billing_date) {
+                try {
+                    $billingDate = Carbon::parse($invoice->billing_date);
+                    $quarter = ceil($billingDate->month / 3);
+                    $year = $billingDate->year;
+                    $periodDisplay = "Q{$quarter}-{$year}";
+                    $periodTooltip = "Billed: " . $billingDate->format('M j, Y');
+                } catch (\Exception $e) {
+                    $periodDisplay = 'Invalid Date';
+                }
+            }
+
+            // Determine aging bucket
+            $current = 0;
+            $days30 = 0;
+            $days60 = 0;
+            $days90 = 0;
+            $daysOver90 = 0;
+
             if ($daysOverdue == 0) {
-                $agingData['current'] = $remainingAmount;
-                if ($invoice->currency === 'KSH') {
-                    $debtKsh['current'] += $remainingAmount;
-                } else {
-                    $debtUsd['current'] += $remainingAmount;
-                }
+                $current = $remainingAmount;
             } elseif ($daysOverdue <= 30) {
-                $agingData['days_30'] = $remainingAmount;
-                if ($invoice->currency === 'KSH') {
-                    $debtKsh['days_30'] += $remainingAmount;
-                    $debtKsh['overdue'] += $remainingAmount;
-                } else {
-                    $debtUsd['days_30'] += $remainingAmount;
-                    $debtUsd['overdue'] += $remainingAmount;
-                }
+                $days30 = $remainingAmount;
             } elseif ($daysOverdue <= 60) {
-                $agingData['days_60'] = $remainingAmount;
-                if ($invoice->currency === 'KSH') {
-                    $debtKsh['days_60'] += $remainingAmount;
-                    $debtKsh['overdue'] += $remainingAmount;
-                } else {
-                    $debtUsd['days_60'] += $remainingAmount;
-                    $debtUsd['overdue'] += $remainingAmount;
-                }
+                $days60 = $remainingAmount;
             } elseif ($daysOverdue <= 90) {
-                $agingData['days_90'] = $remainingAmount;
-                if ($invoice->currency === 'KSH') {
-                    $debtKsh['days_90'] += $remainingAmount;
-                    $debtKsh['overdue'] += $remainingAmount;
-                } else {
-                    $debtUsd['days_90'] += $remainingAmount;
-                    $debtUsd['overdue'] += $remainingAmount;
-                }
+                $days90 = $remainingAmount;
             } else {
-                $agingData['days_over_90'] = $remainingAmount;
-                if ($invoice->currency === 'KSH') {
-                    $debtKsh['days_over_90'] += $remainingAmount;
-                    $debtKsh['overdue'] += $remainingAmount;
-                } else {
-                    $debtUsd['days_over_90'] += $remainingAmount;
-                    $debtUsd['overdue'] += $remainingAmount;
-                }
+                $daysOver90 = $remainingAmount;
             }
 
-            // Calculate risk level based on aging
+            // Calculate risk level
             if ($daysOverdue > 90) {
-                $agingData['risk_level'] = 'critical';
+                $riskLevel = 'critical';
             } elseif ($daysOverdue > 60) {
-                $agingData['risk_level'] = 'high';
+                $riskLevel = 'high';
             } elseif ($daysOverdue > 30) {
-                $agingData['risk_level'] = 'medium';
+                $riskLevel = 'medium';
             } elseif ($daysOverdue > 0) {
-                $agingData['risk_level'] = 'medium';
+                $riskLevel = 'medium';
             } else {
-                $agingData['risk_level'] = 'low';
+                $riskLevel = 'low';
             }
 
-            $detailedAging[] = (object) $agingData;
+            // Only add if this billing_id hasn't been processed yet
+            $key = $invoice->billing_id;
+            if (!isset($detailedAging[$key])) {
+                $detailedAging[$key] = (object) [
+                    'customer_name' => $invoice->customer_name,
+                    'customer_id' => $invoice->user_id,
+                    'currency' => $invoice->currency,
+                    'billing_number' => $invoice->billing_number,
+                    'total_due' => $remainingAmount,
+                    'current' => $current,
+                    'days_30' => $days30,
+                    'days_60' => $days60,
+                    'days_90' => $days90,
+                    'days_over_90' => $daysOver90,
+                    'period_display' => $periodDisplay,
+                    'period_tooltip' => $periodTooltip,
+                    'due_date' => $dueDate->format('Y-m-d'),
+                    'days_overdue' => $daysOverdue,
+                    'risk_level' => $riskLevel,
+                ];
+            }
         }
 
-        // Calculate KSH totals
-        $debtKsh['total_receivables'] = $debtKsh['current'] + $debtKsh['days_30'] + $debtKsh['days_60'] + $debtKsh['days_90'] + $debtKsh['days_over_90'];
-        $debtKsh['current_percentage'] = $debtKsh['total_receivables'] > 0 ? ($debtKsh['current'] / $debtKsh['total_receivables']) * 100 : 0;
-        $debtKsh['overdue_percentage'] = $debtKsh['total_receivables'] > 0 ? ($debtKsh['overdue'] / $debtKsh['total_receivables']) * 100 : 0;
-        $debtKsh['bad_debt_provision'] = $debtKsh['days_over_90'] * 0.5;
-        $debtKsh['bad_debt_percentage'] = $debtKsh['total_receivables'] > 0 ? ($debtKsh['bad_debt_provision'] / $debtKsh['total_receivables']) * 100 : 0;
+        // Convert to array and remove keys
+        $detailedAging = array_values($detailedAging);
 
-        // Calculate USD totals
-        $debtUsd['total_receivables'] = $debtUsd['current'] + $debtUsd['days_30'] + $debtUsd['days_60'] + $debtUsd['days_90'] + $debtUsd['days_over_90'];
-        $debtUsd['current_percentage'] = $debtUsd['total_receivables'] > 0 ? ($debtUsd['current'] / $debtUsd['total_receivables']) * 100 : 0;
-        $debtUsd['overdue_percentage'] = $debtUsd['total_receivables'] > 0 ? ($debtUsd['overdue'] / $debtUsd['total_receivables']) * 100 : 0;
-        $debtUsd['bad_debt_provision'] = $debtUsd['days_over_90'] * 0.5;
-        $debtUsd['bad_debt_percentage'] = $debtUsd['total_receivables'] > 0 ? ($debtUsd['bad_debt_provision'] / $debtUsd['total_receivables']) * 100 : 0;
+        // Sort by total due descending
+        usort($detailedAging, function($a, $b) {
+            return $b->total_due <=> $a->total_due;
+        });
 
-        // Calculate collection metrics
-        $collectionMetricsKsh = $this->calculateCollectionMetrics('KSH');
-        $collectionMetricsUsd = $this->calculateCollectionMetrics('USD');
-
-        // Debug logging
-        \Log::info('Debt Aging Report - KSH', $debtKsh);
-        \Log::info('Debt Aging Report - USD', $debtUsd);
+        // Calculate summaries by currency
+        $debtKsh = $this->calculateDebtSummary(collect($detailedAging)->where('currency', 'KSH'));
+        $debtUsd = $this->calculateDebtSummary(collect($detailedAging)->where('currency', 'USD'));
 
         return [
             'debt_summary_ksh' => $debtKsh,
             'debt_summary_usd' => $debtUsd,
-            'collection_metrics_ksh' => $collectionMetricsKsh,
-            'collection_metrics_usd' => $collectionMetricsUsd,
+            'collection_metrics_ksh' => $this->calculateCollectionMetrics('KSH'),
+            'collection_metrics_usd' => $this->calculateCollectionMetrics('USD'),
             'detailed_aging' => collect($detailedAging),
         ];
 
     } catch (\Exception $e) {
         \Log::error('Error generating debt aging report: ' . $e->getMessage());
-        \Log::error($e->getTraceAsString());
 
         $emptyDebt = [
             'total_receivables' => 0,
@@ -2102,21 +2341,105 @@ private function getRevenueTrends(): array
             'bad_debt_percentage' => 0,
         ];
 
-        $emptyMetrics = [
-            'average_collection_period' => 0,
-            'collection_efficiency' => 0,
-            'dsr' => 0,
-            'recovery_rate' => 0,
-        ];
-
         return [
             'debt_summary_ksh' => $emptyDebt,
             'debt_summary_usd' => $emptyDebt,
-            'collection_metrics_ksh' => $emptyMetrics,
-            'collection_metrics_usd' => $emptyMetrics,
+            'collection_metrics_ksh' => [],
+            'collection_metrics_usd' => [],
             'detailed_aging' => collect(),
         ];
     }
+}
+
+private function calculateDebtSummary($invoices): array
+{
+    $summary = [
+        'total_receivables' => 0,
+        'current' => 0,
+        'days_30' => 0,
+        'days_60' => 0,
+        'days_90' => 0,
+        'days_over_90' => 0,
+        'overdue' => 0,
+    ];
+
+    foreach ($invoices as $invoice) {
+        $summary['total_receivables'] += $invoice->total_due;
+        $summary['current'] += $invoice->current;
+        $summary['days_30'] += $invoice->days_30;
+        $summary['days_60'] += $invoice->days_60;
+        $summary['days_90'] += $invoice->days_90;
+        $summary['days_over_90'] += $invoice->days_over_90;
+        $summary['overdue'] += ($invoice->days_30 + $invoice->days_60 + $invoice->days_90 + $invoice->days_over_90);
+    }
+
+    $summary['current_percentage'] = $summary['total_receivables'] > 0 ? ($summary['current'] / $summary['total_receivables']) * 100 : 0;
+    $summary['overdue_percentage'] = $summary['total_receivables'] > 0 ? ($summary['overdue'] / $summary['total_receivables']) * 100 : 0;
+    $summary['bad_debt_provision'] = $summary['days_over_90'] * 0.5;
+    $summary['bad_debt_percentage'] = $summary['total_receivables'] > 0 ? ($summary['bad_debt_provision'] / $summary['total_receivables']) * 100 : 0;
+
+    return $summary;
+}
+
+private function formatPeriod($periodStart, $periodEnd = null, $billingDate = null)
+{
+    if ($periodStart) {
+        try {
+            $startDate = Carbon::parse($periodStart);
+            $quarter = ceil($startDate->month / 3);
+            $year = $startDate->year;
+
+            if ($periodEnd) {
+                $endDate = Carbon::parse($periodEnd);
+                return [
+                    'display' => "Q{$quarter}-{$year}",
+                    'tooltip' => $startDate->format('M j, Y') . ' - ' . $endDate->format('M j, Y'),
+                    'start' => $startDate,
+                    'end' => $endDate,
+                ];
+            } else {
+                return [
+                    'display' => "Q{$quarter}-{$year}",
+                    'tooltip' => $startDate->format('M j, Y'),
+                    'start' => $startDate,
+                    'end' => null,
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'display' => 'Invalid Date',
+                'tooltip' => 'Invalid period data',
+                'start' => null,
+                'end' => null,
+            ];
+        }
+    } elseif ($billingDate) {
+        try {
+            $billingDateObj = Carbon::parse($billingDate);
+            $quarter = ceil($billingDateObj->month / 3);
+            $year = $billingDateObj->year;
+            return [
+                'display' => "Q{$quarter}-{$year}",
+                'tooltip' => "Billed: " . $billingDateObj->format('M j, Y'),
+                'start' => $billingDateObj,
+                'end' => null,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'display' => 'Invalid Date',
+                'tooltip' => 'Invalid billing date',
+                'start' => null,
+                'end' => null,
+            ];
+        }
+    }
+
+    return [
+        'display' => 'N/A',
+        'tooltip' => 'No period information available',
+        'start' => null,
+        'end' => null,
+    ];
 }
 
 /**
@@ -2927,50 +3250,55 @@ private function calculateRiskLevel(array $agingData): string
      * Generate customer billing report with currency separation
      */
     private function generateCustomerBillingReport($startDate, $endDate): array
-    {
-        try {
-            $customerBillingKsh = DB::table('consolidated_billings')
-                ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
-                ->where('users.role', 'customer')
-                ->where('consolidated_billings.currency', 'KSH')
-                ->whereBetween('consolidated_billings.billing_date', [$startDate, $endDate])
-                ->selectRaw('
-                    consolidated_billings.user_id,
-                    users.name as customer_name,
-                    COUNT(DISTINCT consolidated_billings.id) as total_billings,
-                    SUM(CASE WHEN consolidated_billings.status = "paid" THEN consolidated_billings.paid_amount ELSE 0 END) as paid_amount,
-                    SUM(CASE WHEN consolidated_billings.status IN ("pending", "sent") THEN consolidated_billings.total_amount ELSE 0 END) as pending_amount')
-                ->groupBy('consolidated_billings.user_id', 'users.name')
-                ->orderBy('paid_amount', 'desc')
-                ->get();
+{
+    try {
+        $customerBillingKsh = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->where('users.role', 'customer')
+            ->where('consolidated_billings.currency', 'KSH')
+            ->whereBetween('consolidated_billings.billing_date', [$startDate, $endDate])
+            ->selectRaw('
+                consolidated_billings.user_id,
+                users.name as customer_name,
+                COUNT(DISTINCT consolidated_billings.id) as total_billings,
+                SUM(CASE WHEN consolidated_billings.status = "paid" THEN consolidated_billings.paid_amount ELSE 0 END) as paid_amount,
+                SUM(CASE WHEN consolidated_billings.status IN ("pending", "sent") THEN consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0) ELSE 0 END) as pending_amount,
+                SUM(CASE WHEN consolidated_billings.status IN ("overdue") OR (consolidated_billings.status IN ("pending", "sent") AND consolidated_billings.due_date < NOW()) THEN consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0) ELSE 0 END) as overdue_amount
+            ')
+            ->groupBy('consolidated_billings.user_id', 'users.name')
+            ->orderBy('paid_amount', 'desc')
+            ->get();
 
-            $customerBillingUsd = DB::table('consolidated_billings')
-                ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
-                ->where('users.role', 'customer')
-                ->where('consolidated_billings.currency', 'USD')
-                ->whereBetween('consolidated_billings.billing_date', [$startDate, $endDate])
-                ->selectRaw('
-                    consolidated_billings.user_id,
-                    users.name as customer_name,
-                    COUNT(DISTINCT consolidated_billings.id) as total_billings,
-                    SUM(CASE WHEN consolidated_billings.status = "paid" THEN consolidated_billings.paid_amount ELSE 0 END) as paid_amount,
-                    SUM(CASE WHEN consolidated_billings.status IN ("pending", "sent") THEN consolidated_billings.total_amount ELSE 0 END) as pending_amount')
-                ->groupBy('consolidated_billings.user_id', 'users.name')
-                ->orderBy('paid_amount', 'desc')
-                ->get();
+        $customerBillingUsd = DB::table('consolidated_billings')
+            ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+            ->where('users.role', 'customer')
+            ->where('consolidated_billings.currency', 'USD')
+            ->whereBetween('consolidated_billings.billing_date', [$startDate, $endDate])
+            ->selectRaw('
+                consolidated_billings.user_id,
+                users.name as customer_name,
+                COUNT(DISTINCT consolidated_billings.id) as total_billings,
+                SUM(CASE WHEN consolidated_billings.status = "paid" THEN consolidated_billings.paid_amount ELSE 0 END) as paid_amount,
+                SUM(CASE WHEN consolidated_billings.status IN ("pending", "sent") THEN consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0) ELSE 0 END) as pending_amount,
+                SUM(CASE WHEN consolidated_billings.status IN ("overdue") OR (consolidated_billings.status IN ("pending", "sent") AND consolidated_billings.due_date < NOW()) THEN consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0) ELSE 0 END) as overdue_amount
+            ')
+            ->groupBy('consolidated_billings.user_id', 'users.name')
+            ->orderBy('paid_amount', 'desc')
+            ->get();
 
-            return [
-                'ksh' => $customerBillingKsh,
-                'usd' => $customerBillingUsd,
-            ];
-        } catch (\Exception $e) {
-            Log::error('Error generating customer billing report: ' . $e->getMessage());
-            return [
-                'ksh' => collect(),
-                'usd' => collect(),
-            ];
-        }
+        return [
+            'customer_billing_ksh' => $customerBillingKsh,
+            'customer_billing_usd' => $customerBillingUsd,
+        ];
+
+    } catch (\Exception $e) {
+        Log::error('Error generating customer billing report: ' . $e->getMessage());
+        return [
+            'customer_billing_ksh' => collect(),
+            'customer_billing_usd' => collect(),
+        ];
     }
+}
 
     /**
      * Generate aging report with currency separation

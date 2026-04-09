@@ -23,6 +23,7 @@ class ProcessLeaseBilling extends Command
                         {--date= : Process billing for specific date (YYYY-MM-DD)}
                         {--customer= : Process billing for specific customer ID}
                         {--force : Process even if no billing is due}
+                        {--skip-duplicate-check : Skip checking for existing billing records}
                         {--json : Output results as JSON}
                         {--dry-run : Simulate processing without creating records}';
 
@@ -54,6 +55,7 @@ class ProcessLeaseBilling extends Command
 
         $customerId = $this->option('customer');
         $forceMode = $this->option('force');
+        $skipDuplicateCheck = $this->option('skip-duplicate-check');
         $jsonOutput = $this->option('json');
         $dryRun = $this->option('dry-run');
 
@@ -71,6 +73,10 @@ class ProcessLeaseBilling extends Command
 
         if ($forceMode) {
             $this->warn("⚠️  Running in FORCE mode - will check all leases regardless of due date");
+        }
+
+        if ($skipDuplicateCheck) {
+            $this->warn("⚠️  Running with SKIP DUPLICATE CHECK - may create duplicate billing records");
         }
 
         if ($dryRun) {
@@ -143,17 +149,29 @@ class ProcessLeaseBilling extends Command
                             $periodDates = $this->calculateBillingPeriod($lease, $date);
                             $amount = $this->calculateBillingAmount($lease);
 
-                            // Check for existing billing for this period
-                            $existingBilling = BillingLineItem::where('lease_id', $lease->id)
-                                ->whereDate('period_start', $periodDates['start']->format('Y-m-d'))
-                                ->whereDate('period_end', $periodDates['end']->format('Y-m-d'))
-                                ->first();
+                            // Check for existing billing for this period (skip if flag is set)
+                            if (!$skipDuplicateCheck) {
+                                $existingBilling = BillingLineItem::where('lease_id', $lease->id)
+                                    ->where(function($query) use ($periodDates) {
+                                        // Check for overlapping periods
+                                        $query->whereBetween('period_start', [$periodDates['start'], $periodDates['end']])
+                                            ->orWhereBetween('period_end', [$periodDates['start'], $periodDates['end']])
+                                            ->orWhere(function($q) use ($periodDates) {
+                                                $q->where('period_start', '<=', $periodDates['start'])
+                                                  ->where('period_end', '>=', $periodDates['end']);
+                                            });
+                                    })
+                                    ->first();
 
-                            if ($existingBilling) {
+                                if ($existingBilling) {
+                                    $this->newLine();
+                                    $this->line("    ⏸️  Lease #{$lease->id} already has billing for period {$periodDates['start']->format('Y-m-d')} to {$periodDates['end']->format('Y-m-d')}");
+                                    $skippedLeases++;
+                                    continue;
+                                }
+                            } else {
                                 $this->newLine();
-                                $this->line("    ⏸️  Lease #{$lease->id} already billed for this period");
-                                $skippedLeases++;
-                                continue;
+                                $this->warn("    ⚠️  Skipping duplicate check for lease #{$lease->id}");
                             }
 
                             $leasesDue[] = $lease;
@@ -297,6 +315,8 @@ class ProcessLeaseBilling extends Command
                 'processed_at' => now()->toIso8601String(),
                 'processing_date' => $date->format('Y-m-d'),
                 'dry_run' => $dryRun,
+                'force_mode' => $forceMode,
+                'skip_duplicate_check' => $skipDuplicateCheck,
             ];
 
             // Display summary
@@ -799,6 +819,11 @@ class ProcessLeaseBilling extends Command
         if ($results['dry_run']) {
             $this->newLine();
             $this->warn('🔍 DRY RUN - No records were created');
+        }
+
+        if ($results['force_mode'] && $results['skip_duplicate_check']) {
+            $this->newLine();
+            $this->warn('⚠️  FORCE MODE + SKIP DUPLICATE CHECK enabled - duplicate billing records may have been created');
         }
 
         $this->newLine();
