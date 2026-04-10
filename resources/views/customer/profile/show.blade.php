@@ -204,7 +204,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mb-3">Document Requirements</h4>
+                    <h4 class="header-title mb-3">Document Requirements12</h4>
 
                     @if(count($missingDocuments) > 0)
                         <div class="alert alert-warning">

@@ -1156,58 +1156,105 @@ public function show($id)
         );
     }
 
-      /**
-     * PROFILE DOCUMENTS METHODS
+     /**
+     * Show form for uploading profile documents
      */
     public function createProfileDocument()
     {
-        // Show form for uploading profile documents (KRA, Business Reg, etc.)
-        // return view('customer.documents.profile.create');
+        return view('customer.documents.profile.create');
     }
 
-   // In CustomerDocumentController
-public function storeProfileDocument(Request $request)
-{
-    // Store profile document
-    $request->validate([
-        'document_type' => 'required|in:kra_pin_certificate,business_registration_certificate,trade_license,ca_license,cr12_certificate,other',
-        'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        'description' => 'nullable|string|max:500',
-        'expiry_date' => 'nullable|date|after:today',
-    ]);
+    /**
+     * Store profile document
+     */
+    public function storeProfileDocument(Request $request)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'document_type' => 'required|in:kra_pin_certificate,business_registration_certificate,trade_license,ca_license,cr12_certificate,tax_compliance_certificate,other',
+            'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'description' => 'nullable|string|max:500',
+            'expiry_date' => 'nullable|date|after:today',
+            'has_expiry' => 'nullable|boolean',
+        ]);
 
-    $customer = Auth::user();
+        try {
+            $customer = Auth::user();
 
-    $file = $request->file('document');
-    $path = $file->store('customer-documents/' . $customer->id . '/profile', 'public');
+            // Get the uploaded file
+            $file = $request->file('document');
 
-    $documentData = [
-        'user_id' => $customer->id,
-        'source' => 'customer',
-        'is_manually_uploaded' => true,
-        'name' => $request->document_type,
-        'slug' => \Illuminate\Support\Str::slug($request->document_type),
-        'document_type' => $request->document_type,
-        'file_path' => $path,
-        'disk' => 'public',
-        'file_name' => $file->getClientOriginalName(),
-        'mime_type' => $file->getMimeType(),
-        'file_size' => $file->getSize(),
-        'description' => $request->description,
-        'status' => 'pending_review',
-    ];
+            // Generate a unique filename
+            $fileName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
 
-    // Add expiry date if provided
-    if ($request->has_expiry && $request->expiry_date) {
-        $documentData['has_expiry'] = true;
-        $documentData['expiry_date'] = $request->expiry_date;
+            // Store the file
+            $path = $file->storeAs('customer-documents/' . $customer->id . '/profile', $fileName, 'public');
+
+            // Prepare document data
+            $documentData = [
+                'user_id' => $customer->id,
+                'source' => 'customer',
+                'is_manually_uploaded' => true,
+                'name' => $this->getDocumentTypeName($request->document_type),
+                'slug' => Str::slug($this->getDocumentTypeName($request->document_type)),
+                'document_type' => $request->document_type,
+                'file_path' => $path,
+                'disk' => 'public',
+                'file_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'file_size' => $file->getSize(),
+                'description' => $request->description,
+                'status' => 'pending_review',
+                'uploaded_by' => $customer->id,
+            ];
+
+            // Add expiry date if provided
+            if ($request->has_expiry && $request->expiry_date) {
+                $documentData['has_expiry'] = true;
+                $documentData['expiry_date'] = $request->expiry_date;
+            }
+
+            // Create document record
+            Document::create($documentData);
+
+            Log::info('Profile document uploaded successfully', [
+                'user_id' => $customer->id,
+                'document_type' => $request->document_type,
+                'file_path' => $path
+            ]);
+
+            return redirect()->route('customer.profile.edit')
+                ->with('success', 'Document uploaded successfully! Waiting for admin approval.');
+
+        } catch (\Exception $e) {
+            Log::error('Document upload failed: ' . $e->getMessage(), [
+                'user_id' => Auth::id(),
+                'document_type' => $request->document_type
+            ]);
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to upload document: ' . $e->getMessage());
+        }
     }
 
-    Document::create($documentData);
+    /**
+     * Get human-readable document type name
+     */
+    private function getDocumentTypeName($documentType)
+    {
+        $names = [
+            'kra_pin_certificate' => 'KRA PIN Certificate',
+            'business_registration_certificate' => 'Business Registration Certificate',
+            'trade_license' => 'Trade License',
+            'ca_license' => 'CA License',
+            'cr12_certificate' => 'CR12 Certificate',
+            'tax_compliance_certificate' => 'Tax Compliance Certificate',
+            'other' => 'Other Document',
+        ];
 
-    return redirect()->route('customer.documents.index')
-        ->with('success', 'Document uploaded successfully! Waiting for admin approval.');
-}
+        return $names[$documentType] ?? ucfirst(str_replace('_', ' ', $documentType));
+    }
 
     public function showProfileDocument($documentId)
     {

@@ -1129,6 +1129,7 @@ Route::prefix('finance/ai-analytics')->name('finance.ai.')->middleware(['auth'])
         });
 
         // Leases
+        Route::patch('/{lease}/approve', [LeaseController::class, 'approve'])->name('leases.approve');
         Route::get('/leases', [LeaseController::class, 'indexForAccountManager'])->name('leases.index');
         Route::get('/leases/create', [LeaseController::class, 'createForAccountManager'])->name('leases.create');
         Route::post('/leases', [LeaseController::class, 'storeForAccountManager'])->name('leases.store');

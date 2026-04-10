@@ -310,7 +310,7 @@
                 </div>
                 <div class="card-body">
                     <!-- IMPORTANT: Fixed route name -->
-                    <form action="{{ route('customer.documents.upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <form action="{{ route('customer.documents.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
                         @csrf
 
                         <div class="upload-area mb-3" id="uploadArea">

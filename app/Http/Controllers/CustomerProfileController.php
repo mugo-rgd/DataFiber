@@ -28,133 +28,28 @@ class CustomerProfileController extends Controller
         return view('customer.profile-create');
     }
 
-    // public function store(Request $request)
-    // {
-    //     $user = Auth::user();
-
-    //     $validated = $request->validate([
-    //         // Company Profile Fields
-    //         'kra_pin' => 'required|string|max:20|unique:company_profiles,kra_pin',
-    //         'phone_number' => 'required|string|max:20',
-    //         'registration_number' => 'required|string|max:100',
-    //         'company_type' => 'required|in:public,parastatal,county government,private,NGO',
-    //         'contact_name_1' => 'required|string|max:255',
-    //         'contact_phone_1' => 'required|string|max:20',
-    //         'contact_name_2' => 'nullable|string|max:255',
-    //         'contact_phone_2' => 'nullable|string|max:20',
-    //         'physical_location' => 'required|string|max:255',
-    //         'road' => 'required|string|max:255',
-    //         'town' => 'required|string|max:255',
-    //         'address' => 'required|string|max:255',
-    //         'code' => 'required|string|max:50',
-    //         'description' => 'nullable|string',
-    //         'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    //         'kra_pin_certificate' => 'required|file|mimes:pdf|max:5120',
-    //         'business_registration_certificate' => 'required|file|mimes:pdf|max:5120',
-    //         'id_copy' => 'required|file|mimes:pdf|max:5120',
-    //         'cr12_certificate' => 'required|file|mimes:pdf|max:5120',
-    //         'tax_compliance_certificate' => 'required|file|mimes:pdf|max:5120',
-    //         'ca_licence' => 'required|file|mimes:pdf|max:5120',
-    //         'other_documents' => 'nullable|array',
-    //         'other_documents.*' => 'file|mimes:pdf|max:5120',
-    //     ]);
-
-    //     try {
-    //         // Create company profile
-    //         $companyProfile = new CompanyProfile();
-    //         $companyProfile->user_id = $user->id;
-    //         $companyProfile->fill($validated);
-
-    //         // Handle profile photo upload
-    //         if ($request->hasFile('profile_photo')) {
-    //             $photoPath = $request->file('profile_photo')->store('company-profiles/photos', 'public');
-    //             $companyProfile->profile_photo = $photoPath;
-    //         }
-
-    //         $companyProfile->save();
-
-    //         // Handle document uploads
-    //         $this->uploadDocuments($request, $user);
-
-    //         // Redirect to document upload page after profile creation
-    //         return redirect()->route('customer.documents.upload')
-    //             ->with('success', 'Company profile created! Now please upload your required documents.');
-
-    //     } catch (\Exception $e) {
-    //         return redirect()->back()
-    //             ->withInput()
-    //             ->with('error', 'Error creating profile: ' . $e->getMessage());
-    //     }
-    // }
-
-    private function uploadDocuments(Request $request, $user)
-    {
-        $documentTypes = [
-            'kra_pin_certificate' => 'KRA Pin Certificate',
-            'business_registration_certificate' => 'Business Registration Certificate',
-            'id_copy' => 'Trade Licence',
-            'cr12_certificate' => 'CR12 Certificate',
-            'tax_compliance_certificate' => 'Tax Compliance Certificate',
-            'ca_licence' => 'CA Licence',
-        ];
-
-        foreach ($documentTypes as $field => $documentName) {
-            if ($request->hasFile($field)) {
-                $file = $request->file($field);
-                $fileName = Str::slug($documentName) . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $filePath = $file->storeAs('documents/' . $user->id, $fileName, 'public');
-
-                $user->documents()->create([
-                    'name' => $documentName,
-                    'file_path' => $filePath,
-                    'file_name' => $fileName,
-                    'document_type' => $field,
-                    'uploaded_by' => $user->id,
-                    'status' => 'pending_review',
-                    'mime_type' => $file->getMimeType(),
-                    'file_size' => $file->getSize(),
-                ]);
-            }
-        }
-
-        // Handle other documents
-        if ($request->hasFile('other_documents')) {
-            foreach ($request->file('other_documents') as $file) {
-                $fileName = 'other_' . time() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('documents/' . $user->id, $fileName, 'public');
-
-                $user->documents()->create([
-                    'name' => 'Additional Document - ' . $file->getClientOriginalName(),
-                    'file_path' => $filePath,
-                    'file_name' => $fileName,
-                    'document_type' => 'other',
-                    'uploaded_by' => $user->id,
-                    'status' => 'pending_review',
-                    'mime_type' => $file->getMimeType(),
-                    'file_size' => $file->getSize(),
-                ]);
-            }
-        }
-    }
-
     public function edit()
     {
         $user = Auth::user();
         $companyProfile = $user->companyProfile;
 
         if (!$companyProfile) {
-            return redirect()->route('customer.profile.create');
+            return redirect()->route('customer.profile.create')
+                ->with('warning', 'Please complete your company profile first.');
         }
 
-        // $documents = $user->documents()->get()->groupBy('document_type');
-            // Use the Document model directly instead of relationship
-    $documents = \App\Models\Document::where('uploaded_by', $user->id)->get()->groupBy('document_type');
-  $documentTypes = \App\Models\DocumentType::where('is_active', true)
-        ->orderBy('sort_order')
-        ->orderBy('name')
-        ->get();
-        return view('customer.profile-edit', compact('companyProfile', 'documents','documentTypes'));
-        // return redirect()->route('customer.dashboard')->with('info', 'Profile edit functionality is currently unavailable.');
+        // Get documents for the user
+        $documents = Document::where('user_id', $user->id)
+            ->whereNull('lease_id')
+            ->get()
+            ->groupBy('document_type');
+
+        $documentTypes = DocumentType::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return view('customer.profile-edit', compact('companyProfile', 'documents', 'documentTypes'));
     }
 
     public function update(Request $request)
@@ -163,31 +58,47 @@ class CustomerProfileController extends Controller
         $companyProfile = $user->companyProfile;
 
         if (!$companyProfile) {
-            return redirect()->route('customer.profile.create');
+            return redirect()->route('customer.profile.create')
+                ->with('error', 'Company profile not found. Please create one first.');
         }
 
+        // Validation rules - all fields except sap_account
         $validated = $request->validate([
+            // Basic Information
+            'company_name' => 'required|string|max:255',
             'kra_pin' => 'required|string|max:20|unique:company_profiles,kra_pin,' . $companyProfile->id,
             'phone_number' => 'required|string|max:20',
             'registration_number' => 'required|string|max:100',
             'company_type' => 'required|in:public,parastatal,county government,private,NGO',
+
+            // Contact Persons
             'contact_name_1' => 'required|string|max:255',
             'contact_phone_1' => 'required|string|max:20',
-            'contact_name_2' => 'nullable|string|max:255',
+            'contact_name_2' => 'required|string|max:255',
             'contact_phone_2' => 'nullable|string|max:20',
+
+            // Address Information
             'physical_location' => 'required|string|max:255',
             'road' => 'required|string|max:255',
             'town' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'code' => 'required|string|max:50',
-            'description' => 'nullable|string',
+
+            // Additional Information
+            'description' => 'required|string',
             'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         try {
+            DB::beginTransaction();
+
+            // Remove sap_account if present in validated data (it should not be editable)
+            unset($validated['sap_account']);
+
+            // Update company profile
             $companyProfile->update($validated);
 
-            // Handle profile photo update
+            // Handle profile photo upload
             if ($request->hasFile('profile_photo')) {
                 // Delete old photo if exists
                 if ($companyProfile->profile_photo) {
@@ -198,74 +109,88 @@ class CustomerProfileController extends Controller
                 $companyProfile->update(['profile_photo' => $photoPath]);
             }
 
+            // Update user's name to match company name
+            $user->update([
+                'name' => $validated['company_name'],
+            ]);
+
+            DB::commit();
+
             return redirect()->route('customer.profile.edit')
                 ->with('success', 'Company profile updated successfully!');
 
         } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Profile update failed:', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Error updating profile: ' . $e->getMessage());
         }
     }
 
-    // In CustomerProfileController.php - update the show() method
+    public function show()
+    {
+        $user = Auth::user();
 
-public function show()
-{
-    $user = Auth::user();
+        // Get company profile
+        $companyProfile = CompanyProfile::where('user_id', $user->id)->first();
 
-    // Get company profile
-    $companyProfile = CompanyProfile::where('user_id', $user->id)->first();
-
-    // Get profile documents (documents without lease_id)
-    $documents = Document::where('user_id', $user->id)
-        ->whereNull('lease_id')
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-    // Get required document types
-    $requiredDocumentTypes = DocumentType::where('is_required', true)
-        ->where('is_active', true)
-        ->get();
-
-    // Get missing required documents
-    $missingDocuments = [];
-    foreach ($requiredDocumentTypes as $docType) {
-        $exists = Document::where('user_id', $user->id)
-            ->where('document_type', $docType->document_type)
+        // Get profile documents (documents without lease_id)
+        $documents = Document::where('user_id', $user->id)
             ->whereNull('lease_id')
-            ->exists();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        if (!$exists) {
-            $missingDocuments[] = $docType->name;
+        // Get required document types
+        $requiredDocumentTypes = DocumentType::where('is_required', true)
+            ->where('is_active', true)
+            ->get();
+
+        // Get missing required documents
+        $missingDocuments = [];
+        foreach ($requiredDocumentTypes as $docType) {
+            $exists = Document::where('user_id', $user->id)
+                ->where('document_type', $docType->document_type)
+                ->whereNull('lease_id')
+                ->exists();
+
+            if (!$exists) {
+                $missingDocuments[] = $docType->name;
+            }
         }
+
+        // Calculate document stats
+        $approvedDocs = $documents->where('status', 'approved')->count();
+        $pendingDocs = $documents->where('status', 'pending')->count();
+        $totalDocs = $documents->count();
+
+        return view('customer.profile.show', compact(
+            'user',
+            'companyProfile',
+            'documents',
+            'missingDocuments',
+            'requiredDocumentTypes',
+            'approvedDocs',
+            'pendingDocs',
+            'totalDocs'
+        ));
     }
-
-    // Calculate document stats
-    $approvedDocs = $documents->where('status', 'approved')->count();
-    $pendingDocs = $documents->where('status', 'pending')->count();
-    $totalDocs = $documents->count();
-
-    return view('customer.profile.show', compact(
-        'user',
-        'companyProfile',
-        'documents',
-        'missingDocuments',
-        'requiredDocumentTypes',
-        'approvedDocs',
-        'pendingDocs',
-        'totalDocs'
-    ));
-}
-
-
-
-    //////////////////////////////
 
     public function store(Request $request)
     {
         Log::info('=== PROFILE CREATION START ===');
-        Log::info('Profile creation data received:', $request->except(['kra_pin_certificate', 'business_registration_certificate', 'id_copy', 'ca_licence', 'tax_compliance_certificate', 'cr12_certificate']));
+        Log::info('Profile creation data received:', $request->except([
+            'kra_pin_certificate',
+            'business_registration_certificate',
+            'id_copy',
+            'ca_licence',
+            'tax_compliance_certificate',
+            'cr12_certificate'
+        ]));
 
         try {
             DB::beginTransaction();
@@ -275,7 +200,8 @@ public function show()
             // Validate profile data
             $validated = $request->validate([
                 // Company Information
-                'kra_pin' => 'required|string|max:255',
+                'company_name' => 'required|string|max:255',
+                'kra_pin' => 'required|string|max:255|unique:company_profiles,kra_pin',
                 'phone_number' => 'required|string|max:20',
                 'registration_number' => 'required|string|max:255',
                 'company_type' => 'required|string|max:255',
@@ -308,31 +234,40 @@ public function show()
                 'description' => 'nullable|string',
             ]);
 
-            // Create or update company profile
-            $companyProfile = CompanyProfile::updateOrCreate(
-                ['user_id' => $user->id],
-                [
-                    'kra_pin' => $validated['kra_pin'],
-                    'phone_number' => $validated['phone_number'],
-                    'registration_number' => $validated['registration_number'],
-                    'company_type' => $validated['company_type'],
-                    'contact_name_1' => $validated['contact_name_1'],
-                    'contact_phone_1' => $validated['contact_phone_1'],
-                    'contact_name_2' => $validated['contact_name_2'] ?? null,
-                    'contact_phone_2' => $validated['contact_phone_2'] ?? null,
-                    'physical_location' => $validated['physical_location'],
-                    'road' => $validated['road'],
-                    'town' => $validated['town'],
-                    'address' => $validated['address'],
-                    'code' => $validated['code'],
-                    'description' => $validated['description'] ?? null,
-                ]
-            );
+            // Create company profile (sap_account will be auto-generated by database or left null)
+            $companyProfile = CompanyProfile::create([
+                'user_id' => $user->id,
+                'company_name' => $validated['company_name'],
+                'kra_pin' => $validated['kra_pin'],
+                'phone_number' => $validated['phone_number'],
+                'registration_number' => $validated['registration_number'],
+                'company_type' => $validated['company_type'],
+                'contact_name_1' => $validated['contact_name_1'],
+                'contact_phone_1' => $validated['contact_phone_1'],
+                'contact_name_2' => $validated['contact_name_2'] ?? null,
+                'contact_phone_2' => $validated['contact_phone_2'] ?? null,
+                'physical_location' => $validated['physical_location'],
+                'road' => $validated['road'],
+                'town' => $validated['town'],
+                'address' => $validated['address'],
+                'code' => $validated['code'],
+                'description' => $validated['description'] ?? null,
+            ]);
 
-            Log::info('Company profile created/updated:', ['profile_id' => $companyProfile->id]);
+            Log::info('Company profile created:', ['profile_id' => $companyProfile->id]);
+
+            // Update user's name
+            $user->update([
+                'name' => $validated['company_name'],
+            ]);
 
             // Handle document uploads
             $this->handleDocumentUploads($request, $user);
+
+            // Handle profile photo upload
+            if ($request->hasFile('profile_photo')) {
+                $this->uploadProfilePhoto($request->file('profile_photo'), $user, $companyProfile);
+            }
 
             // Update user profile completion status
             $user->update([
@@ -341,8 +276,7 @@ public function show()
 
             DB::commit();
             Log::info('Profile creation completed successfully');
-// return redirect()->back()
-//     ->with('success', 'Customer profile created successfully.');
+
             return redirect()->route('customer.customer-dashboard')
                 ->with('success', 'Company profile completed successfully!');
 
@@ -386,11 +320,6 @@ public function show()
                 $this->uploadDocument($file, $user, 'other_document', $uploadedBy);
             }
         }
-
-        // Upload profile photo if provided
-        if ($request->hasFile('profile_photo')) {
-            $this->uploadProfilePhoto($request->file('profile_photo'), $user);
-        }
     }
 
     private function uploadDocument($file, $user, $documentType, $uploadedBy)
@@ -404,7 +333,7 @@ public function show()
         $fileName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
 
         // Store file
-        $filePath = $file->storeAs('documents', $fileName, 'public');
+        $filePath = $file->storeAs('documents/' . $user->id, $fileName, 'public');
 
         // Get document type details
         $docType = DocumentType::where('document_type', $documentType)->first();
@@ -435,7 +364,7 @@ public function show()
         ]);
     }
 
-    private function uploadProfilePhoto($file, $user)
+    private function uploadProfilePhoto($file, $user, $companyProfile = null)
     {
         if (!$file->isValid()) {
             return;
@@ -444,10 +373,10 @@ public function show()
         $fileName = 'profile_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('profile-photos', $fileName, 'public');
 
-        // Update user profile photo
-        $user->update([
-            'profile_photo_path' => $filePath,
-        ]);
+        // Update company profile photo
+        if ($companyProfile) {
+            $companyProfile->update(['profile_photo' => $filePath]);
+        }
 
         Log::info('Profile photo uploaded:', ['file_path' => $filePath]);
     }

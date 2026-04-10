@@ -12,23 +12,24 @@ class CompanyProfile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'kra_pin',
-        'phone_number',
-        'registration_number',
-        'company_type',
-        'sap_account',
-        'contact_name_1',
-        'contact_phone_1',
-        'contact_name_2',
-        'contact_phone_2',
-        'physical_location',
-        'road',
-        'town',
-        'address',
-        'code',
-        'description',
-        'profile_photo',
+         'user_id',
+    'company_name',  // Add this if not already present
+    'kra_pin',
+    'phone_number',
+    'registration_number',
+    'sap_account',  // This exists but won't be editable
+    'company_type',
+    'contact_name_1',
+    'contact_phone_1',
+    'contact_name_2',
+    'contact_phone_2',
+    'physical_location',
+    'road',
+    'town',
+    'address',
+    'code',
+    'description',
+    'profile_photo',
     ];
 
     protected $casts = [

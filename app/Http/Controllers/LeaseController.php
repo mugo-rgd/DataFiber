@@ -667,7 +667,7 @@ public function activate(Lease $lease)
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'cores_required'=> 'required|integer|min:1',
-            // Add other validation rules
+            'technology' => 'required|string',
         ]);
 
         // Verify the new customer also belongs to this account manager
