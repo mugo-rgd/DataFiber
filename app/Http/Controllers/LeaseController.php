@@ -746,29 +746,28 @@ public function updateForAccountManager(Request $request, Lease $lease)
         case 'dark_fibre':
             $rules['start_location'] = 'required|string|max:255';
             $rules['end_location'] = 'required|string|max:255';
-            $rules['host_location'] = 'nullable|string|max:255'; // Not required
-            $rules['cores_required'] = 'nullable|integer|min:0'; // Not required
+            $rules['host_location'] = 'nullable|string|max:255';
+            $rules['cores_required'] = 'nullable|integer|min:0';
             $rules['technology'] = 'required|in:metro,non_premium,premium';
             break;
 
         case 'colocation':
-            $rules['start_location'] = 'nullable|string|max:255'; // Not required
-            $rules['end_location'] = 'nullable|string|max:255'; // Not required
+            $rules['start_location'] = 'nullable|string|max:255';
+            $rules['end_location'] = 'nullable|string|max:255';
             $rules['host_location'] = 'required|string|max:255';
-            $rules['cores_required'] = 'nullable|integer|min:0'; // Not required
+            $rules['cores_required'] = 'nullable|integer|min:0';
             $rules['technology'] = 'required|in:colocation';
             break;
 
         case 'wavelength':
-            $rules['start_location'] = 'nullable|string|max:255'; // Not required
-            $rules['end_location'] = 'nullable|string|max:255'; // Not required
-            $rules['host_location'] = 'nullable|string|max:255'; // Not required
-            $rules['cores_required'] = 'nullable|integer|min:0'; // Not required
+            $rules['start_location'] = 'nullable|string|max:255';
+            $rules['end_location'] = 'nullable|string|max:255';
+            $rules['host_location'] = 'nullable|string|max:255';
+            $rules['cores_required'] = 'nullable|integer|min:0';
             $rules['technology'] = 'required|in:dwdm';
             break;
 
         default:
-            // Fallback validation
             $rules['start_location'] = 'required|string|max:255';
             $rules['end_location'] = 'required|string|max:255';
             $rules['host_location'] = 'required|string|max:255';
@@ -778,7 +777,7 @@ public function updateForAccountManager(Request $request, Lease $lease)
 
     $validated = $request->validate($rules);
 
-    // Verify the new customer also belongs to this account manager
+    // Verify the customer belongs to this account manager
     $customer = User::where('id', $validated['customer_id'])
         ->where('account_manager_id', $user->id)
         ->where('role', 'customer')
@@ -790,32 +789,9 @@ public function updateForAccountManager(Request $request, Lease $lease)
             ->withInput();
     }
 
-    // Remove any fields that should not be updated based on service type
+    // DO NOT auto-clear any fields - only update what was sent
+    // Simply use the validated data as is
     $updateData = $validated;
-
-    // For colocation, ensure location fields are cleared if they were sent
-    if ($request->service_type === 'colocation') {
-        $updateData['start_location'] = null;
-        $updateData['end_location'] = null;
-        $updateData['distance_km'] = null;
-        $updateData['cores_required'] = null;
-        $updateData['bandwidth'] = null;
-    }
-
-    // For wavelength, ensure location fields are cleared
-    if ($request->service_type === 'wavelength') {
-        $updateData['start_location'] = null;
-        $updateData['end_location'] = null;
-        $updateData['host_location'] = null;
-        $updateData['distance_km'] = null;
-        $updateData['cores_required'] = null;
-    }
-
-    // For dark_fibre, ensure host_location and bandwidth are cleared
-    if ($request->service_type === 'dark_fibre') {
-        $updateData['host_location'] = null;
-        $updateData['bandwidth'] = null;
-    }
 
     $lease->update($updateData);
 

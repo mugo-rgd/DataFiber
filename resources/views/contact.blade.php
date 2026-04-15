@@ -90,8 +90,8 @@
                         <h4 class="h5 mb-3">Email</h4>
                         <p class="text-muted mb-3">Get detailed responses within 2 hours during business hours.</p>
                         <div class="contact-info">
-                            <a href="mailto:support@darkfibre-crm.test" class="btn btn-outline-success btn-sm">
-                                <i class="fas fa-envelope me-1"></i> support@darkfibre-crm.test
+                            <a href="mailto:Fiber@kplc.co.ke" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-envelope me-1"></i> Fiber@kplc.co.ke
                             </a>
                         </div>
                     </div>
@@ -286,9 +286,9 @@
                                 <div>
                                     <h5 class="h6 mb-1">Email Addresses</h5>
                                     <p class="mb-0 text-muted">
-                                        General: info@darkfibre-crm.test<br>
-                                        Support: support@darkfibre-crm.test<br>
-                                        Sales: sales@darkfibre-crm.test
+                                        General: Fiber@kplc.co.ket<br>
+                                        Support: Fiber@kplc.co.ke<br>
+                                        Sales: Fiber@kplc.co.ke
                                     </p>
                                 </div>
                             </div>
@@ -304,7 +304,7 @@
                                 <a href="skype:darkfibre.crm?call" class="btn btn-info">
                                     <i class="fab fa-skype me-2"></i> Skype Call
                                 </a>
-                                <a href="mailto:support@darkfibre-crm.test" class="btn btn-warning">
+                                <a href="mailto:Fiber@kplc.co.ke" class="btn btn-warning">
                                     <i class="fas fa-envelope me-2"></i> Quick Email
                                 </a>
                             </div>

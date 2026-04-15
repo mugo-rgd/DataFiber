@@ -176,7 +176,7 @@
                                             </div>
                                             <h5>Email Support</h5>
                                             <p class="mb-2">For detailed inquiries</p>
-                                            <a href="mailto:support@darkfibre-crm.test" class="btn btn-primary">support@darkfibre-crm.test</a>
+                                            <a href="mailto:Fiber@kplc.co.ke" class="btn btn-primary">Fiber@kplc.co.ke</a>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-4">

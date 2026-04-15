@@ -1430,7 +1430,7 @@
                             <a href="#" class="social-icon small-icon" title="GitHub" data-bs-toggle="tooltip">
                                 <i class="fab fa-github fa-sm"></i>
                             </a>
-                            <a href="mailto:support@example.com" class="social-icon small-icon" title="Email" data-bs-toggle="tooltip">
+                            <a href="mailto:Fibre@kplc.co.ke" class="social-icon small-icon" title="Email" data-bs-toggle="tooltip">
                                 <i class="fas fa-envelope fa-sm"></i>
                             </a>
                         </div>
@@ -1535,7 +1535,7 @@
                                 </li>
                                 <li class="mb-1 d-flex align-items-start">
                                     <i class="fas fa-envelope fa-xs me-1 mt-1 text-primary"></i>
-                                    <span class="text-light opacity-75">support@darkfibre-crm.test</span>
+                                    <span class="text-light opacity-75">Fibre@kplc.co.ke</span>
                                 </li>
                             </ul>
                         </div>

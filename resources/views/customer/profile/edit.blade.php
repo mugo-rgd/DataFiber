@@ -294,7 +294,7 @@
                         <p class="text-muted small">
                             Need help updating your profile? Contact our support team.
                         </p>
-                        <a href="mailto:support@darkfibre-crm.test" class="btn btn-outline-primary w-100">
+                        <a href="mailto:Fiber@kplc.co.ke" class="btn btn-outline-primary w-100">
                             <i class="fas fa-envelope me-2"></i>Email Support
                         </a>
                     </div>

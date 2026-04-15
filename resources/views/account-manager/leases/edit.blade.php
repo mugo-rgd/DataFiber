@@ -482,11 +482,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const technologySelect = document.getElementById('technology');
     const techHint = document.getElementById('tech-hint');
 
-    // Get the existing technology value from the server (stored in a data attribute)
+    // Get the existing technology value from the server
     const existingTechnology = '{{ old('technology', $lease->technology) }}';
     const existingServiceType = '{{ old('service_type', $lease->service_type) }}';
 
-    // Get all fields that need to be disabled
+    // Get all fields
     const startLocation = document.getElementById('start_location');
     const endLocation = document.getElementById('end_location');
     const hostLocation = document.getElementById('host_location');
@@ -690,13 +690,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
 
             case 'wavelength':
-                // Disable: Core(s), Start Location, End Location, Distance (KM), Host Location
+                // ONLY disable Core(s) and Distance (KM)
+                // Start Location and End Location remain ENABLED and VISIBLE
+                // Host Location is disabled
                 if (coresRequired) coresRequired.disabled = true;
-                if (startLocation) startLocation.disabled = true;
-                if (endLocation) endLocation.disabled = true;
                 if (distanceKm) distanceKm.disabled = true;
                 if (hostLocation) hostLocation.disabled = true;
-                // No required fields among these
+                // Start Location and End Location are NOT disabled - they stay enabled
+                // No required fields for wavelength
                 break;
 
             default:
@@ -710,7 +711,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (field) {
                 if (field.disabled) {
                     field.classList.add('bg-light');
-                    // Also remove required attribute if field is disabled
+                    // Remove required attribute if field is disabled
                     field.required = false;
                 } else {
                     field.classList.remove('bg-light');
