@@ -170,8 +170,6 @@ public function storeForAccountManager(Request $request)
 {
     $user = Auth::user();
 
-        // dd(auth()->user()->email);
-
     // DEBUG: Log everything
     \Log::info('=== LEASE CREATION DEBUG ===');
     \Log::info('Request method: ' . $request->method());
@@ -187,19 +185,17 @@ public function storeForAccountManager(Request $request)
     }
 
     try {
-        $validated = $request->validate([
+        // Base validation rules
+        $rules = [
             'customer_id' => 'required|exists:users,id',
             'quotation_id' => 'nullable|exists:quotations,id',
             'lease_number' => 'required|string|max:255|unique:leases,lease_number',
             'title' => 'nullable|string|max:255',
-            'service_type' => 'required|in:dark_fibre,wavelength,ethernet,ip_transit,colocation',
+            'service_type' => 'required|in:dark_fibre,wavelength,colocation',
             'bandwidth' => 'nullable|string|max:255',
             'cores_required' => 'nullable|integer|min:0',
-            'technology' => 'nullable|in:single_mode,multimode,dwdm,cwdm,ADSS,OPGW,other',
-            'start_location' => 'required|string|max:255',
-            'end_location' => 'required|string|max:255',
-            'host_location' => 'required|string|max:255',
-            'distance_km' => 'nullable|numeric|min:0',  // This validates distance
+            'technology' => 'required|string',
+            'distance_km' => 'nullable|numeric|min:0',
             'monthly_cost' => 'required|numeric|min:0',
             'installation_fee' => 'nullable|numeric|min:0',
             'total_contract_value' => 'nullable|numeric|min:0',
@@ -214,7 +210,39 @@ public function storeForAccountManager(Request $request)
             'terms_and_conditions' => 'nullable|string',
             'special_requirements' => 'nullable|string',
             'notes' => 'nullable|string',
-        ]);
+        ];
+
+        // Conditional validation based on service_type
+        switch ($request->service_type) {
+            case 'dark_fibre':
+                $rules['start_location'] = 'required|string|max:255';
+                $rules['end_location'] = 'required|string|max:255';
+                $rules['host_location'] = 'nullable|string|max:255';
+                $rules['technology'] = 'required|in:metro,non_premium,premium';
+                break;
+
+            case 'colocation':
+                $rules['start_location'] = 'nullable|string|max:255';
+                $rules['end_location'] = 'nullable|string|max:255';
+                $rules['host_location'] = 'required|string|max:255';
+                $rules['technology'] = 'required|in:colocation';
+                break;
+
+            case 'wavelength':
+                $rules['start_location'] = 'nullable|string|max:255';
+                $rules['end_location'] = 'nullable|string|max:255';
+                $rules['host_location'] = 'nullable|string|max:255';
+                $rules['technology'] = 'required|in:dwdm';
+                break;
+
+            default:
+                $rules['start_location'] = 'required|string|max:255';
+                $rules['end_location'] = 'required|string|max:255';
+                $rules['host_location'] = 'required|string|max:255';
+                break;
+        }
+
+        $validated = $request->validate($rules);
 
         \Log::info('Validation passed. Validated data:', $validated);
         \Log::info('Distance value after validation: ' . ($validated['distance_km'] ?? 'null'));
@@ -222,7 +250,7 @@ public function storeForAccountManager(Request $request)
     } catch (\Illuminate\Validation\ValidationException $e) {
         \Log::error('Validation failed:', $e->errors());
         \Log::error('Request data that failed:', $request->all());
-        throw $e; // Re-throw to let Laravel handle the redirect
+        throw $e;
     }
 
     // Verify the customer exists and belongs to this account manager
@@ -252,18 +280,34 @@ public function storeForAccountManager(Request $request)
         }
 
         // Calculate total_contract_value if not provided
-        // if (!isset($validated['total_contract_value']) || $validated['total_contract_value'] === null) {
-        //     $validated['total_contract_value'] = ($validated['monthly_cost'] * $validated['contract_term_months']) + ($validated['installation_fee'] ?? 0);
-        // }
-
         if (!isset($validated['total_contract_value']) || $validated['total_contract_value'] === null) {
-    $validated['total_contract_value'] = $this->calculateTotalContractValue(
-        $validated['monthly_cost'],
-        $validated['contract_term_months'],
-        $validated['billing_cycle'],
-        $validated['installation_fee'] ?? 0
-    );
-}
+            $validated['total_contract_value'] = $this->calculateTotalContractValue(
+                $validated['monthly_cost'],
+                $validated['contract_term_months'],
+                $validated['billing_cycle'],
+                $validated['installation_fee'] ?? 0
+            );
+        }
+
+        // For wavelength service, ensure location fields are set to null
+        if ($request->service_type === 'wavelength') {
+            $validated['host_location'] = null;
+            // start_location and end_location can remain as entered by user
+        }
+
+        // For dark_fibre service, ensure host_location is set to null
+        if ($request->service_type === 'dark_fibre') {
+            $validated['host_location'] = null;
+        }
+
+        // For colocation, ensure start/end locations are set to null
+        if ($request->service_type === 'colocation') {
+            $validated['start_location'] = null;
+            $validated['end_location'] = null;
+            $validated['distance_km'] = null;
+            $validated['cores_required'] = null;
+            $validated['bandwidth'] = null;
+        }
 
         \Log::info('Final data before create:', $validated);
 
@@ -789,9 +833,29 @@ public function updateForAccountManager(Request $request, Lease $lease)
             ->withInput();
     }
 
-    // DO NOT auto-clear any fields - only update what was sent
-    // Simply use the validated data as is
+    // Prepare update data
     $updateData = $validated;
+
+    // For wavelength service, ensure host_location is null if not provided
+    if ($request->service_type === 'wavelength') {
+        if (empty($updateData['host_location'])) {
+            $updateData['host_location'] = null;
+        }
+    }
+
+    // For dark_fibre service, ensure host_location is null
+    if ($request->service_type === 'dark_fibre') {
+        $updateData['host_location'] = null;
+    }
+
+    // For colocation, ensure start/end locations are null
+    if ($request->service_type === 'colocation') {
+        $updateData['start_location'] = null;
+        $updateData['end_location'] = null;
+        $updateData['distance_km'] = null;
+        $updateData['cores_required'] = null;
+        $updateData['bandwidth'] = null;
+    }
 
     $lease->update($updateData);
 

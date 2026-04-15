@@ -26,10 +26,10 @@
                 </div>
                 <div class="btn-group">
 
-<a href="{{ route('account-manager.leases.create',
-     $customerId ) }}" class="btn btn-primary">
+<a href="{{ route('account-manager.leases.create', ['customer_id' => $customerId]) }}" class="btn btn-primary">
     Create Lease
 </a>
+
                     @if($selectedCustomer)
                         <a href="{{ route('account-manager.customers.show', $selectedCustomer) }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Back to Customer
@@ -133,7 +133,7 @@
                 </div>
             </div>
         </div>
-{{-- 
+{{--
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -233,7 +233,15 @@
                                     </td>
                                 @endif
                                 <td>
-                                    <span class="badge bg-light text-dark">{{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}</span>
+       <span class="badge bg-light text-dark">{{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}</span>
+<br>
+@if($lease->service_type == 'colocation')
+    <div class="mt-1">
+        <span class="border border-primary rounded px-1 py-0 text-primary" style="font-size: 0.7rem;">
+            <i class="fas fa-map-marker-alt me-1" style="font-size: 0.6rem;"></i>{{ strtoupper($lease->host_location) }}
+        </span>
+    </div>
+@endif
                                 </td>
                                 <td>
                                     <small class="text-muted">

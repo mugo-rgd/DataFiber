@@ -75,24 +75,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body py-2">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Monthly Revenue
-                            </div>
-                            <div class="h6 mb-0 font-weight-bold text-gray-800">${{ number_format($monthlyRevenue, 2) }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-lg text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
     </div>
 
     <!-- Success/Error Messages -->
@@ -294,14 +276,23 @@
                                 </td>
                                 <td>
                                     <span class="badge bg-light text-dark" style="font-size: 0.7rem;">{{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}</span>
+                                    @if($lease->service_type == 'colocation' && $lease->host_location)
+                                        <div class="mt-1">
+                                            <span class="border border-primary rounded px-1 py-0 text-primary" style="font-size: 0.65rem;">
+                                                <i class="fas fa-map-marker-alt me-1" style="font-size: 0.55rem;"></i>{{ strtoupper($lease->host_location) }}
+                                            </span>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td>
-                                    <small class="text-muted" style="font-size: 0.75rem;">
-                                        {{ $lease->start_location }} → {{ $lease->end_location }}
+                                    <div>
+                                        <small class="text-muted" style="font-size: 0.7rem;">
+                                            {{ $lease->start_location }} → {{ $lease->end_location }}
+                                        </small>
                                         @if($lease->distance_km)
-                                            <br><span class="text-primary" style="font-size: 0.7rem;">{{ $lease->distance_km }} km</span>
+                                            <br><span class="text-primary" style="font-size: 0.65rem;">{{ $lease->distance_km }} km</span>
                                         @endif
-                                    </small>
+                                    </div>
                                 </td>
                                 <td>
                                     <strong style="font-size: 0.8rem;">{{ number_format($lease->monthly_cost, 2) }}</strong>
@@ -313,20 +304,20 @@
                                         {{ ucfirst($lease->status) }}
                                     </span>
                                     @if($isExpired && $lease->status !== 'expired')
-                                        <span class="badge bg-warning" style="font-size: 0.7rem;">Expired</span>
+                                        <br><span class="badge bg-warning" style="font-size: 0.65rem;">Expired</span>
                                     @endif
                                 </td>
-                                <td style="font-size: 0.75rem;">
+                                <td style="font-size: 0.7rem;">
                                     {{ $startDate->format('M d, Y') }}
                                 </td>
-                                <td style="font-size: 0.75rem;">
+                                <td style="font-size: 0.7rem;">
                                     {{ $endDate->format('M d, Y') }}
                                     @if($isExpired)
-                                        <br><small class="text-danger" style="font-size: 0.65rem;">Expired</small>
+                                        <br><small class="text-danger" style="font-size: 0.6rem;">Expired</small>
                                     @elseif($daysUntilExpiry < 30 && $daysUntilExpiry > 0)
-                                        <br><small class="text-warning" style="font-size: 0.65rem;">{{ $daysUntilExpiry }} days left</small>
+                                        <br><small class="text-warning" style="font-size: 0.6rem;">{{ $daysUntilExpiry }} days left</small>
                                     @elseif($daysUntilExpiry <= 0)
-                                        <br><small class="text-danger" style="font-size: 0.65rem;">Expired</small>
+                                        <br><small class="text-danger" style="font-size: 0.6rem;">Expired</small>
                                     @endif
                                 </td>
                                 <td>
@@ -625,7 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const managerAutocompleteContainer = document.getElementById('managerAutocompleteContainer');
     const selectedManagerBadge = document.getElementById('selectedManagerBadge');
     const selectedManagerName = document.getElementById('selectedManagerName');
-    const managerClearFilter = document.getElementById('clearManagerFilter'); // Renamed to avoid conflict
+    const managerClearFilter = document.getElementById('clearManagerFilter');
     const managerSearchBtn = document.getElementById('managerSearchBtn');
     const managerResultsContainer = document.getElementById('managerSearchResultsContainer');
     const managerResultsDiv = document.getElementById('managerSearchResults');
@@ -844,7 +835,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Clear manager filter - using renamed variable
+    // Clear manager filter
     if (managerClearFilter) {
         managerClearFilter.addEventListener('click', clearManagerFilter);
     }
