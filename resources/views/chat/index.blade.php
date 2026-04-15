@@ -204,6 +204,30 @@
         </div>
     </div>
 </div>
+
+@auth
+    @if(auth()->user()->role === 'customer')
+        <div class="card-header bg-transparent border-bottom-0 pt-4 px-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-primary bg-opacity-10 p-2 rounded-3">
+                        <i class="fas fa-headset text-primary fa-fw"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-semibold">Contact Us</h5>
+                        <p class="text-muted small mb-0">We're here to help</p>
+                    </div>
+                </div>
+
+                <a href="{{ route('contact') }}" class="btn btn-primary btn-sm rounded-pill px-3">
+                    <i class="fas fa-envelope fa-sm me-2"></i>
+                    Get in Touch
+                    <i class="fas fa-arrow-right fa-xs ms-2"></i>
+                </a>
+            </div>
+        </div>
+    @endif
+@endauth
 @endsection
 
 @push('scripts')

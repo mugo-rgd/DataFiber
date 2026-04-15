@@ -58,6 +58,7 @@ class Lease extends Model
         'technology',
         'start_location',
         'end_location',
+        'host_location',
         'distance_km',
         'monthly_cost',
         'installation_fee',

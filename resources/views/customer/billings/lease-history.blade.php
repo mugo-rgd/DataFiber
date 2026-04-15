@@ -38,7 +38,7 @@
                                     {{ \Carbon\Carbon::parse($item->period_end)->format('M Y') }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('customer.billings.show', $item->consolidatedBilling->id) }}">
+                                    <a href="{{ route('customer.billing.show', $item->consolidatedBilling->id) }}">
                                         {{ $item->consolidatedBilling->billing_number }}
                                     </a>
                                 </td>

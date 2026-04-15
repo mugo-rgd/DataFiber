@@ -112,62 +112,98 @@
         </div>
 
         <!-- Statistics Cards - Dynamic Grid -->
-        <div class="row g-2 g-sm-3 g-md-4 mb-3 mb-sm-4">
-            @foreach($stats as $key => $stat)
-                @if(is_array($stat) && isset($stat['color']) && isset($stat['title']) && isset($stat['value']))
-                <div class="col-6 col-md-4 col-lg-2 mb-2 mb-sm-3">
-                    <div class="stat-card bg-white rounded-lg shadow-sm border-0 h-100">
-                        <div class="stat-card-body p-2 p-sm-3">
-                            <div class="d-flex justify-content-between align-items-start mb-2 mb-sm-3">
-                                <div class="stat-icon bg-{{ $stat['color'] }}-light rounded-circle responsive-stat-icon">
-                                    <i class="fas fa-{{ $stat['icon'] ?? 'chart-bar' }} text-{{ $stat['color'] }}"></i>
-                                </div>
-                                @if(isset($stat['trend']))
-                                <div class="trend-indicator">
-                                    <span class="badge bg-{{ $stat['trend']['color'] ?? 'muted' }} responsive-badge">
-                                        <i class="fas fa-{{ $stat['trend']['icon'] ?? 'chart-line' }} me-1"></i>
-                                        {{ $stat['trend']['value'] ?? 0 }}%
-                                    </span>
-                                </div>
+        <!-- Statistics Cards - Dynamic Grid -->
+<div class="row g-2 g-sm-3 g-md-4 mb-3 mb-sm-4">
+    @foreach($stats as $key => $stat)
+        @if(is_array($stat) && isset($stat['color']) && isset($stat['title']) && isset($stat['value']))
+        <div class="col-6 col-md-4 col-lg-2 mb-2 mb-sm-3">
+            <div class="stat-card bg-white rounded-lg shadow-sm border-0 h-100">
+                <div class="stat-card-body p-2 p-sm-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2 mb-sm-3">
+                        <div class="stat-icon bg-{{ $stat['color'] }}-light rounded-circle responsive-stat-icon">
+                            <i class="fas fa-{{ $stat['icon'] ?? 'chart-bar' }} text-{{ $stat['color'] }}"></i>
+                        </div>
+                        @if(isset($stat['trend']))
+                        <div class="trend-indicator">
+                            <span class="badge bg-{{ $stat['trend']['color'] ?? 'muted' }} responsive-badge">
+                                <i class="fas fa-{{ $stat['trend']['icon'] ?? 'chart-line' }} me-1"></i>
+                                {{ $stat['trend']['value'] ?? 0 }}%
+                            </span>
+                        </div>
+                        @endif
+                    </div>
+                    <h6 class="stat-title text-muted text-uppercase small mb-1 mb-sm-2">{{ $stat['title'] }}</h6>
+
+                    {{-- Handle Currency Values with Multiple Currencies --}}
+                    @if(isset($stat['is_currency']) && $stat['is_currency'] === true)
+                        <div class="stat-value fw-bold mb-2 mb-sm-3 text-dark responsive-stat-value">
+                            @if(is_array($stat['value']) && count($stat['value']) > 0)
+                                @foreach($stat['value'] as $currency => $amount)
+                                    <div class="currency-row d-flex justify-content-between align-items-center mb-1"
+                                         data-bs-toggle="tooltip"
+                                         data-bs-placement="top"
+                                         title="{{ $currency === 'USD' ? 'US Dollar' : ($currency === 'KSH' ? 'Kenyan Shilling' : $currency) }}">
+                                        <span class="currency-code small text-muted">{{ $currency }}</span>
+                                        <span class="currency-amount fw-bold">
+                                            {{ $currency === 'USD' ? '$' : ($currency === 'KSH' ? 'KSh' : $currency . ' ') }}
+                                            {{ number_format($amount, 2) }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                                @if(count($stat['value']) > 1)
+                                    <div class="currency-total mt-2 pt-1 border-top">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Showing amounts in original currencies
+                                        </small>
+                                    </div>
                                 @endif
-                            </div>
-                            <h6 class="stat-title text-muted text-uppercase small mb-1 mb-sm-2">{{ $stat['title'] }}</h6>
-                            <div class="stat-value fw-bold mb-2 mb-sm-3 text-dark responsive-stat-value">
-                                @if(in_array($key, ['total_revenue', 'revenue_this_month', 'pending_payments', 'overdue_payments', 'revenue_managed', 'average_deal_size', 'quoted_amount', 'monthly_revenue']))
-                                    KSh {{ number_format($stat['value'], 2) }}
-                                @elseif(in_array($key, ['conversion_rate', 'collection_rate', 'network_uptime', 'equipment_health', 'customer_growth_rate', 'satisfaction_score']))
-                                    {{ $stat['value'] }}%
-                                @else
-                                    {{ number_format($stat['value']) }}
-                                @endif
-                            </div>
-                            @if(isset($stat['subtitle']))
-                            <div class="stat-subtitle responsive-text-sm text-muted">{{ $stat['subtitle'] }}</div>
+                            @else
+                                <div class="text-muted small">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    No payment data available
+                                </div>
                             @endif
                         </div>
-                    </div>
-                </div>
-                @else
-                <!-- Debug: Invalid stat format -->
-                <div class="col-6 col-md-4 col-lg-2 mb-2 mb-sm-3">
-                    <div class="stat-card bg-danger-light border-danger rounded-lg shadow-sm h-100">
-                        <div class="stat-card-body p-2 p-sm-3">
-                            <div class="d-flex justify-content-between align-items-start mb-2 mb-sm-3">
-                                <div class="stat-icon bg-danger rounded-circle responsive-stat-icon">
-                                    <i class="fas fa-exclamation-triangle text-white"></i>
-                                </div>
+                        @if(isset($stat['subtitle']))
+                            <div class="stat-subtitle responsive-text-sm text-muted mt-2">
+                                <small>{{ $stat['subtitle'] }}</small>
                             </div>
-                            <h6 class="stat-title text-danger text-uppercase small mb-1 mb-sm-2">Invalid Stat</h6>
-                            <div class="stat-value h5 fw-bold mb-2 mb-sm-3 text-dark responsive-stat-value">Error in {{ $key }}</div>
-                            <div class="text-danger responsive-text-sm">
-                                Expected array, got: {{ gettype($stat) }}
+                        @endif
+
+                    {{-- Handle Percentage Values --}}
+                    @elseif(isset($stat['is_percentage']) && $stat['is_percentage'] === true)
+                        <div class="stat-value fw-bold mb-2 mb-sm-3 text-dark responsive-stat-value">
+                            {{ number_format($stat['value'], 1) }}%
+                        </div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar bg-{{ $stat['color'] }}"
+                                 role="progressbar"
+                                 style="width: {{ $stat['value'] }}%"
+                                 aria-valuenow="{{ $stat['value'] }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
                             </div>
                         </div>
-                    </div>
+                        @if(isset($stat['subtitle']))
+                            <div class="stat-subtitle responsive-text-sm text-muted mt-2">{{ $stat['subtitle'] }}</div>
+                        @endif
+
+                    {{-- Handle Regular Numeric Values --}}
+                    @else
+                        <div class="stat-value fw-bold mb-2 mb-sm-3 text-dark responsive-stat-value">
+                            {{ number_format($stat['value']) }}
+                        </div>
+                        @if(isset($stat['subtitle']))
+                            <div class="stat-subtitle responsive-text-sm text-muted">{{ $stat['subtitle'] }}</div>
+                        @endif
+                    @endif
                 </div>
-                @endif
-            @endforeach
+            </div>
         </div>
+        @endif
+    @endforeach
+</div>
 
         <!-- Quick Actions Section - Dynamic Grid -->
         <div class="row mb-3 mb-sm-4">
@@ -1091,6 +1127,156 @@
         margin-bottom: 0.5rem;
         text-align: center;
     }
+}
+
+/* Currency Display Styles */
+.currency-row {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    line-height: 1.4;
+    transition: all 0.2s ease;
+}
+
+.currency-code {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+}
+
+.currency-amount {
+    font-weight: 700;
+}
+
+.currency-row:not(:last-child) {
+    border-bottom: 1px dashed rgba(0,0,0,0.05);
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Hover effect for currency rows */
+.currency-row:hover {
+    background-color: rgba(0,0,0,0.02);
+    transform: translateX(2px);
+}
+
+/* Responsive currency display */
+@media (max-width: 576px) {
+    .currency-row {
+        font-size: 0.75rem;
+    }
+
+    .currency-amount {
+        font-size: 0.875rem;
+    }
+}
+
+/* Progress bar for collection rate */
+.progress {
+    background-color: #e9ecef;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Currency Display Styles for Payments */
+.currency-row {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    line-height: 1.4;
+    transition: all 0.2s ease;
+    padding: 0.25rem 0;
+}
+
+.currency-code {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+    font-size: 0.75rem;
+}
+
+.currency-amount {
+    font-weight: 700;
+    font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+.currency-row:not(:last-child) {
+    border-bottom: 1px dashed rgba(0,0,0,0.08);
+    margin-bottom: 0.25rem;
+}
+
+.currency-total {
+    border-top: 1px solid rgba(0,0,0,0.1);
+    font-size: 0.7rem;
+}
+
+/* Hover effect for currency rows */
+.currency-row:hover {
+    background-color: rgba(0,0,0,0.02);
+    transform: translateX(2px);
+    cursor: help;
+}
+
+/* Responsive currency display */
+@media (max-width: 576px) {
+    .currency-row {
+        font-size: 0.7rem;
+        padding: 0.15rem 0;
+    }
+
+    .currency-amount {
+        font-size: 0.8rem;
+    }
+
+    .currency-code {
+        font-size: 0.65rem;
+    }
+}
+
+/* Progress bar for collection rate */
+.progress {
+    background-color: #e9ecef;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Stat Card Enhancements */
+.stat-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid #e9ecef;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+}
+
+.stat-subtitle {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+/* Badge colors for payment status */
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge.bg-info {
+    background-color: #17a2b8 !important;
 }
 </style>
 

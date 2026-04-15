@@ -639,13 +639,18 @@ Route::middleware(['auth'])->group(function () {
             // Billings Routes
             Route::prefix('billings')->name('billings.')->controller(BillingController::class)->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('/{id}', 'show')->name('show');
                 Route::post('/{id}/pay', 'pay')->name('pay');
-                Route::get('/{id}/download', 'download')->name('download');
-                Route::get('/{id}/preview', 'preview')->name('preview');
                 Route::get('/leases/{leaseId}/billing-history', 'leaseHistory')->name('lease-history');
                 Route::post('/export', 'export')->name('export');
             });
+
+            	  // customer Billing Routes
+        Route::controller(FinanceBillingController::class)->prefix('billing')->name('billing.')->group(function () {
+           Route::get('/{id}', 'show')->name('show');
+		   Route::get('/{id}/download', 'download')->name('download');
+		   Route::get('/{id}/preview', 'preview')->name('preview');
+
+        });
 
             // Print billing
             Route::get('/billing/{id}/print', [FinanceController::class, 'printBilling'])->name('billing.print');

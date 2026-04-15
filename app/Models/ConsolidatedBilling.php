@@ -11,35 +11,42 @@ class ConsolidatedBilling extends Model
     use HasFactory;
 protected $table = 'consolidated_billings';
     protected $fillable = [
-        'billing_number',
+       'billing_number',
         'user_id',
         'billing_date',
         'due_date',
         'total_amount',
+        'paid_amount',
+        'total_amount_kes',
+        'paid_amount_kes',
         'currency',
+        'kra_pin',
+        'exchange_rate',
+        'exchange_rate_source',
+        'exchange_rate_date',
+        'exchange_rate_timestamp',
         'description',
         'status',
         'metadata',
-        'tevin_status',
-        'tevin_job_id',
-        'tevin_job_started_at',
-        'tevin_job_failed_at',
-        'tevin_error_message',
-        'tevin_error_code',
-        'tevin_retry_count',
+        'payment_date',
+        'kra_invoice_number',
+        'kra_qr_code',
+        'kra_status',
+        'kra_response',
+        'buyer_pin',
         'tevin_control_code',
         'tevin_qr_code',
+        'tevin_invoice_number',
         'tevin_middleware_invoice_number',
-        'tevin_response',
-        'tevin_submitted_at',
+        'tevin_committed_at',
+        'tevin_submitted_by',
         'tev_committed_timestamp',
-        'tev_transmission_timestamp',
-        'tev_submission_error',
-        'exchange_rate',
-        'total_amount_kes',
-        'exchange_rate_source',
-        'exchange_rate_date',
-
+        'tevin_submitted_at',
+        'tevin_status',
+        'tevin_response',
+        'tevin_error_message',
+        'tevin_error_code',
+        'tev_submission_error'
     ];
 
     protected $casts = [
@@ -59,6 +66,8 @@ protected $table = 'consolidated_billings';
         'total_amount_kes' => 'decimal:2',
         'exchange_rate' => 'decimal:2',
          'payment_date' => 'datetime',
+        'paid_amount' => 'decimal:2',
+        'paid_amount_kes' => 'decimal:2',
             ];
 
      public function getTevinStatusLabelAttribute(): string
@@ -187,5 +196,23 @@ public function customer()
     {
         return in_array($this->status, ['pending', 'sent'])
             && $this->due_date < now();
+    }
+
+    public function getFormattedTotalAttribute()
+    {
+        $symbol = $this->currency === 'USD' ? '$' : 'KSh';
+        return $symbol . ' ' . number_format($this->total_amount, 2);
+    }
+
+    public function getStatusColorAttribute()
+    {
+        return [
+            'paid' => 'success',
+            'pending' => 'warning',
+            'overdue' => 'danger',
+            'sent' => 'info',
+            'partial' => 'primary',
+            'cancelled' => 'secondary'
+        ][$this->status] ?? 'secondary';
     }
 }

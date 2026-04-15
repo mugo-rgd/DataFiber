@@ -59,7 +59,6 @@
             </h6>
         </div>
         <div class="card-body">
-            {{-- Fixed: Changed to account-manager.leases.update to match the route prefix --}}
             <form action="{{ route('account-manager.leases.update', $lease) }}" method="POST">
                 @csrf
                 @method('PUT')
@@ -100,45 +99,90 @@
                             <label for="service_type" class="form-label">Service Type *</label>
                             <select class="form-select @error('service_type') is-invalid @enderror"
                                     id="service_type" name="service_type" required>
-                                <option value="dark_fibre" {{ old('service_type', $lease->service_type) == 'dark_fibre' ? 'selected' : '' }}>Dark Fibre</option>
-                                <option value="lit_fibre" {{ old('service_type', $lease->service_type) == 'lit_fibre' ? 'selected' : '' }}>Lit Fibre</option>
-                                <option value="wavelength" {{ old('service_type', $lease->service_type) == 'wavelength' ? 'selected' : '' }}>Wavelength</option>
-                                <option value="ethernet" {{ old('service_type', $lease->service_type) == 'ethernet' ? 'selected' : '' }}>Ethernet</option>
+                                <option value="dark_fibre" {{ old('service_type', $lease->service_type) == 'dark_fibre' ? 'selected' : '' }}>Dark Fibre IRU/Lease</option>
+                                <option value="colocation" {{ old('service_type', $lease->service_type) == 'colocation' ? 'selected' : '' }}>Colocation (Dark Fiber IRU/Lease)</option>
+                                <option value="wavelength" {{ old('service_type', $lease->service_type) == 'wavelength' ? 'selected' : '' }}>Wavelength Service (Lit Service)</option>
                             </select>
                             @error('service_type')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        {{-- Technology Type Field - Now properly integrated --}}
                         @php
-    $currentTech = old('technology', $lease->technology);
-    // Normalize the value for comparison
-    $normalizedTech = strtolower(preg_replace('/\s+/', '', $currentTech ?? ''));
+                            $currentService = old('service_type', $lease->service_type ?? '');
+                            $currentTech = old('technology', $lease->technology ?? '');
 
-    $selectedMetro = $normalizedTech == 'metro' ? 'selected' : '';
-    $selectedNonPremium = $normalizedTech == 'nonpremium' ? 'selected' : '';
-    $selectedPremium = $normalizedTech == 'premium' ? 'selected' : '';
-@endphp
+                            // Auto-set technology based on service type for existing data
+                            if ($currentService == 'colocation' && empty($currentTech)) {
+                                $currentTech = 'colocation';
+                            }
+                            if ($currentService == 'wavelength' && empty($currentTech)) {
+                                $currentTech = 'dwdm';
+                            }
 
-<div class="mb-3">
-    <label for="technology" class="form-label">Technology Type *</label>
-    <select class="form-select @error('technology') is-invalid @enderror"
-            id="technology"
-            name="technology"
-            required>
-        <option value="metro" {{ $selectedMetro }}>METRO</option>
-        <option value="non_premium" {{ $selectedNonPremium }}>NON PREMIUM</option>
-        <option value="premium" {{ $selectedPremium }}>PREMIUM</option>
-    </select>
-    <small class="form-text text-muted">
-        <i class="fas fa-info-circle me-1"></i>
-        Metro: Urban areas, Non-Premium: Standard service, Premium: High-priority service
-    </small>
-    @error('technology')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                            // Determine if technology select should be disabled
+                            $techDisabled = ($currentService == 'colocation' || $currentService == 'wavelength');
+
+                            // Determine which options to show
+                            $showDarkFibreOptions = ($currentService == 'dark_fibre' || $currentService == '');
+
+                            // Selected values for options
+                            $selectedMetro = $currentTech == 'metro' ? 'selected' : '';
+                            $selectedNonPremium = $currentTech == 'non_premium' ? 'selected' : '';
+                            $selectedPremium = $currentTech == 'premium' ? 'selected' : '';
+                            $selectedColocation = $currentTech == 'colocation' ? 'selected' : '';
+                            $selectedDwdm = $currentTech == 'dwdm' ? 'selected' : '';
+                        @endphp
+
+                        <div class="mb-3">
+                            <label for="technology" class="form-label">Technology Type *</label>
+                            <select class="form-select @error('technology') is-invalid @enderror"
+                                    id="technology"
+                                    name="technology"
+                                    {{ $techDisabled ? 'disabled' : '' }}
+                                    required>
+                                @if($showDarkFibreOptions)
+                                    <option value="">-- Select Technology --</option>
+                                    <option value="metro" {{ $selectedMetro }}>METRO</option>
+                                    <option value="non_premium" {{ $selectedNonPremium }}>NON PREMIUM</option>
+                                    <option value="premium" {{ $selectedPremium }}>PREMIUM</option>
+                                @elseif($currentService == 'colocation')
+                                    <option value="colocation" {{ $selectedColocation }}>COLOCATION</option>
+                                @elseif($currentService == 'wavelength')
+                                    <option value="dwdm" {{ $selectedDwdm }}>DWDM (Dense Wavelength Division Multiplexing)</option>
+                                @else
+                                    <option value="">-- Select Technology --</option>
+                                    <option value="metro">METRO</option>
+                                    <option value="non_premium">NON PREMIUM</option>
+                                    <option value="premium">PREMIUM</option>
+                                    <option value="colocation">COLOCATION</option>
+                                    <option value="dwdm">DWDM (Dense Wavelength Division Multiplexing)</option>
+                                @endif
+                            </select>
+
+                            {{-- Hidden input to submit value when select is disabled --}}
+                            @if($techDisabled)
+                                <input type="hidden" name="technology" value="{{ $currentTech }}">
+                            @endif
+
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                <span id="tech-hint">
+                                    @if($currentService == 'dark_fibre')
+                                        Select one: METRO (urban/short distance), NON PREMIUM (standard service), or PREMIUM (high-priority service)
+                                    @elseif($currentService == 'colocation')
+                                        COLOCATION: Physical space, power, and cooling for optical equipment
+                                    @elseif($currentService == 'wavelength')
+                                        DWDM: Dense Wavelength Division Multiplexing for high-capacity lit service
+                                    @else
+                                        Select a service type above to see available technologies
+                                    @endif
+                                </span>
+                            </small>
+                            @error('technology')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
                         <div class="mb-3">
                             <label for="status" class="form-label">Status *</label>
@@ -161,21 +205,31 @@
                         <h5 class="text-primary mb-3">Route Information</h5>
 
                         <div class="mb-3">
-                            <label for="start_location" class="form-label">Start Location *</label>
+                            <label for="start_location" id="start_location_label" class="form-label">Start Location *</label>
                             <input type="text" class="form-control @error('start_location') is-invalid @enderror"
                                    id="start_location" name="start_location"
-                                   value="{{ old('start_location', $lease->start_location) }}" required>
+                                   value="{{ old('start_location', $lease->start_location) }}">
                             @error('start_location')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label for="end_location" class="form-label">End Location *</label>
+                            <label for="end_location" id="end_location_label" class="form-label">End Location *</label>
                             <input type="text" class="form-control @error('end_location') is-invalid @enderror"
                                    id="end_location" name="end_location"
-                                   value="{{ old('end_location', $lease->end_location) }}" required>
+                                   value="{{ old('end_location', $lease->end_location) }}">
                             @error('end_location')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="host_location" id="host_location_label" class="form-label">Host Location *</label>
+                            <input type="text" class="form-control @error('host_location') is-invalid @enderror"
+                                   id="host_location" name="host_location"
+                                   value="{{ old('host_location', $lease->host_location) }}">
+                            @error('host_location')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -420,6 +474,264 @@ document.addEventListener('DOMContentLoaded', function() {
             bsAlert.close();
         });
     }, 5000);
+
+    // =============================================
+    // Service Type to Technology Type Mapping & Field Disabling
+    // =============================================
+    const serviceTypeSelect = document.getElementById('service_type');
+    const technologySelect = document.getElementById('technology');
+    const techHint = document.getElementById('tech-hint');
+
+    // Get the existing technology value from the server (stored in a data attribute)
+    const existingTechnology = '{{ old('technology', $lease->technology) }}';
+    const existingServiceType = '{{ old('service_type', $lease->service_type) }}';
+
+    // Get all fields that need to be disabled
+    const startLocation = document.getElementById('start_location');
+    const endLocation = document.getElementById('end_location');
+    const hostLocation = document.getElementById('host_location');
+    const distanceKm = document.getElementById('distance_km');
+    const bandwidth = document.getElementById('bandwidth');
+    const coresRequired = document.getElementById('cores_required');
+
+    // Get labels for required field indicators
+    const startLocationLabel = document.getElementById('start_location_label');
+    const endLocationLabel = document.getElementById('end_location_label');
+    const hostLocationLabel = document.getElementById('host_location_label');
+
+    function updateFieldsByServiceType() {
+        if (!serviceTypeSelect) return;
+
+        const serviceType = serviceTypeSelect.value;
+
+        // Remove any existing hidden input first
+        const existingHidden = document.getElementById('hidden_technology_input');
+        if (existingHidden) existingHidden.remove();
+
+        // Clear current options
+        if (technologySelect) {
+            technologySelect.innerHTML = '';
+        }
+
+        // =============================================
+        // TECHNOLOGY DROPDOWN OPTIONS
+        // =============================================
+        if (serviceType === 'colocation') {
+            // Only show COLOCATION option
+            if (technologySelect) {
+                const option = document.createElement('option');
+                option.value = 'colocation';
+                option.textContent = 'COLOCATION';
+                option.selected = true;
+                technologySelect.appendChild(option);
+                technologySelect.disabled = true;
+                if (techHint) {
+                    techHint.innerHTML = 'COLOCATION: Physical space, power, and cooling for optical equipment';
+                }
+                // Add hidden input to submit the value
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'technology';
+                hidden.id = 'hidden_technology_input';
+                hidden.value = 'colocation';
+                technologySelect.parentNode.appendChild(hidden);
+            }
+
+        } else if (serviceType === 'wavelength') {
+            // Only show DWDM option
+            if (technologySelect) {
+                const option = document.createElement('option');
+                option.value = 'dwdm';
+                option.textContent = 'DWDM (Dense Wavelength Division Multiplexing)';
+                option.selected = true;
+                technologySelect.appendChild(option);
+                technologySelect.disabled = true;
+                if (techHint) {
+                    techHint.innerHTML = 'DWDM: Dense Wavelength Division Multiplexing for high-capacity lit service';
+                }
+                // Add hidden input to submit the value
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'technology';
+                hidden.id = 'hidden_technology_input';
+                hidden.value = 'dwdm';
+                technologySelect.parentNode.appendChild(hidden);
+            }
+
+        } else if (serviceType === 'dark_fibre') {
+            // Only show METRO, NON PREMIUM, PREMIUM options
+            if (technologySelect) {
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = '-- Select Technology --';
+                placeholder.disabled = true;
+                technologySelect.appendChild(placeholder);
+
+                const metro = document.createElement('option');
+                metro.value = 'metro';
+                metro.textContent = 'METRO';
+                technologySelect.appendChild(metro);
+
+                const nonPremium = document.createElement('option');
+                nonPremium.value = 'non_premium';
+                nonPremium.textContent = 'NON PREMIUM';
+                technologySelect.appendChild(nonPremium);
+
+                const premium = document.createElement('option');
+                premium.value = 'premium';
+                premium.textContent = 'PREMIUM';
+                technologySelect.appendChild(premium);
+
+                technologySelect.disabled = false;
+
+                // Preserve the existing technology value if it exists
+                if (existingTechnology && (existingTechnology === 'metro' || existingTechnology === 'non_premium' || existingTechnology === 'premium')) {
+                    technologySelect.value = existingTechnology;
+                }
+
+                if (techHint) {
+                    techHint.innerHTML = 'Select one: METRO (urban/short distance), NON PREMIUM (standard service), or PREMIUM (high-priority service)';
+                }
+            }
+
+        } else {
+            // No service type selected - show all options (default)
+            if (technologySelect) {
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = '-- Select Technology --';
+                placeholder.disabled = true;
+                placeholder.selected = true;
+                technologySelect.appendChild(placeholder);
+
+                const metro = document.createElement('option');
+                metro.value = 'metro';
+                metro.textContent = 'METRO';
+                technologySelect.appendChild(metro);
+
+                const nonPremium = document.createElement('option');
+                nonPremium.value = 'non_premium';
+                nonPremium.textContent = 'NON PREMIUM';
+                technologySelect.appendChild(nonPremium);
+
+                const premium = document.createElement('option');
+                premium.value = 'premium';
+                premium.textContent = 'PREMIUM';
+                technologySelect.appendChild(premium);
+
+                const colocation = document.createElement('option');
+                colocation.value = 'colocation';
+                colocation.textContent = 'COLOCATION';
+                technologySelect.appendChild(colocation);
+
+                const dwdm = document.createElement('option');
+                dwdm.value = 'dwdm';
+                dwdm.textContent = 'DWDM (Dense Wavelength Division Multiplexing)';
+                technologySelect.appendChild(dwdm);
+
+                technologySelect.disabled = false;
+
+                // Preserve the existing technology value
+                if (existingTechnology) {
+                    technologySelect.value = existingTechnology;
+                }
+
+                if (techHint) {
+                    techHint.innerHTML = 'Select a service type above to see available technologies';
+                }
+            }
+        }
+
+        // =============================================
+        // FIELD DISABLING BASED ON SERVICE TYPE
+        // =============================================
+
+        // Reset all fields to enabled first (remove disabled attribute)
+        if (startLocation) startLocation.disabled = false;
+        if (endLocation) endLocation.disabled = false;
+        if (hostLocation) hostLocation.disabled = false;
+        if (distanceKm) distanceKm.disabled = false;
+        if (bandwidth) bandwidth.disabled = false;
+        if (coresRequired) coresRequired.disabled = false;
+
+        // Reset required labels (remove asterisk)
+        if (startLocationLabel) startLocationLabel.innerHTML = 'Start Location';
+        if (endLocationLabel) endLocationLabel.innerHTML = 'End Location';
+        if (hostLocationLabel) hostLocationLabel.innerHTML = 'Host Location';
+
+        // Reset required attributes
+        if (startLocation) startLocation.required = false;
+        if (endLocation) endLocation.required = false;
+        if (hostLocation) hostLocation.required = false;
+
+        // Apply specific disabling rules
+        switch (serviceType) {
+            case 'dark_fibre':
+                // Disable: Host Location, Bandwidth
+                if (hostLocation) hostLocation.disabled = true;
+                if (bandwidth) bandwidth.disabled = true;
+                // Make Start Location and End Location required
+                if (startLocation) startLocation.required = true;
+                if (endLocation) endLocation.required = true;
+                if (startLocationLabel) startLocationLabel.innerHTML = 'Start Location *';
+                if (endLocationLabel) endLocationLabel.innerHTML = 'End Location *';
+                break;
+
+            case 'colocation':
+                // Disable: Core(s), Bandwidth, Start Location, End Location, Distance (KM)
+                if (coresRequired) coresRequired.disabled = true;
+                if (bandwidth) bandwidth.disabled = true;
+                if (startLocation) startLocation.disabled = true;
+                if (endLocation) endLocation.disabled = true;
+                if (distanceKm) distanceKm.disabled = true;
+                // Make Host Location required
+                if (hostLocation) hostLocation.required = true;
+                if (hostLocationLabel) hostLocationLabel.innerHTML = 'Host Location *';
+                break;
+
+            case 'wavelength':
+                // Disable: Core(s), Start Location, End Location, Distance (KM), Host Location
+                if (coresRequired) coresRequired.disabled = true;
+                if (startLocation) startLocation.disabled = true;
+                if (endLocation) endLocation.disabled = true;
+                if (distanceKm) distanceKm.disabled = true;
+                if (hostLocation) hostLocation.disabled = true;
+                // No required fields among these
+                break;
+
+            default:
+                // No fields disabled (all enabled)
+                break;
+        }
+
+        // Add visual feedback for disabled fields
+        const allFields = [startLocation, endLocation, hostLocation, distanceKm, bandwidth, coresRequired];
+        allFields.forEach(field => {
+            if (field) {
+                if (field.disabled) {
+                    field.classList.add('bg-light');
+                    // Also remove required attribute if field is disabled
+                    field.required = false;
+                } else {
+                    field.classList.remove('bg-light');
+                }
+            }
+        });
+    }
+
+    // Add event listener to service type dropdown
+    if (serviceTypeSelect) {
+        // First, set the initial service type value
+        if (existingServiceType) {
+            serviceTypeSelect.value = existingServiceType;
+        }
+
+        // Then update fields based on the existing service type
+        updateFieldsByServiceType();
+
+        // Add change event listener
+        serviceTypeSelect.addEventListener('change', updateFieldsByServiceType);
+    }
 });
 
 function confirmApproval() {

@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use App\Models\ConsolidatedBilling;
 class AdminController extends Controller
 {
 
@@ -262,7 +263,7 @@ public function downloadContract(Contract $contract)
         return redirect()->route('admin.contracts.show', $contract)
             ->with('success', 'Contract updated successfully!');
     }
-    public function dashboard()
+ public function dashboard()
 {
     // User Statistics
     $totalUsers = User::count();
@@ -278,98 +279,227 @@ public function downloadContract(Contract $contract)
         $pendingTickets = Ticket::where('status', 'pending')->count();
     }
 
-    // Revenue Statistics
+    // Revenue Statistics from Consolidated Billings
     $currentMonth = Carbon::now()->month;
     $currentYear = Carbon::now()->year;
 
-    $monthlyRevenue = Lease::where('status', 'active')->sum('monthly_cost');
-    $totalRevenue = Lease::sum('total_contract_value');
+    // Initialize variables
+    $monthlyRevenue = [];
+    $totalRevenue = [];
+    $overduePayments = [];
+    $pendingPayments = [];
 
-    // Count of paid invoices
-    $paidInvoices = 0;
-    if (class_exists('App\Models\Invoice')) {
-        $paidInvoices = Invoice::where('status', 'paid')
-            ->whereYear('created_at', $currentYear)
-            ->whereMonth('created_at', $currentMonth)
-            ->count();
+    // Get monthly revenue from consolidated billings
+    $monthlyBillings = ConsolidatedBilling::whereYear('billing_date', $currentYear)
+        ->whereMonth('billing_date', $currentMonth)
+        ->whereIn('status', ['paid', 'partial', 'sent', 'pending'])
+        ->select('currency', DB::raw('SUM(total_amount) as total_amount'), DB::raw('SUM(total_amount_kes) as total_amount_kes'))
+        ->groupBy('currency')
+        ->get();
+
+    // Get total revenue from all billings
+    $totalBillings = ConsolidatedBilling::whereIn('status', ['paid', 'partial'])
+        ->select('currency', DB::raw('SUM(total_amount) as total_amount'), DB::raw('SUM(total_amount_kes) as total_amount_kes'))
+        ->groupBy('currency')
+        ->get();
+
+    // Get overdue payments by currency
+    $overdueBillingsByCurrency = ConsolidatedBilling::where('status', 'overdue')
+        ->where('due_date', '<', now())
+        ->select('currency', DB::raw('SUM(total_amount) as total_amount'), DB::raw('SUM(total_amount_kes) as total_amount_kes'))
+        ->groupBy('currency')
+        ->get();
+
+    // Get pending payments by currency
+    $pendingPaymentsByCurrency = ConsolidatedBilling::whereIn('status', ['pending', 'sent'])
+        ->select('currency', DB::raw('SUM(total_amount) as total_amount'), DB::raw('SUM(total_amount_kes) as total_amount_kes'))
+        ->groupBy('currency')
+        ->get();
+
+    // Format monthly revenue
+    foreach ($monthlyBillings as $billing) {
+        if ($billing->currency === 'USD' && $billing->total_amount_kes) {
+            $monthlyRevenue['KSH'] = ($monthlyRevenue['KSH'] ?? 0) + $billing->total_amount_kes;
+        } elseif ($billing->currency === 'USD') {
+            $monthlyRevenue['USD'] = $billing->total_amount;
+        } elseif ($billing->currency === 'KSH') {
+            $monthlyRevenue['KSH'] = ($monthlyRevenue['KSH'] ?? 0) + $billing->total_amount;
+        } else {
+            $monthlyRevenue[$billing->currency] = $billing->total_amount;
+        }
     }
+
+    // Format total revenue
+    foreach ($totalBillings as $billing) {
+        if ($billing->currency === 'USD' && $billing->total_amount_kes) {
+            $totalRevenue['KSH'] = ($totalRevenue['KSH'] ?? 0) + $billing->total_amount_kes;
+        } elseif ($billing->currency === 'USD') {
+            $totalRevenue['USD'] = $billing->total_amount;
+        } elseif ($billing->currency === 'KSH') {
+            $totalRevenue['KSH'] = ($totalRevenue['KSH'] ?? 0) + $billing->total_amount;
+        } else {
+            $totalRevenue[$billing->currency] = $billing->total_amount;
+        }
+    }
+
+    // Format overdue payments
+    foreach ($overdueBillingsByCurrency as $billing) {
+        if ($billing->currency === 'USD' && $billing->total_amount_kes) {
+            $overduePayments['KSH'] = ($overduePayments['KSH'] ?? 0) + $billing->total_amount_kes;
+        } elseif ($billing->currency === 'USD') {
+            $overduePayments['USD'] = $billing->total_amount;
+        } elseif ($billing->currency === 'KSH') {
+            $overduePayments['KSH'] = ($overduePayments['KSH'] ?? 0) + $billing->total_amount;
+        } else {
+            $overduePayments[$billing->currency] = $billing->total_amount;
+        }
+    }
+
+    // Format pending payments
+    foreach ($pendingPaymentsByCurrency as $billing) {
+        if ($billing->currency === 'USD' && $billing->total_amount_kes) {
+            $pendingPayments['KSH'] = ($pendingPayments['KSH'] ?? 0) + $billing->total_amount_kes;
+        } elseif ($billing->currency === 'USD') {
+            $pendingPayments['USD'] = $billing->total_amount;
+        } elseif ($billing->currency === 'KSH') {
+            $pendingPayments['KSH'] = ($pendingPayments['KSH'] ?? 0) + $billing->total_amount;
+        } else {
+            $pendingPayments[$billing->currency] = $billing->total_amount;
+        }
+    }
+
+    // Get counts for pending and overdue payments
+    $pendingPaymentsCount = ConsolidatedBilling::whereIn('status', ['pending', 'sent'])->count();
+    $overduePaymentsCount = ConsolidatedBilling::where('status', 'overdue')
+        ->where('due_date', '<', now())
+        ->count();
+
+    // Calculate collection rate
+    $totalBilled = ConsolidatedBilling::whereIn('status', ['paid', 'partial', 'sent', 'pending'])
+        ->sum(DB::raw('COALESCE(total_amount_kes, total_amount * 130)'));
+    $totalCollected = ConsolidatedBilling::where('status', 'paid')
+        ->sum(DB::raw('COALESCE(paid_amount_kes, paid_amount * 130)'));
+    $collectionRate = $totalBilled > 0 ? round(($totalCollected / $totalBilled) * 100, 2) : 0;
+
+    // Count of paid invoices this month
+    $paidInvoices = ConsolidatedBilling::where('status', 'paid')
+        ->whereYear('payment_date', $currentYear)
+        ->whereMonth('payment_date', $currentMonth)
+        ->count();
 
     // Additional stats
     $pendingDesignRequests = DesignRequest::where('status', 'pending')->count();
     $totalQuotations = Quotation::count();
     $pendingQuotations = Quotation::where('status', 'draft')->count();
 
-    // Organize data into the stats array that your view expects
+    // Get billing statistics for dashboard
+    $totalBillingsCount = ConsolidatedBilling::count();
+
+    // Organize data into the stats array
     $stats = [
         'total_users' => [
             'title' => 'Total Users',
             'value' => $totalUsers,
             'color' => 'primary',
-            'icon' => 'fas fa-users'
+            'icon' => 'users'
         ],
         'active_leases' => [
             'title' => 'Active Leases',
             'value' => $activeLeases,
             'color' => 'success',
-            'icon' => 'fas fa-network-wired'
+            'icon' => 'network-wired'
         ],
         'total_leases' => [
             'title' => 'Total Leases',
             'value' => $totalLeases,
             'color' => 'info',
-            'icon' => 'fas fa-file-contract'
+            'icon' => 'file-contract'
         ],
         'pending_leases' => [
             'title' => 'Pending Leases',
             'value' => $pendingLeases,
             'color' => 'warning',
-            'icon' => 'fas fa-clock'
+            'icon' => 'clock'
         ],
         'pending_tickets' => [
             'title' => 'Pending Tickets',
             'value' => $pendingTickets,
             'color' => 'danger',
-            'icon' => 'fas fa-ticket-alt'
+            'icon' => 'ticket-alt'
         ],
         'pending_designs' => [
             'title' => 'Pending Designs',
             'value' => $pendingDesignRequests,
             'color' => 'warning',
-            'icon' => 'fas fa-pencil-ruler'
+            'icon' => 'pencil-ruler'
         ],
         'monthly_revenue' => [
             'title' => 'Monthly Revenue',
             'value' => $monthlyRevenue,
             'color' => 'success',
-            'icon' => 'fas fa-money-bill-wave'
+            'icon' => 'money-bill-wave',
+            'is_currency' => true,
+            'subtitle' => Carbon::now()->format('F Y')
         ],
         'total_revenue' => [
             'title' => 'Total Revenue',
             'value' => $totalRevenue,
             'color' => 'primary',
-            'icon' => 'fas fa-chart-line'
+            'icon' => 'chart-line',
+            'is_currency' => true,
+            'subtitle' => 'All time'
+        ],
+        'collection_rate' => [
+            'title' => 'Collection Rate',
+            'value' => $collectionRate,
+            'color' => 'info',
+            'icon' => 'percentage',
+            'is_percentage' => true
+        ],
+        'pending_payments' => [
+            'title' => 'Pending Payments',
+            'value' => $pendingPayments,
+            'color' => 'warning',
+            'icon' => 'clock',
+            'is_currency' => true,
+            'subtitle' => $pendingPaymentsCount . ' invoice(s) pending'
+        ],
+        'overdue_payments' => [
+            'title' => 'Overdue Payments',
+            'value' => $overduePayments,
+            'color' => 'danger',
+            'icon' => 'exclamation-triangle',
+            'is_currency' => true,
+            'subtitle' => $overduePaymentsCount . ' invoice(s) overdue'
         ],
         'total_quotations' => [
             'title' => 'Total Quotations',
             'value' => $totalQuotations,
             'color' => 'info',
-            'icon' => 'fas fa-file-invoice'
+            'icon' => 'file-invoice'
         ],
         'pending_quotations' => [
             'title' => 'Pending Quotations',
             'value' => $pendingQuotations,
             'color' => 'warning',
-            'icon' => 'fas fa-file-signature'
+            'icon' => 'file-signature'
         ],
         'paid_invoices' => [
             'title' => 'Paid Invoices',
             'value' => $paidInvoices,
             'color' => 'success',
-            'icon' => 'fas fa-receipt'
+            'icon' => 'receipt',
+            'subtitle' => 'This month'
+        ],
+        'total_billings' => [
+            'title' => 'Total Billings',
+            'value' => $totalBillingsCount,
+            'color' => 'secondary',
+            'icon' => 'file-invoice-dollar'
         ]
     ];
 
-     // Recent Activities - Return as arrays instead of objects
+    // Recent Activities
     $recentActivities = User::latest()
         ->take(5)
         ->get()
@@ -382,6 +512,36 @@ public function downloadContract(Contract $contract)
             ];
         });
 
+    // Add recent billings to activities if table exists
+    $allActivities = $recentActivities;
+
+    if (class_exists('App\Models\ConsolidatedBilling')) {
+        $recentBillings = ConsolidatedBilling::with('user')
+            ->latest()
+            ->take(3)
+            ->get()
+            ->map(function($billing) {
+                $statusColor = [
+                    'paid' => 'success',
+                    'pending' => 'warning',
+                    'overdue' => 'danger',
+                    'sent' => 'info'
+                ][$billing->status] ?? 'secondary';
+
+                $amount = $billing->currency === 'USD' ? '$' : 'KSh';
+                $amount .= number_format($billing->total_amount, 2);
+
+                return [
+                    'icon' => 'file-invoice',
+                    'color' => $statusColor,
+                    'text' => "Billing <strong>{$billing->billing_number}</strong> for {$billing->user->name} - {$amount} - Status: <span class='badge bg-{$statusColor}'>{$billing->status}</span>",
+                    'time' => $billing->created_at->diffForHumans()
+                ];
+            });
+
+        $allActivities = $recentActivities->concat($recentBillings)->sortByDesc('time')->take(5);
+    }
+
     // Recent Leases
     $recentLeases = Lease::with('customer')
         ->latest()
@@ -391,7 +551,8 @@ public function downloadContract(Contract $contract)
     return view('admin.dashboard', compact(
         'stats',
         'recentActivities',
-        'recentLeases'
+        'recentLeases',
+        'allActivities'
     ));
 }
 

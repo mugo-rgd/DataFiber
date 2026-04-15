@@ -77,9 +77,9 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Total Amount Due</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                @php
-                                    $currency = $billings->isNotEmpty() ? $billings->first()->currency : 'USD';
-                                @endphp
+                               @php
+    $currency = !empty($billings) ? (is_array($billings) ? $billings[0]->currency ?? 'USD' : $billings->first()->currency) : 'USD';
+@endphp
                                 {{ $currency }} {{ number_format((float)$totalAmountDue, 2) }}
                             </div>
                         </div>
@@ -98,7 +98,7 @@
             <h6 class="m-0 font-weight-bold text-primary">Billing History</h6>
         </div>
         <div class="card-body">
-            @if($billings->count() > 0)
+            @if(count($billings) > 0)
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead>
@@ -163,15 +163,15 @@
                                     </td>
                                     <td class="text-center">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('customer.billings.show', $billing->id) }}"
+                                            <a href="{{ route('customer.billing.show', $billing->id) }}"
                                                class="btn btn-sm btn-info" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('customer.billings.download', $billing->id) }}"
+                                            <a href="{{ route('customer.billing.download', $billing->id) }}"
                                                class="btn btn-sm btn-primary" title="Download PDF">
                                                 <i class="fas fa-download"></i>
                                             </a>
-                                            <a href="{{ route('customer.billings.preview', $billing->id) }}"
+                                            <a href="{{ route('customer.billing.preview', $billing->id) }}"
                                                class="btn btn-sm btn-secondary" title="Preview" target="_blank">
                                                 <i class="fas fa-file-pdf"></i>
                                             </a>
@@ -205,8 +205,12 @@
 
                 <!-- Pagination -->
                 <div class="d-flex justify-content-end mt-3">
-                    {{ $billings->links() }}
-                </div>
+    @if($billings instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        {{ $billings->links() }}
+    @else
+        <p class="text-muted">No pagination available</p>
+    @endif
+</div>
             @else
                 <div class="text-center py-5">
                     <i class="fas fa-file-invoice fa-4x text-muted mb-3"></i>

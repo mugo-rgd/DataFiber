@@ -275,8 +275,8 @@
                         <div class="team-avatar mb-4 mx-auto">
                             <i class="fas fa-user-circle fa-5x text-primary"></i>
                         </div>
-                        <h4 class="h5 mb-2">John Mwangi</h4>
-                        <p class="text-primary mb-3">CEO & Founder</p>
+                        <h4 class="h5 mb-2">Benjamen Muoki</h4>
+                        <p class="text-primary mb-3">Telecommunications Manager ICT</p>
                         <p class="mb-0">15+ years in telecommunications and network infrastructure management.</p>
                     </div>
                 </div>
@@ -288,8 +288,8 @@
                         <div class="team-avatar mb-4 mx-auto">
                             <i class="fas fa-user-circle fa-5x text-success"></i>
                         </div>
-                        <h4 class="h5 mb-2">Sarah Omondi</h4>
-                        <p class="text-primary mb-3">CTO</p>
+                        <h4 class="h5 mb-2">Eng. Eric Wanjala</h4>
+                        <p class="text-primary mb-3">Chief TBU</p>
                         <p class="mb-0">Expert in cloud infrastructure, AI, and network security with 12 years experience.</p>
                     </div>
                 </div>
@@ -301,9 +301,22 @@
                         <div class="team-avatar mb-4 mx-auto">
                             <i class="fas fa-user-circle fa-5x text-info"></i>
                         </div>
-                        <h4 class="h5 mb-2">David Kimani</h4>
+                        <h4 class="h5 mb-2">Michael Chege</h4>
                         <p class="text-primary mb-3">Head of Operations</p>
                         <p class="mb-0">Specializes in large-scale network deployments and operational efficiency.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100 text-center">
+                    <div class="card-body p-4">
+                        <div class="team-avatar mb-4 mx-auto">
+                            <i class="fas fa-user-circle fa-5x text-info"></i>
+                        </div>
+                        <h4 class="h5 mb-2">Wilson Mwirigi</h4>
+                        <p class="text-primary mb-3">Head of Marketing</p>
+                        <p class="mb-0">Specializes in marketing of dark Fiber network deployments and operational efficiency.</p>
                     </div>
                 </div>
             </div>

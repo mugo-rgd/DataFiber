@@ -385,13 +385,13 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('customer.billings.show', $billing->id) }}"
+                                    <a href="{{ route('customer.billing.show', $billing->id) }}"
                                        class="btn btn-outline-primary"
                                        data-bs-toggle="tooltip"
                                        title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('customer.billings.download', $billing->id) }}"
+                                    <a href="{{ route('customer.billing.download', $billing->id) }}"
                                        class="btn btn-outline-success"
                                        data-bs-toggle="tooltip"
                                        title="Download PDF">
@@ -409,7 +409,7 @@
                                                 <i class="fas fa-credit-card"></i>
                                             </a>
                                         @else
-                                            <a href="{{ route('customer.billings.show', $billing->id) }}"
+                                            <a href="{{ route('customer.billing.show', $billing->id) }}"
                                                class="btn btn-outline-danger"
                                                data-bs-toggle="tooltip"
                                                title="View & Pay">

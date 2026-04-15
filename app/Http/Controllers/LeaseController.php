@@ -116,6 +116,7 @@ public function store(Request $request)
         'technology' => 'nullable|in:single_mode,multimode,dwdm,cwdm,ADSS,OPGW,other',
         'start_location' => 'required|string|max:255',
         'end_location' => 'required|string|max:255',
+        'host_location' => 'required|string|max:255',
         'distance_km' => 'nullable|numeric|min:0',
         'monthly_cost' => 'required|numeric|min:0',
         'installation_fee' => 'nullable|numeric|min:0',
@@ -197,6 +198,7 @@ public function storeForAccountManager(Request $request)
             'technology' => 'nullable|in:single_mode,multimode,dwdm,cwdm,ADSS,OPGW,other',
             'start_location' => 'required|string|max:255',
             'end_location' => 'required|string|max:255',
+            'host_location' => 'required|string|max:255',
             'distance_km' => 'nullable|numeric|min:0',  // This validates distance
             'monthly_cost' => 'required|numeric|min:0',
             'installation_fee' => 'nullable|numeric|min:0',
@@ -364,29 +366,88 @@ public function edit(Lease $lease)
  */
 public function update(Request $request, Lease $lease)
 {
-    $validated = $request->validate([
+    $rules = [
         'customer_id' => 'required|exists:users,id',
-        'service_type' => 'required|string',
-        'start_location' => 'required|string',
-        'end_location' => 'required|string',
-        'distance_km' => 'nullable|numeric|min:0',
+        'service_type' => 'required|in:dark_fibre,colocation,wavelength',
         'monthly_cost' => 'required|numeric|min:0',
         'installation_fee' => 'nullable|numeric|min:0',
         'currency' => 'required|string|size:3',
         'start_date' => 'required|date',
         'end_date' => 'required|date|after:start_date',
         'contract_term_months' => 'required|integer|min:1',
-        'cores_required'=> 'required|integer|min:1',
-        'billing_cycle' => 'required|string',
-        'status' => 'required|string',
+        'billing_cycle' => 'required|in:monthly,quarterly,annually,one_time',
+        'status' => 'required|in:draft,pending,active,expired,terminated,cancelled',
+        'technology' => 'required|string',
+        'bandwidth' => 'nullable|string',
+        'distance_km' => 'nullable|numeric|min:0',
         'technical_specifications' => 'nullable|string',
         'terms_and_conditions' => 'nullable|string',
-    ]);
+    ];
 
-    $lease->update($validated);
+    // Apply conditional rules based on service_type
+    switch ($request->service_type) {
+        case 'dark_fibre':
+            $rules['start_location'] = 'required|string';
+            $rules['end_location'] = 'required|string';
+            $rules['host_location'] = 'nullable|string';
+            $rules['cores_required'] = 'nullable|integer|min:0';
+            $rules['technology'] = 'required|in:metro,non_premium,premium';
+            break;
+
+        case 'colocation':
+            $rules['start_location'] = 'nullable|string';
+            $rules['end_location'] = 'nullable|string';
+            $rules['host_location'] = 'required|string';
+            $rules['cores_required'] = 'nullable|integer|min:0';
+            $rules['technology'] = 'required|in:colocation';
+            break;
+
+        case 'wavelength':
+            $rules['start_location'] = 'nullable|string';
+            $rules['end_location'] = 'nullable|string';
+            $rules['host_location'] = 'nullable|string';
+            $rules['cores_required'] = 'nullable|integer|min:0';
+            $rules['technology'] = 'required|in:dwdm';
+            break;
+
+        default:
+            $rules['start_location'] = 'required|string';
+            $rules['end_location'] = 'required|string';
+            $rules['host_location'] = 'required|string';
+            $rules['cores_required'] = 'nullable|integer|min:0';
+            break;
+    }
+
+    $validated = $request->validate($rules);
+
+    // Clear fields based on service type
+    $updateData = $validated;
+
+    if ($request->service_type === 'colocation') {
+        $updateData['start_location'] = null;
+        $updateData['end_location'] = null;
+        $updateData['distance_km'] = null;
+        $updateData['cores_required'] = null;
+        $updateData['bandwidth'] = null;
+    }
+
+    if ($request->service_type === 'wavelength') {
+        $updateData['start_location'] = null;
+        $updateData['end_location'] = null;
+        $updateData['host_location'] = null;
+        $updateData['distance_km'] = null;
+        $updateData['cores_required'] = null;
+    }
+
+    if ($request->service_type === 'dark_fibre') {
+        $updateData['host_location'] = null;
+        $updateData['bandwidth'] = null;
+    }
+
+    $lease->update($updateData);
 
     return redirect()->route('admin.leases.show', $lease)
-                    ->with('success', 'Lease updated successfully.');
+        ->with('success', 'Lease updated successfully.');
 }
 
 /**
@@ -647,46 +708,120 @@ public function activate(Lease $lease)
         return view('account-manager.leases.edit', compact('lease', 'customers'));
     }
 
-    /**
-     * Update lease for account manager
-     */
-    public function updateForAccountManager(Request $request, Lease $lease)
-    {
-        // Verify the lease belongs to account manager's customer
-        $user = Auth::user();
-        if ($lease->customer->account_manager_id !== $user->id) {
-            abort(403, 'Unauthorized access to this lease.');
-        }
-
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:users,id',
-            'service_type' => 'required|string',
-            'start_location' => 'required|string',
-            'end_location' => 'required|string',
-            'monthly_cost' => 'required|numeric',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'cores_required'=> 'required|integer|min:1',
-            'technology' => 'required|string',
-        ]);
-
-        // Verify the new customer also belongs to this account manager
-        $customer = User::where('id', $validated['customer_id'])
-            ->where('account_manager_id', $user->id)
-            ->where('role', 'customer')
-            ->first();
-
-        if (!$customer) {
-            return redirect()->back()
-                ->with('error', 'Invalid customer selected.')
-                ->withInput();
-        }
-
-        $lease->update($validated);
-
-        return redirect()->route('account-manager.leases.show', $lease)
-            ->with('success', 'Lease updated successfully.');
+   /**
+ * Update lease for account manager
+ */
+public function updateForAccountManager(Request $request, Lease $lease)
+{
+    // Verify the lease belongs to account manager's customer
+    $user = Auth::user();
+    if ($lease->customer->account_manager_id !== $user->id) {
+        abort(403, 'Unauthorized access to this lease.');
     }
+
+    // Conditional validation based on service type
+    $rules = [
+        'customer_id' => 'required|exists:users,id',
+        'service_type' => 'required|in:dark_fibre,colocation,wavelength',
+        'monthly_cost' => 'required|numeric|min:0',
+        'installation_fee' => 'nullable|numeric|min:0',
+        'currency' => 'required|string|size:3',
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        'contract_term_months' => 'required|integer|min:1',
+        'billing_cycle' => 'required|in:monthly,quarterly,annually,one_time',
+        'status' => 'required|in:draft,pending,active,expired,terminated,cancelled',
+        'technology' => 'required|string',
+        'bandwidth' => 'nullable|string',
+        'distance_km' => 'nullable|numeric|min:0',
+        'technical_specifications' => 'nullable|string',
+        'service_level_agreement' => 'nullable|string',
+        'terms_and_conditions' => 'nullable|string',
+        'special_requirements' => 'nullable|string',
+        'notes' => 'nullable|string',
+    ];
+
+    // Apply conditional rules based on service_type
+    switch ($request->service_type) {
+        case 'dark_fibre':
+            $rules['start_location'] = 'required|string|max:255';
+            $rules['end_location'] = 'required|string|max:255';
+            $rules['host_location'] = 'nullable|string|max:255'; // Not required
+            $rules['cores_required'] = 'nullable|integer|min:0'; // Not required
+            $rules['technology'] = 'required|in:metro,non_premium,premium';
+            break;
+
+        case 'colocation':
+            $rules['start_location'] = 'nullable|string|max:255'; // Not required
+            $rules['end_location'] = 'nullable|string|max:255'; // Not required
+            $rules['host_location'] = 'required|string|max:255';
+            $rules['cores_required'] = 'nullable|integer|min:0'; // Not required
+            $rules['technology'] = 'required|in:colocation';
+            break;
+
+        case 'wavelength':
+            $rules['start_location'] = 'nullable|string|max:255'; // Not required
+            $rules['end_location'] = 'nullable|string|max:255'; // Not required
+            $rules['host_location'] = 'nullable|string|max:255'; // Not required
+            $rules['cores_required'] = 'nullable|integer|min:0'; // Not required
+            $rules['technology'] = 'required|in:dwdm';
+            break;
+
+        default:
+            // Fallback validation
+            $rules['start_location'] = 'required|string|max:255';
+            $rules['end_location'] = 'required|string|max:255';
+            $rules['host_location'] = 'required|string|max:255';
+            $rules['cores_required'] = 'nullable|integer|min:0';
+            break;
+    }
+
+    $validated = $request->validate($rules);
+
+    // Verify the new customer also belongs to this account manager
+    $customer = User::where('id', $validated['customer_id'])
+        ->where('account_manager_id', $user->id)
+        ->where('role', 'customer')
+        ->first();
+
+    if (!$customer) {
+        return redirect()->back()
+            ->with('error', 'Invalid customer selected.')
+            ->withInput();
+    }
+
+    // Remove any fields that should not be updated based on service type
+    $updateData = $validated;
+
+    // For colocation, ensure location fields are cleared if they were sent
+    if ($request->service_type === 'colocation') {
+        $updateData['start_location'] = null;
+        $updateData['end_location'] = null;
+        $updateData['distance_km'] = null;
+        $updateData['cores_required'] = null;
+        $updateData['bandwidth'] = null;
+    }
+
+    // For wavelength, ensure location fields are cleared
+    if ($request->service_type === 'wavelength') {
+        $updateData['start_location'] = null;
+        $updateData['end_location'] = null;
+        $updateData['host_location'] = null;
+        $updateData['distance_km'] = null;
+        $updateData['cores_required'] = null;
+    }
+
+    // For dark_fibre, ensure host_location and bandwidth are cleared
+    if ($request->service_type === 'dark_fibre') {
+        $updateData['host_location'] = null;
+        $updateData['bandwidth'] = null;
+    }
+
+    $lease->update($updateData);
+
+    return redirect()->route('account-manager.leases.show', $lease)
+        ->with('success', 'Lease updated successfully.');
+}
 
     /**
      * Delete lease for account manager
@@ -1163,6 +1298,7 @@ public function showBilling($id)
                     'technology' => $quotation->technology ?? '',
                     'start_location' => $quotation->start_location ?? '',
                     'end_location' => $quotation->end_location ?? '',
+                    'host_location' => $quotation->host_location ?? '',
                     'distance_km' => $quotation->distance_km ? (float) $quotation->distance_km : '',
                     'monthly_cost' => $quotation->monthly_cost ? (float) $quotation->monthly_cost : (float) $quotation->total_amount,
                     'installation_fee' => $quotation->installation_fee ? (float) $quotation->installation_fee : 0,
