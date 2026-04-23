@@ -215,6 +215,11 @@
                     </thead>
                     <tbody>
                         @forelse($leases as $lease)
+   @php
+        $canDelete = auth()->user()->role === 'account_manager' && $lease->status === 'draft';
+        $statusColor = $lease->status === 'active' ? 'success' : ($lease->status === 'draft' ? 'secondary' : 'warning');
+    @endphp
+
                             <tr>
                                 <td>
                                     <strong>#{{ $lease->lease_number }}</strong>
@@ -294,37 +299,103 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
 
-                                        <button class="btn btn-outline-danger"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal{{ $lease->id }}"
-                                                title="Delete">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        @if($canDelete)
+        <button type="button"
+                class="btn btn-outline-danger btn-xs"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteModal{{ $lease->id }}"
+                title="Delete Lease"
+                style="padding: 0.15rem 0.3rem; font-size: 0.7rem;">
+            <i class="fas fa-trash"></i>
+        </button>
+    @else
+        <button type="button"
+                class="btn btn-outline-secondary btn-xs"
+                disabled
+                title="Only draft leases can be deleted"
+                style="padding: 0.15rem 0.3rem; font-size: 0.7rem; opacity: 0.5;">
+            <i class="fas fa-trash"></i>
+        </button>
+    @endif
                                     </div>
 
                                     <!-- Delete Modal -->
-                                    <div class="modal fade" id="deleteModal{{ $lease->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Confirm Delete</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    Are you sure you want to delete lease <strong>#{{ $lease->lease_number }}</strong>?
-                                                    This action cannot be undone.
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <form action="{{ route('account-manager.leases.destroy', $lease) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger">Delete Lease</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @php
+    $canDelete = auth()->user()->role === 'account_manager' && $lease->status === 'draft';
+    $statusColors = [
+        'draft' => 'secondary',
+        'pending' => 'warning',
+        'active' => 'success',
+        'expired' => 'info',
+        'terminated' => 'danger',
+        'cancelled' => 'dark'
+    ];
+    $statusColor = $statusColors[$lease->status] ?? 'secondary';
+@endphp
+
+<div class="modal fade" id="deleteModal{{ $lease->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header {{ $canDelete ? 'bg-danger text-white' : 'bg-secondary text-white' }}">
+                <h5 class="modal-title">
+                    <i class="fas {{ $canDelete ? 'fa-trash' : 'fa-lock' }} me-2"></i>
+                    {{ $canDelete ? 'Confirm Delete' : 'Cannot Delete Lease' }}
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(!$canDelete)
+                    <div class="text-center py-3">
+                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <p class="mb-2">This lease cannot be deleted because:</p>
+                        <ul class="text-start d-inline-block">
+                            @if(auth()->user()->role !== 'account_manager')
+                                <li>You don't have permission to delete leases</li>
+                            @endif
+                            @if($lease->status !== 'draft')
+                                <li>Lease status is <strong class="text-{{ $statusColor }}">{{ ucfirst($lease->status) }}</strong></li>
+                                <li>Only <strong>draft</strong> leases can be deleted</li>
+                            @endif
+                        </ul>
+                    </div>
+                @else
+                    <div>
+                        <p>Are you sure you want to delete lease <strong>#{{ $lease->lease_number }}</strong>?</p>
+                        <div class="alert alert-warning py-2 small">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            <strong>Warning:</strong> This action cannot be undone. All lease data will be permanently removed.
+                        </div>
+                        <p class="mb-0 text-muted small">Lease details:</p>
+                        <ul class="small mb-0">
+                            <li><strong>Customer:</strong> {{ $lease->customer->name ?? 'N/A' }}</li>
+                            <li><strong>Status:</strong> <span class="badge bg-{{ $statusColor }}">{{ ucfirst($lease->status) }}</span></li>
+                            <li><strong>Monthly Cost:</strong> {{ $lease->currency }} {{ number_format($lease->monthly_cost, 2) }}</li>
+                        </ul>
+                    </div>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Cancel
+                </button>
+
+                @if($canDelete)
+                    <form action="{{ route('account-manager.leases.destroy', $lease) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-1"></i> Yes, Delete Lease
+                        </button>
+                    </form>
+                @else
+                    <button type="button" class="btn btn-secondary" disabled>
+                        <i class="fas fa-lock me-1"></i> Delete Disabled
+                    </button>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
                                 </td>
                             </tr>
                         @empty

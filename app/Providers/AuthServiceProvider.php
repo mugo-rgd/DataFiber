@@ -54,6 +54,16 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role === 'account_manager';
         });
 
+         // Define a gate for marketing admin
+        Gate::define('view-marketing-dashboard', function ($user) {
+            return $user->role === 'accountmanager_admin';
+        });
+
+          // Define a gate for account manager
+        Gate::define('view-account-manager-dashboard', function ($user) {
+            return $user->role === 'account_manager';
+        });
+
         Gate::define('accessAdminPanel', function (User $user) {
             return in_array($user->role, ['admin', 'account_manager']);
         });

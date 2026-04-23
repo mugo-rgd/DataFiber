@@ -271,97 +271,111 @@
                 <hr class="my-4">
 
                 <div class="row">
-                    <!-- Financial Information -->
-                    <div class="col-md-6">
-                        <h5 class="text-primary mb-3">Financial Information</h5>
+    <!-- Contract Dates -->
+    <div class="col-md-6">
+        <h5 class="text-primary mb-3">Contract Dates</h5>
 
-                        <div class="mb-3">
-                            <label for="monthly_cost" class="form-label">Monthly Cost *</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" step="0.01" class="form-control @error('monthly_cost') is-invalid @enderror"
-                                       id="monthly_cost" name="monthly_cost"
-                                       value="{{ old('monthly_cost', $lease->monthly_cost) }}" required>
-                            </div>
-                            @error('monthly_cost')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+        <div class="mb-3">
+            <label for="contract_term_months" class="form-label">Contract Term (Months) *</label>
+            <input type="number" class="form-control @error('contract_term_months') is-invalid @enderror"
+                   id="contract_term_months" name="contract_term_months"
+                   value="{{ old('contract_term_months', $lease->contract_term_months) }}" required>
+            @error('contract_term_months')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
-                        <div class="mb-3">
-                            <label for="installation_fee" class="form-label">Installation Fee</label>
-                            <div class="input-group">
-                                <span class="input-group-text">$</span>
-                                <input type="number" step="0.01" class="form-control @error('installation_fee') is-invalid @enderror"
-                                       id="installation_fee" name="installation_fee"
-                                       value="{{ old('installation_fee', $lease->installation_fee) }}">
-                            </div>
-                            @error('installation_fee')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+        <div class="mb-3">
+            <label for="billing_cycle" class="form-label">Billing Cycle *</label>
+            <select class="form-select @error('billing_cycle') is-invalid @enderror"
+                    id="billing_cycle" name="billing_cycle" required>
+                <option value="monthly" {{ old('billing_cycle', $lease->billing_cycle) == 'monthly' ? 'selected' : '' }}>Monthly</option>
+                <option value="quarterly" {{ old('billing_cycle', $lease->billing_cycle) == 'quarterly' ? 'selected' : '' }}>Quarterly</option>
+                <option value="annually" {{ old('billing_cycle', $lease->billing_cycle) == 'annually' ? 'selected' : '' }}>Annually</option>
+            </select>
+            @error('billing_cycle')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
-                        <div class="mb-3">
-                            <label for="currency" class="form-label">Currency *</label>
-                            <select class="form-select @error('currency') is-invalid @enderror"
-                                    id="currency" name="currency" required>
-                                <option value="USD" {{ old('currency', $lease->currency) == 'USD' ? 'selected' : '' }}>USD</option>
-                                <option value="KSH" {{ old('currency', $lease->currency) == 'KSH' ? 'selected' : '' }}>KSH</option>
-                            </select>
-                            @error('currency')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+        <div class="mb-3">
+            <label for="start_date" class="form-label">Start Date *</label>
+            <input type="date" class="form-control @error('start_date') is-invalid @enderror"
+                   id="start_date" name="start_date"
+                   value="{{ old('start_date', $lease->start_date instanceof \Carbon\Carbon ? $lease->start_date->format('Y-m-d') : $lease->start_date) }}" required>
+            @error('start_date')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
-                    <!-- Contract Dates -->
-                    <div class="col-md-6">
-                        <h5 class="text-primary mb-3">Contract Dates</h5>
+        <div class="mb-3">
+            <label for="end_date" class="form-label">End Date *</label>
+            <input type="date" class="form-control @error('end_date') is-invalid @enderror"
+                   id="end_date" name="end_date"
+                   value="{{ old('end_date', $lease->end_date instanceof \Carbon\Carbon ? $lease->end_date->format('Y-m-d') : $lease->end_date) }}" required>
+            @error('end_date')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
 
-                        <div class="mb-3">
-                            <label for="start_date" class="form-label">Start Date *</label>
-                            <input type="date" class="form-control @error('start_date') is-invalid @enderror"
-                                   id="start_date" name="start_date"
-                                   value="{{ old('start_date', $lease->start_date instanceof \Carbon\Carbon ? $lease->start_date->format('Y-m-d') : $lease->start_date) }}" required>
-                            @error('start_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+    <!-- Financial Information -->
+    <div class="col-md-6">
+        <h5 class="text-primary mb-3">Financial Information</h5>
 
-                        <div class="mb-3">
-                            <label for="end_date" class="form-label">End Date *</label>
-                            <input type="date" class="form-control @error('end_date') is-invalid @enderror"
-                                   id="end_date" name="end_date"
-                                   value="{{ old('end_date', $lease->end_date instanceof \Carbon\Carbon ? $lease->end_date->format('Y-m-d') : $lease->end_date) }}" required>
-                            @error('end_date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+        <div class="mb-3">
+            <label for="currency" class="form-label">Currency *</label>
+            <select class="form-select @error('currency') is-invalid @enderror"
+                    id="currency" name="currency" required>
+                <option value="USD" {{ old('currency', $lease->currency) == 'USD' ? 'selected' : '' }}>USD ($)</option>
+                <option value="KSH" {{ old('currency', $lease->currency) == 'KSH' ? 'selected' : '' }}>Kenyan Shilling (KSH)</option>
+            </select>
+            @error('currency')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
-                        <div class="mb-3">
-                            <label for="contract_term_months" class="form-label">Contract Term (Months) *</label>
-                            <input type="number" class="form-control @error('contract_term_months') is-invalid @enderror"
-                                   id="contract_term_months" name="contract_term_months"
-                                   value="{{ old('contract_term_months', $lease->contract_term_months) }}" required>
-                            @error('contract_term_months')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+        <div class="mb-3">
+            <label for="monthly_cost" id="cost_label" class="form-label">Monthly Cost *</label>
+            <div class="input-group">
+                <span class="input-group-text" id="currency_symbol">$</span>
+                <input type="number" step="0.01" class="form-control @error('monthly_cost') is-invalid @enderror"
+                       id="monthly_cost" name="monthly_cost"
+                       value="{{ old('monthly_cost', $lease->monthly_cost) }}" required>
+            </div>
+            <small class="text-muted" id="costHelpText">Monthly recurring charge</small>
+            @error('monthly_cost')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
 
-                        <div class="mb-3">
-                            <label for="billing_cycle" class="form-label">Billing Cycle *</label>
-                            <select class="form-select @error('billing_cycle') is-invalid @enderror"
-                                    id="billing_cycle" name="billing_cycle" required>
-                                <option value="monthly" {{ old('billing_cycle', $lease->billing_cycle) == 'monthly' ? 'selected' : '' }}>Monthly</option>
-                                <option value="quarterly" {{ old('billing_cycle', $lease->billing_cycle) == 'quarterly' ? 'selected' : '' }}>Quarterly</option>
-                                <option value="annually" {{ old('billing_cycle', $lease->billing_cycle) == 'annually' ? 'selected' : '' }}>Annually</option>
-                            </select>
-                            @error('billing_cycle')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
+        <div class="mb-3">
+            <label for="installation_fee" class="form-label">Installation Fee</label>
+            <div class="input-group">
+                <span class="input-group-text" id="installation_currency_symbol">$</span>
+                <input type="number" step="0.01" class="form-control @error('installation_fee') is-invalid @enderror"
+                       id="installation_fee" name="installation_fee"
+                       value="{{ old('installation_fee', $lease->installation_fee) }}">
+            </div>
+            @error('installation_fee')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="total_contract_value" class="form-label">Total Contract Value</label>
+            <div class="input-group">
+                <span class="input-group-text" id="total_currency_symbol">$</span>
+                <input type="number" step="0.01" class="form-control @error('total_contract_value') is-invalid @enderror"
+                       id="total_contract_value" name="total_contract_value"
+                       value="{{ old('total_contract_value', $lease->total_contract_value) }}" readonly>
+            </div>
+            @error('total_contract_value')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    </div>
+</div>
 
                 <hr class="my-4">
 
@@ -445,26 +459,156 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Calculate contract term based on dates
+    // =============================================
+    // 1. END DATE CALCULATION (Start Date + Contract Term)
+    // =============================================
     const startDate = document.getElementById('start_date');
     const endDate = document.getElementById('end_date');
     const contractTerm = document.getElementById('contract_term_months');
 
-    function calculateTerm() {
-        if (startDate.value && endDate.value) {
+    function calculateEndDate() {
+        if (startDate.value && contractTerm.value) {
             const start = new Date(startDate.value);
-            const end = new Date(endDate.value);
-            const months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+            const months = parseInt(contractTerm.value) || 0;
+
             if (months > 0) {
-                contractTerm.value = months;
+                const end = new Date(start);
+                end.setMonth(start.getMonth() + months);
+
+                // Format as YYYY-MM-DD
+                const year = end.getFullYear();
+                const month = String(end.getMonth() + 1).padStart(2, '0');
+                const day = String(end.getDate()).padStart(2, '0');
+                endDate.value = `${year}-${month}-${day}`;
             }
         }
     }
 
-    if (startDate && endDate && contractTerm) {
-        startDate.addEventListener('change', calculateTerm);
-        endDate.addEventListener('change', calculateTerm);
+    if (startDate && contractTerm && endDate) {
+        startDate.addEventListener('change', calculateEndDate);
+        contractTerm.addEventListener('input', calculateEndDate);
+        // Run once on page load to set initial end date if needed
+        calculateEndDate();
     }
+
+    // =============================================
+    // 2. DYNAMIC COST LABEL BASED ON BILLING CYCLE
+    // =============================================
+    const billingCycleSelect = document.getElementById('billing_cycle');
+    const costLabel = document.getElementById('cost_label');
+    const costHelpText = document.getElementById('costHelpText');
+
+    function updateCostLabel() {
+        if (!billingCycleSelect) return;
+
+        const selectedCycle = billingCycleSelect.value;
+        let labelText = '';
+        let helpText = '';
+
+        switch(selectedCycle) {
+            case 'monthly':
+                labelText = 'Monthly Cost';
+                helpText = 'Monthly recurring charge';
+                break;
+            case 'quarterly':
+                labelText = 'Quarterly Cost';
+                helpText = 'Quarterly recurring charge (every 3 months)';
+                break;
+            case 'annually':
+                labelText = 'Annual Cost';
+                helpText = 'Annual recurring charge (once per year)';
+                break;
+            default:
+                labelText = 'Cost';
+                helpText = 'Enter the cost amount';
+        }
+
+        if (costLabel) costLabel.innerHTML = `${labelText} <span class="text-danger">*</span>`;
+        if (costHelpText) costHelpText.textContent = helpText;
+    }
+
+    if (billingCycleSelect) {
+        billingCycleSelect.addEventListener('change', updateCostLabel);
+        updateCostLabel(); // Run on page load
+    }
+
+    // =============================================
+    // 3. DYNAMIC CURRENCY SYMBOL
+    // =============================================
+    const currencySelect = document.getElementById('currency');
+    const currencySymbolSpan = document.getElementById('currency_symbol');
+    const installationCurrencySymbol = document.getElementById('installation_currency_symbol');
+    const totalCurrencySymbol = document.getElementById('total_currency_symbol');
+
+    function updateCurrencySymbol() {
+        if (!currencySelect) return;
+
+        const selectedCurrency = currencySelect.value;
+        let symbol = '';
+
+        switch(selectedCurrency) {
+            case 'USD':
+                symbol = '$';
+                break;
+            case 'KSH':
+                symbol = 'KSH';
+                break;
+            default:
+                symbol = '$';
+        }
+
+        if (currencySymbolSpan) currencySymbolSpan.textContent = symbol;
+        if (installationCurrencySymbol) installationCurrencySymbol.textContent = symbol;
+        if (totalCurrencySymbol) totalCurrencySymbol.textContent = symbol;
+    }
+
+    if (currencySelect) {
+        currencySelect.addEventListener('change', updateCurrencySymbol);
+        updateCurrencySymbol(); // Run on page load
+    }
+
+    // =============================================
+    // 4. TOTAL CONTRACT VALUE CALCULATION
+    // =============================================
+    const monthlyCost = document.getElementById('monthly_cost');
+    const installationFee = document.getElementById('installation_fee');
+    const totalContractValue = document.getElementById('total_contract_value');
+
+    function calculateTotalContractValue() {
+        if (!monthlyCost || !contractTerm || !billingCycleSelect || !totalContractValue) return;
+
+        let costAmount = parseFloat(monthlyCost.value) || 0;
+        const termMonths = parseInt(contractTerm.value) || 0;
+        const billingCycle = billingCycleSelect.value;
+        const installation = parseFloat(installationFee?.value) || 0;
+
+        let totalRecurringCost = 0;
+
+        switch (billingCycle) {
+            case 'monthly':
+                totalRecurringCost = costAmount * termMonths;
+                break;
+            case 'quarterly':
+                totalRecurringCost = costAmount * Math.ceil(termMonths / 3);
+                break;
+            case 'annually':
+                totalRecurringCost = costAmount * Math.ceil(termMonths / 12);
+                break;
+            default:
+                totalRecurringCost = costAmount * termMonths;
+        }
+
+        const totalValue = totalRecurringCost + installation;
+        totalContractValue.value = totalValue.toFixed(2);
+    }
+
+    if (monthlyCost) monthlyCost.addEventListener('input', calculateTotalContractValue);
+    if (contractTerm) contractTerm.addEventListener('input', calculateTotalContractValue);
+    if (billingCycleSelect) billingCycleSelect.addEventListener('change', calculateTotalContractValue);
+    if (installationFee) installationFee.addEventListener('input', calculateTotalContractValue);
+
+    // Run on page load
+    calculateTotalContractValue();
 
     // Auto-dismiss alerts after 5 seconds
     setTimeout(() => {
@@ -482,11 +626,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const technologySelect = document.getElementById('technology');
     const techHint = document.getElementById('tech-hint');
 
-    // Get the existing technology value from the server
     const existingTechnology = '{{ old('technology', $lease->technology) }}';
     const existingServiceType = '{{ old('service_type', $lease->service_type) }}';
 
-    // Get all fields
     const startLocation = document.getElementById('start_location');
     const endLocation = document.getElementById('end_location');
     const hostLocation = document.getElementById('host_location');
@@ -494,7 +636,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const bandwidth = document.getElementById('bandwidth');
     const coresRequired = document.getElementById('cores_required');
 
-    // Get labels for required field indicators
     const startLocationLabel = document.getElementById('start_location_label');
     const endLocationLabel = document.getElementById('end_location_label');
     const hostLocationLabel = document.getElementById('host_location_label');
@@ -504,20 +645,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const serviceType = serviceTypeSelect.value;
 
-        // Remove any existing hidden input first
         const existingHidden = document.getElementById('hidden_technology_input');
         if (existingHidden) existingHidden.remove();
 
-        // Clear current options
         if (technologySelect) {
             technologySelect.innerHTML = '';
         }
 
-        // =============================================
-        // TECHNOLOGY DROPDOWN OPTIONS
-        // =============================================
         if (serviceType === 'colocation') {
-            // Only show COLOCATION option
             if (technologySelect) {
                 const option = document.createElement('option');
                 option.value = 'colocation';
@@ -528,7 +663,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (techHint) {
                     techHint.innerHTML = 'COLOCATION: Physical space, power, and cooling for optical equipment';
                 }
-                // Add hidden input to submit the value
                 const hidden = document.createElement('input');
                 hidden.type = 'hidden';
                 hidden.name = 'technology';
@@ -538,7 +672,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
         } else if (serviceType === 'wavelength') {
-            // Only show DWDM option
             if (technologySelect) {
                 const option = document.createElement('option');
                 option.value = 'dwdm';
@@ -549,7 +682,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (techHint) {
                     techHint.innerHTML = 'DWDM: Dense Wavelength Division Multiplexing for high-capacity lit service';
                 }
-                // Add hidden input to submit the value
                 const hidden = document.createElement('input');
                 hidden.type = 'hidden';
                 hidden.name = 'technology';
@@ -559,7 +691,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
         } else if (serviceType === 'dark_fibre') {
-            // Only show METRO, NON PREMIUM, PREMIUM options
             if (technologySelect) {
                 const placeholder = document.createElement('option');
                 placeholder.value = '';
@@ -584,7 +715,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 technologySelect.disabled = false;
 
-                // Preserve the existing technology value if it exists
                 if (existingTechnology && (existingTechnology === 'metro' || existingTechnology === 'non_premium' || existingTechnology === 'premium')) {
                     technologySelect.value = existingTechnology;
                 }
@@ -595,7 +725,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
         } else {
-            // No service type selected - show all options (default)
             if (technologySelect) {
                 const placeholder = document.createElement('option');
                 placeholder.value = '';
@@ -631,7 +760,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 technologySelect.disabled = false;
 
-                // Preserve the existing technology value
                 if (existingTechnology) {
                     technologySelect.value = existingTechnology;
                 }
@@ -642,11 +770,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // =============================================
-        // FIELD DISABLING BASED ON SERVICE TYPE
-        // =============================================
-
-        // Reset all fields to enabled first (remove disabled attribute)
+        // Reset all fields
         if (startLocation) startLocation.disabled = false;
         if (endLocation) endLocation.disabled = false;
         if (hostLocation) hostLocation.disabled = false;
@@ -654,23 +778,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (bandwidth) bandwidth.disabled = false;
         if (coresRequired) coresRequired.disabled = false;
 
-        // Reset required labels (remove asterisk)
         if (startLocationLabel) startLocationLabel.innerHTML = 'Start Location';
         if (endLocationLabel) endLocationLabel.innerHTML = 'End Location';
         if (hostLocationLabel) hostLocationLabel.innerHTML = 'Host Location';
 
-        // Reset required attributes
         if (startLocation) startLocation.required = false;
         if (endLocation) endLocation.required = false;
         if (hostLocation) hostLocation.required = false;
 
-        // Apply specific disabling rules
         switch (serviceType) {
             case 'dark_fibre':
-                // Disable: Host Location, Bandwidth
                 if (hostLocation) hostLocation.disabled = true;
                 if (bandwidth) bandwidth.disabled = true;
-                // Make Start Location and End Location required
                 if (startLocation) startLocation.required = true;
                 if (endLocation) endLocation.required = true;
                 if (startLocationLabel) startLocationLabel.innerHTML = 'Start Location *';
@@ -678,40 +797,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
 
             case 'colocation':
-                // Disable: Core(s), Bandwidth, Start Location, End Location, Distance (KM)
                 if (coresRequired) coresRequired.disabled = true;
                 if (bandwidth) bandwidth.disabled = true;
                 if (startLocation) startLocation.disabled = true;
                 if (endLocation) endLocation.disabled = true;
                 if (distanceKm) distanceKm.disabled = true;
-                // Make Host Location required
                 if (hostLocation) hostLocation.required = true;
                 if (hostLocationLabel) hostLocationLabel.innerHTML = 'Host Location *';
                 break;
 
             case 'wavelength':
-                // ONLY disable Core(s) and Distance (KM)
-                // Start Location and End Location remain ENABLED and VISIBLE
-                // Host Location is disabled
                 if (coresRequired) coresRequired.disabled = true;
                 if (distanceKm) distanceKm.disabled = true;
                 if (hostLocation) hostLocation.disabled = true;
-                // Start Location and End Location are NOT disabled - they stay enabled
-                // No required fields for wavelength
                 break;
 
             default:
-                // No fields disabled (all enabled)
                 break;
         }
 
-        // Add visual feedback for disabled fields
         const allFields = [startLocation, endLocation, hostLocation, distanceKm, bandwidth, coresRequired];
         allFields.forEach(field => {
             if (field) {
                 if (field.disabled) {
                     field.classList.add('bg-light');
-                    // Remove required attribute if field is disabled
                     field.required = false;
                 } else {
                     field.classList.remove('bg-light');
@@ -720,17 +829,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Add event listener to service type dropdown
     if (serviceTypeSelect) {
-        // First, set the initial service type value
         if (existingServiceType) {
             serviceTypeSelect.value = existingServiceType;
         }
-
-        // Then update fields based on the existing service type
         updateFieldsByServiceType();
-
-        // Add change event listener
         serviceTypeSelect.addEventListener('change', updateFieldsByServiceType);
     }
 });

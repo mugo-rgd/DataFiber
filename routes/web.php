@@ -75,7 +75,8 @@ use App\Http\Middleware\CheckProfileCompletion;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
-
+use App\Http\Controllers\KPIDashboardController;
+use App\Http\Controllers\TeamPerformanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -1297,6 +1298,18 @@ Route::prefix('finance/sync')->name('finance.sync.')->middleware(['auth'])->grou
     Route::post('/to-settings', [FinancialSyncController::class, 'syncToSettings'])->name('to-settings');
     Route::post('/to-parameters', [FinancialSyncController::class, 'syncToParameters'])->name('to-parameters');
     Route::get('/status', [FinancialSyncController::class, 'getStatus'])->name('status');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // KPI Routes
+    Route::get('/kpi/dashboard', [KPIDashboardController::class, 'index'])->name('kpi.dashboard');
+    Route::get('/kpi/account-manager/{id}', [KPIDashboardController::class, 'show'])->name('kpi.show');
+    Route::get('/kpi/export', [KPIDashboardController::class, 'export'])->name('kpi.export');
+});
+
+Route::middleware(['auth'])->prefix('marketing-admin')->name('marketing-admin.')->group(function () {
+    Route::get('/performance', [TeamPerformanceController::class, 'index'])->name('performance');
+    Route::get('/performance/export', [TeamPerformanceController::class, 'export'])->name('performance.export');
 });
 // Include API routes
 require __DIR__.'/api.php';

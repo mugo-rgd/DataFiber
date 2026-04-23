@@ -44,6 +44,12 @@
                 </div>
                 <div class="col-12 col-lg-4">
                     <div class="d-flex flex-wrap gap-1 gap-sm-2 justify-content-start justify-content-lg-end">
+                       <a href="{{ route('kpi.dashboard', ['account_manager_id' => auth()->user()->id]) }}" class="btn btn-light responsive-btn">
+                            <i class="fas fa-chart-line me-1 me-sm-2"></i>
+                            <span class="btn-text">My KPIs</span>
+                        </a>
+
+
                         <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-light responsive-btn">
                             <i class="fas fa-plus-circle me-1 me-sm-2"></i>
                             <span class="btn-text">New Ticket</span>

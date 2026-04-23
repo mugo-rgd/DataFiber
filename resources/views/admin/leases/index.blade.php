@@ -13,9 +13,9 @@
                     </h1>
                     <p class="text-muted small">Manage all dark fibre lease agreements</p>
                 </div>
-                <a href="{{ route('admin.leases.create') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus-circle me-2"></i>Create New Lease
-                </a>
+                <a href="{{ route('admin.leases.create') }}" class="btn btn-primary btn-sm disabled" aria-disabled="true">
+    <i class="fas fa-plus-circle me-2"></i>Create New Lease
+</a>
             </div>
         </div>
     </div>
@@ -332,11 +332,14 @@
                                             <i class="fas fa-eye"></i>
                                         </a>
 
-                                        @if(Route::has('admin.leases.edit'))
-                                            <a href="{{ route('admin.leases.edit', $lease) }}" class="btn btn-outline-secondary btn-xs" title="Edit" style="padding: 0.15rem 0.3rem; font-size: 0.7rem;">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        @endif
+                                       @if(Route::has('admin.leases.edit'))
+    <a href="{{ route('admin.leases.edit', $lease) }}"
+       class="btn btn-outline-secondary btn-xs disabled"
+       title="Edit"
+       style="padding: 0.15rem 0.3rem; font-size: 0.7rem; pointer-events: none; opacity: 0.65;">
+        <i class="fas fa-edit"></i>
+    </a>
+@endif
 
                                         <!-- Approve Button -->
                                         @if(in_array($lease->status, ['pending', 'draft']) && Route::has('admin.leases.approve'))
@@ -390,29 +393,40 @@
 
                                     <!-- Delete Modal -->
                                     @if(Route::has('admin.leases.destroy'))
-                                        <div class="modal fade" id="deleteModal{{ $lease->id }}" tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog modal-sm">
-                                                <div class="modal-content">
-                                                    <div class="modal-header py-2">
-                                                        <h6 class="modal-title">Confirm Delete</h6>
-                                                        <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body py-2 small">
-                                                        Are you sure you want to delete lease <strong>#{{ $lease->lease_number }}</strong>?
-                                                        This action cannot be undone.
-                                                    </div>
-                                                    <div class="modal-footer py-2">
-                                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
-                                                        <form action="{{ route('admin.leases.destroy', $lease) }}" method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
+    @php
+        $isDisabled = auth()->user()->role === 'accountmanager_admin';
+    @endphp
+
+    <div class="modal fade" id="deleteModal{{ $lease->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header py-2">
+                    <h6 class="modal-title">Confirm Delete</h6>
+                    <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body py-2 small">
+                    Are you sure you want to delete lease <strong>#{{ $lease->lease_number }}</strong>?
+                    This action cannot be undone.
+                    @if($isDisabled)
+                        <div class="alert alert-warning mt-2 mb-0 py-1 small">
+                            <i class="fas fa-lock"></i> Delete disabled for account managers
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer py-2">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ route('admin.leases.destroy', $lease) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm" {{ $isDisabled ? 'disabled' : '' }}>
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
                                 </td>
                             </tr>
                         @empty

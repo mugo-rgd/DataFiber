@@ -5,47 +5,82 @@
 @section('content')
 <div class="container-fluid px-0">
     <!-- Dashboard Header - Fully Responsive -->
-    <div class="dashboard-header bg-gradient-primary text-white py-2 py-sm-3 py-md-4">
-        <div class="container-fluid px-3 px-sm-4 px-md-5">
-            <div class="row align-items-center g-2 g-md-3">
-                <div class="col-12 col-lg-8 mb-2 mb-lg-0">
-                    <div class="d-flex align-items-center flex-wrap">
-                        <div class="header-icon me-2 me-sm-3 mb-1 mb-sm-0">
-                            <i class="fas fa-tachometer-alt responsive-icon"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h1 class="responsive-heading mb-1">{{ Auth::user()->full_role_name }} Dashboard</h1>
-                            <p class="mb-0 opacity-75 responsive-text">Welcome back, <strong class="name-text">{{ Auth::user()->name }}</strong>!</p>
-                        </div>
+   <div class="dashboard-header bg-gradient-primary text-white py-2 py-sm-3 py-md-4">
+    <div class="container-fluid px-3 px-sm-4 px-md-5">
+        <div class="row align-items-center g-2 g-md-3">
+            <!-- Left Column - Title and Welcome Message -->
+            <div class="col-12 col-lg-7 mb-2 mb-lg-0">
+                <div class="d-flex align-items-center flex-wrap">
+                    <div class="header-icon me-2 me-sm-3 mb-1 mb-sm-0">
+                        <i class="fas fa-tachometer-alt responsive-icon"></i>
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-1 gap-sm-2 gap-md-3 mt-2">
-                        <span class="badge bg-white text-primary responsive-badge">
-                            <i class="fas fa-user me-1"></i> <span class="role-text">{{ Auth::user()->full_role_name }}</span>
-                        </span>
-                        <span class="opacity-75 responsive-text-sm">
-                            <i class="fas fa-calendar me-1"></i> <span class="date-text">{{ now()->format('l, F j, Y') }}</span>
-                        </span>
-                        @if(Auth::user()->is_online)
-                            <span class="badge bg-success responsive-badge">
-                                <i class="fas fa-circle me-1"></i> Online
-                            </span>
-                        @endif
+                    <div class="flex-grow-1">
+                        <h1 class="responsive-heading mb-1">{{ Auth::user()->full_role_name }} Dashboard</h1>
+                        <p class="mb-0 opacity-75 responsive-text">Welcome back, <strong class="name-text">{{ Auth::user()->name }}</strong>!</p>
                     </div>
                 </div>
-                <div class="col-12 col-lg-4">
-                    <div class="d-flex flex-wrap gap-1 gap-sm-2 justify-content-start justify-content-lg-end">
-                        <form method="POST" action="{{ route('logout') }}" class="d-inline w-100 w-sm-auto">
-                            @csrf
-                            <button type="submit" class="btn btn-light responsive-btn w-100">
-                                <i class="fas fa-sign-out-alt me-1 me-sm-2"></i>
-                                <span class="btn-text">Logout</span>
-                            </button>
-                        </form>
+                <div class="d-flex flex-wrap align-items-center gap-1 gap-sm-2 gap-md-3 mt-2">
+                    <span class="badge bg-white text-primary responsive-badge">
+                        <i class="fas fa-user me-1"></i> <span class="role-text">{{ Auth::user()->full_role_name }}</span>
+                    </span>
+                    <span class="opacity-75 responsive-text-sm">
+                        <i class="fas fa-calendar me-1"></i> <span class="date-text">{{ now()->format('l, F j, Y') }}</span>
+                    </span>
+                    @if(Auth::user()->is_online)
+                        <span class="badge bg-success responsive-badge">
+                            <i class="fas fa-circle me-1"></i> Online
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Right Column - Action Buttons -->
+            <div class="col-12 col-lg-5">
+                <div class="d-flex flex-wrap gap-2 gap-sm-3 justify-content-start justify-content-lg-end align-items-center">
+                    <!-- Analytics Dropdown -->
+                    <div class="dropdown d-inline-block">
+                        <button class="btn btn-light responsive-btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-chart-line me-1 me-sm-2"></i>
+                            <span class="btn-text">Analytics(KPIs)</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ route('kpi.dashboard') }}">
+                                    <i class="fas fa-chart-pie me-2"></i> All KPIs
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('kpi.dashboard', ['currency' => 'USD']) }}">
+                                    <i class="fas fa-dollar-sign me-2"></i> USD Portfolio
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('kpi.dashboard', ['currency' => 'KSH']) }}">
+                                    <i class="fas fa-shilling-sign me-2"></i> KSH Portfolio
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('kpi.export') }}">
+                                    <i class="fas fa-download me-2"></i> Export Data
+                                </a>
+                            </li>
+                        </ul>
                     </div>
+
+                    <!-- Logout Button -->
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-light responsive-btn">
+                            <i class="fas fa-sign-out-alt me-1 me-sm-2"></i>
+                            <span class="btn-text">Logout</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Welcome Section - Responsive -->
     <div class="container-fluid px-3 px-sm-4 px-md-5 py-3 py-sm-4">
