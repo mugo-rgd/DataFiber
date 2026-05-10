@@ -595,11 +595,11 @@
                             </a>
                         </li>
                           <li class="nav-item">
-            <a class="nav-link" href="<?php echo e(route('finance.emails.settings')); ?>">
-                <i class="fas fa-envelope me-2"></i>
-                <span>Email Settings</span>
-            </a>
-        </li>
+                                <a class="nav-link" href="<?php echo e(route('finance.emails.settings')); ?>">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <span>Email Settings</span>
+                                </a>
+                            </li>
                         <?php endif; ?>
 
                         <?php if(Auth::user()->role === 'designer'): ?>
@@ -738,6 +738,65 @@
                                     <i class="fas fa-ticket-alt me-1"></i>Tickets
                                 </a>
                             </li>
+
+                            <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle"
+       href="#"
+       id="cakDropdown"
+       role="button"
+       data-bs-toggle="dropdown"
+       aria-expanded="false">
+        <i class="fas fa-file-alt me-1"></i> CAK Compliance
+    </a>
+
+    <ul class="dropdown-menu" aria-labelledby="cakDropdown">
+
+        <li>
+            <a class="dropdown-item" href="<?php echo e(route('asp.create')); ?>">
+                <i class="fas fa-server me-2 text-primary"></i> ASP Return
+            </a>
+        </li>
+
+        <li>
+            <a class="dropdown-item" href="<?php echo e(route('csp.create')); ?>">
+                <i class="fas fa-envelope me-2 text-success"></i> CSP Return
+            </a>
+        </li>
+
+        <li>
+            <a class="dropdown-item" href="<?php echo e(route('nfp.create')); ?>">
+                <i class="fas fa-network-wired me-2 text-warning"></i> NFP Return
+            </a>
+        </li>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <li>
+            <a class="dropdown-item" href="<?php echo e(route('asp.index')); ?>">
+                <i class="fas fa-list me-2"></i> ASP Submissions
+            </a>
+        </li>
+
+        <li>
+            <a class="dropdown-item" href="<?php echo e(route('csp.index')); ?>">
+                <i class="fas fa-list me-2"></i> CSP Submissions
+            </a>
+        </li>
+
+        <li>
+            <a class="dropdown-item" href="<?php echo e(route('nfp.index')); ?>">
+                <i class="fas fa-list me-2"></i> NFP Submissions
+            </a>
+        </li>
+<li>
+     <a class="dropdown-item" href="<?php echo e(route('cak.dashboard')); ?>">
+    <i class="fas fa-tachometer-alt me-2"></i> CAK Dashboard
+</a>
+</li>
+
+
+    </ul>
+</li>
                         <?php endif; ?>
 
                         <!-- Customer Menu Items -->

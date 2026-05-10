@@ -64,6 +64,13 @@
       0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
     ),
   ),
+  'matanyadaev/laravel-eloquent-spatial' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'MatanYadaev\\EloquentSpatial\\EloquentSpatialServiceProvider',
+    ),
+  ),
   'nesbot/carbon' => 
   array (
     'providers' => 

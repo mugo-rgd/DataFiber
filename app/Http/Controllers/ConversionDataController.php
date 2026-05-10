@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ConversionDataExport;
 use App\Models\ConversionData;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -77,7 +78,7 @@ class ConversionDataController extends Controller
     // Validate order by column exists in model
     $validColumns = [
         'customer_name', 'route_name', 'link_class', 'cores_leased', 'distance_km',
-        'monthly_link_value_usd', 'monthly_link_kes', 'contract_duration_yrs',
+        'monthly_link_value_usd', 'monthly_link_value_kes', 'contract_duration_yrs',
         'total_contract_value_usd', 'total_contract_value_kes', 'created_at',
         'updated_at', 'customer_ref'
     ];
@@ -285,9 +286,24 @@ public function bulkDelete(Request $request)
         return view('conversion-data.show', compact('item'));
     }
 
-    public function create()
+  public function create()
     {
-        return view('conversion-data.create');
+        // Get customers assigned to the logged-in account manager
+        $customers = User::where('role', 'customer')
+            ->where('account_manager_id', auth()->id())
+            ->where('status', 'active')
+            ->orderBy('name')
+            ->get(['id', 'name', 'company_name']);
+
+        // If the logged-in user is an admin or system_admin, show all customers
+        if (in_array(auth()->user()->role, ['admin', 'system_admin', 'accountmanager_admin', 'technical_admin', 'finance_admin'])) {
+            $customers = User::where('role', 'customer')
+                ->where('status', 'active')
+                ->orderBy('name')
+                ->get(['id', 'name', 'company_name']);
+        }
+
+        return view('conversion-data.create', compact('customers'));
     }
 
     public function store(Request $request)
@@ -301,7 +317,9 @@ public function bulkDelete(Request $request)
         'cores_leased' => 'nullable|integer|min:0',
         'bandwidth' => 'nullable|string|max:50',
         'distance_km' => 'nullable|numeric|min:0',
+        'currency' => 'required|in:USD,KES',
         'price_per_core_per_km_per_month_usd' => 'nullable|numeric|min:0',
+        'price_per_core_per_km_per_month_kes' => 'nullable|numeric|min:0',
         'monthly_link_value_usd' => 'nullable|numeric|min:0',
         'monthly_link_kes' => 'nullable|numeric|min:0',
         'link_class' => 'nullable|string|max:50',

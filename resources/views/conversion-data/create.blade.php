@@ -59,26 +59,38 @@
                                     <small class="text-muted">Optional internal reference code</small>
                                 </div>
 
-                                <div class="col-md-6 mb-3">
-                                    <label for="customer_id" class="form-label">Customer ID</label>
-                                    <input type="text" class="form-control @error('customer_id') is-invalid @enderror"
-                                           id="customer_id" name="customer_id"
-                                           value="{{ old('customer_id') }}"
-                                           placeholder="e.g., 12345">
-                                    @error('customer_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                                <!-- Hidden Customer ID field (populated automatically when customer name is selected) -->
+                                <input type="hidden" id="customer_id" name="customer_id" value="{{ old('customer_id') }}">
 
                                 <div class="col-md-12 mb-3">
                                     <label for="customer_name" class="form-label">Customer Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('customer_name') is-invalid @enderror"
-                                           id="customer_name" name="customer_name"
-                                           value="{{ old('customer_name') }}" required
-                                           placeholder="Enter full customer name">
+                                    <select class="form-select @error('customer_name') is-invalid @enderror"
+                                            id="customer_name" name="customer_name" required>
+                                        <option value="">-- Select Customer Name --</option>
+                                        @forelse($customers as $customer)
+                                            <option value="{{ $customer->name }}"
+                                                    data-id="{{ $customer->id }}"
+                                                    data-company="{{ $customer->company_name }}"
+                                                    {{ old('customer_name') == $customer->name ? 'selected' : '' }}>
+                                                {{ $customer->name }}
+                                                @if($customer->company_name)
+                                                    ({{ $customer->company_name }})
+                                                @endif
+                                            </option>
+                                        @empty
+                                            <option value="" disabled>No customers assigned to you. Please contact administrator.</option>
+                                        @endforelse
+                                    </select>
                                     @error('customer_name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    @if($customers->isEmpty())
+                                        <small class="text-warning">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            No customers are currently assigned to your account.
+                                            <a href="{{ route('customers.index') }}">Contact administrator</a> to get customers assigned.
+                                        </small>
+                                    @endif
                                 </div>
                             </div>
 
@@ -109,7 +121,7 @@
                                         <option value="PREMIUM" {{ old('link_class') == 'PREMIUM' ? 'selected' : '' }}>PREMIUM</option>
                                         <option value="METRO" {{ old('link_class') == 'METRO' ? 'selected' : '' }}>METRO</option>
                                         <option value="STANDARD" {{ old('link_class') == 'STANDARD' ? 'selected' : '' }}>STANDARD</option>
-                                        <option value="BASIC" {{ old('link_class') == 'BASIC' ? 'selected' : '' }}>BASIC</option>
+                                        <option value="NON PREMIUM" {{ old('link_class') == 'NON PREMIUM' ? 'selected' : '' }}>NON PREMIUM</option>
                                         <option value="LEGACY" {{ old('link_class') == 'LEGACY' ? 'selected' : '' }}>LEGACY</option>
                                     </select>
                                     @error('link_class')
@@ -181,73 +193,122 @@
                                     </h5>
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="price_per_core_per_km_per_month_usd" class="form-label">Price/Core/KM/Month (USD)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control @error('price_per_core_per_km_per_month_usd') is-invalid @enderror"
-                                               id="price_per_core_per_km_per_month_usd" name="price_per_core_per_km_per_month_usd"
-                                               value="{{ old('price_per_core_per_km_per_month_usd') }}" step="0.01" min="0"
-                                               placeholder="e.g., 15.50">
-                                        @error('price_per_core_per_km_per_month_usd')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                <!-- Currency Selection -->
+                                <div class="col-md-12 mb-3">
+                                    <label for="currency" class="form-label">Select Currency <span class="text-danger">*</span></label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="currency" id="currency_usd" value="USD"
+                                               {{ old('currency', 'USD') == 'USD' ? 'checked' : '' }} autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="currency_usd">
+                                            <i class="fas fa-dollar-sign me-1"></i> USD (US Dollar)
+                                        </label>
+
+                                        <input type="radio" class="btn-check" name="currency" id="currency_kes" value="KES"
+                                               {{ old('currency') == 'KES' ? 'checked' : '' }} autocomplete="off">
+                                        <label class="btn btn-outline-primary" for="currency_kes">
+                                            <i class="fas fa-shilling-sign me-1"></i> KES (Kenyan Shilling)
+                                        </label>
+                                    </div>
+                                    @error('currency')
+                                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- USD Fields Group -->
+                                <div id="usd-fields" class="currency-fields">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="price_per_core_per_km_per_month_usd" class="form-label">Price/Core/KM/Month (USD)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control @error('price_per_core_per_km_per_month_usd') is-invalid @enderror"
+                                                   id="price_per_core_per_km_per_month_usd" name="price_per_core_per_km_per_month_usd"
+                                                   value="{{ old('price_per_core_per_km_per_month_usd') }}" step="0.01" min="0"
+                                                   placeholder="e.g., 15.50">
+                                            @error('price_per_core_per_km_per_month_usd')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="monthly_link_value_usd" class="form-label">Monthly Link Value (USD)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control @error('monthly_link_value_usd') is-invalid @enderror"
+                                                   id="monthly_link_value_usd" name="monthly_link_value_usd"
+                                                   value="{{ old('monthly_link_value_usd') }}" step="0.01" min="0"
+                                                   placeholder="e.g., 15500.00">
+                                            @error('monthly_link_value_usd')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="total_contract_value_usd" class="form-label">Total Contract Value (USD)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control @error('total_contract_value_usd') is-invalid @enderror"
+                                                   id="total_contract_value_usd" name="total_contract_value_usd"
+                                                   value="{{ old('total_contract_value_usd') }}" step="0.01" min="0"
+                                                   placeholder="e.g., 930000.00">
+                                            @error('total_contract_value_usd')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="monthly_link_value_usd" class="form-label">Monthly Link Value (USD)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control @error('monthly_link_value_usd') is-invalid @enderror"
-                                               id="monthly_link_value_usd" name="monthly_link_value_usd"
-                                               value="{{ old('monthly_link_value_usd') }}" step="0.01" min="0"
-                                               placeholder="e.g., 15500.00">
-                                        @error('monthly_link_value_usd')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                <!-- KES Fields Group -->
+                                <div id="kes-fields" class="currency-fields">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="price_per_core_per_km_per_month_kes" class="form-label">Price/Core/KM/Month (KES)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">KSh</span>
+                                            <input type="number" class="form-control @error('price_per_core_per_km_per_month_kes') is-invalid @enderror"
+                                                   id="price_per_core_per_km_per_month_kes" name="price_per_core_per_km_per_month_kes"
+                                                   value="{{ old('price_per_core_per_km_per_month_kes') }}" step="0.01" min="0"
+                                                   placeholder="e.g., 2000.00">
+                                            @error('price_per_core_per_km_per_month_kes')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 mb-3">
+                                        <label for="monthly_link_kes" class="form-label">Monthly Link Value (KES)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">KSh</span>
+                                            <input type="number" class="form-control @error('monthly_link_kes') is-invalid @enderror"
+                                                   id="monthly_link_kes" name="monthly_link_kes"
+                                                   value="{{ old('monthly_link_kes') }}" step="0.01" min="0"
+                                                   placeholder="e.g., 2015000.00">
+                                            @error('monthly_link_kes')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label for="total_contract_value_kes" class="form-label">Total Contract Value (KES)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">KSh</span>
+                                            <input type="number" class="form-control @error('total_contract_value_kes') is-invalid @enderror"
+                                                   id="total_contract_value_kes" name="total_contract_value_kes"
+                                                   value="{{ old('total_contract_value_kes') }}" step="0.01" min="0"
+                                                   placeholder="e.g., 120900000.00">
+                                            @error('total_contract_value_kes')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 mb-3">
-                                    <label for="monthly_link_kes" class="form-label">Monthly Link Value (KES)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">KSh</span>
-                                        <input type="number" class="form-control @error('monthly_link_kes') is-invalid @enderror"
-                                               id="monthly_link_kes" name="monthly_link_kes"
-                                               value="{{ old('monthly_link_kes') }}" step="0.01" min="0"
-                                               placeholder="e.g., 2015000.00">
-                                        @error('monthly_link_kes')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="total_contract_value_usd" class="form-label">Total Contract Value (USD)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" class="form-control @error('total_contract_value_usd') is-invalid @enderror"
-                                               id="total_contract_value_usd" name="total_contract_value_usd"
-                                               value="{{ old('total_contract_value_usd') }}" step="0.01" min="0"
-                                               placeholder="e.g., 930000.00">
-                                        @error('total_contract_value_usd')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="total_contract_value_kes" class="form-label">Total Contract Value (KES)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">KSh</span>
-                                        <input type="number" class="form-control @error('total_contract_value_kes') is-invalid @enderror"
-                                               id="total_contract_value_kes" name="total_contract_value_kes"
-                                               value="{{ old('total_contract_value_kes') }}" step="0.01" min="0"
-                                               placeholder="e.g., 120900000.00">
-                                        @error('total_contract_value_kes')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                <!-- Exchange Rate Info (visible when USD is selected) -->
+                                <div class="col-md-12 mb-3" id="exchange-rate-info" style="display: none;">
+                                    <div class="alert alert-secondary small">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Exchange Rate:</strong> 1 USD = 130 KES (for reference only)
                                     </div>
                                 </div>
                             </div>
@@ -256,13 +317,13 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <div class="alert alert-info">
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center flex-wrap gap-3">
                                             <i class="fas fa-calculator fa-lg me-3"></i>
-                                            <div>
+                                            <div class="flex-grow-1">
                                                 <h6 class="mb-1">Auto-calculate Values</h6>
-                                                <p class="mb-0">Fill in the basic fields and let the system calculate the financial values automatically.</p>
+                                                <p class="mb-0" id="calculation-hint">Fill in cores leased, distance, price per core, and contract duration to auto-calculate financial values.</p>
                                             </div>
-                                            <button type="button" class="btn btn-outline-info ms-auto" id="calculateBtn">
+                                            <button type="button" class="btn btn-outline-info" id="calculateBtn">
                                                 <i class="fas fa-calculator me-1"></i> Calculate Now
                                             </button>
                                         </div>
@@ -273,7 +334,7 @@
                             <!-- Form Actions -->
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content-between flex-wrap gap-2">
                                         <a href="{{ route('conversion-data.index') }}" class="btn btn-secondary">
                                             <i class="fas fa-times me-1"></i> Cancel
                                         </a>
@@ -291,133 +352,390 @@
     </div>
 </div>
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .card {
+        border: 1px solid #e0e0e0;
+        border-radius: 0.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    .alert-info {
+        background-color: #e7f1ff;
+        border-color: #b3d7ff;
+        color: #004085;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 0.5rem 2rem;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4290 100%);
+        transform: translateY(-1px);
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+    }
+
+    .input-group .form-control:focus {
+        border-left: 1px solid #667eea;
+    }
+
+    h5.border-bottom {
+        border-bottom: 2px solid #667eea !important;
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    /* Select2 custom styling */
+    .select2-container--bootstrap-5 .select2-selection {
+        min-height: calc(2.5rem + 2px);
+        border-radius: 0.375rem;
+    }
+
+    /* Loading spinner */
+    .btn-loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .btn-loading i {
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Currency fields transition */
+    .currency-fields {
+        transition: all 0.3s ease;
+    }
+
+    /* Radio button group styling */
+    .btn-group .btn-outline-primary.active,
+    .btn-group .btn-check:checked + .btn-outline-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+    }
+
+    .btn-group .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #7b8eed 0%, #8b5cb2 100%);
+        color: white;
+        border-color: #667eea;
+    }
+</style>
+@endpush
+
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Auto-calculate functionality
-    document.getElementById('calculateBtn').addEventListener('click', function() {
+    // Initialize Select2 for customer name dropdown with search functionality
+    $('#customer_name').select2({
+        theme: 'bootstrap-5',
+        placeholder: '-- Select or search customer name --',
+        allowClear: true,
+        width: '100%',
+        language: {
+            noResults: function() {
+                return 'No customers found. Please contact administrator.';
+            }
+        }
+    });
+
+    // When customer name is selected, populate the hidden customer_id field
+    $('#customer_name').on('change', function() {
+        var selectedOption = $(this).find('option:selected');
+        var customerId = selectedOption.data('id');
+
+        if (customerId && customerId !== '') {
+            $('#customer_id').val(customerId);
+            $(this).removeClass('is-invalid');
+            $(this).next('.select2-container').removeClass('is-invalid-border');
+        } else {
+            $('#customer_id').val('');
+        }
+    });
+
+    // Trigger change on page load if old value exists
+    if ($('#customer_name').val()) {
+        $('#customer_name').trigger('change');
+    }
+
+    // Currency toggle functionality
+    function toggleCurrencyFields() {
+        const selectedCurrency = $('input[name="currency"]:checked').val();
+
+        if (selectedCurrency === 'USD') {
+            $('#usd-fields').fadeIn(200);
+            $('#kes-fields').fadeOut(200);
+            $('#exchange-rate-info').fadeIn(200);
+            $('#calculation-hint').html('Fill in cores leased, distance, <strong>Price/Core/KM/Month (USD)</strong>, and contract duration to auto-calculate USD values.');
+
+            // Enable USD inputs, disable KES inputs
+            $('#usd-fields input').prop('disabled', false);
+            $('#kes-fields input').prop('disabled', true);
+
+            // Clear KES values when switching
+            $('#price_per_core_per_km_per_month_kes, #monthly_link_kes, #total_contract_value_kes').val('');
+        } else {
+            $('#usd-fields').fadeOut(200);
+            $('#kes-fields').fadeIn(200);
+            $('#exchange-rate-info').fadeOut(200);
+            $('#calculation-hint').html('Fill in cores leased, distance, <strong>Price/Core/KM/Month (KES)</strong>, and contract duration to auto-calculate KES values.');
+
+            // Enable KES inputs, disable USD inputs
+            $('#usd-fields input').prop('disabled', true);
+            $('#kes-fields input').prop('disabled', false);
+
+            // Clear USD values when switching
+            $('#price_per_core_per_km_per_month_usd, #monthly_link_value_usd, #total_contract_value_usd').val('');
+        }
+
+        // Trigger recalculation
+        calculateValues();
+    }
+
+    // Initial toggle
+    toggleCurrencyFields();
+
+    // Listen for currency changes
+    $('input[name="currency"]').on('change', function() {
+        toggleCurrencyFields();
+    });
+
+    // Auto-calculate functionality with debounce
+    let calculateTimeout;
+
+    function debouncedCalculate() {
+        clearTimeout(calculateTimeout);
+        calculateTimeout = setTimeout(calculateValues, 300);
+    }
+
+    // Watch all relevant inputs
+    const usdInputs = ['#cores_leased', '#distance_km', '#price_per_core_per_km_per_month_usd', '#contract_duration_yrs'];
+    const kesInputs = ['#cores_leased', '#distance_km', '#price_per_core_per_km_per_month_kes', '#contract_duration_yrs'];
+
+    function setupCalculationListeners() {
+        const selectedCurrency = $('input[name="currency"]:checked').val();
+        const inputs = selectedCurrency === 'USD' ? usdInputs : kesInputs;
+
+        inputs.forEach(selector => {
+            $(selector).off('input change').on('input change', debouncedCalculate);
+        });
+    }
+
+    // Initial setup
+    setupCalculationListeners();
+
+    // Re-setup listeners when currency changes
+    $('input[name="currency"]').on('change', function() {
+        setupCalculationListeners();
         calculateValues();
     });
 
-    // Auto-calculate when certain fields change
-    document.getElementById('cores_leased').addEventListener('change', calculateValues);
-    document.getElementById('distance_km').addEventListener('change', calculateValues);
-    document.getElementById('price_per_core_per_km_per_month_usd').addEventListener('change', calculateValues);
-    document.getElementById('contract_duration_yrs').addEventListener('change', calculateValues);
+    // Manual calculate button
+    $('#calculateBtn').on('click', function() {
+        calculateValues();
+        const btn = $(this);
+        btn.html('<i class="fas fa-spinner fa-spin me-1"></i> Calculating...');
+        setTimeout(() => {
+            btn.html('<i class="fas fa-calculator me-1"></i> Calculate Now');
+        }, 500);
+    });
 
     function calculateValues() {
         const cores = parseFloat(document.getElementById('cores_leased').value) || 0;
         const distance = parseFloat(document.getElementById('distance_km').value) || 0;
-        const pricePerCoreKm = parseFloat(document.getElementById('price_per_core_per_km_per_month_usd').value) || 0;
         const contractYears = parseFloat(document.getElementById('contract_duration_yrs').value) || 0;
+        const selectedCurrency = $('input[name="currency"]:checked').val();
 
-        // Calculate monthly USD value
-        if (cores > 0 && distance > 0 && pricePerCoreKm > 0) {
-            const monthlyUSD = cores * distance * pricePerCoreKm;
-            document.getElementById('monthly_link_value_usd').value = monthlyUSD.toFixed(2);
+        if (selectedCurrency === 'USD') {
+            const pricePerCoreKm = parseFloat(document.getElementById('price_per_core_per_km_per_month_usd').value) || 0;
 
-            // Calculate KES value (assuming 1 USD = 130 KES)
-            const exchangeRate = 130;
-            const monthlyKES = monthlyUSD * exchangeRate;
-            document.getElementById('monthly_link_kes').value = monthlyKES.toFixed(2);
+            if (cores > 0 && distance > 0 && pricePerCoreKm > 0) {
+                const monthlyUSD = cores * distance * pricePerCoreKm;
+                document.getElementById('monthly_link_value_usd').value = monthlyUSD.toFixed(2);
 
-            // Calculate total contract values
-            if (contractYears > 0) {
-                const months = contractYears * 12;
-                const totalUSD = monthlyUSD * months;
-                const totalKES = monthlyKES * months;
+                if (contractYears > 0) {
+                    const months = contractYears * 12;
+                    const totalUSD = monthlyUSD * months;
+                    document.getElementById('total_contract_value_usd').value = totalUSD.toFixed(2);
+                } else {
+                    document.getElementById('total_contract_value_usd').value = '';
+                }
+            } else {
+                if (!cores || !distance || !pricePerCoreKm) {
+                    document.getElementById('monthly_link_value_usd').value = '';
+                    document.getElementById('total_contract_value_usd').value = '';
+                }
+            }
+        } else {
+            const pricePerCoreKmKes = parseFloat(document.getElementById('price_per_core_per_km_per_month_kes').value) || 0;
 
-                document.getElementById('total_contract_value_usd').value = totalUSD.toFixed(2);
-                document.getElementById('total_contract_value_kes').value = totalKES.toFixed(2);
+            if (cores > 0 && distance > 0 && pricePerCoreKmKes > 0) {
+                const monthlyKES = cores * distance * pricePerCoreKmKes;
+                document.getElementById('monthly_link_kes').value = monthlyKES.toFixed(2);
+
+                if (contractYears > 0) {
+                    const months = contractYears * 12;
+                    const totalKES = monthlyKES * months;
+                    document.getElementById('total_contract_value_kes').value = totalKES.toFixed(2);
+                } else {
+                    document.getElementById('total_contract_value_kes').value = '';
+                }
+            } else {
+                if (!cores || !distance || !pricePerCoreKmKes) {
+                    document.getElementById('monthly_link_kes').value = '';
+                    document.getElementById('total_contract_value_kes').value = '';
+                }
             }
         }
     }
 
-    // Form validation
-    document.getElementById('conversionForm').addEventListener('submit', function(e) {
+    // Form validation with loading state
+    const form = document.getElementById('conversionForm');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', function(e) {
         const requiredFields = ['customer_name', 'route_name', 'links_name'];
         let isValid = true;
+
+        // Validate currency is selected
+        if (!$('input[name="currency"]:checked').val()) {
+            showNotification('Please select a currency (USD or KES)', 'error');
+            isValid = false;
+        }
+
+        // Validate at least one pricing field has value based on currency
+        const selectedCurrency = $('input[name="currency"]:checked').val();
+        if (selectedCurrency === 'USD') {
+            const monthlyUSD = document.getElementById('monthly_link_value_usd').value;
+            if (!monthlyUSD || parseFloat(monthlyUSD) <= 0) {
+                showNotification('Please calculate or enter Monthly Link Value (USD)', 'error');
+                isValid = false;
+            }
+        } else if (selectedCurrency === 'KES') {
+            const monthlyKES = document.getElementById('monthly_link_kes').value;
+            if (!monthlyKES || parseFloat(monthlyKES) <= 0) {
+                showNotification('Please calculate or enter Monthly Link Value (KES)', 'error');
+                isValid = false;
+            }
+        }
 
         requiredFields.forEach(fieldId => {
             const field = document.getElementById(fieldId);
             if (!field.value.trim()) {
+                if (fieldId === 'customer_name') {
+                    $(field).next('.select2-container').addClass('is-invalid-border');
+                }
                 field.classList.add('is-invalid');
                 isValid = false;
+            } else {
+                if (fieldId === 'customer_name') {
+                    $(field).next('.select2-container').removeClass('is-invalid-border');
+                }
+                field.classList.remove('is-invalid');
             }
         });
 
+        if (!$('#customer_id').val()) {
+            $('#customer_name').next('.select2-container').addClass('is-invalid-border');
+            $('#customer_name').addClass('is-invalid');
+            isValid = false;
+        }
+
         if (!isValid) {
             e.preventDefault();
-            alert('Please fill in all required fields marked with *');
+            const firstError = document.querySelector('.is-invalid');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        } else {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving...';
+            submitBtn.classList.add('btn-loading');
         }
     });
 
-    // Clear validation on input
-    document.querySelectorAll('.form-control').forEach(input => {
+    function showNotification(message, type = 'error') {
+        if (type === 'error') {
+            alert(message);
+        }
+    }
+
+    // Clear validation on input/change
+    $('#customer_name').on('change select2:select', function() {
+        $(this).removeClass('is-invalid');
+        $(this).next('.select2-container').removeClass('is-invalid-border');
+    });
+
+    document.querySelectorAll('.form-control, .form-select').forEach(input => {
         input.addEventListener('input', function() {
             this.classList.remove('is-invalid');
+            if (this.id === 'customer_name') {
+                $(this).next('.select2-container').removeClass('is-invalid-border');
+            }
         });
     });
 });
 </script>
-@endpush
 
 <style>
-.dashboard-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+    /* Custom class for Select2 validation error */
+    .select2-container--bootstrap-5.is-invalid-border + .select2-container--bootstrap-5 .select2-selection,
+    .is-invalid-border .select2-selection {
+        border-color: #dc3545 !important;
+    }
+    .select2-container--bootstrap-5.is-invalid-border + .select2-container--bootstrap-5 .select2-selection:focus,
+    .is-invalid-border .select2-selection:focus {
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+    }
 
-.card {
-    border: 1px solid #e0e0e0;
-    border-radius: 0.5rem;
-}
+    /* Smooth transitions */
+    .btn-primary, .btn-secondary {
+        transition: all 0.3s ease;
+    }
 
-.form-label {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
+    /* Better focus states */
+    .form-control:focus, .form-select:focus, .select2-container--bootstrap-5.select2-container--focus .select2-selection {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
 
-.form-control:focus, .form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
-}
-
-.alert-info {
-    background-color: #e7f1ff;
-    border-color: #b3d7ff;
-    color: #004085;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    padding: 0.5rem 2rem;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4290 100%);
-    transform: translateY(-1px);
-}
-
-.input-group-text {
-    background-color: #f8f9fa;
-    border-right: none;
-}
-
-.input-group .form-control {
-    border-left: none;
-}
-
-.input-group .form-control:focus {
-    border-left: 1px solid #667eea;
-}
-
-h5.border-bottom {
-    border-bottom: 2px solid #667eea !important;
-}
-
-.text-danger {
-    color: #dc3545 !important;
-}
+    /* Currency fields fade effect */
+    .currency-fields {
+        transition: opacity 0.3s ease;
+    }
 </style>
+@endpush
 @endsection
