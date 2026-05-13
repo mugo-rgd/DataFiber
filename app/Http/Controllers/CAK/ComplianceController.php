@@ -6,61 +6,59 @@ use App\Http\Controllers\Controller;
 use App\Models\CAK\ASPCompliance;
 use App\Models\CAK\CSPCompliance;
 use App\Models\CAK\NFPCompliance;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 
 class ComplianceController extends Controller
 {
-    public function dashboard()
+    public function dashboard(): View
     {
-        $aspCount = ASPCompliance::count();
-        $cspCount = CSPCompliance::count();
-        $nfpCount = NFPCompliance::count();
+        $models = [
+            'ASP' => ASPCompliance::class,
+            'CSP' => CSPCompliance::class,
+            'NFP' => NFPCompliance::class,
+        ];
 
-        $draftCount =
-            ASPCompliance::where('status', 'draft')->count() +
-            CSPCompliance::where('status', 'draft')->count() +
-            NFPCompliance::where('status', 'draft')->count();
+        $counts = [
+            'aspCount' => ASPCompliance::count(),
+            'cspCount' => CSPCompliance::count(),
+            'nfpCount' => NFPCompliance::count(),
 
-        $submittedCount =
-            ASPCompliance::where('status', 'submitted')->count() +
-            CSPCompliance::where('status', 'submitted')->count() +
-            NFPCompliance::where('status', 'submitted')->count();
+            'draftCount' => $this->statusCount($models, 'draft'),
+            'generatedCount' => $this->statusCount($models, 'generated'),
+            'submittedCount' => $this->statusCount($models, 'submitted'),
+            'sentCount' => $this->statusCount($models, 'submitted_to_cak'),
+            'approvedCount' => $this->statusCount($models, 'approved'),
+        ];
 
-        $sentCount =
-            ASPCompliance::where('status', 'submitted_to_cak')->count() +
-            CSPCompliance::where('status', 'submitted_to_cak')->count() +
-            NFPCompliance::where('status', 'submitted_to_cak')->count();
+        $recentReturns = $this->recentReturns($models);
 
-        $approvedCount =
-            ASPCompliance::where('status', 'approved')->count() +
-            CSPCompliance::where('status', 'approved')->count() +
-            NFPCompliance::where('status', 'approved')->count();
+        return view('cak.dashboard', array_merge($counts, [
+            'recentReturns' => $recentReturns,
+        ]));
+    }
 
-        $recentReturns = collect()
-            ->merge(ASPCompliance::latest()->take(5)->get()->map(fn ($r) => [
-                'type' => 'ASP',
-                'record' => $r,
-            ]))
-            ->merge(CSPCompliance::latest()->take(5)->get()->map(fn ($r) => [
-                'type' => 'CSP',
-                'record' => $r,
-            ]))
-            ->merge(NFPCompliance::latest()->take(5)->get()->map(fn ($r) => [
-                'type' => 'NFP',
-                'record' => $r,
-            ]))
-            ->sortByDesc(fn ($item) => $item['record']->created_at)
+    private function statusCount(array $models, string $status): int
+    {
+        return collect($models)->sum(
+            fn (string $model): int => $model::where('status', $status)->count()
+        );
+    }
+
+    private function recentReturns(array $models): Collection
+    {
+        return collect($models)
+            ->flatMap(function (string $model, string $type): Collection {
+                return $model::latest()
+                    ->take(5)
+                    ->get()
+                    ->map(fn ($record): array => [
+                        'type' => $type,
+                        'record' => $record,
+                    ]);
+            })
+            ->sortByDesc(fn (array $item) => $item['record']->created_at)
             ->take(10)
             ->values();
-
-        return view('cak.dashboard', compact(
-            'aspCount',
-            'cspCount',
-            'nfpCount',
-            'draftCount',
-            'submittedCount',
-            'sentCount',
-            'approvedCount',
-            'recentReturns'
-        ));
     }
 }

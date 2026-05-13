@@ -207,10 +207,11 @@ $map['page_5']['financial_year_end_date']   = ['x' => 140, 'y' => 185, 'w' => 45
                 'pwd_complied_yes' => ['x' => 94,  'y' => 65, 'type' => 'checkbox'],
                 'pwd_complied_no'  => ['x' => 96,  'y' => 65, 'type' => 'checkbox'],
 
+                // 'pwd_reasons'      => ['x' => 35, 'y' => 42,  'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
                 'pwd_actions'      => ['x' => 35, 'y' => 80,  'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
                 'pwd_challenges'   => ['x' => 35, 'y' => 112, 'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
                 'pwd_future_plans' => ['x' => 35, 'y' => 140, 'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
-            'ewaste_initiatives' => ['x' => 35, 'y' => 195,  'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
+            'ewaste_initiatives' => ['x' => 30, 'y' => 195,  'w' => 170, 'h' => 4.65, 'type' => 'multiline', 'font_size' => 10],
             ],
         ];
     }
@@ -220,7 +221,7 @@ $map['page_5']['financial_year_end_date']   = ['x' => 140, 'y' => 185, 'w' => 45
         return [
             'page_7' => [
                 // 'ewaste_initiatives' => ['x' => 35, 'y' => 50,  'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
-                'carbon_initiatives' => ['x' => 35, 'y' => 36, 'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
+                'carbon_initiatives' => ['x' => 30, 'y' => 36, 'w' => 170, 'h' => 3.05, 'type' => 'multiline', 'font_size' => 10],
                 'emca_status'        => ['x' => 35, 'y' => 108, 'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
                 'comments'           => ['x' => 35, 'y' => 200, 'w' => 170, 'h' => 6, 'type' => 'multiline', 'font_size' => 10],
             ],

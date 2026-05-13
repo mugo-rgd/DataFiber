@@ -79,34 +79,36 @@ class NFPPdfMapper
 {
     $map = ['page_3' => []];
 
-    /*
+ /*
     |--------------------------------------------------------------------------
-    | 2. TYPES OF INFRASTRUCTURE DEPLOYED
+    | 2. TYPES OF INFRASTRUCTURE DEPLOYED UNDER THE LICENSE
+    |--------------------------------------------------------------------------
+    | CAK page 3 has 6 short rows. Long descriptions must be summarized.
     |--------------------------------------------------------------------------
     */
     $infraY = 58;
-    $infraGap = 5.0;
+    $infraGap = 8;
 
-    for ($i = 1; $i <= 4; $i++) {
+    for ($i = 1; $i <= 6; $i++) {
         $y = $infraY + (($i - 1) * $infraGap);
 
         $map['page_3']["infrastructure.$i.type"] = [
-            'x' => 45,
+            'x' => 36,
             'y' => $y,
-            'w' => 55,
-            'font_size' => 8,
-            'max_chars' => 32,
+            'w' => 54,
+            'font_size' => 8.5,
+            'max_chars' => 30,
         ];
 
         $map['page_3']["infrastructure.$i.description"] = [
-            'x' => 103,
-            'y' => $y - 0.8,
-            'w' => 92,
-            'h' => 2.4,
+            'x' => 92,
+            'y' => $y - 0.7,
+            'w' => 115,
+            'h' => 3.4,
             'type' => 'multiline',
-            'font_size' => 8,
-            'max_lines' => 2,
-            'max_chars' => 105,
+            'font_size' => 8.5,
+            'max_lines' => 3,
+            'max_chars' => 100,
         ];
     }
 
@@ -144,7 +146,7 @@ class NFPPdfMapper
     | 3.2 SECONDARY NUMBER ASSIGNMENT
     |--------------------------------------------------------------------------
     */
-    $secondaryY = 164;
+    $secondaryY = 165;
     $secondaryGap = 5.0;
 
     for ($i = 1; $i <= 4; $i++) {
@@ -188,8 +190,8 @@ class NFPPdfMapper
     | 3.3 BULK SMS
     |--------------------------------------------------------------------------
     */
-    $bulkY = 210;
-    $bulkGap = 5.0;
+    $bulkY = 209;
+    $bulkGap = 4.8;
 
     for ($i = 1; $i <= 4; $i++) {
         $y = $bulkY + (($i - 1) * $bulkGap);
@@ -221,6 +223,7 @@ class NFPPdfMapper
 
     return $map;
 }
+
 
     private static function page4AnnualStaff(): array
     {
@@ -339,7 +342,7 @@ class NFPPdfMapper
         return [
             'page_7' => [
     'comments' => [
-        'x' => 25, 'y' => 48, 'w' => 175, 'h' => 3.5,
+        'x' => 25, 'y' => 48, 'w' => 175, 'h' => 4.5,
         'type' => 'multiline', 'font_size' => 10,
         'max_lines' => 4,
     ],

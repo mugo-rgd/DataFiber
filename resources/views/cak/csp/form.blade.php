@@ -2,7 +2,14 @@
 
 @section('title', 'CSP Compliance Return')
 @section('page-title', 'Content Service Provider (CSP) Compliance Return')
-
+<button type="button"
+        class="btn btn-warning btn-lg autofill-form-btn"
+        data-url="{{ route('csp.autofill-record-2') }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Auto fill the form and make changes where necessary and save draft or submit">
+    Auto Fill
+</button>
 @push('styles')
 <style>
     .form-container { background:#fff; padding:25px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,.08); }
@@ -430,6 +437,10 @@
                     <td><input type="file" name="pwd_standard_matrix"></td>
                 </tr>
                 <tr>
+                    <th>If yes,give supporting reason</th>
+                    <td><textarea name="pwd_reasons" rows="5">{{ $oldValue('pwd_reasons') }}</textarea></td>
+                </tr>
+                <tr>
                     <th>Actions taken to ensure accessibility to services and facilities by PWDs</th>
                     <td><textarea name="pwd_actions" rows="5">{{ $oldValue('pwd_actions') }}</textarea></td>
                 </tr>
@@ -542,6 +553,13 @@
 
         <div class="submit-buttons">
             <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">Submit</button>
+<button type="button"
+        class="btn btn-warning btn-lg autofill-form-btn"
+        data-url="{{ route('csp.autofill-record-2') }}">
+    Auto Fill
+</button>
+
+
          <button type="submit"
         name="save_draft"
         value="1"
@@ -617,6 +635,91 @@ document.addEventListener('DOMContentLoaded', function () {
 
     previewImage('company_stamp', 'stamp_preview');
     previewImage('signature', 'signature_preview');
+});
+</script>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function flattenObject(object, prefix = '') {
+        const result = {};
+
+        Object.entries(object || {}).forEach(([key, value]) => {
+            const path = prefix ? `${prefix}[${key}]` : key;
+
+            if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+                Object.assign(result, flattenObject(value, path));
+            } else {
+                result[path] = value;
+            }
+        });
+
+        return result;
+    }
+
+    function setField(name, value) {
+        const fields = document.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+
+        fields.forEach(field => {
+            if (field.type === 'file') return;
+
+            if (field.type === 'radio') {
+                field.checked = String(field.value) === String(value);
+                return;
+            }
+
+            if (field.type === 'checkbox') {
+                field.checked = Array.isArray(value)
+                    ? value.map(String).includes(String(field.value))
+                    : String(field.value) === String(value) || value === true;
+                return;
+            }
+
+            field.value = value ?? '';
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    }
+
+    document.querySelectorAll('.autofill-form-btn').forEach(button => {
+        button.addEventListener('click', async function () {
+            button.disabled = true;
+            const originalText = button.textContent;
+            button.textContent = 'Filling...';
+
+            try {
+                const response = await fetch(button.dataset.url, {
+                    headers: { 'Accept': 'application/json' },
+                });
+
+                if (!response.ok) throw new Error('Failed to load saved data.');
+
+                const data = await response.json();
+                const flatData = flattenObject(data);
+
+                Object.entries(flatData).forEach(([name, value]) => {
+                    setField(name, value);
+                });
+
+                button.textContent = 'Auto Filled';
+            } catch (error) {
+                alert(error.message || 'Failed to auto-fill form.');
+                button.textContent = originalText;
+            } finally {
+                button.disabled = false;
+            }
+        });
+    });
+});
+</script>
+@endpush
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        new bootstrap.Tooltip(el);
+    });
 });
 </script>
 @endpush

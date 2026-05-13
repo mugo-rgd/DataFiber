@@ -180,4 +180,19 @@ class CSPController extends Controller
 
         return $uploaded;
     }
+
+  public function autofillRecordTwo()
+{
+    $record = CSPCompliance::findOrFail(6);
+
+    return response()->json([
+        'licensee_name' => $record->licensee_name,
+        'license_no' => $record->license_no,
+        'other_licenses' => $record->other_licenses,
+        'financial_year' => $record->financial_year,
+        'quarter' => $record->quarter,
+        ...($record->form_data ?? []),
+    ]);
+}
+
 }

@@ -2,6 +2,14 @@
 
 @section('title', 'NFP Compliance Return')
 @section('page-title', 'Network Facilities Provider (NFP) Compliance Return')
+<button type="button"
+        class="btn btn-warning btn-lg autofill-form-btn"
+        data-url="{{ route('nfp.autofill-record-2') }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Auto fill the form and make changes where necessary and save draft or submit">
+    Auto Fill
+</button>
 
 @push('styles')
 <style>
@@ -185,6 +193,9 @@
                 </tr>
             </tbody>
         </table>
+
+{{-- Include the network location partial --}}
+@include('cak.nfp.partials.network-location')
 
         <div class="cak-subtitle">1.4 Contact Details</div>
         <table class="cak-form-table">
@@ -554,7 +565,14 @@
 
         <div class="submit-buttons">
             <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">Submit</button>
-           <button type="submit"
+           <button type="button"
+        class="btn btn-warning btn-lg autofill-form-btn"
+        data-url="{{ route('nfp.autofill-record-2') }}">
+    Auto Fill
+</button>
+
+
+            <button type="submit"
         name="save_draft"
         value="1"
         class="btn btn-secondary btn-lg"
@@ -644,3 +662,89 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function flattenObject(object, prefix = '') {
+        const result = {};
+
+        Object.entries(object || {}).forEach(([key, value]) => {
+            const path = prefix ? `${prefix}[${key}]` : key;
+
+            if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+                Object.assign(result, flattenObject(value, path));
+            } else {
+                result[path] = value;
+            }
+        });
+
+        return result;
+    }
+
+    function setField(name, value) {
+        const fields = document.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+
+        fields.forEach(field => {
+            if (field.type === 'file') return;
+
+            if (field.type === 'radio') {
+                field.checked = String(field.value) === String(value);
+                return;
+            }
+
+            if (field.type === 'checkbox') {
+                field.checked = Array.isArray(value)
+                    ? value.map(String).includes(String(field.value))
+                    : String(field.value) === String(value) || value === true;
+                return;
+            }
+
+            field.value = value ?? '';
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    }
+
+    document.querySelectorAll('.autofill-form-btn').forEach(button => {
+        button.addEventListener('click', async function () {
+            button.disabled = true;
+            const originalText = button.textContent;
+            button.textContent = 'Filling...';
+
+            try {
+                const response = await fetch(button.dataset.url, {
+                    headers: { 'Accept': 'application/json' },
+                });
+
+                if (!response.ok) throw new Error('Failed to load saved data.');
+
+                const data = await response.json();
+                const flatData = flattenObject(data);
+
+                Object.entries(flatData).forEach(([name, value]) => {
+                    setField(name, value);
+                });
+
+                button.textContent = 'Auto Filled';
+            } catch (error) {
+                alert(error.message || 'Failed to auto-fill form.');
+                button.textContent = originalText;
+            } finally {
+                button.disabled = false;
+            }
+        });
+    });
+});
+</script>
+@endpush
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        new bootstrap.Tooltip(el);
+    });
+});
+</script>
+@endpush
+

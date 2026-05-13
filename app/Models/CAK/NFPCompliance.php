@@ -17,6 +17,10 @@ class NFPCompliance extends Model
         'form_data',
         'attachments',
         'status',
+         'latitude',      // Add this
+    'longitude',     // Add this
+    'fibre_km',      // Add this
+    'tower_count',   // Add this
         'pdf_path',
         'submitted_at',
         'created_by',

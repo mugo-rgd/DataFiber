@@ -353,5 +353,19 @@ public function debug($id)
         }
     }
 
-    
+  public function autofillRecordTwo()
+{
+    $record = ASPCompliance::findOrFail(3);
+
+    return response()->json([
+        'licensee_name' => $record->licensee_name,
+        'license_no' => $record->license_no,
+        'other_licenses' => $record->other_licenses,
+        'financial_year' => $record->financial_year,
+        'quarter' => $record->quarter,
+        ...($record->form_data ?? []),
+    ]);
+}
+
+
 }

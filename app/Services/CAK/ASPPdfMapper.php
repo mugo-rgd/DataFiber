@@ -893,8 +893,8 @@ foreach ($staffCols as $field => $x) {
             ],
 
             'cybersecurity.tools_deployed' => [
-                'x' => 44, 'y' => 118, 'w' => 170, 'h' => 3.5,
-                'type' => 'multiline', 'font_size' => 10, 'max_lines' => 5,
+                'x' => 44, 'y' => 114.5, 'w' => 170, 'h' => 3.5,
+                'type' => 'multiline', 'font_size' => 8.5, 'max_lines' => 5,
             ],
 
             'cyber_incident_yes' => [
@@ -976,44 +976,6 @@ foreach ($staffCols as $field => $x) {
         ],
     ];
 }
-
-
-
-    // private static function page11Pwd(): array
-    // {
-    //     return [
-    //         'page_11' => [
-    //             'pwd_aware_yes' => [
-    //                 'x' => 94, 'y' => 56, 'type' => 'checkbox_match',
-    //                 'source' => 'pwd_aware', 'value' => 'yes',
-    //             ],
-    //             'pwd_aware_no' => [
-    //                 'x' => 95, 'y' => 54, 'type' => 'checkbox_match',
-    //                 'source' => 'pwd_aware', 'value' => 'no',
-    //             ],
-    //             'pwd_complied_yes' => [
-    //                 'x' => 100, 'y' => 62, 'type' => 'checkbox_match',
-    //                 'source' => 'pwd_complied', 'value' => 'yes',
-    //             ],
-    //             'pwd_complied_no' => [
-    //                 'x' => 95, 'y' => 72, 'type' => 'checkbox_match',
-    //                 'source' => 'pwd_complied', 'value' => 'no',
-    //             ],
-    //             'pwd_actions' => [
-    //                 'x' => 20, 'y' => 104, 'w' => 170, 'h' => 3.5,
-    //                 'type' => 'multiline', 'font_size' => 6, 'max_lines' => 6,
-    //             ],
-    //             'pwd_challenges' => [
-    //                 'x' => 20, 'y' => 164, 'w' => 170, 'h' => 3.5,
-    //                 'type' => 'multiline', 'font_size' => 6, 'max_lines' => 6,
-    //             ],
-    //             'pwd_future_plans' => [
-    //                 'x' => 20, 'y' => 224, 'w' => 170, 'h' => 3.5,
-    //                 'type' => 'multiline', 'font_size' => 6, 'max_lines' => 6,
-    //             ],
-    //         ],
-    //     ];
-    // }
 
     private static function page11Pwd(): array
 {

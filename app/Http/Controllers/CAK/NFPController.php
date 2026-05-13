@@ -105,6 +105,8 @@ class NFPController extends Controller
         'attachments' => $attachments,
         'status' => $isDraft ? 'draft' : 'submitted',
         'created_by' => Auth::id(),
+        'latitude' => $request->latitude,
+        'longitude' => $request->longitude,
     ]);
 
     return redirect()
@@ -166,6 +168,8 @@ class NFPController extends Controller
         'form_data' => $data,
         'attachments' => $attachments,
         'status' => $status,
+         'latitude' => $request->latitude,
+        'longitude' => $request->longitude,
     ]);
 
     return redirect()
@@ -233,4 +237,34 @@ class NFPController extends Controller
 
         return $uploaded;
     }
+
+public function autofillRecordTwo()
+{
+    $record = NFPCompliance::findOrFail(3);
+
+    return response()->json([
+        'licensee_name' => $record->licensee_name,
+        'license_no' => $record->license_no,
+        'other_licenses' => $record->other_licenses,
+        'financial_year' => $record->financial_year,
+        'quarter' => $record->quarter,
+        ...($record->form_data ?? []),
+    ]);
+}
+
+public function networkMap($id)
+{
+    $record = NfpCompliance::findOrFail($id);
+
+    // Set default coordinates if not present (Centroid of Kenya)
+    $latitude = $record->latitude ?? -1.286389;
+    $longitude = $record->longitude ?? 36.817223;
+
+    return view('cak.nfp.network-map', [
+        'record' => $record,
+        'latitude' => $latitude,
+        'longitude' => $longitude,
+    ]);
+}
+
 }

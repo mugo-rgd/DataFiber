@@ -1337,21 +1337,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/edit', [NFPController::class, 'edit'])->name('edit');
         Route::put('/{id}', [NFPController::class, 'update'])->name('update');
         Route::delete('/{id}', [NFPController::class, 'destroy'])->name('destroy');
-
-
-Route::post('/{id}/submit', [NfpController::class, 'submit'])->name('submit');
-Route::post('/{id}/submit-to-cak', [NfpController::class, 'submitToCAK'])->name('submit-to-cak');
-Route::get('/{id}/cak-status', [NfpController::class, 'checkCAKStatus'])->name('cak-status');
-Route::post('/{id}/generate-pdf', [NfpController::class, 'generatePDF'])->name('generate-pdf');
-
-
-        Route::get('/autofill-record-2', [NFPController::class, 'autofillRecordTwo'])
-        ->name('autofill-record-2');
-        Route::get('/{id}/network-map', [NfpController::class, 'networkMap'])->name('network-map');
-// Map picker (public or auth)
-    Route::get('/map-picker', function () {
-        return view('map-picker');
-    })->name('map-picker');
     });
 
     // CSP Routes
@@ -1368,14 +1353,6 @@ Route::post('/{id}/generate-pdf', [NfpController::class, 'generatePDF'])->name('
         Route::get('/{id}/edit', [CSPController::class, 'edit'])->name('edit');
         Route::put('/{id}', [CSPController::class, 'update'])->name('update');
         Route::delete('/{id}', [CSPController::class, 'destroy'])->name('destroy');
-
-        // Add to routes/web.php
-Route::post('/{id}/submit-to-cak', [CspController::class, 'submitToCAK'])->name('submit-to-cak');
-Route::get('/{id}/cak-status', [CspController::class, 'checkCAKStatus'])->name('cak-status');
-Route::post('/{id}/generate-pdf', [CspController::class, 'generatePDF'])->name('generate-pdf');
-
-         Route::get('/autofill-record-2', [CSPController::class, 'autofillRecordTwo'])
-        ->name('autofill-record-2');
     });
 
     // ASP Routes
@@ -1393,24 +1370,14 @@ Route::post('/{id}/generate-pdf', [CspController::class, 'generatePDF'])->name('
         Route::put('/{id}', [ASPController::class, 'update'])->name('update');
         Route::delete('/{id}', [ASPController::class, 'destroy'])->name('destroy');
 
-        Route::post('/{id}/submit', [AspController::class, 'submit'])->name('submit');
-Route::post('/{id}/submit-to-cak', [AspController::class, 'submitToCAK'])->name('submit-to-cak');
-Route::get('/{id}/cak-status', [AspController::class, 'checkCAKStatus'])->name('cak-status');
-Route::post('/{id}/generate-pdf', [AspController::class, 'generatePDF'])->name('generate-pdf');
-
-    Route::get('/autofill-record-2', [ASPController::class, 'autofillRecordTwo'])
-        ->name('autofill-record-2');
+        Route::get('/{record}/autofill-data', [ASPController::class, 'autofillData'])
+    ->name('autofill-data');
 
     });
 });
 // require __DIR__.'/cak.php';
 ///end of testingrooute
-Route::get('/map-picker', function (Request $request) {
-    return view('map-picker', [
-        'lat' => $request->get('lat', -1.286389),
-        'lng' => $request->get('lng', 36.817223),
-    ]);
-})->name('map-picker');
+
 
 // Include API routes
 require __DIR__.'/api.php';

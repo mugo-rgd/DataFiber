@@ -2,6 +2,15 @@
 
 @section('title', 'ASP Compliance Return')
 @section('page-title', 'Application Service Provider (ASP) Compliance Return')
+<button type="button"
+        class="btn btn-warning btn-lg autofill-asp-btn"
+        data-url="{{ route('asp.autofill-record-2') }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Auto fill the form and make changes where necessary and save draft or submit">
+    Auto Fill
+</button>
+
 
 @push('styles')
 <style>
@@ -1141,6 +1150,24 @@
 
         <div class="submit-buttons">
             <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">Submit</button>
+
+{{-- <button type="button"
+        class="btn btn-warning btn-lg"
+        id="autofillAspBtn"
+        data-url="{{ route('asp.autofill-record-2') }}">
+    Auto Fill
+</button> --}}
+<button type="button"
+        class="btn btn-warning btn-lg autofill-asp-btn"
+        data-url="{{ route('asp.autofill-record-2') }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Auto fill the form and make changes where necessary and save draft or submit">
+    Auto Fill
+</button>
+
+
+
             <button type="submit"
                 name="save_draft"
                 value="1"
@@ -1160,10 +1187,6 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-   
-    document.querySelectorAll('.staff-input').forEach(input => input.addEventListener('input', calculateStaffTotals));
-    calculateStaffTotals();
-
     function previewImage(inputId, previewId) {
         const input = document.getElementById(inputId);
         const preview = document.getElementById(previewId);
@@ -1188,6 +1211,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
+
 
 @push('scripts')
 <script>
@@ -1384,6 +1408,116 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     calculateStaffTotals();
+});
+</script>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.autofill-asp-btn');
+
+    if (!buttons.length) return;
+
+    function flattenObject(object, prefix = '') {
+        const result = {};
+
+        Object.entries(object || {}).forEach(([key, value]) => {
+            const path = prefix ? `${prefix}[${key}]` : key;
+
+            if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+                Object.assign(result, flattenObject(value, path));
+            } else {
+                result[path] = value;
+            }
+        });
+
+        return result;
+    }
+
+    function setField(name, value) {
+        const fields = document.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+
+        if (!fields.length) return;
+
+        fields.forEach(field => {
+            if (field.type === 'file') return;
+
+            if (field.type === 'radio') {
+                field.checked = String(field.value) === String(value);
+                return;
+            }
+
+            if (field.type === 'checkbox') {
+                field.checked = Array.isArray(value)
+                    ? value.map(String).includes(String(field.value))
+                    : String(field.value) === String(value) || value === true;
+                return;
+            }
+
+            field.value = value ?? '';
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    }
+
+    buttons.forEach(function (button) {
+        button.addEventListener('click', async function () {
+            const url = button.dataset.url;
+            const originalText = button.textContent;
+
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.textContent = 'Filling...';
+            });
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load ASP data.');
+                }
+
+                const data = await response.json();
+                const flatData = flattenObject(data);
+
+                Object.entries(flatData).forEach(([name, value]) => {
+                    setField(name, value);
+                });
+
+                document.dispatchEvent(new Event('input', { bubbles: true }));
+
+                buttons.forEach(btn => {
+                    btn.textContent = 'Auto Filled';
+                });
+            } catch (error) {
+                alert(error.message || 'Failed to auto-fill form.');
+
+                buttons.forEach(btn => {
+                    btn.textContent = originalText;
+                });
+            } finally {
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                });
+            }
+        });
+    });
+});
+</script>
+@endpush
+
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        new bootstrap.Tooltip(el);
+    });
 });
 </script>
 @endpush

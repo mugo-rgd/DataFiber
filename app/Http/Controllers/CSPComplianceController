@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Controllers;
+use App\Services\CAK\ComplianceService;
+
+class CSPComplianceController extends Controller
+{
+public function print(CSPCompliance $asp)
+{
+    $path = app(ComplianceService::class)->generateAspPdf($asp);
+
+    return response()->file($path);
+}
+
+public function emailToCAK(CSPCompliance $asp)
+{
+    app(ComplianceService::class)->emailToCAK($asp, 'asp');
+
+    return back()->with('success', 'ASP compliance return emailed to CAK successfully.');
+}
+}
