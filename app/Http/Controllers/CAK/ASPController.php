@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\CAK;
 
+use App\Helpers\DateHelper;
 use App\Http\Controllers\Controller;
 use App\Models\CAK\ASPCompliance;
 use App\Services\CAK\ComplianceService;
@@ -50,7 +51,13 @@ class ASPController extends Controller
 
     public function create()
     {
-        return view('cak.asp.form');
+
+        // return view('cak.asp.form');
+
+          return view('cak.asp.form', [
+         'financial_year' => DateHelper::getCurrentFinancialYear(),
+        'quarter' => DateHelper::getCurrentQuarter(),
+    ]);
     }
 
     /**
@@ -355,16 +362,18 @@ public function debug($id)
 
   public function autofillRecordTwo()
 {
-    $record = ASPCompliance::findOrFail(3);
+    $record = ASPCompliance::findOrFail(1);
 
     return response()->json([
         'licensee_name' => $record->licensee_name,
         'license_no' => $record->license_no,
         'other_licenses' => $record->other_licenses,
-        'financial_year' => $record->financial_year,
-        'quarter' => $record->quarter,
+        'financial_year' => DateHelper::getCurrentFinancialYear(),
+        'quarter' => DateHelper::getCurrentQuarter(),
         ...($record->form_data ?? []),
     ]);
+
+
 }
 
 

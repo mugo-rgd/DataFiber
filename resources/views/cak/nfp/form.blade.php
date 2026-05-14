@@ -98,35 +98,52 @@
         </table>
 
         <div class="cak-subtitle">1.2 Period under Review</div>
-        <table class="cak-form-table">
-            <tbody>
-                <tr>
-                    <th style="width:25%;">Financial Year <span class="text-danger">*</span></th>
-                    <td colspan="3">
-                        <select name="financial_year" required>
-                            <option value="">Select Financial Year</option>
-                            @foreach(['2023/2024','2024/2025','2025/2026','2026/2027'] as $fy)
-                                <option value="{{ $fy }}" {{ old('financial_year', $record->financial_year ?? '') == $fy ? 'selected' : '' }}>
-                                    {{ $fy }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Quarter <span class="text-danger">*</span></th>
-                    <td colspan="3">
-                        <select name="quarter" required>
-                            <option value="">Select Quarter</option>
-                            <option value="Q1" {{ old('quarter', $record->quarter ?? '') == 'Q1' ? 'selected' : '' }}>Quarter 1 (1st July – 30th Sep)</option>
-                            <option value="Q2" {{ old('quarter', $record->quarter ?? '') == 'Q2' ? 'selected' : '' }}>Quarter 2 (1st Oct – 31st Dec)</option>
-                            <option value="Q3" {{ old('quarter', $record->quarter ?? '') == 'Q3' ? 'selected' : '' }}>Quarter 3 (1st Jan – 31st Mar)</option>
-                            <option value="Q4" {{ old('quarter', $record->quarter ?? '') == 'Q4' ? 'selected' : '' }}>Quarter 4 (1st Apr – 30th Jun)</option>
-                        </select>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+       <table class="cak-form-table">
+    <tbody>
+        <tr>
+            <th style="width:25%;">Financial Year <span class="text-danger">*</span></th>
+            <td colspan="3">
+                <select name="financial_year" id="financial_year" required>
+                    <option value="">Select Financial Year</option>
+                    @foreach(['2023/2024','2024/2025','2025/2026','2026/2027', '2027/2028', '2028/2029'] as $fy)
+                        <option value="{{ $fy }}"
+                            {{ old('financial_year', $defaultFinancialYear ?? $record->financial_year ?? '') == $fy ? 'selected' : '' }}>
+                            {{ $fy }}
+                        </option>
+                    @endforeach
+                </select>
+                <small class="text-muted d-block">
+                    <i class="fas fa-info-circle"></i>
+                    Current Financial Year: <span id="display_financial_year"></span>
+                </small>
+            </td>
+        </tr>
+        <tr>
+            <th>Quarter <span class="text-danger">*</span></th>
+            <td colspan="3">
+                <select name="quarter" id="quarter" required>
+                    <option value="">Select Quarter</option>
+                    <option value="Q1" {{ old('quarter', $defaultQuarter ?? $record->quarter ?? '') == 'Q1' ? 'selected' : '' }}>
+                        Quarter 1 (1st July – 30th Sep)
+                    </option>
+                    <option value="Q2" {{ old('quarter', $defaultQuarter ?? $record->quarter ?? '') == 'Q2' ? 'selected' : '' }}>
+                        Quarter 2 (1st Oct – 31st Dec)
+                    </option>
+                    <option value="Q3" {{ old('quarter', $defaultQuarter ?? $record->quarter ?? '') == 'Q3' ? 'selected' : '' }}>
+                        Quarter 3 (1st Jan – 31st Mar)
+                    </option>
+                    <option value="Q4" {{ old('quarter', $defaultQuarter ?? $record->quarter ?? '') == 'Q4' ? 'selected' : '' }}>
+                        Quarter 4 (1st Apr – 30th Jun)
+                    </option>
+                </select>
+                <small class="text-muted d-block">
+                    <i class="fas fa-info-circle"></i>
+                    Current Quarter: <span id="display_quarter"></span>
+                </small>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
         <div class="cak-subtitle">1.3.1 Physical Address</div>
         <table class="cak-form-table">
@@ -748,3 +765,91 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 @endpush
 
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        new bootstrap.Tooltip(el);
+    });
+});
+</script>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Display current info
+    function updateDisplayInfo() {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        // Calculate financial year
+        let fyStart, fyEnd;
+        if (currentMonth >= 6) { // July to December
+            fyStart = currentYear;
+            fyEnd = currentYear + 1;
+        } else {
+            fyStart = currentYear - 1;
+            fyEnd = currentYear;
+        }
+
+        const financialYear = `${fyStart}/${fyEnd}`;
+        document.getElementById('display_financial_year').innerHTML = `<strong>${financialYear}</strong>`;
+
+        // Calculate quarter
+        let quarter = '';
+        if (currentMonth >= 6 && currentMonth <= 8) quarter = 'Q1 (Jul-Sep)';
+        else if (currentMonth >= 9 && currentMonth <= 11) quarter = 'Q2 (Oct-Dec)';
+        else if (currentMonth >= 0 && currentMonth <= 2) quarter = 'Q3 (Jan-Mar)';
+        else if (currentMonth >= 3 && currentMonth <= 5) quarter = 'Q4 (Apr-Jun)';
+
+        document.getElementById('display_quarter').innerHTML = `<strong>${quarter}</strong>`;
+    }
+
+    updateDisplayInfo();
+
+    // Auto-select for new forms only
+    const financialYearSelect = document.getElementById('financial_year');
+    const quarterSelect = document.getElementById('quarter');
+
+    // Only auto-select if no value is already selected (new form)
+    if (financialYearSelect && !financialYearSelect.value) {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        let fyStart, fyEnd;
+        if (currentMonth >= 6) {
+            fyStart = currentYear;
+            fyEnd = currentYear + 1;
+        } else {
+            fyStart = currentYear - 1;
+            fyEnd = currentYear;
+        }
+
+        const defaultFY = `${fyStart}/${fyEnd}`;
+
+        // Check if option exists
+        const option = Array.from(financialYearSelect.options).find(opt => opt.value === defaultFY);
+        if (option) {
+            financialYearSelect.value = defaultFY;
+        }
+    }
+
+    if (quarterSelect && !quarterSelect.value) {
+        const currentMonth = new Date().getMonth();
+        let defaultQuarter = '';
+
+        if (currentMonth >= 6 && currentMonth <= 8) defaultQuarter = 'Q1';
+        else if (currentMonth >= 9 && currentMonth <= 11) defaultQuarter = 'Q2';
+        else if (currentMonth >= 0 && currentMonth <= 2) defaultQuarter = 'Q3';
+        else if (currentMonth >= 3 && currentMonth <= 5) defaultQuarter = 'Q4';
+
+        if (defaultQuarter) {
+            quarterSelect.value = defaultQuarter;
+        }
+    }
+});
+</script>
+@endpush

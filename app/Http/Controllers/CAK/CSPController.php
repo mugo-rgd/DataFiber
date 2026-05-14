@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\CAK;
 
+use App\Helpers\DateHelper;
 use App\Http\Controllers\Controller;
 use App\Models\CAK\CSPCompliance;
 use App\Services\CAK\ComplianceService;
@@ -18,7 +19,12 @@ class CSPController extends Controller
 
     public function create()
     {
-        return view('cak.csp.form');
+        // return view('cak.csp.form');
+
+              return view('cak.csp.form', [
+         'financial_year' => DateHelper::getCurrentFinancialYear(),
+        'quarter' => DateHelper::getCurrentQuarter(),
+    ]);
     }
 
   public function store(Request $request)
@@ -183,14 +189,14 @@ class CSPController extends Controller
 
   public function autofillRecordTwo()
 {
-    $record = CSPCompliance::findOrFail(6);
+    $record = CSPCompliance::findOrFail(1);
 
     return response()->json([
         'licensee_name' => $record->licensee_name,
         'license_no' => $record->license_no,
         'other_licenses' => $record->other_licenses,
-        'financial_year' => $record->financial_year,
-        'quarter' => $record->quarter,
+        'financial_year' => DateHelper::getCurrentFinancialYear(),
+        'quarter' => DateHelper::getCurrentQuarter(),
         ...($record->form_data ?? []),
     ]);
 }

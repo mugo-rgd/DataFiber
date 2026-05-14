@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\CAK;
 
+use App\Helpers\DateHelper;
 use App\Http\Controllers\Controller;
 use App\Models\CAK\NFPCompliance;
 use App\Services\CAK\ComplianceService;
@@ -18,40 +19,13 @@ class NFPController extends Controller
 
     public function create()
     {
-        return view('cak.nfp.form');
+        // return view('cak.nfp.form');
+
+                return view('cak.nfp.form', [
+         'financial_year' => DateHelper::getCurrentFinancialYear(),
+        'quarter' => DateHelper::getCurrentQuarter(),
+    ]);
     }
-
-    // public function store(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'licensee_name' => 'required|string|max:255',
-    //         'license_no' => 'nullable|string|max:100',
-    //         'other_licenses' => 'nullable|string|max:255',
-    //         'financial_year' => 'required|string|max:20',
-    //         'quarter' => 'required|string|in:Q1,Q2,Q3,Q4',
-    //     ]);
-
-    //     $attachments = $this->uploadAttachments($request, 'nfp');
-
-    //     $record = NFPCompliance::create([
-    //         ...$validated,
-    //         'form_data' => $request->except([
-    //             '_token', 'submit', 'save_draft',
-    //             'licensee_name', 'license_no', 'other_licenses',
-    //             'financial_year', 'quarter',
-    //             'company_stamp', 'signature',
-    //             'shareholding_cert', 'audited_financials',
-    //             'tax_compliance', 'tariff_structure',
-    //             'pwd_standard_matrix',
-    //         ]),
-    //         'attachments' => $attachments,
-    //         'status' => $request->has('save_draft') ? 'draft' : 'submitted',
-    //         'created_by' => Auth::id(),
-    //     ]);
-
-    //     return redirect()->route('nfp.show', $record->id)
-    //         ->with('success', 'NFP compliance return saved successfully.');
-    // }
 
    public function store(Request $request)
 {
@@ -240,14 +214,14 @@ class NFPController extends Controller
 
 public function autofillRecordTwo()
 {
-    $record = NFPCompliance::findOrFail(3);
+    $record = NFPCompliance::findOrFail(1);
 
     return response()->json([
         'licensee_name' => $record->licensee_name,
         'license_no' => $record->license_no,
         'other_licenses' => $record->other_licenses,
-        'financial_year' => $record->financial_year,
-        'quarter' => $record->quarter,
+      'financial_year' => DateHelper::getCurrentFinancialYear(),
+        'quarter' => DateHelper::getCurrentQuarter(),
         ...($record->form_data ?? []),
     ]);
 }

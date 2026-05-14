@@ -96,14 +96,19 @@ return [
 
     'company' => [
         'name'    => env('COMPANY_NAME', 'Kenya Power and Lighting Pty'),
-        'address' => env('COMPANY_ADDRESS', ''),
+        'address' => env('COMPANY_ADDRESS', '30099'),
         'city'    => env('COMPANY_CITY', 'Nairobi'),
-        'zip'     => env('COMPANY_ZIP', ''),
-        'phone'   => env('COMPANY_PHONE', ''),
-        'email'   => env('COMPANY_EMAIL', ''),
-        'website' => env('COMPANY_WEBSITE', ''),
+        'zip'     => env('COMPANY_ZIP', '00100'),
+        'phone'   => env('COMPANY_PHONE', '0710310000'),
+        'email'   => env('COMPANY_EMAIL', 'customercare@kplc.co.ke'),
+        'website' => env('COMPANY_WEBSITE', 'www.kplc.co.ke'),
         'tax_id'  => env('COMPANY_TAX_ID', ''),
     ],
+
+//     'aliases' => [
+//     // ...
+//     'DateHelper' => App\Helpers\DateHelper::class,
+// ],
 
     /*
     |--------------------------------------------------------------------------
