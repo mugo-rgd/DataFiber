@@ -20,9 +20,9 @@ class ComplianceController extends Controller
         ];
 
         $counts = [
-            'aspCount' => ASPCompliance::count(),
-            'cspCount' => CSPCompliance::count(),
-            'nfpCount' => NFPCompliance::count(),
+            'aspCount' => ASPCompliance::where('status', '!=', 'autofill')->count(),
+'cspCount' => CSPCompliance::where('status', '!=', 'autofill')->count(),
+'nfpCount' => NFPCompliance::where('status', '!=', 'autofill')->count(),
 
             'draftCount' => $this->statusCount($models, 'draft'),
             'generatedCount' => $this->statusCount($models, 'generated'),
