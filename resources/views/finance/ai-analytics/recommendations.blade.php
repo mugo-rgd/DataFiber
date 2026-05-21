@@ -11,7 +11,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h4 class="page-title mb-0">
-                            <i class="fas fa-lightbulb text-warning me-2"></i>AI Recommendations
+                            <i class="fas fa-lightbulb text-kp-yellow me-2"></i>AI Recommendations
                         </h4>
                         <p class="text-muted mb-0">Intelligent recommendations to optimize debt collection and reduce risk</p>
                     </div>
@@ -19,7 +19,7 @@
                         <a href="{{ route('finance.ai.dashboard') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                         </a>
-                        <button onclick="exportRecommendations()" class="btn btn-outline-success">
+                        <button onclick="exportRecommendations()" class="btn btn-outline-kp-success">
                             <i class="fas fa-download me-1"></i> Export Report
                         </button>
                     </div>
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-kp-yellow text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0" id="highCount">0</h3>
                     <small>High Priority</small>
@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-kp-green text-white">
                 <div class="card-body text-center">
                     <h3 class="mb-0" id="lowCount">0</h3>
                     <small>Low Priority</small>
@@ -88,15 +88,15 @@
     <!-- Medium Priority Recommendations -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-warning">
-                <div class="card-header bg-warning text-white">
+            <div class="card border-kp-yellow">
+                <div class="card-header bg-kp-yellow text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-chart-line me-2"></i>Medium Priority Actions
                     </h5>
                 </div>
                 <div class="card-body" id="mediumRecommendations">
                     <div class="text-center py-4">
-                        <div class="spinner-border text-warning" role="status">
+                        <div class="spinner-border text-kp-yellow" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <br>Loading recommendations...
@@ -109,15 +109,15 @@
     <!-- Low Priority Recommendations -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-success">
-                <div class="card-header bg-success text-white">
+            <div class="card border-kp-green">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-check-circle me-2"></i>Low Priority & Strategic Actions
                     </h5>
                 </div>
                 <div class="card-body" id="lowRecommendations">
                     <div class="text-center py-4">
-                        <div class="spinner-border text-success" role="status">
+                        <div class="spinner-border text-kp-green" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <br>Loading recommendations...
@@ -151,7 +151,7 @@
                             <tbody id="trackerTable">
                                 <tr>
                                     <td colspan="5" class="text-center text-muted py-4">
-                                        <div class="spinner-border text-primary" role="status">
+                                        <div class="spinner-border text-kp-blue" role="status">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
                                         <br>Loading tracker...
@@ -286,7 +286,7 @@ function renderRecommendations(containerId, recommendations, color) {
                         <div class="row">
                             <div class="col-6">
                                 <small class="text-muted d-block">Expected Impact</small>
-                                <strong class="text-success">${rec.impact}</strong>
+                                <strong class="text-kp-green">${rec.impact}</strong>
                             </div>
                             <div class="col-6">
                                 <small class="text-muted d-block">Deadline</small>

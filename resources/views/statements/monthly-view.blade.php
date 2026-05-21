@@ -13,7 +13,7 @@
     }
 
     function getAmountClass($amount) {
-        return $amount >= 0 ? 'text-success' : 'text-danger';
+        return $amount >= 0 ? 'text-kp-green' : 'text-danger';
     }
 @endphp
 
@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="fas fa-calendar-alt me-2"></i>Statements for {{ $month->format('F Y') }}
                     </h4>
@@ -45,7 +45,7 @@
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <h6 class="text-muted">Total Amount</h6>
-                                    <h3 class="text-primary">
+                                    <h3 class="text-kp-blue">
                                         ${{ number_format($statements->sum('closing_balance'), 2) }}
                                     </h3>
                                 </div>
@@ -55,7 +55,7 @@
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <h6 class="text-muted">Sent Statements</h6>
-                                    <h3 class="text-success">
+                                    <h3 class="text-kp-green">
                                         {{ $statements->where('status', 'sent')->count() }}
                                     </h3>
                                 </div>
@@ -65,7 +65,7 @@
                             <div class="card bg-light">
                                 <div class="card-body text-center">
                                     <h6 class="text-muted">Pending</h6>
-                                    <h3 class="text-warning">
+                                    <h3 class="text-kp-yellow">
                                         {{ $statements->whereIn('status', ['draft', 'generated'])->count() }}
                                     </h3>
                                 </div>
@@ -120,7 +120,7 @@
                                         <td class="text-end text-danger">
                                             {{ formatCurrency($statement->total_debits, $currency) }}
                                         </td>
-                                        <td class="text-end text-success">
+                                        <td class="text-end text-kp-green">
                                             {{ formatCurrency($statement->total_credits, $currency) }}
                                         </td>
                                         <td class="text-end {{ getAmountClass($statement->closing_balance) }} fw-bold">
@@ -132,11 +132,11 @@
                                             @elseif($statement->status == 'generated')
                                                 <span class="badge bg-info">Generated</span>
                                             @elseif($statement->status == 'sent')
-                                                <span class="badge bg-success">Sent</span>
+                                                <span class="badge bg-kp-green">Sent</span>
                                             @elseif($statement->status == 'viewed')
-                                                <span class="badge bg-primary">Viewed</span>
+                                                <span class="badge bg-kp-blue">Viewed</span>
                                             @elseif($statement->status == 'paid')
-                                                <span class="badge bg-success">Paid</span>
+                                                <span class="badge bg-kp-green">Paid</span>
                                             @elseif($statement->status == 'overdue')
                                                 <span class="badge bg-danger">Overdue</span>
                                             @endif
@@ -150,14 +150,14 @@
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                                 <button type="button"
-                                                        class="btn btn-success"
+                                                        class="btn btn-kp-success"
                                                         title="Send to Customer"
                                                         onclick="sendStatement({{ $statement->id }})"
                                                         {{ $statement->status == 'sent' ? 'disabled' : '' }}>
                                                     <i class="fas fa-envelope"></i>
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-primary"
+                                                        class="btn btn-kp-primary"
                                                         title="View Details"
                                                         onclick="viewStatement({{ $statement->id }})">
                                                     <i class="fas fa-eye"></i>
@@ -172,7 +172,7 @@
                                         <th colspan="4" class="text-end">Totals:</th>
                                         <th class="text-end">{{ formatCurrency($statements->sum('opening_balance'), 'USD') }}</th>
                                         <th class="text-end text-danger">{{ formatCurrency($statements->sum('total_debits'), 'USD') }}</th>
-                                        <th class="text-end text-success">{{ formatCurrency($statements->sum('total_credits'), 'USD') }}</th>
+                                        <th class="text-end text-kp-green">{{ formatCurrency($statements->sum('total_credits'), 'USD') }}</th>
                                         <th class="text-end">{{ formatCurrency($statements->sum('closing_balance'), 'USD') }}</th>
                                         <th colspan="2"></th>
                                     </tr>
@@ -197,10 +197,10 @@
                                     <h5 class="mb-0">Bulk Actions</h5>
                                 </div>
                                 <div class="card-body">
-                                    <button type="button" class="btn btn-success me-2" onclick="sendAllStatements()">
+                                    <button type="button" class="btn btn-kp-success me-2" onclick="sendAllStatements()">
                                         <i class="fas fa-envelope me-1"></i>Send All Unsent
                                     </button>
-                                    <button type="button" class="btn btn-primary me-2" onclick="downloadAllStatements()">
+                                    <button type="button" class="btn btn-kp-primary me-2" onclick="downloadAllStatements()">
                                         <i class="fas fa-download me-1"></i>Download All
                                     </button>
                                     <button type="button" class="btn btn-info" onclick="exportToExcel()">
@@ -262,7 +262,7 @@ function sendStatement(statementId) {
                 // Update status badge
                 const row = button.closest('tr');
                 const statusCell = row.querySelector('td:nth-child(9)');
-                statusCell.innerHTML = '<span class="badge bg-success">Sent</span>';
+                statusCell.innerHTML = '<span class="badge bg-kp-green">Sent</span>';
                 button.disabled = true;
             } else {
                 showNotification('error', 'Error: ' + data.message);

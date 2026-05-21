@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-edit text-primary"></i> Edit Lease
+                        <i class="fas fa-edit text-kp-blue"></i> Edit Lease
                     </h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -32,7 +32,7 @@
 
     <!-- Success/Error Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -54,7 +54,7 @@
 
     <div class="card shadow">
         <div class="card-header bg-white py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+            <h6 class="m-0 font-weight-bold text-kp-blue">
                 <i class="fas fa-file-contract me-2"></i>Lease Details
             </h6>
         </div>
@@ -66,7 +66,7 @@
                 <div class="row">
                     <!-- Basic Information -->
                     <div class="col-md-6">
-                        <h5 class="text-primary mb-3">Basic Information</h5>
+                        <h5 class="text-kp-blue mb-3">Basic Information</h5>
 
                         <div class="mb-3">
                             <label for="lease_number" class="form-label">Lease Number *</label>
@@ -202,7 +202,7 @@
 
                     <!-- Route Information -->
                     <div class="col-md-6">
-                        <h5 class="text-primary mb-3">Route Information</h5>
+                        <h5 class="text-kp-blue mb-3">Route Information</h5>
 
                         <div class="mb-3">
                             <label for="start_location" id="start_location_label" class="form-label">Start Location *</label>
@@ -273,7 +273,7 @@
                 <div class="row">
     <!-- Contract Dates -->
     <div class="col-md-6">
-        <h5 class="text-primary mb-3">Contract Dates</h5>
+        <h5 class="text-kp-blue mb-3">Contract Dates</h5>
 
         <div class="mb-3">
             <label for="contract_term_months" class="form-label">Contract Term (Months) *</label>
@@ -321,7 +321,7 @@
 
     <!-- Financial Information -->
     <div class="col-md-6">
-        <h5 class="text-primary mb-3">Financial Information</h5>
+        <h5 class="text-kp-blue mb-3">Financial Information</h5>
 
         <div class="mb-3">
             <label for="currency" class="form-label">Currency *</label>
@@ -382,7 +382,7 @@
                 <div class="row">
                     <!-- Technical Specifications -->
                     <div class="col-12 mb-4">
-                        <h5 class="text-primary mb-3">Technical Specifications</h5>
+                        <h5 class="text-kp-blue mb-3">Technical Specifications</h5>
                         <textarea class="form-control @error('technical_specifications') is-invalid @enderror"
                                   id="technical_specifications" name="technical_specifications"
                                   rows="4" placeholder="Enter technical specifications...">{{ old('technical_specifications', $lease->technical_specifications) }}</textarea>
@@ -393,7 +393,7 @@
 
                     <!-- Service Level Agreement -->
                     <div class="col-12 mb-4">
-                        <h5 class="text-primary mb-3">Service Level Agreement (SLA)</h5>
+                        <h5 class="text-kp-blue mb-3">Service Level Agreement (SLA)</h5>
                         <textarea class="form-control @error('service_level_agreement') is-invalid @enderror"
                                   id="service_level_agreement" name="service_level_agreement"
                                   rows="4" placeholder="Enter service level agreement terms...">{{ old('service_level_agreement', $lease->service_level_agreement) }}</textarea>
@@ -404,7 +404,7 @@
 
                     <!-- Terms and Conditions -->
                     <div class="col-12 mb-4">
-                        <h5 class="text-primary mb-3">Terms and Conditions</h5>
+                        <h5 class="text-kp-blue mb-3">Terms and Conditions</h5>
                         <textarea class="form-control @error('terms_and_conditions') is-invalid @enderror"
                                   id="terms_and_conditions" name="terms_and_conditions"
                                   rows="4" placeholder="Enter terms and conditions...">{{ old('terms_and_conditions', $lease->terms_and_conditions) }}</textarea>
@@ -415,7 +415,7 @@
 
                     <!-- Notes -->
                     <div class="col-12 mb-4">
-                        <h5 class="text-primary mb-3">Notes</h5>
+                        <h5 class="text-kp-blue mb-3">Notes</h5>
                         <textarea class="form-control @error('notes') is-invalid @enderror"
                                   id="notes" name="notes"
                                   rows="3" placeholder="Enter any additional notes...">{{ old('notes', $lease->notes) }}</textarea>
@@ -431,12 +431,12 @@
                     </a>
 
                     <div class="btn-group">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-kp-primary">
                             <i class="fas fa-save me-2"></i>Update Lease
                         </button>
 
                         @if(in_array($lease->status, ['pending', 'draft']))
-                            <button type="button" class="btn btn-success" onclick="confirmApproval()">
+                            <button type="button" class="btn btn-kp-success" onclick="confirmApproval()">
                                 <i class="fas fa-check me-2"></i>Approve & Save
                             </button>
                         @endif
@@ -446,7 +446,7 @@
 
             <!-- Hidden form for approve action -->
             @if(in_array($lease->status, ['pending', 'draft']))
-                <form id="approve-form" action="{{ route('account-manager.leases.approve', $lease) }}" method="POST" class="d-none">
+                <form id="approve-form" action="{{ route('account-manager.leases.edit', $lease) }}" method="POST" class="d-none">
                     @csrf
                     @method('PATCH')
                 </form>

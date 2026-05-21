@@ -11,13 +11,13 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h4 class="page-title mb-0">
-                            <i class="fas fa-chart-line text-primary me-2"></i>Financial Analytics Dashboard
+                            <i class="fas fa-chart-line text-kp-blue me-2"></i>Financial Analytics Dashboard
                         </h4>
                         <p class="text-muted mb-0">Comprehensive financial analysis and insights</p>
                     </div>
                     <div class="col-md-4 text-end">
                         <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <button class="btn btn-kp-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-download me-1"></i> Export Report
                             </button>
                             <ul class="dropdown-menu">
@@ -51,15 +51,15 @@
                         @endphp
 
                         <div class="col-md-3 col-6 mb-3">
-                            <div class="card border-primary">
+                            <div class="card border-kp-blue">
                                 <div class="card-body text-center">
                                     <h6 class="text-muted mb-2">Collection Rate</h6>
-                                    <h3 class="text-primary mb-1">{{ number_format($revenue['collection_rate'] ?? 0, 1) }}%</h3>
+                                    <h3 class="text-kp-blue mb-1">{{ number_format($revenue['collection_rate'] ?? 0, 1) }}%</h3>
                                     <small class="text-muted">
                                         @if(($revenue['collection_rate'] ?? 0) >= 85)
-                                        <span class="text-success">Excellent</span>
+                                        <span class="text-kp-green">Excellent</span>
                                         @elseif(($revenue['collection_rate'] ?? 0) >= 70)
-                                        <span class="text-warning">Good</span>
+                                        <span class="text-kp-yellow">Good</span>
                                         @else
                                         <span class="text-danger">Needs Attention</span>
                                         @endif
@@ -69,15 +69,15 @@
                         </div>
 
                         <div class="col-md-3 col-6 mb-3">
-                            <div class="card border-success">
+                            <div class="card border-kp-green">
                                 <div class="card-body text-center">
                                     <h6 class="text-muted mb-2">Net Profit Margin</h6>
-                                    <h3 class="text-success mb-1">{{ number_format($profitability['net_margin'] ?? 0, 1) }}%</h3>
+                                    <h3 class="text-kp-green mb-1">{{ number_format($profitability['net_margin'] ?? 0, 1) }}%</h3>
                                     <small class="text-muted">
                                         @if(($profitability['net_margin'] ?? 0) >= 20)
-                                        <span class="text-success">Strong</span>
+                                        <span class="text-kp-green">Strong</span>
                                         @elseif(($profitability['net_margin'] ?? 0) >= 10)
-                                        <span class="text-warning">Moderate</span>
+                                        <span class="text-kp-yellow">Moderate</span>
                                         @else
                                         <span class="text-danger">Low</span>
                                         @endif
@@ -93,9 +93,9 @@
                                     <h3 class="text-info mb-1">{{ number_format($liquidity['current_ratio'] ?? 0, 2) }}</h3>
                                     <small class="text-muted">
                                         @if(($liquidity['current_ratio'] ?? 0) >= 2)
-                                        <span class="text-success">Healthy</span>
+                                        <span class="text-kp-green">Healthy</span>
                                         @elseif(($liquidity['current_ratio'] ?? 0) >= 1.5)
-                                        <span class="text-warning">Adequate</span>
+                                        <span class="text-kp-yellow">Adequate</span>
                                         @else
                                         <span class="text-danger">Risky</span>
                                         @endif
@@ -105,15 +105,15 @@
                         </div>
 
                         <div class="col-md-3 col-6 mb-3">
-                            <div class="card border-warning">
+                            <div class="card border-kp-yellow">
                                 <div class="card-body text-center">
                                     <h6 class="text-muted mb-2">Revenue Growth</h6>
-                                    <h3 class="text-warning mb-1">{{ number_format($metrics['growth_metrics']['revenue_growth'] ?? 0, 1) }}%</h3>
+                                    <h3 class="text-kp-yellow mb-1">{{ number_format($metrics['growth_metrics']['revenue_growth'] ?? 0, 1) }}%</h3>
                                     <small class="text-muted">
                                         @if(($metrics['growth_metrics']['revenue_growth'] ?? 0) >= 15)
-                                        <span class="text-success">High Growth</span>
+                                        <span class="text-kp-green">High Growth</span>
                                         @elseif(($metrics['growth_metrics']['revenue_growth'] ?? 0) >= 5)
-                                        <span class="text-warning">Stable</span>
+                                        <span class="text-kp-yellow">Stable</span>
                                         @else
                                         <span class="text-danger">Declining</span>
                                         @endif
@@ -178,7 +178,7 @@
                                     <td class="text-end">
                                         @php
                                             $percentage = $metric['target'] > 0 ? ($metric['value'] / $metric['target']) * 100 : 0;
-                                            $statusClass = $percentage >= 100 ? 'text-success' : ($percentage >= 80 ? 'text-warning' : 'text-danger');
+                                            $statusClass = $percentage >= 100 ? 'text-kp-green' : ($percentage >= 80 ? 'text-kp-yellow' : 'text-danger');
                                         @endphp
                                         <span class="{{ $statusClass }}">
                                             {{ number_format($percentage, 1) }}%
@@ -242,7 +242,7 @@
                                     <td class="text-end">
                                         @php
                                             $variance = $metric['value'] - $metric['industry'];
-                                            $varianceClass = $variance >= 0 ? 'text-success' : 'text-danger';
+                                            $varianceClass = $variance >= 0 ? 'text-kp-green' : 'text-danger';
                                             $varianceSymbol = $variance >= 0 ? '+' : '';
                                         @endphp
                                         <span class="{{ $varianceClass }}">
@@ -274,7 +274,7 @@
                         <div class="row">
                             <!-- Key Insights -->
                             <div class="col-lg-6">
-                                <h6 class="text-primary mb-3">
+                                <h6 class="text-kp-blue mb-3">
                                     <i class="fas fa-lightbulb me-2"></i>Key Financial Insights
                                 </h6>
                                 <div class="list-group list-group-flush">
@@ -296,7 +296,7 @@
 
                             <!-- Recommendations -->
                             <div class="col-lg-6">
-                                <h6 class="text-primary mb-3">
+                                <h6 class="text-kp-blue mb-3">
                                     <i class="fas fa-bullseye me-2"></i>Strategic Recommendations
                                 </h6>
                                 <div class="list-group">
@@ -331,7 +331,7 @@
         <div class="col-md-3 col-6 mb-3">
             <a href="{{ route('finance.financial-analytics.kpis') }}" class="card card-hover text-decoration-none">
                 <div class="card-body text-center">
-                    <i class="fas fa-tachometer-alt fa-2x text-primary mb-3"></i>
+                    <i class="fas fa-tachometer-alt fa-2x text-kp-blue mb-3"></i>
                     <h6>Financial KPIs</h6>
                     <small class="text-muted">Key Performance Indicators</small>
                 </div>
@@ -340,7 +340,7 @@
         <div class="col-md-3 col-6 mb-3">
             <a href="{{ route('finance.financial-analytics.trends') }}" class="card card-hover text-decoration-none">
                 <div class="card-body text-center">
-                    <i class="fas fa-chart-line fa-2x text-success mb-3"></i>
+                    <i class="fas fa-chart-line fa-2x text-kp-green mb-3"></i>
                     <h6>Trend Analysis</h6>
                     <small class="text-muted">Historical trends & patterns</small>
                 </div>
@@ -349,7 +349,7 @@
         <div class="col-md-3 col-6 mb-3">
             <a href="{{ route('finance.financial-analytics.benchmarking') }}" class="card card-hover text-decoration-none">
                 <div class="card-body text-center">
-                    <i class="fas fa-balance-scale fa-2x text-warning mb-3"></i>
+                    <i class="fas fa-balance-scale fa-2x text-kp-yellow mb-3"></i>
                     <h6>Benchmarking</h6>
                     <small class="text-muted">Compare with industry</small>
                 </div>

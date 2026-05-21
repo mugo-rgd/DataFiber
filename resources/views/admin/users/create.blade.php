@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-user-plus text-primary"></i> Create New User
+                <i class="fas fa-user-plus text-kp-blue"></i> Create New User
             </h1>
             <p class="text-muted">Add a new user to the Dark Fibre CRM system</p>
         </div>
@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-user me-2"></i>User Information
                     </h6>
@@ -306,7 +306,7 @@
                                         <button type="reset" class="btn btn-outline-secondary me-2">
                                             <i class="fas fa-redo me-2"></i>Reset
                                         </button>
-                                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                                        <button type="submit" class="btn btn-kp-primary" id="submitBtn">
                                             <i class="fas fa-save me-2"></i>Create User
                                         </button>
                                     </div>
@@ -344,7 +344,7 @@
 
             <!-- Quick Tips -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-lightbulb me-2"></i>Quick Tips
                     </h6>
@@ -363,7 +363,7 @@
 
             <!-- Form Progress -->
             <div class="card shadow">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-tasks me-2"></i>Form Progress
                     </h6>
@@ -375,7 +375,7 @@
                             <small><span id="completedFields">0</span>/6</small>
                         </div>
                         <div class="progress mb-3" style="height: 6px;">
-                            <div class="progress-bar bg-success" id="progressBar" role="progressbar" style="width: 0%"></div>
+                            <div class="progress-bar bg-kp-green" id="progressBar" role="progressbar" style="width: 0%"></div>
                         </div>
                         <div class="form-checklist">
                             <div class="form-check-item" data-field="name">
@@ -542,10 +542,10 @@ function toggleRoleSpecificFields() {
             bar.className = 'progress-bar bg-danger';
             text.textContent = 'Weak password';
         } else if (strength < 75) {
-            bar.className = 'progress-bar bg-warning';
+            bar.className = 'progress-bar bg-kp-yellow';
             text.textContent = 'Medium password';
         } else {
-            bar.className = 'progress-bar bg-success';
+            bar.className = 'progress-bar bg-kp-green';
             text.textContent = 'Strong password';
         }
     }
@@ -607,7 +607,7 @@ function toggleRoleSpecificFields() {
             if (isValid) {
                 completed++;
                 checkItem.classList.add('valid');
-                checkItem.innerHTML = '<i class="fas fa-check text-success me-1"></i><small>' + checkItem.textContent + '</small>';
+                checkItem.innerHTML = '<i class="fas fa-check text-kp-green me-1"></i><small>' + checkItem.textContent + '</small>';
             } else {
                 checkItem.classList.remove('valid');
                 checkItem.innerHTML = '<i class="fas fa-times text-danger me-1"></i><small>' + checkItem.textContent + '</small>';

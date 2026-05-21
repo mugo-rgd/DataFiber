@@ -221,7 +221,7 @@
                         @endif
 
                         <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-save me-2"></i> {{ $item ? 'Update' : 'Create' }}
                             </button>
                         </div>

@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Billings</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalBillings }}</div>
                         </div>
@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Pending Billings</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingBillings }}</div>
                         </div>
@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Total Amount Due</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 @php
@@ -137,7 +137,7 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="{{ route('customer.billings.show', $billing->id) }}"
-                                           class="btn btn-sm btn-outline-primary" title="View Details">
+                                           class="btn btn-sm btn-outline-kp-primary" title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('customer.billings.download', $billing->id) }}"
@@ -146,7 +146,7 @@
                                         </a>
                                         @if($billing->status === 'pending' || $billing->status === 'sent')
                                             <a href="{{ route('customer.payments.create', $billing->id) }}"
-                                               class="btn btn-sm btn-success" title="Make Payment">
+                                               class="btn btn-sm btn-kp-success" title="Make Payment">
                                                 <i class="fas fa-credit-card"></i>
                                             </a>
                                         @endif

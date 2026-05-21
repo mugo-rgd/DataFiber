@@ -25,25 +25,25 @@
                     <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
                         <div class="card-body p-4">
                             <div class="support-nav">
-                                <h5 class="mb-3 text-primary">Support Categories</h5>
+                                <h5 class="mb-3 text-kp-blue">Support Categories</h5>
                                 <div class="list-group list-group-flush">
                                     <a href="#getting-started" class="list-group-item list-group-item-action border-0 py-3">
-                                        <i class="fas fa-rocket me-2 text-primary"></i> Getting Started
+                                        <i class="fas fa-rocket me-2 text-kp-blue"></i> Getting Started
                                     </a>
                                     <a href="#account-management" class="list-group-item list-group-item-action border-0 py-3">
-                                        <i class="fas fa-user-cog me-2 text-primary"></i> Account Management
+                                        <i class="fas fa-user-cog me-2 text-kp-blue"></i> Account Management
                                     </a>
                                     <a href="#fibre-management" class="list-group-item list-group-item-action border-0 py-3">
-                                        <i class="fas fa-network-wired me-2 text-primary"></i> Fibre Management
+                                        <i class="fas fa-network-wired me-2 text-kp-blue"></i> Fibre Management
                                     </a>
                                     <a href="#billing" class="list-group-item list-group-item-action border-0 py-3">
-                                        <i class="fas fa-credit-card me-2 text-primary"></i> Billing & Payments
+                                        <i class="fas fa-credit-card me-2 text-kp-blue"></i> Billing & Payments
                                     </a>
                                     <a href="#technical" class="list-group-item list-group-item-action border-0 py-3">
-                                        <i class="fas fa-cogs me-2 text-primary"></i> Technical Issues
+                                        <i class="fas fa-cogs me-2 text-kp-blue"></i> Technical Issues
                                     </a>
                                     <a href="#contact" class="list-group-item list-group-item-action border-0 py-3">
-                                        <i class="fas fa-headset me-2 text-primary"></i> Contact Support
+                                        <i class="fas fa-headset me-2 text-kp-blue"></i> Contact Support
                                     </a>
                                 </div>
                             </div>
@@ -53,23 +53,23 @@
                     <!-- Quick Stats -->
                     <div class="card shadow-sm border-0 mt-4">
                         <div class="card-body p-4">
-                            <h5 class="mb-3 text-primary">Support Statistics</h5>
+                            <h5 class="mb-3 text-kp-blue">Support Statistics</h5>
                             <div class="support-stats">
                                 <div class="d-flex justify-content-between mb-3">
                                     <span>Response Time:</span>
-                                    <span class="text-success fw-bold">Under 2 hours</span>
+                                    <span class="text-kp-green fw-bold">Under 2 hours</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
                                     <span>Resolution Rate:</span>
-                                    <span class="text-success fw-bold">95%</span>
+                                    <span class="text-kp-green fw-bold">95%</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-3">
                                     <span>Support Hours:</span>
-                                    <span class="text-primary fw-bold">24/7</span>
+                                    <span class="text-kp-blue fw-bold">24/7</span>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <span>Satisfaction:</span>
-                                    <span class="text-warning fw-bold">4.8/5</span>
+                                    <span class="text-kp-yellow fw-bold">4.8/5</span>
                                 </div>
                             </div>
                         </div>
@@ -80,7 +80,7 @@
                     <!-- Getting Started -->
                     <section id="getting-started" class="mb-5">
                         <div class="card shadow-sm border-0">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header bg-kp-blue text-white">
                                 <h2 class="h4 mb-0"><i class="fas fa-rocket me-2"></i> Getting Started</h2>
                             </div>
                             <div class="card-body p-4">
@@ -113,16 +113,16 @@
                     <!-- Account Management -->
                     <section id="account-management" class="mb-5">
                         <div class="card shadow-sm border-0">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header bg-kp-blue text-white">
                                 <h2 class="h4 mb-0"><i class="fas fa-user-cog me-2"></i> Account Management</h2>
                             </div>
                             <div class="card-body p-4">
                                 <p>Manage your account settings, users, and permissions.</p>
                                 <ul class="list-group list-group-flush mb-3">
-                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i> Update profile information</li>
-                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i> Manage team members</li>
-                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i> Set user permissions</li>
-                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-success me-2"></i> Configure notifications</li>
+                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-kp-green me-2"></i> Update profile information</li>
+                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-kp-green me-2"></i> Manage team members</li>
+                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-kp-green me-2"></i> Set user permissions</li>
+                                    <li class="list-group-item border-0"><i class="fas fa-check-circle text-kp-green me-2"></i> Configure notifications</li>
                                 </ul>
                                 <p class="mb-0">Go to <strong>Settings → Account</strong> to manage your account.</p>
                             </div>
@@ -132,7 +132,7 @@
                     <!-- Fibre Management -->
                     <section id="fibre-management" class="mb-5">
                         <div class="card shadow-sm border-0">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header bg-kp-blue text-white">
                                 <h2 class="h4 mb-0"><i class="fas fa-network-wired me-2"></i> Fibre Management</h2>
                             </div>
                             <div class="card-body p-4">
@@ -141,18 +141,18 @@
                                     <div class="col-md-6 mb-3">
                                         <div class="card h-100 border">
                                             <div class="card-body">
-                                                <h6><i class="fas fa-plus-circle text-primary me-2"></i> Add Fibre Route</h6>
+                                                <h6><i class="fas fa-plus-circle text-kp-blue me-2"></i> Add Fibre Route</h6>
                                                 <p class="small">Learn how to add new fibre routes to your network map.</p>
-                                                <a href="#" class="btn btn-sm btn-outline-primary">View Guide</a>
+                                                <a href="#" class="btn btn-sm btn-outline-kp-primary">View Guide</a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <div class="card h-100 border">
                                             <div class="card-body">
-                                                <h6><i class="fas fa-chart-line text-primary me-2"></i> Monitor Usage</h6>
+                                                <h6><i class="fas fa-chart-line text-kp-blue me-2"></i> Monitor Usage</h6>
                                                 <p class="small">Track bandwidth usage and performance metrics.</p>
-                                                <a href="#" class="btn btn-sm btn-outline-primary">View Guide</a>
+                                                <a href="#" class="btn btn-sm btn-outline-kp-primary">View Guide</a>
                                             </div>
                                         </div>
                                     </div>
@@ -164,7 +164,7 @@
                     <!-- Contact Support -->
                     <section id="contact" class="mb-4">
                         <div class="card shadow-sm border-0">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header bg-kp-blue text-white">
                                 <h2 class="h4 mb-0"><i class="fas fa-headset me-2"></i> Contact Support</h2>
                             </div>
                             <div class="card-body p-4">
@@ -172,21 +172,21 @@
                                     <div class="col-md-6 mb-4">
                                         <div class="contact-method text-center">
                                             <div class="icon-circle mb-3">
-                                                <i class="fas fa-envelope fa-2x text-primary"></i>
+                                                <i class="fas fa-envelope fa-2x text-kp-blue"></i>
                                             </div>
                                             <h5>Email Support</h5>
                                             <p class="mb-2">For detailed inquiries</p>
-                                            <a href="mailto:Fiber@kplc.co.ke" class="btn btn-primary">Fiber@kplc.co.ke</a>
+                                            <a href="mailto:Fiber@kplc.co.ke" class="btn btn-kp-primary">Fiber@kplc.co.ke</a>
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <div class="contact-method text-center">
                                             <div class="icon-circle mb-3">
-                                                <i class="fas fa-phone fa-2x text-primary"></i>
+                                                <i class="fas fa-phone fa-2x text-kp-blue"></i>
                                             </div>
                                             <h5>Phone Support</h5>
                                             <p class="mb-2">24/7 emergency support</p>
-                                            <a href="tel:+254700000000" class="btn btn-primary">+254 700 000 000</a>
+                                            <a href="tel:+254700000000" class="btn btn-kp-primary">+254 700 000 000</a>
                                         </div>
                                     </div>
                                 </div>
@@ -215,7 +215,7 @@
                                             <label for="description" class="form-label">Description</label>
                                             <textarea class="form-control" id="description" rows="4" required></textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-primary">Submit Ticket</button>
+                                        <button type="submit" class="btn btn-kp-primary">Submit Ticket</button>
                                     </form>
                                 </div>
                             </div>

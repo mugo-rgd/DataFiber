@@ -9,7 +9,7 @@
 
     <!-- Conditional Certificate Button (Triggers Modal) -->
     <button type="button"
-            class="btn btn-warning"
+            class="btn btn-kp-warning"
             data-bs-toggle="modal"
             data-bs-target="#conditionalCertificateModal"
             title="Generate Conditional Certificate">
@@ -18,7 +18,7 @@
 
     <!-- Acceptance Certificate Button (Triggers Modal) -->
     <button type="button"
-            class="btn btn-success"
+            class="btn btn-kp-success"
             data-bs-toggle="modal"
             data-bs-target="#acceptanceCertificateModal"
             title="Generate Acceptance Certificate">
@@ -34,7 +34,7 @@
                 @csrf
                 <input type="hidden" name="request_id" value="{{ $request->id }}">
 
-                <div class="modal-header bg-warning text-white">
+                <div class="modal-header bg-kp-yellow text-white">
                     <h5 class="modal-title" id="conditionalCertificateModalLabel">
                         <i class="fas fa-file-contract me-2"></i>Generate Conditional Certificate
                     </h5>
@@ -325,7 +325,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-kp-warning">
                         <i class="fas fa-file-pdf me-2"></i>Generate & Download Certificate
                     </button>
                 </div>
@@ -343,7 +343,7 @@
                 @csrf
                 <input type="hidden" name="request_id" value="{{ $request->id }}">
 
-                <div class="modal-header bg-success text-white">
+                <div class="modal-header bg-kp-green text-white">
                     <h5 class="modal-title" id="acceptanceCertificateModalLabel">
                         <i class="fas fa-award me-2"></i>Generate Acceptance Certificate
                     </h5>
@@ -353,7 +353,7 @@
                 <div class="modal-body">
                     <!-- Certificate Header -->
                     <div class="text-center mb-4">
-                        <h4 class="fw-bold text-primary">Certificate of Acceptance</h4>
+                        <h4 class="fw-bold text-kp-blue">Certificate of Acceptance</h4>
                         <h5 class="text-muted">ISSUED BY THE KENYA POWER & LIGHTING COMPANY PLC</h5>
                     </div>
 
@@ -607,7 +607,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-kp-success">
                         <i class="fas fa-file-certificate me-2"></i>Generate Acceptance Certificate
                     </button>
                 </div>
@@ -917,25 +917,25 @@
         cursor: not-allowed;
     }
 
-    .btn-warning {
+    .btn-kp-warning {
         background-color: #ffc107;
         border-color: #ffc107;
         color: #212529;
         font-weight: 500;
     }
 
-    .btn-warning:hover {
+    .btn-kp-warning:hover {
         background-color: #e0a800;
         border-color: #d39e00;
     }
 
-    .btn-success {
+    .btn-kp-success {
         background-color: #28a745;
         border-color: #28a745;
         font-weight: 500;
     }
 
-    .btn-success:hover {
+    .btn-kp-success:hover {
         background-color: #218838;
         border-color: #1e7e34;
     }

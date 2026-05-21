@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-file-contract text-primary"></i>
+                        <i class="fas fa-file-contract text-kp-blue"></i>
                         @if($selectedCustomer)
                             Leases for {{ $selectedCustomer->name }}
                         @else
@@ -26,7 +26,7 @@
                 </div>
                 <div class="btn-group">
 
-<a href="{{ route('account-manager.leases.create', ['customer_id' => $customerId]) }}" class="btn btn-primary">
+<a href="{{ route('account-manager.leases.create', ['customer_id' => $customerId]) }}" class="btn btn-kp-primary">
     Create Lease
 </a>
 
@@ -46,7 +46,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-filter me-2"></i>Filter by Customer
                     </h6>
                 </div>
@@ -85,7 +85,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Leases
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLeases }}</div>
@@ -103,7 +103,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Active Leases
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeLeases }}</div>
@@ -121,7 +121,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Pending Leases
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingLeases }}</div>
@@ -155,7 +155,7 @@
 
     <!-- Success/Error Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -175,14 +175,14 @@
         <div class="card-header bg-white py-3">
             <div class="row align-items-center">
                 <div class="col">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-list me-2"></i>
                         @if($selectedCustomer)
                             Leases for {{ $selectedCustomer->name }}
                         @else
                             All Leases
                         @endif
-                        <span class="badge bg-primary ms-2">{{ $leases->total() }}</span>
+                        <span class="badge bg-kp-blue ms-2">{{ $leases->total() }}</span>
                     </h6>
                 </div>
                 <div class="col-auto">
@@ -227,7 +227,7 @@
                                 @if(!$selectedCustomer)
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar-sm bg-primary rounded-circle text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                            <div class="avatar-sm bg-kp-blue rounded-circle text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
                                                 {{ substr($lease->customer->name, 0, 1) }}
                                             </div>
                                             <div>
@@ -242,7 +242,7 @@
 <br>
 @if($lease->service_type == 'colocation')
     <div class="mt-1">
-        <span class="border border-primary rounded px-1 py-0 text-primary" style="font-size: 0.7rem;">
+        <span class="border border-kp-blue rounded px-1 py-0 text-kp-blue" style="font-size: 0.7rem;">
             <i class="fas fa-map-marker-alt me-1" style="font-size: 0.6rem;"></i>{{ strtoupper($lease->host_location) }}
         </span>
     </div>
@@ -252,7 +252,7 @@
                                     <small class="text-muted">
                                         {{ $lease->start_location }} → {{ $lease->end_location }}
                                         @if($lease->distance_km)
-                                            <br><span class="text-primary">{{ $lease->distance_km }} km</span>
+                                            <br><span class="text-kp-blue">{{ $lease->distance_km }} km</span>
                                         @endif
                                     </small>
                                 </td>
@@ -273,7 +273,7 @@
                                         {{ ucfirst($lease->status) }}
                                     </span>
                                     @if($lease->isExpired() && $lease->status !== 'expired')
-                                        <span class="badge bg-warning">Expired</span>
+                                        <span class="badge bg-kp-yellow">Expired</span>
                                     @endif
                                 </td>
                                 <td>
@@ -284,15 +284,23 @@
                                     @if($lease->isExpired())
                                         <br><small class="text-danger">Expired</small>
                                     @elseif($lease->daysUntilExpiry() < 30)
-                                        <br><small class="text-warning">{{ $lease->daysUntilExpiry() }} days left</small>
+                                        <br><small class="text-kp-yellow">{{ $lease->daysUntilExpiry() }} days left</small>
                                     @endif
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('account-manager.leases.pdf', $lease) }}" class="btn btn-outline-primary" title="PDF Download">
+                                        {{-- <a href="{{ route('account-manager.leases.pdf', $lease) }}" class="btn btn-outline-kp-primary" title="PDF Download">
                                             <i class="fas fa-file-pdf"></i>
-                                        </a>
-                                        <a href="{{ route('account-manager.leases.show', $lease) }}" class="btn btn-outline-primary" title="View/More Actions">
+                                        </a> --}}
+@if($lease->pdf_path)
+    <a href="{{ asset('storage/' . $lease->pdf_path) }}"
+       target="_blank"
+       class="btn btn-outline-dark">
+        <i class="fas fa-print me-1"></i>Print / Download Lease PDF
+    </a>
+@endif
+
+                                        <a href="{{ route('account-manager.leases.show', $lease) }}" class="btn btn-outline-kp-primary" title="View/More Actions">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('account-manager.leases.edit', $lease) }}" class="btn btn-outline-secondary" title="Edit">
@@ -346,7 +354,7 @@
             <div class="modal-body">
                 @if(!$canDelete)
                     <div class="text-center py-3">
-                        <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                        <i class="fas fa-exclamation-triangle fa-3x text-kp-yellow mb-3"></i>
                         <p class="mb-2">This lease cannot be deleted because:</p>
                         <ul class="text-start d-inline-block">
                             @if(auth()->user()->role !== 'account_manager')
@@ -361,7 +369,7 @@
                 @else
                     <div>
                         <p>Are you sure you want to delete lease <strong>#{{ $lease->lease_number }}</strong>?</p>
-                        <div class="alert alert-warning py-2 small">
+                        <div class="alert alert-kp-warning py-2 small">
                             <i class="fas fa-exclamation-triangle me-1"></i>
                             <strong>Warning:</strong> This action cannot be undone. All lease data will be permanently removed.
                         </div>
@@ -411,7 +419,7 @@
                                                 No leases found for your customers.
                                             @endif
                                         </p>
-                                        <a href="{{ route('account-manager.leases.create', ['customer_id' => $customerId]) }}" class="btn btn-primary">
+                                        <a href="{{ route('account-manager.leases.create', ['customer_id' => $customerId]) }}" class="btn btn-kp-primary">
                                             <i class="fas fa-plus-circle me-2"></i>Create New Lease
                                         </a>
                                     </div>

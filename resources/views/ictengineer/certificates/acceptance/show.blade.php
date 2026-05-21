@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-award text-success me-2"></i>Acceptance Certificate
+                        <i class="fas fa-award text-kp-green me-2"></i>Acceptance Certificate
                     </h1>
                     <p class="text-muted mb-0">ICT Engineer - View Certificate Details</p>
                 </div>
@@ -18,7 +18,7 @@
                         <i class="fas fa-arrow-left me-2"></i>Back to Requests
                     </a>
                     <a href="{{ route('ictengineer.certificates.acceptance.download', $certificate) }}"
-                       class="btn btn-success">
+                       class="btn btn-kp-success">
                         <i class="fas fa-download me-2"></i>Download Certificate
                     </a>
                 </div>
@@ -29,13 +29,13 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white py-3">
+                <div class="card-header bg-kp-green text-white py-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="fas fa-award me-2"></i>
                             Acceptance Certificate Details
                         </h5>
-                        <span class="badge bg-white text-success fs-6">
+                        <span class="badge bg-white text-kp-green fs-6">
                             {{ $certificate->status ?? 'Issued' }}
                         </span>
                     </div>
@@ -43,7 +43,7 @@
                 <div class="card-body">
                     <!-- Certificate Header -->
                     <div class="text-center mb-4">
-                        <h4 class="fw-bold text-primary">Certificate of Acceptance</h4>
+                        <h4 class="fw-bold text-kp-blue">Certificate of Acceptance</h4>
                         <p class="text-muted">THE KENYA POWER & LIGHTING COMPANY PLC</p>
                     </div>
 
@@ -51,7 +51,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="info-card border rounded p-3 mb-3">
-                                <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Certificate Information</h6>
+                                <h6 class="text-kp-blue mb-3"><i class="fas fa-info-circle me-2"></i>Certificate Information</h6>
                                 <table class="table table-sm table-borderless mb-0">
                                     <tr>
                                         <td width="40%"><strong>Reference No:</strong></td>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="info-card border rounded p-3 mb-3">
-                                <h6 class="text-primary mb-3"><i class="fas fa-road me-2"></i>Link Information</h6>
+                                <h6 class="text-kp-blue mb-3"><i class="fas fa-road me-2"></i>Link Information</h6>
                                 <table class="table table-sm table-borderless mb-0">
                                     <tr>
                                         <td width="40%"><strong>Route Name:</strong></td>
@@ -106,13 +106,13 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="border rounded p-3 h-100">
-                                        <h6 class="bg-primary text-white p-2 rounded mb-3">LESSOR</h6>
+                                        <h6 class="bg-kp-blue text-white p-2 rounded mb-3">LESSOR</h6>
                                         <p class="mb-2"><strong>Company:</strong> {{ $certificate->lessor }}</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="border rounded p-3 h-100">
-                                        <h6 class="bg-success text-white p-2 rounded mb-3">LESSEE</h6>
+                                        <h6 class="bg-kp-green text-white p-2 rounded mb-3">LESSEE</h6>
                                         <p class="mb-2"><strong>Company:</strong> {{ $certificate->lessee }}</p>
                                         @if($certificate->lessee_address)
                                         <p class="mb-2"><strong>Address:</strong> {{ $certificate->lessee_address }}</p>
@@ -133,12 +133,12 @@
                         </div>
                         <div class="card-body">
                             <!-- Kenya Power Signatories -->
-                            <h6 class="text-primary mb-3">Kenya Power Signatories</h6>
+                            <h6 class="text-kp-blue mb-3">Kenya Power Signatories</h6>
                             <div class="row">
                                 <!-- Witness 1 -->
                                 <div class="col-md-6 mb-3">
                                     <div class="signatory-display border rounded p-3">
-                                        <h6 class="bg-primary text-white p-2 rounded mb-3">
+                                        <h6 class="bg-kp-blue text-white p-2 rounded mb-3">
                                             1. INFRASTRUCTURE SUPPORT ENGINEER
                                         </h6>
                                         <p><strong>Name:</strong> {{ $certificate->witness1_name }}</p>
@@ -156,7 +156,7 @@
                                 <!-- Witness 2 -->
                                 <div class="col-md-6 mb-3">
                                     <div class="signatory-display border rounded p-3">
-                                        <h6 class="bg-primary text-white p-2 rounded mb-3">
+                                        <h6 class="bg-kp-blue text-white p-2 rounded mb-3">
                                             2. TELECOM LEAD ENGINEER
                                         </h6>
                                         <p><strong>Name:</strong> {{ $certificate->witness2_name }}</p>
@@ -174,7 +174,7 @@
                                 <!-- Witness 3 -->
                                 <div class="col-md-6 mb-3">
                                     <div class="signatory-display border rounded p-3">
-                                        <h6 class="bg-primary text-white p-2 rounded mb-3">
+                                        <h6 class="bg-kp-blue text-white p-2 rounded mb-3">
                                             3. TELECOM MANAGER
                                         </h6>
                                         <p><strong>Name:</strong> {{ $certificate->witness3_name }}</p>
@@ -191,12 +191,12 @@
                             </div>
 
                             <!-- Lessee Signatories -->
-                            <h6 class="text-success mt-4 mb-3">Lessee Signatories</h6>
+                            <h6 class="text-kp-green mt-4 mb-3">Lessee Signatories</h6>
                             <div class="row">
                                 <!-- Lessee 1 -->
                                 <div class="col-md-6 mb-3">
                                     <div class="signatory-display border rounded p-3">
-                                        <h6 class="bg-success text-white p-2 rounded mb-3">
+                                        <h6 class="bg-kp-green text-white p-2 rounded mb-3">
                                             1. LEAD ENGINEER / TECHNICAL REPRESENTATIVE
                                         </h6>
                                         <p><strong>Name:</strong> {{ $certificate->lessee1_name }}</p>
@@ -214,7 +214,7 @@
                                 <!-- Lessee 2 -->
                                 <div class="col-md-6 mb-3">
                                     <div class="signatory-display border rounded p-3">
-                                        <h6 class="bg-success text-white p-2 rounded mb-3">
+                                        <h6 class="bg-kp-green text-white p-2 rounded mb-3">
                                             2. MANAGER
                                         </h6>
                                         <p><strong>Name:</strong> {{ $certificate->lessee2_name }}</p>
@@ -248,7 +248,7 @@
                                                 <h6 class="mb-1">Test Report</h6>
                                                 <p class="text-muted mb-0 small">Final test report</p>
                                                 <a href="{{ Storage::url($certificate->test_report_path) }}"
-                                                   target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                                   target="_blank" class="btn btn-sm btn-outline-kp-primary mt-2">
                                                     <i class="fas fa-eye me-1"></i>View Report
                                                 </a>
                                             </div>
@@ -261,12 +261,12 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="attachment-card border rounded p-3">
                                         <div class="d-flex align-items-center">
-                                            <i class="fas fa-file-alt fa-2x text-primary me-3"></i>
+                                            <i class="fas fa-file-alt fa-2x text-kp-blue me-3"></i>
                                             <div>
                                                 <h6 class="mb-1">Additional Documents</h6>
                                                 <p class="text-muted mb-0 small">Supporting documents</p>
                                                 <a href="javascript:void(0)"
-                                                   class="btn btn-sm btn-outline-primary mt-2"
+                                                   class="btn btn-sm btn-outline-kp-primary mt-2"
                                                    onclick="showAdditionalDocuments()">
                                                     <i class="fas fa-folder-open me-1"></i>View All
                                                 </a>
@@ -286,7 +286,7 @@
         <div class="col-lg-4">
             <!-- Request Information -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white py-3">
+                <div class="card-header bg-kp-blue text-white py-3">
                     <h6 class="mb-0">
                         <i class="fas fa-file-alt me-2"></i>Design Request Information
                     </h6>
@@ -321,11 +321,11 @@
                     </table>
 
                     <a href="{{ route('ictengineer.requests.show', $certificate->designRequest) }}"
-                       class="btn btn-outline-primary btn-sm w-100 mt-2">
+                       class="btn btn-outline-kp-primary btn-sm w-100 mt-2">
                         <i class="fas fa-external-link-alt me-2"></i>View Request Details
                     </a>
                     @else
-                    <div class="alert alert-warning">
+                    <div class="alert alert-kp-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Design request information not available
                     </div>
@@ -335,7 +335,7 @@
 
             <!-- Certificate Actions -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white py-3">
+                <div class="card-header bg-kp-green text-white py-3">
                     <h6 class="mb-0">
                         <i class="fas fa-download me-2"></i>Certificate Actions
                     </h6>
@@ -343,12 +343,12 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ route('ictengineer.certificates.acceptance.download', $certificate) }}"
-                           class="btn btn-success">
+                           class="btn btn-kp-success">
                             <i class="fas fa-file-archive me-2"></i>Download ZIP Package
                         </a>
 
                         <a href="{{ route('ictengineer.certificates.acceptance.preview', $certificate) }}"
-                           target="_blank" class="btn btn-outline-primary">
+                           target="_blank" class="btn btn-outline-kp-primary">
                             <i class="fas fa-eye me-2"></i>Preview PDF
                         </a>
 
@@ -369,7 +369,7 @@
                 <div class="card-body">
                     <div class="timeline">
                         <div class="timeline-item mb-3">
-                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-marker bg-kp-green"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-1">Certificate Created</h6>
                                 <p class="text-muted mb-0 small">
@@ -379,7 +379,7 @@
                         </div>
 
                         <div class="timeline-item mb-3">
-                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-marker bg-kp-blue"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-1">Effective Date</h6>
                                 <p class="text-muted mb-0 small">
@@ -390,7 +390,7 @@
 
                         @if($certificate->updated_at != $certificate->created_at)
                         <div class="timeline-item">
-                            <div class="timeline-marker bg-warning"></div>
+                            <div class="timeline-marker bg-kp-yellow"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-1">Last Updated</h6>
                                 <p class="text-muted mb-0 small">
@@ -411,7 +411,7 @@
 <div class="modal fade" id="additionalDocumentsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-folder-open me-2"></i>Additional Documents
                 </h5>
@@ -436,10 +436,10 @@
                                         $color = 'text-danger';
                                     } elseif (in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
                                         $icon = 'fa-file-image';
-                                        $color = 'text-success';
+                                        $color = 'text-kp-green';
                                     } elseif (in_array($extension, ['doc', 'docx'])) {
                                         $icon = 'fa-file-word';
-                                        $color = 'text-primary';
+                                        $color = 'text-kp-blue';
                                     }
                                 @endphp
                                 <i class="fas {{ $icon }} fa-2x {{ $color }} me-3"></i>
@@ -447,7 +447,7 @@
                                     <h6 class="mb-1">Document {{ $index + 1 }}</h6>
                                     <p class="text-muted mb-0 small">{{ strtoupper($extension) }} File</p>
                                     <a href="{{ Storage::url($docPath) }}"
-                                       target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                       target="_blank" class="btn btn-sm btn-outline-kp-primary mt-2">
                                         <i class="fas fa-eye me-1"></i>View Document
                                     </a>
                                 </div>

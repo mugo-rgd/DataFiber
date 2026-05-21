@@ -9,7 +9,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-chart-bar text-primary"></i> Reports & Analytics
+                    <i class="fas fa-chart-bar text-kp-blue"></i> Reports & Analytics
                 </h1>
                 <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Requests
@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Requests</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalRequests }}</div>
                         </div>
@@ -48,7 +48,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Completed</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $completed }}</div>
                         </div>
@@ -65,7 +65,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 In Progress</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $inProgress }}</div>
                         </div>
@@ -99,7 +99,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">ICT Status Overview</h5>
                 </div>
                 <div class="card-body">
@@ -189,10 +189,10 @@
                     <div class="list-group">
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-calendar-check text-primary"></i>
+                                <i class="fas fa-calendar-check text-kp-blue"></i>
                                 <span class="ms-2">This Month</span>
                             </div>
-                            <span class="badge bg-primary rounded-pill">
+                            <span class="badge bg-kp-blue rounded-pill">
                                 {{ $requests->where('created_at', '>=', now()->startOfMonth())->count() }}
                             </span>
                         </div>
@@ -207,19 +207,19 @@
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-user text-success"></i>
+                                <i class="fas fa-user text-kp-green"></i>
                                 <span class="ms-2">With Customers</span>
                             </div>
-                            <span class="badge bg-success rounded-pill">
+                            <span class="badge bg-kp-green rounded-pill">
                                 {{ $requests->whereNotNull('customer_id')->count() }}
                             </span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-dollar-sign text-warning"></i>
+                                <i class="fas fa-dollar-sign text-kp-yellow"></i>
                                 <span class="ms-2">With Cost Estimate</span>
                             </div>
-                            <span class="badge bg-warning rounded-pill">
+                            <span class="badge bg-kp-yellow rounded-pill">
                                 {{ $requests->whereNotNull('estimated_cost')->count() }}
                             </span>
                         </div>
@@ -296,7 +296,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ route('ictengineer.requests.show', $request->id) }}"
-                                           class="btn btn-sm btn-outline-primary">
+                                           class="btn btn-sm btn-outline-kp-primary">
                                             <i class="fas fa-eye"></i> View
                                         </a>
                                     </td>
@@ -309,7 +309,7 @@
                     <div class="text-center py-4">
                         <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
                         <p class="text-muted">No design requests found for reporting.</p>
-                        <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-primary">
+                        <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-kp-primary">
                             <i class="fas fa-list"></i> View All Requests
                         </a>
                     </div>

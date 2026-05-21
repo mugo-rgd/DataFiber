@@ -7,12 +7,12 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-file-contract text-primary"></i> Lease Details
+                <i class="fas fa-file-contract text-kp-blue"></i> Lease Details
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('account-manager.dashboard') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('account-manager.leases.index') }}">Leases</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('marketing-admin.dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="javascript:history.back()">Leases</a></li>
                     <li class="breadcrumb-item active">Lease #{{ $lease->id }}</li>
                 </ol>
             </nav>
@@ -23,7 +23,7 @@
         <div class="col-lg-8">
             <!-- Lease Information Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white py-3">
+                <div class="card-header bg-kp-blue text-white py-3">
                     <h5 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>
                         Lease Information #{{ $lease->id }} - {{ $lease->title }}
@@ -32,7 +32,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-primary">Lease Details</h6>
+                            <h6 class="text-kp-blue">Lease Details</h6>
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <td><strong>Lease ID:</strong></td>
@@ -70,7 +70,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <h6 class="text-primary">Dates</h6>
+                            <h6 class="text-kp-blue">Dates</h6>
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <td><strong>Start Date:</strong></td>
@@ -95,7 +95,7 @@
                     @if($lease->description)
                     <div class="row mt-3">
                         <div class="col-12">
-                            <h6 class="text-primary">Description</h6>
+                            <h6 class="text-kp-blue">Description</h6>
                             <div class="border rounded p-3 bg-light">
                                 {{ $lease->description }}
                             </div>
@@ -108,7 +108,7 @@
             @if($lease->acceptance_certificate_path)
 <!-- Acceptance Certificate Card -->
 <div class="card shadow mb-4">
-    <div class="card-header bg-primary text-white py-3">
+    <div class="card-header bg-kp-blue text-white py-3">
         <h5 class="mb-0">
             <i class="fas fa-file-certificate me-2"></i>
             Acceptance Certificate
@@ -123,12 +123,12 @@
                         <td>
                             <a href="{{ Storage::url($lease->acceptance_certificate_path) }}"
                                target="_blank"
-                               class="btn btn-sm btn-outline-primary">
+                               class="btn btn-sm btn-outline-kp-primary">
                                 <i class="fas fa-eye me-1"></i>View Certificate
                             </a>
                             <a href="{{ Storage::url($lease->acceptance_certificate_path) }}"
                                download
-                               class="btn btn-sm btn-outline-success">
+                               class="btn btn-sm btn-outline-kp-success">
                                 <i class="fas fa-download me-1"></i>Download
                             </a>
                         </td>
@@ -140,7 +140,7 @@
                     <tr>
                         <td><strong>Status:</strong></td>
                         <td>
-                            <span class="badge bg-success">
+                            <span class="badge bg-kp-green">
                                 <i class="fas fa-check-circle me-1"></i>Generated
                             </span>
                         </td>
@@ -155,7 +155,7 @@
                 <div class="d-flex gap-2">
                     <form action="{{ route('admin.leases.regenerate-certificate', $lease->id) }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-warning btn-sm"
+                        <button type="submit" class="btn btn-kp-warning btn-sm"
                                 onclick="return confirm('Regenerate acceptance certificate? This will create a new version.')">
                             <i class="fas fa-sync-alt me-1"></i>Regenerate Certificate
                         </button>
@@ -187,7 +187,7 @@
         <p class="text-muted mb-4">No acceptance certificate has been generated for this lease.</p>
         <form action="{{ route('admin.leases.generate-certificate', $lease->id) }}" method="POST">
             @csrf
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-kp-primary">
                 <i class="fas fa-plus-circle me-2"></i>Generate Acceptance Certificate
             </button>
         </form>
@@ -198,7 +198,7 @@
             @if($lease->test_report_path)
 <!-- Test Report Information Card -->
 <div class="card shadow mb-4">
-    <div class="card-header bg-success text-white py-3">
+    <div class="card-header bg-kp-green text-white py-3">
         <h5 class="mb-0">
             <i class="fas fa-file-alt me-2"></i>
             Test Report Information
@@ -219,7 +219,7 @@
                     <tr>
                         <td><strong>File:</strong></td>
                         <td>
-                            <a href="{{ Storage::url($lease->test_report_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ Storage::url($lease->test_report_path) }}" target="_blank" class="btn btn-sm btn-outline-kp-primary">
                                 <i class="fas fa-download me-1"></i>Download Report
                             </a>
                         </td>
@@ -230,7 +230,7 @@
         @if($lease->test_report_description)
         <div class="row mt-3">
             <div class="col-12">
-                <h6 class="text-primary">Description</h6>
+                <h6 class="text-kp-blue">Description</h6>
                 <div class="border rounded p-3 bg-light">
                     {{ $lease->test_report_description }}
                 </div>
@@ -289,7 +289,7 @@
         <div class="col-lg-4">
             <!-- Actions Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white py-3">
+                <div class="card-header bg-kp-green text-white py-3">
                     <h5 class="mb-0">
                         <i class="fas fa-cogs me-2"></i>
                         Quick Actions
@@ -297,18 +297,18 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('admin.leases.edit', $lease->id) }}" class="btn btn-warning">
+                        <a href="{{ route('admin.leases.edit', $lease->id) }}" class="btn btn-kp-warning">
                             <i class="fas fa-edit me-2"></i>Edit Lease
                         </a>
                         <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#paymentModal">
                             <i class="fas fa-money-bill me-2"></i>Record Payment
                         </button>
-                        {{-- <a href="{{ route('admin.leases.invoice', $lease->id) }}" class="btn btn-primary">
+                        {{-- <a href="{{ route('admin.leases.invoice', $lease->id) }}" class="btn btn-kp-primary">
                             <i class="fas fa-file-invoice me-2"></i>Generate Invoice
                         </a> --}}
 <form action="{{ route('admin.leases.invoice.generate', $lease->id) }}" method="POST" class="d-inline">
     @csrf
-    <button type="submit" class="btn btn-primary"
+    <button type="submit" class="btn btn-kp-primary"
             onclick="return confirm('Are you sure you want to generate an invoice for this lease?')">
         <i class="fas fa-file-invoice me-2"></i>Generate Invoice
     </button>
@@ -318,19 +318,19 @@
                       @if($lease->acceptance_certificate_path)
     <a href="{{ Storage::url($lease->acceptance_certificate_path) }}"
        target="_blank"
-       class="btn btn-success">
+       class="btn btn-kp-success">
         <i class="fas fa-file-certificate me-2"></i>View Acceptance Certificate
     </a>
 @else
     <form action="{{ route('admin.leases.generate-certificate', $lease->id) }}" method="POST" class="d-grid">
         @csrf
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" class="btn btn-kp-primary">
             <i class="fas fa-file-certificate me-2"></i>Generate Acceptance Certificate
         </button>
     </form>
 @endif
                                           <!-- Upload Test Report Button -->
-                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#uploadTestReportModal">
+                        <button class="btn btn-kp-success" data-bs-toggle="modal" data-bs-target="#uploadTestReportModal">
                             <i class="fas fa-upload me-2"></i>Upload Test Report
                         </button>
 
@@ -346,7 +346,7 @@
                         <form action="{{ route('admin.leases.activate', $lease->id) }}" method="POST" class="d-grid">
                             @csrf
                             @method('PUT')
-                            <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to activate this lease?')">
+                            <button type="submit" class="btn btn-kp-success" onclick="return confirm('Are you sure you want to activate this lease?')">
                                 <i class="fas fa-check me-2"></i>Activate Lease
                             </button>
                         </form>
@@ -379,7 +379,7 @@
                         </div>
                         @endforeach
                         @if($lease->payments->count() > 5)
-                        <a href="{{ route('admin.payments.index', ['lease_id' => $lease->id]) }}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                        <a href="{{ route('admin.payments.index', ['lease_id' => $lease->id]) }}" class="btn btn-sm btn-outline-kp-primary w-100 mt-2">
                             View All Payments
                         </a>
                         @endif
@@ -419,7 +419,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Record Payment</button>
+                    <button type="submit" class="btn btn-kp-primary">Record Payment</button>
                 </div>
             </form>
         </div>
@@ -467,7 +467,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">Upload Report</button>
+                    <button type="submit" class="btn btn-kp-success">Upload Report</button>
                 </div>
             </form>
         </div>
@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 if (data.message) {
-                    messageDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                    messageDiv.innerHTML = `<div class="alert alert-kp-success">${data.message}</div>`;
                     // Reload page after 2 seconds to show the new certificate
                     setTimeout(() => {
                         window.location.reload();

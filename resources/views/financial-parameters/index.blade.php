@@ -9,13 +9,13 @@
                 <div class="card-header">
                     <h5 class="card-title">Financial Parameters</h5>
                     {{-- Fix the route name --}}
-                    <a href="{{ route('finance.financial-parameters.create') }}" class="btn btn-primary btn-sm float-right">
+                    <a href="{{ route('finance.financial-parameters.create') }}" class="btn btn-kp-primary btn-sm float-right">
                         <i class="fas fa-plus"></i> Add New Parameter
                     </a>
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
+                        <div class="alert alert-kp-success">{{ session('success') }}</div>
                     @endif
 
                     <div class="table-responsive">
@@ -44,7 +44,7 @@
                                     <td>{{ $parameter->creator->name }}</td>
                                     <td>
                                         {{-- Fix edit route --}}
-                                        <a href="{{ route('finance.financial-parameters.edit', $parameter) }}" class="btn btn-sm btn-warning">
+                                        <a href="{{ route('finance.financial-parameters.edit', $parameter) }}" class="btn btn-sm btn-kp-warning">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         {{-- Fix delete route --}}

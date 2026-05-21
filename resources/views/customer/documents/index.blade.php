@@ -14,7 +14,7 @@
                     <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                     </a>
-                    <a href="{{ route('customer.documents.create') }}" class="btn btn-primary">
+                    <a href="{{ route('customer.documents.create') }}" class="btn btn-kp-primary">
                         <i class="fas fa-upload me-2"></i>Upload New Document
                     </a>
                 </div>
@@ -23,7 +23,7 @@
             <!-- Document Statistics -->
             <div class="row mb-4">
                 <div class="col-md-3">
-                    <div class="card bg-primary text-white">
+                    <div class="card bg-kp-blue text-white">
                         <div class="card-body text-center py-3">
                             <h4 class="mb-1">{{ $documents->where('status', 'approved')->count() }}</h4>
                             <small>Approved</small>
@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card bg-warning text-dark">
+                    <div class="card bg-kp-yellow text-dark">
                         <div class="card-body text-center py-3">
                             <h4 class="mb-1">{{ $documents->where('status', 'pending_review')->count() }}</h4>
                             <small>Pending Review</small>
@@ -88,7 +88,7 @@
                                                 @elseif(str_contains($document->document_type, 'report')) fa-file-chart-line
                                                 @else fa-file
                                                 @endif
-                                                me-3 text-primary fa-lg">
+                                                me-3 text-kp-blue fa-lg">
                                             </i>
                                             <div>
                                                 <strong>{{ $document->name }}</strong>
@@ -131,13 +131,13 @@
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ route('customer.documents.download', $document) }}"
-                                               class="btn btn-outline-success"
+                                               class="btn btn-outline-kp-success"
                                                title="Download Document"
                                                data-bs-toggle="tooltip">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                             <a href="{{ route('customer.documents.show', $document) }}"
-                                               class="btn btn-outline-primary"
+                                               class="btn btn-outline-kp-primary"
                                                title="View Details"
                                                data-bs-toggle="tooltip">
                                                 <i class="fas fa-eye"></i>
@@ -168,7 +168,7 @@
                         <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
                         <h4 class="text-muted">No Documents Found</h4>
                         <p class="text-muted mb-4">You haven't uploaded any documents yet.</p>
-                        <a href="{{ route('customer.documents.create') }}" class="btn btn-primary btn-lg">
+                        <a href="{{ route('customer.documents.create') }}" class="btn btn-kp-primary btn-lg">
                             <i class="fas fa-upload me-2"></i>Upload Your First Document
                         </a>
                     </div>
@@ -180,12 +180,12 @@
             @if($documents->count() > 0)
             <div class="row mt-4">
                 <div class="col-md-6">
-                    <div class="card border-success">
+                    <div class="card border-kp-green">
                         <div class="card-body text-center">
-                            <i class="fas fa-upload fa-2x text-success mb-3"></i>
+                            <i class="fas fa-upload fa-2x text-kp-green mb-3"></i>
                             <h5>Upload Another Document</h5>
                             <p class="text-muted">Need to submit more documents?</p>
-                            <a href="{{ route('customer.documents.create') }}" class="btn btn-success">
+                            <a href="{{ route('customer.documents.create') }}" class="btn btn-kp-success">
                                 <i class="fas fa-plus me-2"></i>Upload New Document
                             </a>
                         </div>
@@ -250,10 +250,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p class="text-muted mb-0">Access documents for your projects</p>
                         </div>
                         <div>
-                            <a href="{{ route('customer.documents.requests.index') }}" class="btn btn-success">
+                            <a href="{{ route('customer.documents.requests.index') }}" class="btn btn-kp-success">
                                 <i class="fas fa-file-import me-2"></i>Request Missing Documents
                             </a>
-                            {{-- <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-primary">
+                            {{-- <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-upload me-2"></i>Upload Profile Documents
                             </a> --}}
                         </div>
@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <div class="mb-3">
                             <p class="mb-1">
-                                <i class="fas fa-route text-primary me-2"></i>
+                                <i class="fas fa-route text-kp-blue me-2"></i>
                                 {{ $lease->start_location }} → {{ $lease->end_location }}
                             </p>
                             <p class="mb-1">
@@ -296,12 +296,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <div class="d-grid gap-2">
                             <a href="{{ route('customer.documents.lease.show', $lease->id) }}"
-                               class="btn btn-primary">
+                               class="btn btn-kp-primary">
                                 <i class="fas fa-folder-open me-2"></i>View Documents
                             </a>
 
                             @if($lease->status == 'active')
-                            <button class="btn btn-outline-primary" data-bs-toggle="modal"
+                            <button class="btn btn-outline-kp-primary" data-bs-toggle="modal"
                                     data-bs-target="#requestModal{{ $lease->id }}">
                                 <i class="fas fa-file-import me-2"></i>Request More
                             </button>
@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                                    <button type="submit" class="btn btn-kp-primary">Submit Request</button>
                                 </div>
                             </form>
                         </div>
@@ -377,7 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-folder-open fa-4x text-muted mb-4"></i>
                         <h5 class="text-muted">No Projects Found</h5>
                         <p class="text-muted mb-4">You don't have any active projects yet.</p>
-                        <a href="{{ route('customer.design-requests.create') }}" class="btn btn-primary">
+                        <a href="{{ route('customer.design-requests.create') }}" class="btn btn-kp-primary">
                             <i class="fas fa-plus me-2"></i>Create Your First Project
                         </a>
                     </div>

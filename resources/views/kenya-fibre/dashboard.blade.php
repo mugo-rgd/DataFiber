@@ -5,6 +5,14 @@
 
 @section('styles')
 <style>
+    :root {
+        --kp-blue: #0066B3;
+        --kp-green: #009639;
+        --kp-yellow: #FFD700;
+        --kp-dark: #003f20;
+        --kp-light-blue: #e8f4fd;
+    }
+
     #fibre-map {
         height: 600px;
         width: 100%;
@@ -30,6 +38,58 @@
         opacity: 0.6;
     }
 
+    .border-left-primary {
+        border-left: 4px solid var(--kp-blue) !important;
+    }
+
+    .border-left-success {
+        border-left: 4px solid var(--kp-green) !important;
+    }
+
+    .border-left-info {
+        border-left: 4px solid #17a2b8 !important;
+    }
+
+    .border-left-warning {
+        border-left: 4px solid var(--kp-yellow) !important;
+    }
+
+    .text-kp-blue {
+        color: var(--kp-blue) !important;
+    }
+
+    .text-kp-green {
+        color: var(--kp-green) !important;
+    }
+
+    .bg-kp-blue {
+        background-color: var(--kp-blue) !important;
+    }
+
+    .bg-kp-green {
+        background-color: var(--kp-green) !important;
+    }
+
+    .btn-kp-primary {
+        background-color: var(--kp-blue);
+        border-color: var(--kp-blue);
+    }
+
+    .btn-kp-primary:hover {
+        background-color: #005499;
+        border-color: #005499;
+    }
+
+    .btn-kp-success {
+        background-color: var(--kp-green);
+        border-color: var(--kp-green);
+    }
+
+    .btn-kp-success:hover {
+        background-color: #00802c;
+        border-color: #00802c;
+    }
+
     .fiber-status-badge {
         padding: 4px 8px;
         border-radius: 4px;
@@ -39,7 +99,7 @@
     }
 
     .status-active {
-        background-color: #28a745;
+        background-color: var(--kp-green);
         color: white;
     }
 
@@ -49,8 +109,8 @@
     }
 
     .status-planned {
-        background-color: #ffc107;
-        color: black;
+        background-color: var(--kp-yellow);
+        color: var(--kp-dark);
     }
 
     .status-decommissioned {
@@ -141,7 +201,7 @@
 
     .node-popup h6 {
         margin: 0 0 8px 0;
-        color: #333;
+        color: var(--kp-dark);
         border-bottom: 1px solid #eee;
         padding-bottom: 5px;
     }
@@ -167,7 +227,7 @@
 
     .network-popup h6 {
         margin: 0 0 8px 0;
-        color: #333;
+        color: var(--kp-dark);
         border-bottom: 1px solid #eee;
         padding-bottom: 5px;
     }
@@ -222,7 +282,7 @@
     }
 
     .map-type-btn.active {
-        background: #007bff;
+        background: var(--kp-blue);
         color: white;
     }
 
@@ -273,8 +333,8 @@
     }
 
     .network-row.selected {
-        background-color: #e7f1ff;
-        border-left: 3px solid #007bff;
+        background-color: var(--kp-light-blue);
+        border-left: 3px solid var(--kp-blue);
     }
 
     .status-badge {
@@ -293,12 +353,12 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Kenya Fibre Network Overview</h5>
+                <h5 class="mb-0" style="color: var(--kp-blue);">Kenya Fibre Network Overview</h5>
                 <div>
-                    <button class="btn btn-sm btn-primary" onclick="refreshMap()">
+                    <button class="btn btn-sm" style="background: var(--kp-blue); color: white;" onclick="refreshMap()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
-                    <button class="btn btn-sm btn-success" onclick="exportData()">
+                    <button class="btn btn-sm" style="background: var(--kp-green); color: white;" onclick="exportData()">
                         <i class="fas fa-download"></i> Export Data
                     </button>
                 </div>
@@ -314,7 +374,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: var(--kp-blue);">
                             Total Networks</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_networks'] ?? 0 }}</div>
                     </div>
@@ -331,7 +391,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: var(--kp-green);">
                             Total Distance</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($stats['total_distance'] ?? 0, 2) }} km</div>
                     </div>
@@ -348,7 +408,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">
                             Network Nodes</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_nodes'] ?? 0 }}</div>
                     </div>
@@ -365,7 +425,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: var(--kp-yellow);">
                             Monthly Revenue</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">${{ number_format($stats['total_monthly_revenue'] ?? 0, 2) }}</div>
                         <small class="text-muted">≈ KES {{ number_format(($stats['total_monthly_revenue'] ?? 0) * 150, 2) }}</small>
@@ -385,7 +445,7 @@
         <div class="filter-panel">
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">Filter by Region</label>
+                    <label class="form-label" style="color: var(--kp-dark);">Filter by Region</label>
                     <select class="form-select" id="regionFilter" onchange="filterNetworks()">
                         <option value="">All Regions</option>
                         @foreach($regions ?? [] as $region)
@@ -394,7 +454,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Filter by Link Type</label>
+                    <label class="form-label" style="color: var(--kp-dark);">Filter by Link Type</label>
                     <select class="form-select" id="linkTypeFilter" onchange="filterNetworks()">
                         <option value="">All Types</option>
                         <option value="Metro">Metro</option>
@@ -406,7 +466,7 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Filter by Status</label>
+                    <label class="form-label" style="color: var(--kp-dark);">Filter by Status</label>
                     <select class="form-select" id="statusFilter" onchange="filterNetworks()">
                         <option value="">All Status</option>
                         <option value="Active">Active</option>
@@ -417,7 +477,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">&nbsp;</label>
-                    <button class="btn btn-primary w-100" onclick="resetFilters()">
+                    <button class="btn w-100" style="background: var(--kp-blue); color: white;" onclick="resetFilters()">
                         <i class="fas fa-redo-alt"></i> Reset Filters
                     </button>
                 </div>
@@ -446,10 +506,10 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Network List</h5>
+                <h5 class="mb-0" style="color: var(--kp-blue);">Network List</h5>
                 <div>
-                    <span class="badge bg-primary" id="networkCount">{{ count($networkPaths ?? []) }}</span>
-                    <button class="btn btn-sm btn-link" onclick="refreshList()" title="Refresh list">
+                    <span class="badge" style="background: var(--kp-blue);" id="networkCount">{{ count($networkPaths ?? []) }}</span>
+                    <button class="btn btn-sm btn-link" style="color: var(--kp-blue);" onclick="refreshList()" title="Refresh list">
                         <i class="fas fa-sync-alt"></i>
                     </button>
                 </div>
@@ -463,7 +523,7 @@
                          style="cursor: pointer; transition: background-color 0.2s;">
                         <div class="d-flex justify-content-between align-items-start">
                             <div style="flex: 1;">
-                                <strong>{{ Str::limit($network['name'] ?? 'Unnamed Network', 30) }}</strong>
+                                <strong style="color: var(--kp-dark);">{{ Str::limit($network['name'] ?? 'Unnamed Network', 30) }}</strong>
                                 <div class="mt-1">
                                     <span class="badge bg-secondary">{{ $network['region'] ?? 'Unknown' }}</span>
                                     <span class="badge bg-info">{{ number_format($network['distance'] ?? 0, 1) }} km</span>
@@ -489,7 +549,7 @@
                             </div>
                         </div>
                         <div class="mt-2 small">
-                            <span class="text-primary">
+                            <span style="color: var(--kp-green);">
                                 <i class="fas fa-dollar-sign"></i> {{ $network['currency'] ?? 'USD' }} {{ number_format($network['cost'] ?? 0, 2) }}/mo
                             </span>
                         </div>
@@ -519,9 +579,9 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-3">
-                        <strong>By Status:</strong>
+                        <strong style="color: var(--kp-dark);">By Status:</strong>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #28a745;"></div>
+                            <div class="legend-color" style="background: var(--kp-green);"></div>
                             <span>Active Network</span>
                         </div>
                         <div class="legend-item">
@@ -529,7 +589,7 @@
                             <span>Damaged Network</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #ffc107;"></div>
+                            <div class="legend-color" style="background: var(--kp-yellow);"></div>
                             <span>Planned Network</span>
                         </div>
                         <div class="legend-item">
@@ -538,7 +598,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <strong>By Link Type:</strong>
+                        <strong style="color: var(--kp-dark);">By Link Type:</strong>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #17a2b8;"></div>
                             <span>Metro Link</span>
@@ -564,22 +624,22 @@
                             <span>Non Premium</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-color" style="background: #28a745; background: linear-gradient(90deg, #28a745, #28a745);"></div>
+                            <div class="legend-color" style="background: var(--kp-green); background: linear-gradient(90deg, var(--kp-green), var(--kp-green));"></div>
                             <span>Inferred Connection</span>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <strong>By Node Type:</strong>
+                        <strong style="color: var(--kp-dark);">By Node Type:</strong>
                         <div class="legend-item">
-                            <div class="legend-dot" style="background: #007bff;"></div>
+                            <div class="legend-dot" style="background: var(--kp-blue);"></div>
                             <span>Substation (SS)</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-dot" style="background: #28a745;"></div>
+                            <div class="legend-dot" style="background: var(--kp-green);"></div>
                             <span>Office</span>
                         </div>
                         <div class="legend-item">
-                            <div class="legend-dot" style="background: #ffc107;"></div>
+                            <div class="legend-dot" style="background: var(--kp-yellow);"></div>
                             <span>Data Center</span>
                         </div>
                         <div class="legend-item">
@@ -593,7 +653,7 @@
                     </div>
                     <div class="col-md-3">
                         @if(isset($regionStats) && count($regionStats) > 0)
-                        <strong>Region Stats:</strong>
+                        <strong style="color: var(--kp-dark);">Region Stats:</strong>
                         @foreach($regionStats as $stat)
                         <div class="region-stats-item">
                             <span>{{ $stat->region }}:</span>
@@ -851,7 +911,7 @@ function connectHangingEndpoints() {
                 [endpoint.lat, endpoint.lng],
                 [nearestHub.lat, nearestHub.lng]
             ], {
-                color: '#28a745',  // Green
+                color: '#009639',  // Kenya Power Green
                 weight: 3,
                 opacity: 0.9,
                 dashArray: '10, 8'  // Dashed line
@@ -919,11 +979,11 @@ function getNodeColor(nodeType) {
         case 'Major Hub':
             return '#800080'; // Purple for major hubs
         case 'Substation':
-            return '#007bff'; // Blue
+            return '#0066B3'; // Kenya Power Blue
         case 'Office':
-            return '#28a745'; // Green
+            return '#009639'; // Kenya Power Green
         case 'Data Center':
-            return '#ffc107'; // Yellow
+            return '#FFD700'; // Kenya Power Yellow
         default:
             return '#fd7e14'; // Orange for junctions
     }
@@ -975,7 +1035,7 @@ function drawNodes() {
                             <table>
                                 <tr><td>Type:</td><td>${nodeType}</td></tr>
                                 <tr><td>Coordinates:</td><td>${lat.toFixed(6)}, ${lng.toFixed(6)}</td></tr>
-                                <tr><td>Connected Networks:</td><td id="connected-${nodeKey.replace(/[.,]/g, '_')}">Loading...</td></tr>
+                                <tr><td>Connected Networks:<td><td id="connected-${nodeKey.replace(/[.,]/g, '_')}">Loading...</td></td>
                             </table>
                         </div>
                     `);
@@ -1040,8 +1100,8 @@ function drawNetworks() {
 
             // Color based on status
             const color = network.status === 'Damaged' ? '#dc3545' :
-                        network.status === 'Planned' ? '#ffc107' :
-                        network.status === 'Decommissioned' ? '#6c757d' : '#28a745';
+                        network.status === 'Planned' ? '#FFD700' :
+                        network.status === 'Decommissioned' ? '#6c757d' : '#009639';
 
             // Get node names for start and end points
             const startNode = network.path[0].name || 'Start';
@@ -1159,7 +1219,7 @@ window.filterNetworks = function() {
                      style="cursor: pointer; transition: background-color 0.2s;">
                     <div class="d-flex justify-content-between align-items-start">
                         <div style="flex: 1;">
-                            <strong>${network.name || 'Unnamed Network'}</strong>
+                            <strong style="color: var(--kp-dark);">${network.name || 'Unnamed Network'}</strong>
                             <div class="mt-1">
                                 <span class="badge bg-secondary">${network.region || 'Unknown'}</span>
                                 <span class="badge bg-info">${(network.distance || 0).toFixed(1)} km</span>
@@ -1181,7 +1241,7 @@ window.filterNetworks = function() {
                         </div>
                     </div>
                     <div class="mt-2 small">
-                        <span class="text-primary">
+                        <span style="color: var(--kp-green);">
                             <i class="fas fa-dollar-sign"></i> ${network.currency || 'USD'} ${(network.cost || 0).toFixed(2)}/mo
                         </span>
                     </div>
@@ -1214,8 +1274,8 @@ window.filterNetworks = function() {
             if (network.path && network.path.length >= 2) {
                 const points = network.path.map(p => [parseFloat(p.lat), parseFloat(p.lng)]);
                 const color = network.status === 'Damaged' ? '#dc3545' :
-                            network.status === 'Planned' ? '#ffc107' :
-                            network.status === 'Decommissioned' ? '#6c757d' : '#28a745';
+                            network.status === 'Planned' ? '#FFD700' :
+                            network.status === 'Decommissioned' ? '#6c757d' : '#009639';
 
                 const polyline = L.polyline(points, {
                     color: color,

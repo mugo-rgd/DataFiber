@@ -72,5 +72,5 @@
         >
     </div>
 
-    <button type="submit" class="btn btn-primary">Update Profile</button>
+    <button type="submit" class="btn btn-kp-primary">Update Profile</button>
 </form>

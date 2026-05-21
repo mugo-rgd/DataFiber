@@ -12,7 +12,7 @@
                     <a href="{{ route('account-manager.tickets.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Back to Tickets
                     </a>
-                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $ticket->customer_id }}" class="btn btn-primary">
+                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $ticket->customer_id }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus"></i> New Ticket for {{ $ticket->customer->name }}
                     </a>
                 </div>
@@ -25,7 +25,7 @@
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Ticket Information</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Ticket Information</h6>
                     <div>
                         @if($ticket->isOverdue())
                         <span class="badge badge-danger mr-2">Overdue</span>
@@ -57,7 +57,7 @@
                             </p>
                             @endif
                             @if($ticket->resolved_at)
-                            <p class="mb-1 text-success">
+                            <p class="mb-1 text-kp-green">
                                 <strong>Resolved:</strong> {{ $ticket->resolved_at->format('M d, Y g:i A') }}
                             </p>
                             @endif
@@ -77,7 +77,7 @@
             <!-- Status Update -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Update Status</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Update Status</h6>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('account-manager.tickets.update-status', $ticket) }}" method="POST">
@@ -97,14 +97,14 @@
             <!-- Customer Information -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Quick Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Quick Actions</h6>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('account-manager.customers.show', $ticket->customer) }}" class="btn btn-outline-primary btn-block">
+                        <a href="{{ route('account-manager.customers.show', $ticket->customer) }}" class="btn btn-outline-kp-primary btn-block">
                             <i class="fas fa-user"></i> View Customer Profile
                         </a>
-                        <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $ticket->customer_id }}" class="btn btn-outline-success btn-block">
+                        <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $ticket->customer_id }}" class="btn btn-outline-kp-success btn-block">
                             <i class="fas fa-money-bill-wave"></i> Create Payment Followup
                         </a>
                         <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $ticket->customer_id }}" class="btn btn-outline-warning btn-block">
@@ -117,19 +117,19 @@
             <!-- Ticket Statistics -->
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Ticket Statistics</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Ticket Statistics</h6>
                 </div>
                 <div class="card-body">
                     <div class="text-center">
                         <div class="mb-3">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase">Age</div>
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase">Age</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ $ticket->created_at->diffInDays(now()) }} days
                             </div>
                         </div>
                         @if($ticket->due_date)
                         <div class="mb-3">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase">Days Until Due</div>
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase">Days Until Due</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800 {{ $ticket->isOverdue() ? 'text-danger' : '' }}">
                                 {{ max(0, now()->diffInDays($ticket->due_date, false)) }} days
                             </div>

@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="text-md-end">
-                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exportModal">
+                                <button type="button" class="btn btn-kp-success" data-bs-toggle="modal" data-bs-target="#exportModal">
                                     <i class="fas fa-download me-2"></i>Export
                                 </button>
                             </div>
@@ -40,7 +40,7 @@
                     </div>
 
                     @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
@@ -56,7 +56,7 @@
                     <!-- Summary Cards -->
                     <div class="row mb-4">
                         <div class="col-md-3">
-                            <div class="card bg-primary text-white">
+                            <div class="card bg-kp-blue text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">Total Billings</h5>
                                     <h3>{{ $billings->total() }}</h3>
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-kp-green text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">Paid</h5>
                                     <h3>{{ $billings->where('status', 'paid')->count() }}</h3>
@@ -72,7 +72,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-warning text-white">
+                            <div class="card bg-kp-yellow text-white">
                                 <div class="card-body">
                                     <h5 class="card-title">Pending</h5>
                                     <h3>{{ $billings->where('status', 'pending')->count() }}</h3>
@@ -151,13 +151,13 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="{{ route('customer.billings.download', $billing->id) }}"
-                                                   class="btn btn-sm btn-primary"
+                                                   class="btn btn-sm btn-kp-primary"
                                                    title="Download PDF">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                                 @if($billing->status === 'pending' || $billing->status === 'overdue')
                                                     <button type="button"
-                                                            class="btn btn-sm btn-success"
+                                                            class="btn btn-sm btn-kp-success"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#payModal{{ $billing->id }}"
                                                             title="Make Payment">
@@ -199,7 +199,7 @@
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                    <button type="submit" class="btn btn-success">Confirm Payment</button>
+                                                                    <button type="submit" class="btn btn-kp-success">Confirm Payment</button>
                                                                 </div>
                                                             </form>
                                                         </div>
@@ -276,7 +276,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Export</button>
+                    <button type="submit" class="btn btn-kp-primary">Export</button>
                 </div>
             </form>
         </div>

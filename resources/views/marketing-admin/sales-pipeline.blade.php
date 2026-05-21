@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Leads
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">156</div>
@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Conversion Rate
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">24%</div>
@@ -72,7 +72,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Avg Deal Size
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">$12,500</div>
@@ -91,7 +91,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Sales Pipeline Stages</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Sales Pipeline Stages</h6>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">

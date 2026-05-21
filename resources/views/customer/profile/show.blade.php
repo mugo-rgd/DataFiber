@@ -25,7 +25,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="header-title mb-0">Company Information</h4>
-                        <a href="{{ route('customer.profile.edit') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('customer.profile.edit') }}" class="btn btn-kp-primary btn-sm">
                             <i class="fas fa-edit me-1"></i>Edit Profile
                         </a>
                     </div>
@@ -131,7 +131,7 @@
                                 <h6 class="mb-0">Account Type</h6>
                                 <small class="text-muted">User role</small>
                             </div>
-                            <span class="badge bg-primary">
+                            <span class="badge bg-kp-blue">
                                 {{ ucfirst($user->role) }}
                             </span>
                         </div>
@@ -141,7 +141,7 @@
                                 <h6 class="mb-0">Active Leases</h6>
                                 <small class="text-muted">Current projects</small>
                             </div>
-                            <span class="badge bg-success rounded-pill">
+                            <span class="badge bg-kp-green rounded-pill">
                                 {{ $user->leases()->where('status', 'active')->count() }}
                             </span>
                         </div>
@@ -161,7 +161,7 @@
                                 <h6 class="mb-0">Pending Review</h6>
                                 <small class="text-muted">Awaiting approval</small>
                             </div>
-                            <span class="badge bg-warning rounded-pill">
+                            <span class="badge bg-kp-yellow rounded-pill">
                                 {{ $pendingDocs }}
                             </span>
                         </div>
@@ -190,7 +190,7 @@
                     <i class="fas fa-building fa-4x text-muted mb-4"></i>
                     <h5 class="text-muted">No Company Profile</h5>
                     <p class="text-muted mb-4">You haven't created a company profile yet.</p>
-                    <a href="{{ route('customer.profile.create') }}" class="btn btn-primary">
+                    <a href="{{ route('customer.profile.create') }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus me-2"></i>Create Company Profile
                     </a>
                 </div>
@@ -207,7 +207,7 @@
                     <h4 class="header-title mb-3">Document Requirements12</h4>
 
                     @if(count($missingDocuments) > 0)
-                        <div class="alert alert-warning">
+                        <div class="alert alert-kp-warning">
                             <h6 class="alert-heading">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 Missing Required Documents
@@ -220,7 +220,7 @@
                             </ul>
                         </div>
                     @else
-                        <div class="alert alert-success">
+                        <div class="alert alert-kp-success">
                             <i class="fas fa-check-circle me-2"></i>
                             All required documents have been uploaded.
                         </div>
@@ -228,7 +228,7 @@
 
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="mb-0">Required Documents Status</h6>
-                        <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-kp-primary btn-sm">
                             <i class="fas fa-upload me-1"></i>Upload Document
                         </a>
                     </div>
@@ -277,16 +277,16 @@
                                         @if($document)
                                             <div class="btn-group btn-group-sm">
                                                 <a href="{{ Storage::url($document->file_path) }}"
-                                                   target="_blank" class="btn btn-outline-primary">
+                                                   target="_blank" class="btn btn-outline-kp-primary">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="{{ Storage::url($document->file_path) }}"
-                                                   download class="btn btn-outline-success">
+                                                   download class="btn btn-outline-kp-success">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                             </div>
                                         @else
-                                            <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-kp-primary btn-sm">
                                                 <i class="fas fa-upload me-1"></i>Upload
                                             </a>
                                         @endif
@@ -308,7 +308,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="header-title mb-0">All Profile Documents</h4>
-                        <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-kp-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Add Document
                         </a>
                     </div>
@@ -334,7 +334,7 @@
                                                     @if($doc->mime_type == 'application/pdf')
                                                         <i class="fas fa-file-pdf text-danger fs-4"></i>
                                                     @elseif(in_array($doc->mime_type, ['image/jpeg', 'image/png']))
-                                                        <i class="fas fa-file-image text-success fs-4"></i>
+                                                        <i class="fas fa-file-image text-kp-green fs-4"></i>
                                                     @else
                                                         <i class="fas fa-file text-secondary fs-4"></i>
                                                     @endif
@@ -367,11 +367,11 @@
                                         <td>
                                             <div class="btn-group btn-group-sm">
                                                 <a href="{{ Storage::url($doc->file_path) }}"
-                                                   target="_blank" class="btn btn-outline-primary">
+                                                   target="_blank" class="btn btn-outline-kp-primary">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="{{ Storage::url($doc->file_path) }}"
-                                                   download class="btn btn-outline-success">
+                                                   download class="btn btn-outline-kp-success">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                                 @if($doc->status !== 'approved')
@@ -397,7 +397,7 @@
                             <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
                             <h5 class="text-muted">No Documents Uploaded</h5>
                             <p class="text-muted mb-3">You haven't uploaded any profile documents yet.</p>
-                            <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-primary">
+                            <a href="{{ route('customer.documents.profile.create') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-upload me-2"></i>Upload Your First Document
                             </a>
                         </div>

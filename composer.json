@@ -48,7 +48,8 @@
             "app/Helpers/NumberToWordsHelper.php",
             "app/Helpers/activity.php",
             "app/Helpers/helpers.php",
-            "app/Helpers/FinancialHelper.php"
+            "app/Helpers/FinancialHelper.php",
+            "app/Helpers/CurrencyHelper.php"
         ]
     },
     "autoload-dev": {

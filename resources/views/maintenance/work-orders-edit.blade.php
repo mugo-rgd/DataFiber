@@ -179,11 +179,11 @@
                             </div>
                             <div>
                                 @if($workOrder->status != 'completed' && $workOrder->status != 'cancelled')
-                                    <button type="submit" name="action" value="save" class="btn btn-primary">
+                                    <button type="submit" name="action" value="save" class="btn btn-kp-primary">
                                         <i class="fas fa-save me-1"></i>Update Work Order
                                     </button>
                                 @else
-                                    <button type="submit" name="action" value="save" class="btn btn-primary">
+                                    <button type="submit" name="action" value="save" class="btn btn-kp-primary">
                                         <i class="fas fa-save me-1"></i>Update Details
                                     </button>
                                 @endif

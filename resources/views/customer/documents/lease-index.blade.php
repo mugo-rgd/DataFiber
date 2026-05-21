@@ -23,7 +23,7 @@
                     <h5 class="card-title">Lease #{{ $lease->lease_number }}</h5>
                     <p class="card-text">
                         <strong>Service:</strong> {{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}<br>
-                        <strong>Status:</strong> <span class="badge bg-success">{{ ucfirst($lease->status) }}</span>
+                        <strong>Status:</strong> <span class="badge bg-kp-green">{{ ucfirst($lease->status) }}</span>
                     </p>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ route('customer.documents.download', $document) }}"
-                                               class="btn btn-outline-success" title="Download">
+                                               class="btn btn-outline-kp-success" title="Download">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                         </div>

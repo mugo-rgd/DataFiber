@@ -16,7 +16,7 @@
             </nav>
 
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h3 class="card-title mb-0">
                         <i class="fas fa-robot me-2"></i>Auto Billing Management
                     </h3>
@@ -40,7 +40,7 @@
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-kp-green text-white">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div>
@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-warning text-white">
+                            <div class="card bg-kp-yellow text-white">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div>
@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-primary text-white">
+                            <div class="card bg-kp-blue text-white">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div>
@@ -120,7 +120,7 @@
                     <div class="row">
                         <div class="col-lg-6 mb-4">
                             <div class="card h-100">
-                                <div class="card-header bg-warning text-dark">
+                                <div class="card-header bg-kp-yellow text-dark">
                                     <h5 class="card-title mb-0">
                                         <i class="fas fa-clock me-2"></i>Due Customers
                                         <span class="badge bg-dark ms-2">{{ $dueCustomers->count() ?? 0 }}</span>
@@ -144,7 +144,7 @@
                                                         <td>
                                                             <div class="d-flex align-items-center">
                                                                 <div class="avatar-sm bg-light rounded me-2">
-                                                                    <i class="fas fa-user text-primary p-2"></i>
+                                                                    <i class="fas fa-user text-kp-blue p-2"></i>
                                                                 </div>
                                                                 <div>
                                                                     <strong>{{ $customer->name }}</strong>
@@ -170,7 +170,7 @@
                                                         </td>
                                                         <td>
                                                             <a href="{{ route('finance.billing.create', ['customer_id' => $customer->id]) }}"
-                                                               class="btn btn-sm btn-primary" title="Create Bill">
+                                                               class="btn btn-sm btn-kp-primary" title="Create Bill">
                                                                 <i class="fas fa-plus"></i> Bill
                                                             </a>
                                                         </td>
@@ -181,7 +181,7 @@
                                         </div>
                                     @else
                                         <div class="text-center text-muted py-4">
-                                            <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                                            <i class="fas fa-check-circle fa-3x mb-3 text-kp-green"></i>
                                             <p class="mb-0">No due customers at the moment</p>
                                             <small>All customers are up to date with their payments</small>
                                         </div>
@@ -193,7 +193,7 @@
                         <!-- Auto Billing Customers Section -->
                         <div class="col-lg-6 mb-4">
                             <div class="card h-100">
-                                <div class="card-header bg-success text-white">
+                                <div class="card-header bg-kp-green text-white">
                                     <h5 class="card-title mb-0">
                                         <i class="fas fa-bolt me-2"></i>Auto Billing Customers
                                         <span class="badge bg-light text-dark ms-2">{{ $autoBillingCustomers->count() ?? 0 }}</span>
@@ -217,7 +217,7 @@
                                                         <td>
                                                             <div class="d-flex align-items-center">
                                                                 <div class="avatar-sm bg-light rounded me-2">
-                                                                    <i class="fas fa-user text-success p-2"></i>
+                                                                    <i class="fas fa-user text-kp-green p-2"></i>
                                                                 </div>
                                                                 <div>
                                                                     <strong>{{ $customer->name }}</strong>
@@ -245,12 +245,12 @@
                                                             <div class="btn-group btn-group-sm">
                                                                 <!-- Link to billing creation -->
                                                                 <a href="{{ route('finance.billing.createSingle', ['customer_id' => $customer->id]) }}"
-                                                                   class="btn btn-outline-success" title="Create Bill">
+                                                                   class="btn btn-outline-kp-success" title="Create Bill">
                                                                     <i class="fas fa-file-invoice"></i>
                                                                 </a>
                                                                 <!-- Use URL helper for customer view -->
                                                                 <a href="{{ url('/customers/' . $customer->id) }}"
-                                                                   class="btn btn-outline-primary" title="View Customer">
+                                                                   class="btn btn-outline-kp-primary" title="View Customer">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
                                                             </div>
@@ -345,7 +345,7 @@
                                                         <td>
                                                             <div class="btn-group btn-group-sm">
                                                                 <a href="{{ route('finance.billing.show', $billing->id) }}"
-                                                                   class="btn btn-outline-primary" title="View Billing">
+                                                                   class="btn btn-outline-kp-primary" title="View Billing">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
                                                                 <a href="{{ route('finance.billing.edit', $billing->id) }}"
@@ -378,16 +378,16 @@
                                 <a href="{{ route('finance.billing.index') }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-list me-2"></i>View All Billings
                                 </a>
-                                <a href="{{ route('finance.billing.createSingle') }}" class="btn btn-outline-primary">
+                                <a href="{{ route('finance.billing.createSingle') }}" class="btn btn-outline-kp-primary">
                                     <i class="fas fa-plus me-2"></i>Create Manual Billing
                                 </a>
 
                                 <!-- FIXED: Disabled auto-generation button instead of missing route -->
-                                <button type="button" class="btn btn-success" disabled title="Auto-generation feature coming soon">
+                                <button type="button" class="btn btn-kp-success" disabled title="Auto-generation feature coming soon">
                                     <i class="fas fa-play me-2"></i>Generate Due Invoices
                                 </button>
 
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                                <button type="button" class="btn btn-kp-warning" data-bs-toggle="modal" data-bs-target="#settingsModal">
                                     <i class="fas fa-cog me-2"></i>Auto Billing Settings
                                 </button>
                             </div>
@@ -403,7 +403,7 @@
 <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
+            <div class="modal-header bg-kp-yellow text-dark">
                 <h5 class="modal-title" id="settingsModalLabel">
                     <i class="fas fa-cog me-2"></i>Auto Billing Settings
                 </h5>
@@ -473,7 +473,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save Settings</button>
+                <button type="button" class="btn btn-kp-primary">Save Settings</button>
             </div>
         </div>
     </div>

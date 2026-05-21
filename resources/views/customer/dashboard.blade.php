@@ -49,11 +49,11 @@
     <!-- Quick Stats Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start border-primary border-4 h-100 py-2">
+            <div class="card border-start border-kp-blue border-4 h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-blue text-uppercase mb-1">
                                 Total Invoices
                             </div>
                             <div class="h5 mb-0 fw-bold text-gray-800">{{ $billingStats['total'] }}</div>
@@ -67,14 +67,14 @@
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start border-success border-4 h-100 py-2">
+            <div class="card border-start border-kp-green border-4 h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-green text-uppercase mb-1">
                                 Paid
                             </div>
-                            <div class="h5 mb-0 fw-bold text-success">{{ $billingStats['paid'] }}</div>
+                            <div class="h5 mb-0 fw-bold text-kp-green">{{ $billingStats['paid'] }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-check-circle fa-2x text-gray-300"></i>
@@ -85,14 +85,14 @@
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-start border-warning border-4 h-100 py-2">
+            <div class="card border-start border-kp-yellow border-4 h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-yellow text-uppercase mb-1">
                                 Pending
                             </div>
-                            <div class="h5 mb-0 fw-bold text-warning">{{ $billingStats['pending'] }}</div>
+                            <div class="h5 mb-0 fw-bold text-kp-yellow">{{ $billingStats['pending'] }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-clock fa-2x text-gray-300"></i>
@@ -144,13 +144,13 @@
         <div class="col-lg-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-success">
+                    <h6 class="m-0 fw-bold text-kp-green">
                         <i class="fas fa-check-circle me-2"></i>Total Paid
                     </h6>
                 </div>
                 <div class="card-body">
                     <div class="text-center py-4">
-                        <div class="display-5 fw-bold text-success mb-2">
+                        <div class="display-5 fw-bold text-kp-green mb-2">
                             KES {{ number_format($billingStats['paid_amount'], 2) }}
                         </div>
                         <p class="text-muted mb-0">Amount successfully paid</p>
@@ -163,21 +163,21 @@
     <!-- Main Action Cards -->
     <div class="row mb-4">
         <div class="col-md-3 mb-4">
-            <div class="card border-primary shadow-sm h-100">
+            <div class="card border-kp-blue shadow-sm h-100">
                 <div class="card-body text-center">
-                    <div class="icon-circle bg-primary mb-3">
+                    <div class="icon-circle bg-kp-blue mb-3">
                         <i class="fas fa-network-wired fa-2x text-white"></i>
                     </div>
-                    <h5 class="card-title text-primary">My Leases</h5>
+                    <h5 class="card-title text-kp-blue">My Leases</h5>
                     <p class="card-text text-muted">Manage your fibre leases and connections</p>
                     <div class="d-grid gap-2">
-                        <a href="{{ route('customer.leases.index') }}" class="btn btn-outline-primary">
+                        <a href="{{ route('customer.leases.index') }}" class="btn btn-outline-kp-primary">
                             <i class="fas fa-eye me-2"></i>View Leases
                         </a>
-                        <a href="{{ route('customer.design-requests.index') }}" class="btn btn-outline-primary">
+                        <a href="{{ route('customer.design-requests.index') }}" class="btn btn-outline-kp-primary">
                             <i class="fas fa-list me-2"></i>My Requests
                         </a>
-                        <a href="{{ route('customer.quotations.index') }}" class="btn btn-outline-primary">
+                        <a href="{{ route('customer.quotations.index') }}" class="btn btn-outline-kp-primary">
                             <i class="fas fa-file-invoice me-2"></i>My Quotations
                         </a>
                     </div>
@@ -186,14 +186,14 @@
         </div>
 
         <div class="col-md-3 mb-4">
-            <div class="card border-success shadow-sm h-100">
+            <div class="card border-kp-green shadow-sm h-100">
                 <div class="card-body text-center">
-                    <div class="icon-circle bg-success mb-3">
+                    <div class="icon-circle bg-kp-green mb-3">
                         <i class="fas fa-plus-circle fa-2x text-white"></i>
                     </div>
-                    <h5 class="card-title text-success">Request Fibre Routes</h5>
+                    <h5 class="card-title text-kp-green">Request Fibre Routes</h5>
                     <p class="card-text text-muted">Submit new fibre connection requests</p>
-                    <a href="{{ route('customer.design-requests.create') }}" class="btn btn-success">
+                    <a href="{{ route('customer.design-requests.create') }}" class="btn btn-kp-success">
                         <i class="fas fa-plus me-2"></i>New Request
                     </a>
                 </div>
@@ -216,14 +216,14 @@
         </div>
 
         <div class="col-md-3 mb-4">
-            <div class="card border-warning shadow-sm h-100">
+            <div class="card border-kp-yellow shadow-sm h-100">
                 <div class="card-body text-center">
-                    <div class="icon-circle bg-warning mb-3">
+                    <div class="icon-circle bg-kp-yellow mb-3">
                         <i class="fas fa-ticket-alt fa-2x text-white"></i>
                     </div>
-                    <h5 class="card-title text-warning">Support Tickets</h5>
+                    <h5 class="card-title text-kp-yellow">Support Tickets</h5>
                     <p class="card-text text-muted">Get help and support</p>
-                    <a href="{{ route('customer.tickets.create') }}" class="btn btn-warning">
+                    <a href="{{ route('customer.tickets.create') }}" class="btn btn-kp-warning">
                         <i class="fas fa-plus me-2"></i>New Ticket
                     </a>
                 </div>
@@ -297,7 +297,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">Recent Activities</h6>
+                    <h6 class="m-0 fw-bold text-kp-blue">Recent Activities</h6>
                 </div>
                 <div class="card-body">
                     @if($recentActivities->isEmpty())
@@ -331,10 +331,10 @@
     <!-- Consolidated Billings Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
-            <h6 class="m-0 fw-bold text-primary">
+            <h6 class="m-0 fw-bold text-kp-blue">
                 <i class="fas fa-file-invoice me-2"></i>Consolidated Invoices
             </h6>
-            <a href="{{ route('customer.billings.index') }}" class="btn btn-sm btn-outline-primary">
+            <a href="{{ route('customer.billings.index') }}" class="btn btn-sm btn-outline-kp-primary">
                 <i class="fas fa-list me-1"></i>View All
             </a>
         </div>
@@ -395,13 +395,13 @@
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
                                         <a href="{{ route('customer.billings.show', $billing->id) }}"
-                                           class="btn btn-outline-primary"
+                                           class="btn btn-outline-kp-primary"
                                            data-bs-toggle="tooltip"
                                            title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('customer.billings.download', $billing->id) }}"
-                                           class="btn btn-outline-success"
+                                           class="btn btn-outline-kp-success"
                                            data-bs-toggle="tooltip"
                                            title="Download PDF">
                                             <i class="fas fa-download"></i>

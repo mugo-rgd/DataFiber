@@ -23,7 +23,7 @@
                     @endif
 
                     @if (session('success'))
-                        <div class="alert alert-success">
+                        <div class="alert alert-kp-success">
                             {{ session('success') }}
                         </div>
                     @endif
@@ -72,7 +72,7 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-primary" id="updateButton">
+                        <button type="submit" class="btn btn-kp-primary" id="updateButton">
                             <i class="fas fa-save"></i> Update Parameter
                         </button>
                         <a href="{{ route('finance.financial-parameters.index') }}" class="btn btn-secondary">

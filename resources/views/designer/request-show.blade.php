@@ -10,8 +10,8 @@
             <!-- Main Header -->
             <div class="d-flex align-items-center justify-content-between mb-4">
                 <div class="d-flex align-items-center">
-                    <div class="bg-primary bg-opacity-10 p-3 rounded-3 me-4 position-relative">
-                        <i class="fas fa-drafting-compass fa-2x text-primary"></i>
+                    <div class="bg-kp-blue bg-opacity-10 p-3 rounded-3 me-4 position-relative">
+                        <i class="fas fa-drafting-compass fa-2x text-kp-blue"></i>
                         <div class="position-absolute top-0 start-100 translate-middle">
                             <span class="badge bg-{{ match($designRequest->status ?? 'pending') {
                                 'pending' => 'secondary',
@@ -41,16 +41,16 @@
                 <!-- Action Buttons -->
                 <div class="d-flex gap-2">
                     <!-- Return to Dashboard Button -->
-                    <a href="{{ route('designer.dashboard') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('designer.dashboard') }}" class="btn btn-outline-kp-primary">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                     <a href="{{ route('designer.requests') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Back to Requests
                     </a>
                     @if(($designRequest->designItems?->count() ?? 0) > 0)
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#designItemsModal">
+                    <button type="button" class="btn btn-kp-primary" data-bs-toggle="modal" data-bs-target="#designItemsModal">
                         <i class="fas fa-eye me-2"></i>View Items
-                        <span class="badge bg-white text-primary ms-2">{{ $designRequest->designItems?->count() ?? 0 }}</span>
+                        <span class="badge bg-white text-kp-blue ms-2">{{ $designRequest->designItems?->count() ?? 0 }}</span>
                     </button>
                     @endif
                 </div>
@@ -97,11 +97,11 @@
                         <div class="col-md-4 text-end">
                             <div class="d-flex justify-content-end gap-3">
                                 <div class="text-center">
-                                    <div class="h4 mb-0 fw-bold text-primary">{{ $designRequest->designItems?->count() ?? 0 }}</div>
+                                    <div class="h4 mb-0 fw-bold text-kp-blue">{{ $designRequest->designItems?->count() ?? 0 }}</div>
                                     <small class="text-muted">Items</small>
                                 </div>
                                 <div class="text-center">
-                                    <div class="h4 mb-0 fw-bold text-success">
+                                    <div class="h4 mb-0 fw-bold text-kp-green">
                                         ${{ number_format($designRequest->designItems?->sum(function($item) {
                                             return ($item->cores_required ?? 0) * ($item->unit_cost ?? 0) * ($item->distance ?? 0);
                                         }) ?? 0, 2) }}
@@ -135,7 +135,7 @@
     @endif
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
             <div class="d-flex align-items-center">
                 <i class="fas fa-check-circle me-3 fs-5"></i>
                 <div class="flex-grow-1">
@@ -154,14 +154,14 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white py-3 border-bottom-0">
                     <h5 class="mb-0 fw-semibold">
-                        <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                        <i class="fas fa-bolt text-kp-yellow me-2"></i>Quick Actions
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="d-grid">
-                                <button type="button" class="btn btn-outline-primary text-start p-3" data-bs-toggle="collapse" data-bs-target="#designItemsForm">
+                                <button type="button" class="btn btn-outline-kp-primary text-start p-3" data-bs-toggle="collapse" data-bs-target="#designItemsForm">
                                     <i class="fas fa-plus-circle me-2 fs-5"></i>
                                     <div>
                                         <strong>Add Design Items</strong>
@@ -172,7 +172,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="d-grid">
-                                <button type="button" class="btn btn-outline-success text-start p-3" data-bs-toggle="collapse" data-bs-target="#designSpecifications">
+                                <button type="button" class="btn btn-outline-kp-success text-start p-3" data-bs-toggle="collapse" data-bs-target="#designSpecifications">
                                     <i class="fas fa-pencil-ruler me-2 fs-5"></i>
                                     <div>
                                         <strong>Design Specifications</strong>
@@ -215,9 +215,9 @@
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white py-3 border-bottom-0 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 fw-semibold">
-                            <i class="fas fa-list-alt text-success me-2"></i>Design Items
+                            <i class="fas fa-list-alt text-kp-green me-2"></i>Design Items
                         </h5>
-                        <span class="badge bg-success bg-opacity-10 text-success">
+                        <span class="badge bg-kp-green bg-opacity-10 text-kp-green">
                             {{ $designRequest->designItems?->count() ?? 0 }} items
                         </span>
                     </div>
@@ -233,7 +233,7 @@
                             </div>
 
                             <div class="text-center mt-4">
-                                <button type="button" id="addItemBtn" class="btn btn-primary">
+                                <button type="button" id="addItemBtn" class="btn btn-kp-primary">
                                     <i class="fas fa-plus-circle me-2"></i>Add Design Item
                                 </button>
                             </div>
@@ -243,7 +243,7 @@
                                     <i class="fas fa-info-circle me-1"></i>
                                     Add all required fibre route components
                                 </div>
-                                <button type="submit" class="btn btn-success px-4">
+                                <button type="submit" class="btn btn-kp-success px-4">
                                     <i class="fas fa-save me-2"></i>Save Items
                                 </button>
                             </div>
@@ -257,7 +257,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white py-3 border-bottom-0">
                         <h5 class="mb-0 fw-semibold">
-                            <i class="fas fa-pencil-ruler text-warning me-2"></i>Design Specifications
+                            <i class="fas fa-pencil-ruler text-kp-yellow me-2"></i>Design Specifications
                         </h5>
                     </div>
                     <div class="card-body">
@@ -278,7 +278,7 @@
                             </div>
 
                             <div class="d-flex justify-content-end pt-3 border-top">
-                                <button type="submit" class="btn btn-primary px-4">
+                                <button type="submit" class="btn btn-kp-primary px-4">
                                     <i class="fas fa-save me-2"></i>Save Specifications
                                 </button>
                             </div>
@@ -299,7 +299,7 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('designer.dashboard') }}" class="btn btn-outline-primary text-start">
+                        <a href="{{ route('designer.dashboard') }}" class="btn btn-outline-kp-primary text-start">
                             <i class="fas fa-tachometer-alt me-2"></i>
                             PreSale Engineer 
                         </a>
@@ -319,7 +319,7 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white py-3 border-bottom-0">
                     <h5 class="mb-0 fw-semibold">
-                        <i class="fas fa-info-circle text-primary me-2"></i>Request Summary
+                        <i class="fas fa-info-circle text-kp-blue me-2"></i>Request Summary
                     </h5>
                 </div>
                 <div class="card-body">
@@ -338,7 +338,7 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted">Priority</span>
-                            <span class="badge bg-warning">Normal</span>
+                            <span class="badge bg-kp-yellow">Normal</span>
                         </div>
                     </div>
 
@@ -361,14 +361,14 @@
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white py-3 border-bottom-0">
                     <h5 class="mb-0 fw-semibold">
-                        <i class="fas fa-chart-pie text-success me-2"></i>Cost Summary
+                        <i class="fas fa-chart-pie text-kp-green me-2"></i>Cost Summary
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="space-y-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted">Total Items</span>
-                            <span class="fw-bold text-primary">{{ $designRequest->designItems?->count() ?? 0 }}</span>
+                            <span class="fw-bold text-kp-blue">{{ $designRequest->designItems?->count() ?? 0 }}</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted">Total Cores</span>
@@ -376,12 +376,12 @@
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted">Total Distance</span>
-                            <span class="fw-bold text-warning">{{ number_format($designRequest->designItems?->sum('distance') ?? 0, 2) }} km</span>
+                            <span class="fw-bold text-kp-yellow">{{ number_format($designRequest->designItems?->sum('distance') ?? 0, 2) }} km</span>
                         </div>
                         <div class="pt-2 border-top">
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="text-muted">Estimated Cost</span>
-                                <span class="h5 fw-bold text-success">
+                                <span class="h5 fw-bold text-kp-green">
                                     ${{ number_format($designRequest->designItems?->sum(function($item) {
                                         return ($item->cores_required ?? 0) * ($item->unit_cost ?? 0) * ($item->distance ?? 0);
                                     }) ?? 0, 2) }}
@@ -401,7 +401,7 @@
 <div class="modal fade" id="designItemsModal" tabindex="-1" aria-labelledby="designItemsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title fw-semibold" id="designItemsModalLabel">
                     <i class="fas fa-list-check me-2"></i>
                     Design Items - Request #{{ $designRequest->request_number }}
@@ -548,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="card-header bg-light bg-opacity-50 py-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h6 class="mb-0 fw-semibold">
-                            <i class="fas fa-cube me-2 text-primary"></i>
+                            <i class="fas fa-cube me-2 text-kp-blue"></i>
                             Design Item ${itemIndex + 1}
                         </h6>
                         ${itemIndex > 0 ? `

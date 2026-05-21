@@ -1,23 +1,12 @@
 {{-- resources/views/statements/index.blade.php --}}
 @extends('layouts.app')
 
-@php
-    function formatCurrency($amount, $currency = 'USD') {
-        if ($currency == 'USD') {
-            return '$' . number_format($amount, 2);
-        } elseif ($currency == 'KSH' || $currency == 'KES') {
-            return 'KSh ' . number_format($amount, 2);
-        } else {
-            return $currency . ' ' . number_format($amount, 2);
-        }
-    }
-@endphp
-
 @section('content')
 <div class="container">
     <div class="row mb-4">
         <div class="col-md-12">
-            <h1>Payment Statements Management</h1>
+            <h1 style="color: #0066B3;">Payment Statements Management</h1>
+            <p class="text-muted">Generate and manage customer payment statements</p>
         </div>
     </div>
 
@@ -25,8 +14,8 @@
         <!-- Monthly View Card -->
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">View Statements by Month</h5>
+                <div class="card-header" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>View Statements by Month</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('statements.monthly') }}" method="POST" id="monthlyForm">
@@ -41,7 +30,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
                             <i class="fas fa-calendar-alt"></i> View Statements
                         </button>
                     </form>
@@ -52,8 +41,8 @@
         <!-- Export Statements Card -->
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Generate & Export Statements</h5>
+                <div class="card-header" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-file-export me-2"></i>Generate & Export Statements</h5>
                 </div>
                 <div class="card-body">
                     <form id="exportForm" action="{{ route('statements.export') }}" method="POST">
@@ -84,14 +73,14 @@
 
                         <div class="row mt-3">
                             <div class="col-md-12">
-                                <div class="alert alert-info">
+                                <div class="alert" style="background: #e7f1ff; border-color: #0066B3; color: #0066B3;">
                                     <i class="fas fa-info-circle me-2"></i>
                                     Statements will show amounts in their original currency (USD or KSH)
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-success" id="generateBtn">
+                        <button type="submit" class="btn" id="generateBtn" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
                             <i class="fas fa-file-export"></i> Generate Statements
                         </button>
                     </form>
@@ -104,13 +93,13 @@
     <div id="progressSection" class="row" style="display: none;">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-info text-white">
+                <div class="card-header" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
                     <h5 class="mb-0">Generation Progress</h5>
                 </div>
                 <div class="card-body">
                     <div class="progress mb-3">
                         <div id="generationProgress" class="progress-bar progress-bar-striped progress-bar-animated"
-                             role="progressbar" style="width: 0%">0%</div>
+                             role="progressbar" style="width: 0%; background-color: #009639;">0%</div>
                     </div>
                     <div id="progressMessage" class="text-muted"></div>
                 </div>
@@ -125,6 +114,13 @@
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <style>
+    :root {
+        --kp-blue: #0066B3;
+        --kp-green: #009639;
+        --kp-yellow: #FFD700;
+        --kp-dark: #003f20;
+    }
+
     .select2-container {
         width: 100% !important;
     }
@@ -140,19 +136,72 @@
         border-radius: 4px;
     }
     .currency-ksh {
-        background-color: #ffc107;
-        color: #212529;
+        background-color: var(--kp-yellow);
+        color: var(--kp-dark);
     }
     .currency-usd {
-        background-color: #007bff;
+        background-color: var(--kp-blue);
         color: white;
     }
     .summary-stats {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%);
         color: white;
         padding: 15px;
         border-radius: 10px;
         margin-bottom: 20px;
+    }
+    .card-header {
+        border-bottom: none;
+    }
+    .btn-outline-kp-primary {
+        border-color: var(--kp-blue);
+        color: var(--kp-blue);
+    }
+    .btn-outline-kp-primary:hover {
+        background-color: var(--kp-blue);
+        border-color: var(--kp-blue);
+        color: white;
+    }
+    .btn-outline-kp-success {
+        border-color: var(--kp-green);
+        color: var(--kp-green);
+    }
+    .btn-outline-kp-success:hover {
+        background-color: var(--kp-green);
+        border-color: var(--kp-green);
+        color: white;
+    }
+    .badge.bg-info {
+        background-color: #17a2b8 !important;
+    }
+    .badge.bg-kp-green {
+        background-color: var(--kp-green) !important;
+    }
+    .badge.bg-kp-blue {
+        background-color: var(--kp-blue) !important;
+    }
+    .badge.bg-kp-yellow {
+        background-color: var(--kp-yellow) !important;
+        color: var(--kp-dark);
+    }
+    .badge.bg-danger {
+        background-color: #dc3545 !important;
+    }
+    .table-light th {
+        background-color: #f8f9fa;
+        color: var(--kp-dark);
+    }
+    .pagination .page-item.active .page-link {
+        background-color: var(--kp-blue);
+        border-color: var(--kp-blue);
+    }
+    .pagination .page-link {
+        color: var(--kp-blue);
+    }
+    .pagination .page-link:hover {
+        background-color: var(--kp-green);
+        border-color: var(--kp-green);
+        color: white;
     }
 </style>
 @endpush
@@ -399,33 +448,33 @@ function displayMonthlyStatements(data) {
     html += `
         <div class="row mb-4">
             <div class="col-md-6">
-                <div class="card bg-warning bg-opacity-10 border-warning">
+                <div class="card" style="background: rgba(255, 215, 0, 0.1); border-color: #FFD700;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="text-warning mb-1">
+                                <h6 class="mb-1" style="color: #003f20;">
                                     <i class="fas fa-coins me-2"></i>KSH Summary
                                 </h6>
-                                <h3 class="mb-0">KSh ${formatNumber(totalKsh)}</h3>
+                                <h3 class="mb-0" style="color: #003f20;">KSh ${formatNumber(totalKsh)}</h3>
                                 <small class="text-muted">${countKsh} statements</small>
                             </div>
-                            <i class="fas fa-coins fa-3x opacity-25 text-warning"></i>
+                            <i class="fas fa-coins fa-3x opacity-25" style="color: #FFD700;"></i>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="card bg-primary bg-opacity-10 border-primary">
+                <div class="card" style="background: rgba(0, 102, 179, 0.1); border-color: #0066B3;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <h6 class="text-primary mb-1">
+                                <h6 class="mb-1" style="color: #0066B3;">
                                     <i class="fas fa-dollar-sign me-2"></i>USD Summary
                                 </h6>
-                                <h3 class="mb-0">$${formatNumber(totalUsd)}</h3>
+                                <h3 class="mb-0" style="color: #0066B3;">$${formatNumber(totalUsd)}</h3>
                                 <small class="text-muted">${countUsd} statements</small>
                             </div>
-                            <i class="fas fa-dollar-sign fa-3x opacity-25 text-primary"></i>
+                            <i class="fas fa-dollar-sign fa-3x opacity-25" style="color: #0066B3;"></i>
                         </div>
                     </div>
                 </div>
@@ -435,7 +484,7 @@ function displayMonthlyStatements(data) {
 
     html += `
         <div class="card">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
                 <h5 class="mb-0">
                     <i class="fas fa-calendar-alt me-2"></i>
                     Statements for ${data.month}
@@ -482,7 +531,7 @@ function displayMonthlyStatements(data) {
             // Format amounts with correct currency
             const openingFormatted = formatCurrency(statement.opening_balance, currency);
             const closingFormatted = formatCurrency(statement.closing_balance, currency);
-            const closingClass = statement.closing_balance >= 0 ? 'text-success' : 'text-danger';
+            const closingClass = statement.closing_balance >= 0 ? 'text-kp-green' : 'text-danger';
 
             html += `
                 <tr>
@@ -510,7 +559,7 @@ function displayMonthlyStatements(data) {
                                 <i class="fas fa-download"></i>
                             </a>
                             <button type="button"
-                                    class="btn btn-success"
+                                    class="btn btn-kp-success"
                                     title="Send to Customer"
                                     onclick="sendStatement(${statement.id})"
                                     ${statement.status === 'sent' ? 'disabled' : ''}>
@@ -612,7 +661,7 @@ function displayExportResults(data) {
 
     html += `
         <div class="card">
-            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
                 <h5 class="mb-0">
                     <i class="fas fa-file-export me-2"></i>
                     Generated Statements
@@ -624,30 +673,30 @@ function displayExportResults(data) {
 
     if (data.statements && data.statements.length > 0) {
         html += `
-            <div class="alert alert-success">
+            <div class="alert alert-kp-success" style="background: #d4edda; border-color: #c3e6cb; color: #009639;">
                 <i class="fas fa-check-circle me-2"></i>
                 ${data.message}
             </div>
 
             <div class="row mb-4">
                 <div class="col-md-6">
-                    <div class="card bg-warning bg-opacity-10 border-warning">
+                    <div class="card" style="background: rgba(255, 215, 0, 0.1); border-color: #FFD700;">
                         <div class="card-body">
-                            <h6 class="text-warning">
+                            <h6 class="mb-1" style="color: #003f20;">
                                 <i class="fas fa-coins me-2"></i>KSH Summary
                             </h6>
-                            <h4 class="mb-0">KSh ${formatNumber(totalKsh)}</h4>
+                            <h4 class="mb-0" style="color: #003f20;">KSh ${formatNumber(totalKsh)}</h4>
                             <small class="text-muted">${countKsh} statements</small>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card bg-primary bg-opacity-10 border-primary">
+                    <div class="card" style="background: rgba(0, 102, 179, 0.1); border-color: #0066B3;">
                         <div class="card-body">
-                            <h6 class="text-primary">
+                            <h6 class="mb-1" style="color: #0066B3;">
                                 <i class="fas fa-dollar-sign me-2"></i>USD Summary
                             </h6>
-                            <h4 class="mb-0">$${formatNumber(totalUsd)}</h4>
+                            <h4 class="mb-0" style="color: #0066B3;">$${formatNumber(totalUsd)}</h4>
                             <small class="text-muted">${countUsd} statements</small>
                         </div>
                     </div>
@@ -711,10 +760,10 @@ function displayExportResults(data) {
                 <div class="card bg-light">
                     <div class="card-body">
                         <h6 class="mb-3">Bulk Actions</h6>
-                        <button type="button" class="btn btn-success me-2" onclick="sendAllStatements()">
+                        <button type="button" class="btn" onclick="sendAllStatements()" style="background: #009639; color: white;">
                             <i class="fas fa-envelope me-2"></i>Send All to Customers
                         </button>
-                        <button type="button" class="btn btn-primary" onclick="downloadAllStatements()">
+                        <button type="button" class="btn" onclick="downloadAllStatements()" style="background: #0066B3; color: white;">
                             <i class="fas fa-download me-2"></i>Download All (ZIP)
                         </button>
                     </div>
@@ -723,7 +772,7 @@ function displayExportResults(data) {
         `;
     } else {
         html += `
-            <div class="alert alert-warning">
+            <div class="alert alert-kp-warning">
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 ${data.message || 'No statements were generated'}
             </div>
@@ -795,8 +844,8 @@ function sendStatement(statementId) {
                 showNotification('success', 'Statement sent successfully!');
                 // Update status badge
                 $(btn).closest('tr').find('.badge')
-                    .removeClass('bg-info bg-primary bg-secondary')
-                    .addClass('bg-success')
+                    .removeClass('bg-info bg-kp-blue bg-secondary')
+                    .addClass('bg-kp-green')
                     .text('sent');
                 $(btn).prop('disabled', true);
             } else {

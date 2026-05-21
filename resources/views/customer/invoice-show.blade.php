@@ -12,7 +12,7 @@
                 </h1>
                 <div class="btn-group">
                     <a href="{{ route('customer.invoices.download', $billing->id) }}"
-                       class="btn btn-primary">
+                       class="btn btn-kp-primary">
                         <i class="fas fa-download me-2"></i>Download PDF
                     </a>
                     <a href="{{ route('customer.invoices.index') }}"
@@ -208,10 +208,10 @@
                 <div class="card-body">
                     @if($billing->status !== 'paid')
                         <a href="{{ route('customer.payments.create', $billing->id) }}"
-                           class="btn btn-success btn-block mb-3">
+                           class="btn btn-kp-success btn-block mb-3">
                             <i class="fas fa-credit-card me-2"></i>Pay Now
                         </a>
-                        <div class="alert alert-warning">
+                        <div class="alert alert-kp-warning">
                             <i class="fas fa-clock me-2"></i>
                             <strong>Due:</strong>
                             @if($billing->isOverdue())
@@ -221,7 +221,7 @@
                             @endif
                         </div>
                     @else
-                        <div class="alert alert-success">
+                        <div class="alert alert-kp-success">
                             <i class="fas fa-check-circle me-2"></i>
                             <strong>Paid:</strong>
                             @if($billing->paid_at)
@@ -288,7 +288,7 @@
                                         {{ $billing->sent_at->format('M d, Y') }}
                                     </small>
                                 @else
-                                    <small class="text-muted text-warning">Pending</small>
+                                    <small class="text-muted text-kp-yellow">Pending</small>
                                 @endif
                             </div>
                         </div>
@@ -303,7 +303,7 @@
                                         {{ $billing->paid_at->format('M d, Y') }}
                                     </small>
                                 @else
-                                    <small class="text-muted text-warning">Awaiting Payment</small>
+                                    <small class="text-muted text-kp-yellow">Awaiting Payment</small>
                                 @endif
                             </div>
                         </div>

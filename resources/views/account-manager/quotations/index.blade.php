@@ -7,13 +7,13 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-file-invoice-dollar text-primary"></i> Manage Quotations
+                <i class="fas fa-file-invoice-dollar text-kp-blue"></i> Manage Quotations
             </h1>
         </div>
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Quotations</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $quotations->total() }}</div>
                         </div>
@@ -50,7 +50,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Draft</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ $quotations->where('status', 'draft')->count() }}
@@ -88,7 +88,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Approved</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ $quotations->where('status', 'approved')->count() }}
@@ -108,7 +108,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">All Quotations</h5>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                    <button type="button" class="btn btn-kp-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fas fa-filter me-2"></i>Filter
                     </button>
                     <ul class="dropdown-menu">
@@ -193,7 +193,7 @@
                                         @if($quotation->valid_until->isPast())
                                             <br><small class="text-danger">Expired</small>
                                         @elseif($quotation->valid_until->diffInDays(now()) <= 7)
-                                            <br><small class="text-warning">Expires soon</small>
+                                            <br><small class="text-kp-yellow">Expires soon</small>
                                         @endif
                                     </td>
                                     <td>{{ $quotation->created_at->format('M d, Y') }}</td>
@@ -208,14 +208,14 @@
     @if($user->role === 'customer')
         {{-- Direct URL for customer --}}
         <a href="/customer/quotations/{{ $quotation->id }}"
-           class="btn btn-outline-primary btn-sm"
+           class="btn btn-outline-kp-primary btn-sm"
            data-bs-toggle="tooltip" title="View Quotation Details">
             <i class="fas fa-eye"></i>
         </a>
     @elseif(in_array($user->role, ['admin', 'system_admin', 'account_manager', 'accountmanager_admin']))
         {{-- Direct URL for admin --}}
         <a href="/admin/quotations/{{ $quotation->id }}"
-           class="btn btn-outline-primary btn-sm"
+           class="btn btn-outline-kp-primary btn-sm"
            data-bs-toggle="tooltip" title="View Quotation Details">
             <i class="fas fa-eye"></i>
         </a>
@@ -239,7 +239,7 @@
             @if(auth()->user()->role === 'admin' || auth()->user()->role === 'accountmanager_admin')
                 {{-- Approve button --}}
                 <button type="button"
-                        class="btn btn-outline-success btn-sm"
+                        class="btn btn-outline-kp-success btn-sm"
                         onclick="approveQuotation({{ $quotation->id }})"
                         data-bs-toggle="tooltip" title="Approve Quotation">
                     <i class="fas fa-check"></i>
@@ -300,7 +300,7 @@
                             Create your first quotation from a design request.
                         @endif
                     </p>
-                    <a href="{{ route('admin.design-requests.index') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.design-requests.index') }}" class="btn btn-kp-primary">
                         <i class="fas fa-drafting-compass me-2"></i>Go to Design Requests
                     </a>
                 </div>

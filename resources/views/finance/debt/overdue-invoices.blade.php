@@ -12,7 +12,7 @@
         // Calculate days overdue
         $daysOverdue = 0;
         $daysText = 'Not due';
-        $daysBadgeClass = 'bg-success';
+        $daysBadgeClass = 'bg-kp-green';
 
         if ($billing->due_date) {
             $dueDate = \Carbon\Carbon::parse($billing->due_date);
@@ -21,7 +21,7 @@
             if ($dueDate->isPast()) {
                 $daysOverdue = $now->diffInDays($dueDate);
                 $daysText = $daysOverdue . ' days';
-                $daysBadgeClass = $daysOverdue > 90 ? 'bg-danger' : ($daysOverdue > 30 ? 'bg-warning' : 'bg-secondary');
+                $daysBadgeClass = $daysOverdue > 90 ? 'bg-danger' : ($daysOverdue > 30 ? 'bg-kp-yellow' : 'bg-secondary');
             }
         } else {
             $daysText = 'No due date';
@@ -47,7 +47,7 @@
             <input type="checkbox" class="invoice-checkbox" value="{{ $billing->id }}">
         </td>
         <td style="width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-            <strong class="text-primary">#{{ $billing->billing_number ?? 'CONS-' . $billing->id }}</strong>
+            <strong class="text-kp-blue">#{{ $billing->billing_number ?? 'CONS-' . $billing->id }}</strong>
         </td>
         <td style="width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
             @if($billing->user)
@@ -99,7 +99,7 @@
                     <i class="fas fa-calendar-alt"></i>
                 </button>
                 <a href="{{ route('finance.debt.invoice.details', $billing->id) }}"
-                   class="btn btn-outline-primary btn-sm"
+                   class="btn btn-outline-kp-primary btn-sm"
                    title="View Details"
                    data-bs-toggle="tooltip"
                    style="padding: 0.25rem 0.5rem;">
@@ -113,7 +113,7 @@
     <tr>
         <td colspan="8" class="text-center py-4 text-muted">
             <div class="py-4">
-                <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                <i class="fas fa-check-circle fa-3x mb-3 text-kp-green"></i>
                 <h5>All Clear!</h5>
                 <p class="mb-0">No overdue invoices found.</p>
             </div>

@@ -115,7 +115,7 @@ class User extends Authenticatable
         'county_id',
         'last_login_at',
         'preferences',
-        'timezone','address','city','country',
+        'timezone','address','city','country','login_attempts', 'locked_until',
     ];
 
     protected $hidden = [
@@ -147,6 +147,7 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             // 'is_active' => 'boolean',
             'preferences' => 'array','role' => 'string',
+        'locked_until' => 'datetime',
         ];
     }
 
@@ -1332,6 +1333,68 @@ public function totalUnreadMessages()
     {
         $this->notify(new CustomResetPassword($token));
     }
+ /**
+     * Check if user account is locked
+     */
+    public function isLocked()
+    {
+        if ($this->locked_until && $this->locked_until->isFuture()) {
+            return true;
+        }
 
+        // Reset lock if expired
+        if ($this->locked_until && $this->locked_until->isPast()) {
+            $this->resetLoginAttempts();
+        }
+
+        return false;
+    }
+
+    /**
+     * Get remaining lockout time in minutes
+     */
+    public function getLockoutRemainingMinutes()
+    {
+        if ($this->locked_until && $this->locked_until->isFuture()) {
+            return now()->diffInMinutes($this->locked_until);
+        }
+        return 0;
+    }
+
+    /**
+     * Increment login attempts
+     */
+    public function incrementLoginAttempts()
+    {
+        $this->login_attempts++;
+        $this->save();
+
+        // Lock account after 5 failed attempts
+        if ($this->login_attempts >= 5) {
+            $this->lockAccount();
+        }
+    }
+
+    /**
+     * Lock account for 15 minutes
+     */
+    public function lockAccount()
+    {
+        $this->locked_until = now()->addMinutes(15);
+        $this->save();
+    }
+
+    /**
+     * Reset login attempts
+     */
+    public function resetLoginAttempts()
+    {
+        $this->login_attempts = 0;
+        $this->locked_until = null;
+        $this->save();
+    }
+
+    
 }
+
 

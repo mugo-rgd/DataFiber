@@ -73,6 +73,7 @@ class Kernel extends HttpKernel
     'check.customer.documents' => \App\Http\Middleware\CheckCustomerDocuments::class,
     'check.role' => \App\Http\Middleware\CheckRole::class,
     'profile.complete' => \App\Http\Middleware\CheckProfileCompletion::class,
+    'check.lock' => \App\Http\Middleware\CheckLoginAttempts::class,
 
     ];
 

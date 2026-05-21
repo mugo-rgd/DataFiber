@@ -15,15 +15,15 @@
                 </ol>
             </nav>
             <h1 class="h3 mb-0">
-                <i class="fas fa-chart-bar text-primary me-2"></i>Accounts Receivable Aging Report
+                <i class="fas fa-chart-bar text-kp-blue me-2"></i>Accounts Receivable Aging Report
             </h1>
             <p class="text-muted mb-0">Aging analysis by currency - USD and KSH</p>
         </div>
         <div class="btn-group">
-            <button class="btn btn-outline-primary" onclick="printReport()">
+            <button class="btn btn-outline-kp-primary" onclick="printReport()">
                 <i class="fas fa-print me-2"></i>Print
             </button>
-            <button class="btn btn-primary" onclick="exportToExcel()">
+            <button class="btn btn-kp-primary" onclick="exportToExcel()">
                 <i class="fas fa-file-excel me-2"></i>Export to Excel
             </button>
             <a href="{{ route('finance.debt.dashboard') }}" class="btn btn-secondary">
@@ -35,7 +35,7 @@
     <!-- Report Filters -->
     <div class="card shadow mb-4">
         <div class="card-header bg-white py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Report Filters</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Report Filters</h6>
         </div>
         <div class="card-body">
             <form id="agingReportFilters" class="row g-3">
@@ -74,7 +74,7 @@
                     </select>
                 </div>
                 <div class="col-md-3 offset-md-9">
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" class="btn btn-kp-primary w-100">
                         <i class="fas fa-filter me-2"></i>Apply Filters
                     </button>
                 </div>
@@ -85,7 +85,7 @@
     <!-- Summary Statistics - USD -->
     <div class="row mb-2">
         <div class="col-12">
-            <h5 class="text-primary">
+            <h5 class="text-kp-blue">
                 <i class="fas fa-dollar-sign me-2"></i>USD Summary
             </h5>
         </div>
@@ -94,7 +94,7 @@
         <div class="col-md-3">
             <div class="card border-left-primary shadow h-100">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                         Total Outstanding (USD)
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -110,7 +110,7 @@
         <div class="col-md-2">
             <div class="card border-left-success shadow h-100">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                    <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                         Current (0-30)
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -126,7 +126,7 @@
         <div class="col-md-2">
             <div class="card border-left-warning shadow h-100">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                    <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                         31-60 Days
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -175,7 +175,7 @@
     <!-- Summary Statistics - KSH -->
     <div class="row mb-2">
         <div class="col-12">
-            <h5 class="text-success">
+            <h5 class="text-kp-green">
                 <i class="fas fa-shilling-sign me-2"></i>KSH Summary
             </h5>
         </div>
@@ -184,7 +184,7 @@
         <div class="col-md-3">
             <div class="card border-left-primary shadow h-100">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                         Total Outstanding (KSH)
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -200,7 +200,7 @@
         <div class="col-md-2">
             <div class="card border-left-success shadow h-100">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                    <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                         Current (0-30)
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -216,7 +216,7 @@
         <div class="col-md-2">
             <div class="card border-left-warning shadow h-100">
                 <div class="card-body">
-                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                    <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                         31-60 Days
                     </div>
                     <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -267,7 +267,7 @@
         <div class="col-md-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Aging Distribution by Currency</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Aging Distribution by Currency</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -287,13 +287,13 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><span class="badge bg-success">Current (0-30)</span></td>
+                                            <td><span class="badge bg-kp-green">Current (0-30)</span></td>
                                             <td class="text-end">${{ number_format($summary->current_amount_usd ?? 0, 2) }}</td>
                                             <td class="text-end">KSH {{ number_format($summary->current_amount_ksh ?? 0, 2) }}</td>
                                             <td class="text-end">{{ number_format(($summary->current_amount_usd + $summary->current_amount_ksh/130) / max($summary->total_outstanding_usd + $summary->total_outstanding_ksh/130, 1) * 100, 1) }}%</td>
                                         </tr>
                                         <tr>
-                                            <td><span class="badge bg-warning">31-60 Days</span></td>
+                                            <td><span class="badge bg-kp-yellow">31-60 Days</span></td>
                                             <td class="text-end">${{ number_format($summary->days_31_60_amount_usd ?? 0, 2) }}</td>
                                             <td class="text-end">KSH {{ number_format($summary->days_31_60_amount_ksh ?? 0, 2) }}</td>
                                             <td class="text-end">{{ number_format(($summary->days_31_60_amount_usd + $summary->days_31_60_amount_ksh/130) / max($summary->total_outstanding_usd + $summary->total_outstanding_ksh/130, 1) * 100, 1) }}%</td>
@@ -331,7 +331,7 @@
         <div class="col-md-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Detailed Aging Report by Customer</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Detailed Aging Report by Customer</h6>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="showDetails" checked>
                         <label class="form-check-label" for="showDetails">Show Invoice Details</label>
@@ -377,28 +377,28 @@
                                     </td>
                                     <td class="text-end">
                                         @if($customer->current_amount_usd > 0)
-                                            <span class="text-success">${{ number_format($customer->current_amount_usd, 2) }}</span>
+                                            <span class="text-kp-green">${{ number_format($customer->current_amount_usd, 2) }}</span>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                     <td class="text-end">
                                         @if($customer->current_amount_ksh > 0)
-                                            <span class="text-success">KSH {{ number_format($customer->current_amount_ksh, 2) }}</span>
+                                            <span class="text-kp-green">KSH {{ number_format($customer->current_amount_ksh, 2) }}</span>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                     <td class="text-end">
                                         @if($customer->days_31_60_amount_usd > 0)
-                                            <span class="text-warning">${{ number_format($customer->days_31_60_amount_usd, 2) }}</span>
+                                            <span class="text-kp-yellow">${{ number_format($customer->days_31_60_amount_usd, 2) }}</span>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                     <td class="text-end">
                                         @if($customer->days_31_60_amount_ksh > 0)
-                                            <span class="text-warning">KSH {{ number_format($customer->days_31_60_amount_ksh, 2) }}</span>
+                                            <span class="text-kp-yellow">KSH {{ number_format($customer->days_31_60_amount_ksh, 2) }}</span>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
@@ -438,7 +438,7 @@
                                         <strong>KSH {{ number_format($customer->total_amount_ksh, 2) }}</strong>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-outline-primary" onclick="viewCustomerDetails({{ $customer->customer_id }})">
+                                        <button class="btn btn-sm btn-outline-kp-primary" onclick="viewCustomerDetails({{ $customer->customer_id }})">
                                             <i class="fas fa-eye"></i>
                                         </button>
                                     </td>
@@ -531,9 +531,9 @@
                                         </td>
                                         <td>
                                             @if($invoice->days_overdue <= 30)
-                                                <span class="badge bg-success">Current</span>
+                                                <span class="badge bg-kp-green">Current</span>
                                             @elseif($invoice->days_overdue <= 60)
-                                                <span class="badge bg-warning">31-60</span>
+                                                <span class="badge bg-kp-yellow">31-60</span>
                                             @elseif($invoice->days_overdue <= 90)
                                                 <span class="badge bg-danger">61-90</span>
                                             @else
@@ -561,7 +561,7 @@
         <div class="col-md-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Action Recommendations</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Action Recommendations</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -569,7 +569,7 @@
                             <div class="card border-left-warning h-100">
                                 <div class="card-body">
                                     <h6 class="card-title">
-                                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                        <i class="fas fa-exclamation-triangle text-kp-yellow me-2"></i>
                                         31-60 Days Overdue
                                     </h6>
                                     <ul class="small">

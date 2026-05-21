@@ -6,7 +6,7 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2 text-primary">
+            <h1 class="h2 text-kp-blue">
                 <i class="fas fa-chart-line me-2"></i>Collection Performance Report
             </h1>
             <p class="text-muted mb-0">Track and analyze collection performance metrics by currency</p>
@@ -15,7 +15,7 @@
             <a href="{{ route('finance.debt.dashboard') }}" class="btn btn-secondary me-2">
                 <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
             </a>
-            <button class="btn btn-success" onclick="window.print()">
+            <button class="btn btn-kp-success" onclick="window.print()">
                 <i class="fas fa-print me-1"></i>Print Report
             </button>
         </div>
@@ -44,7 +44,7 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" class="btn btn-kp-primary w-100">
                         <i class="fas fa-filter me-1"></i>Apply Filters
                     </button>
                 </div>
@@ -55,7 +55,7 @@
     <!-- Key Metrics - Dual Currency -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
+            <div class="card bg-kp-blue text-white mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -91,7 +91,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
+            <div class="card bg-kp-green text-white mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -109,7 +109,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
+            <div class="card bg-kp-yellow text-white mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>

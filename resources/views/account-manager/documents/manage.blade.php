@@ -13,7 +13,7 @@
                         <a href="{{ route('account-manager.customers.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back to Customers
                         </a>
-                        <a href="{{ route('account-manager.customers.documents.upload', $customer) }}" class="btn btn-primary">
+                        <a href="{{ route('account-manager.customers.documents.upload', $customer) }}" class="btn btn-kp-primary">
                             <i class="fas fa-upload me-1"></i> Upload New Document
                         </a>
                     </div>
@@ -107,17 +107,17 @@
                                         <td>{{ $document->created_at->format('M d, Y H:i') }}</td>
                                         <td>
                                             @if($document->is_approved)
-                                                <span class="badge bg-success">Approved</span>
+                                                <span class="badge bg-kp-green">Approved</span>
                                             @elseif($document->is_rejected)
                                                 <span class="badge bg-danger">Rejected</span>
                                             @else
-                                                <span class="badge bg-warning">Pending</span>
+                                                <span class="badge bg-kp-yellow">Pending</span>
                                             @endif
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <a href="{{ route('account-manager.customers.documents.download', [$customer, $document]) }}"
-                                                   class="btn btn-outline-primary" title="Download">
+                                                   class="btn btn-outline-kp-primary" title="Download">
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                                 @if(!$document->is_approved && !$document->is_rejected)
@@ -125,7 +125,7 @@
                                                           method="POST" class="d-inline" id="approveForm{{ $document->id }}">
                                                         @csrf
                                                         <button type="button"
-                                                                class="btn btn-outline-success"
+                                                                class="btn btn-outline-kp-success"
                                                                 title="Approve"
                                                                 onclick="confirmApprove('{{ $document->id }}')">
                                                             <i class="fas fa-check"></i>

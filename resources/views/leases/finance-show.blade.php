@@ -6,8 +6,8 @@
 @php
     $isUSD = $lease->currency === 'USD';
     $currencySymbol = $isUSD ? '$' : '';
-    $currencyClass = $isUSD ? 'text-primary' : 'text-warning';
-    $currencyBadge = $isUSD ? 'bg-primary' : 'bg-warning text-dark';
+    $currencyClass = $isUSD ? 'text-kp-blue' : 'text-kp-yellow';
+    $currencyBadge = $isUSD ? 'bg-kp-blue' : 'bg-kp-yellow text-dark';
 
     // Parse dates safely
     $startDate = $lease->start_date ? \Carbon\Carbon::parse($lease->start_date) : null;
@@ -47,13 +47,13 @@
                     @endif
 
                     @if(\Illuminate\Support\Facades\Route::has('leases.finance.edit'))
-                        <a href="{{ route('leases.finance.edit', $lease->id) }}" class="btn btn-outline-primary">
+                        <a href="{{ route('leases.finance.edit', $lease->id) }}" class="btn btn-outline-kp-primary">
                             <i class="fas fa-edit"></i> Edit
                         </a>
                     @endif
 
                     @if(\Illuminate\Support\Facades\Route::has('invoices.create'))
-                        <a href="{{ route('invoices.create', ['lease_id' => $lease->id]) }}" class="btn btn-success">
+                        <a href="{{ route('invoices.create', ['lease_id' => $lease->id]) }}" class="btn btn-kp-success">
                             <i class="fas fa-file-invoice-dollar"></i> Create Invoice
                         </a>
                     @endif
@@ -62,7 +62,7 @@
 
             <!-- Lease Info Card -->
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Lease Information</h5>
                     <div>
                         <span class="badge bg-light text-dark me-2">{{ $lease->lease_number }}</span>
@@ -142,7 +142,7 @@
                                 <p class="mb-0">
                                     <i class="fas fa-map-marker-alt text-danger"></i> {{ $lease->start_location }}
                                     <i class="fas fa-arrow-right mx-2 text-muted"></i>
-                                    <i class="fas fa-map-marker-alt text-success"></i> {{ $lease->end_location }}
+                                    <i class="fas fa-map-marker-alt text-kp-green"></i> {{ $lease->end_location }}
                                     @if($lease->distance_km)
                                         <span class="text-muted ms-2">({{ $lease->distance_km }} km)</span>
                                     @endif
@@ -157,7 +157,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
+                        <div class="card-header bg-kp-green text-white">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Financial Details</h5>
                                 <span class="badge {{ $currencyBadge }} fs-6">{{ $lease->currency }}</span>
@@ -277,9 +277,9 @@
                                                     </td>
                                                     <td>
                                                         @if($isPast)
-                                                            <span class="badge bg-success">Realized</span>
+                                                            <span class="badge bg-kp-green">Realized</span>
                                                         @elseif($isCurrent)
-                                                            <span class="badge bg-warning">In Progress</span>
+                                                            <span class="badge bg-kp-yellow">In Progress</span>
                                                         @else
                                                             <span class="badge bg-info">Projected</span>
                                                         @endif
@@ -349,7 +349,7 @@
                                 @if($startDate)
                                 <li class="mb-3">
                                     <div class="d-flex">
-                                        <div class="timeline-icon bg-success text-white">
+                                        <div class="timeline-icon bg-kp-green text-white">
                                             <i class="fas fa-calendar-check"></i>
                                         </div>
                                         <div class="ms-3">
@@ -379,7 +379,7 @@
                                 @if($nextBillingDate)
                                 <li class="mb-3">
                                     <div class="d-flex">
-                                        <div class="timeline-icon {{ $nextBillingDate < now() ? 'bg-danger' : 'bg-warning' }} text-white">
+                                        <div class="timeline-icon {{ $nextBillingDate < now() ? 'bg-danger' : 'bg-kp-yellow' }} text-white">
                                             <i class="fas fa-calendar-alt"></i>
                                         </div>
                                         <div class="ms-3">
@@ -446,10 +446,10 @@
                                         {{ $lease->currency }}
                                     </span>
                                     @if($lease->currency == 'USD')
-                                        <i class="fas fa-dollar-sign text-primary"></i>
+                                        <i class="fas fa-dollar-sign text-kp-blue"></i>
                                         <span class="ms-1">United States Dollar</span>
                                     @else
-                                        <i class="fas fa-shilling-sign text-warning"></i>
+                                        <i class="fas fa-shilling-sign text-kp-yellow"></i>
                                         <span class="ms-1">Kenyan Shilling</span>
                                     @endif
                                 </div>
@@ -489,14 +489,14 @@
                             <div class="d-grid gap-2">
                                 @if(\Illuminate\Support\Facades\Route::has('invoices.create'))
                                     <a href="{{ route('invoices.create', ['lease_id' => $lease->id]) }}"
-                                       class="btn btn-success">
+                                       class="btn btn-kp-success">
                                         <i class="fas fa-file-invoice-dollar me-2"></i> Create Invoice
                                     </a>
                                 @endif
 
                                 @if(\Illuminate\Support\Facades\Route::has('leases.finance.edit'))
                                     <a href="{{ route('leases.finance.edit', $lease->id) }}"
-                                       class="btn btn-outline-primary">
+                                       class="btn btn-outline-kp-primary">
                                         <i class="fas fa-edit me-2"></i> Update Lease
                                     </a>
                                 @endif
@@ -508,7 +508,7 @@
                                 @if($nextBillingDate && $lease->status == 'active' && \Illuminate\Support\Facades\Route::has('leases.mark-billed'))
                                 <form action="{{ route('leases.mark-billed', $lease->id) }}" method="POST" class="d-grid">
                                     @csrf
-                                    <button type="submit" class="btn btn-outline-success">
+                                    <button type="submit" class="btn btn-outline-kp-success">
                                         <i class="fas fa-check-circle me-2"></i> Mark as Billed
                                     </button>
                                 </form>
@@ -545,7 +545,7 @@
                                 <p class="mb-0">
                                     @if($lease->acceptance_certificate_path)
                                         <a href="{{ asset('storage/' . $lease->acceptance_certificate_path) }}"
-                                           target="_blank" class="btn btn-sm btn-outline-primary">
+                                           target="_blank" class="btn btn-sm btn-outline-kp-primary">
                                             <i class="fas fa-file-certificate"></i> View Certificate
                                         </a>
                                         @if($acceptanceCertificateGeneratedAt)
@@ -611,12 +611,12 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Note</button>
+                    <button type="submit" class="btn btn-kp-primary">Save Note</button>
                 </div>
             </form>
             @else
                 <div class="modal-body">
-                    <div class="alert alert-warning">
+                    <div class="alert alert-kp-warning">
                         <i class="fas fa-exclamation-triangle"></i> Note functionality is currently unavailable.
                     </div>
                 </div>

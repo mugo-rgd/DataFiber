@@ -55,7 +55,7 @@
                                         <div class="card-body text-center">
                                             <div class="mb-2">
                                                 @if($document)
-                                                    <i class="fas fa-file-alt fa-3x text-success"></i>
+                                                    <i class="fas fa-file-alt fa-3x text-kp-green"></i>
                                                 @else
                                                     <i class="fas fa-file-alt fa-3x text-secondary"></i>
                                                 @endif
@@ -139,7 +139,7 @@
 
                                                         @if($type === 'acceptance_certificate' || $type === 'conditional_certificate')
                                                             <a href="{{ route('certificates.download', ['type' => $type, 'id' => $document->id]) }}"
-                                                               class="btn btn-primary" title="Download">
+                                                               class="btn btn-kp-primary" title="Download">
                                                                 <i class="fas fa-download"></i>
                                                             </a>
                                                         @endif

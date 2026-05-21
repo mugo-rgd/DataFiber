@@ -112,7 +112,7 @@
                 <!-- Introduction -->
                 <section id="introduction" class="docs-section mb-5">
                     <div class="d-flex align-items-center mb-4">
-                        <div class="icon-lg bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+                        <div class="icon-lg bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle d-flex align-items-center justify-content-center me-3">
                             <i class="fas fa-play-circle fa-lg"></i>
                         </div>
                         <div>
@@ -130,7 +130,7 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex">
                                         <div class="me-3">
-                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                            <i class="fas fa-check-circle text-kp-green fa-lg"></i>
                                         </div>
                                         <div>
                                             <h5 class="h6 mb-2">Complete Fibre Management</h5>
@@ -141,7 +141,7 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex">
                                         <div class="me-3">
-                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                            <i class="fas fa-check-circle text-kp-green fa-lg"></i>
                                         </div>
                                         <div>
                                             <h5 class="h6 mb-2">Real-time Monitoring</h5>
@@ -152,7 +152,7 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex">
                                         <div class="me-3">
-                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                            <i class="fas fa-check-circle text-kp-green fa-lg"></i>
                                         </div>
                                         <div>
                                             <h5 class="h6 mb-2">Customer Portal</h5>
@@ -163,7 +163,7 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="d-flex">
                                         <div class="me-3">
-                                            <i class="fas fa-check-circle text-success fa-lg"></i>
+                                            <i class="fas fa-check-circle text-kp-green fa-lg"></i>
                                         </div>
                                         <div>
                                             <h5 class="h6 mb-2">API Integration</h5>
@@ -217,14 +217,14 @@
 
                 <!-- Fibre Management -->
                 <section id="fibre-management" class="docs-section mb-5">
-                    <h2 class="h3 mb-4 text-primary"><i class="fas fa-network-wired me-2"></i> Fibre Management</h2>
+                    <h2 class="h3 mb-4 text-kp-blue"><i class="fas fa-network-wired me-2"></i> Fibre Management</h2>
 
                     <div class="row">
                         <div class="col-lg-6 mb-4">
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
                                     <div class="d-flex align-items-start mb-3">
-                                        <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+                                        <div class="icon-md bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle d-flex align-items-center justify-content-center me-3">
                                             <i class="fas fa-map-marked-alt"></i>
                                         </div>
                                         <div>
@@ -234,9 +234,9 @@
                                     </div>
                                     <p>Create interactive maps of your fibre routes with detailed information about each segment, including length, capacity, and current usage.</p>
                                     <ul class="list-unstyled small">
-                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i> GPS-based route tracking</li>
-                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i> Multiple map layers</li>
-                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i> Export to CAD/GIS formats</li>
+                                        <li class="mb-1"><i class="fas fa-check text-kp-green me-2"></i> GPS-based route tracking</li>
+                                        <li class="mb-1"><i class="fas fa-check text-kp-green me-2"></i> Multiple map layers</li>
+                                        <li class="mb-1"><i class="fas fa-check text-kp-green me-2"></i> Export to CAD/GIS formats</li>
                                     </ul>
                                 </div>
                             </div>
@@ -246,7 +246,7 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
                                     <div class="d-flex align-items-start mb-3">
-                                        <div class="icon-md bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3">
+                                        <div class="icon-md bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle d-flex align-items-center justify-content-center me-3">
                                             <i class="fas fa-tools"></i>
                                         </div>
                                         <div>
@@ -256,9 +256,9 @@
                                     </div>
                                     <p>Manage all your network infrastructure including fibre cables, splice closures, distribution points, and network equipment.</p>
                                     <ul class="list-unstyled small">
-                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i> Equipment inventory</li>
-                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i> Maintenance scheduling</li>
-                                        <li class="mb-1"><i class="fas fa-check text-success me-2"></i> Spare parts management</li>
+                                        <li class="mb-1"><i class="fas fa-check text-kp-green me-2"></i> Equipment inventory</li>
+                                        <li class="mb-1"><i class="fas fa-check text-kp-green me-2"></i> Maintenance scheduling</li>
+                                        <li class="mb-1"><i class="fas fa-check text-kp-green me-2"></i> Spare parts management</li>
                                     </ul>
                                 </div>
                             </div>
@@ -300,7 +300,7 @@ console.log('Route created:', data);
 
                 <!-- FAQ Section -->
                 <section id="faq" class="docs-section">
-                    <h2 class="h3 mb-4 text-primary"><i class="fas fa-question-circle me-2"></i> Frequently Asked Questions</h2>
+                    <h2 class="h3 mb-4 text-kp-blue"><i class="fas fa-question-circle me-2"></i> Frequently Asked Questions</h2>
 
                     <div class="accordion" id="docsAccordion">
                         @foreach([
@@ -333,36 +333,36 @@ console.log('Route created:', data);
                         <div class="col-md-4 mb-4">
                             <div class="card text-center h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
-                                    <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4">
+                                    <div class="icon-xl bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4">
                                         <i class="fas fa-file-pdf fa-2x"></i>
                                     </div>
                                     <h5 class="h5 mb-3">PDF Guide</h5>
                                     <p class="text-muted small mb-4">Complete documentation in PDF format</p>
-                                    <a href="#" class="btn btn-outline-primary">Download PDF</a>
+                                    <a href="#" class="btn btn-outline-kp-primary">Download PDF</a>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-4">
                             <div class="card text-center h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
-                                    <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4">
+                                    <div class="icon-xl bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4">
                                         <i class="fas fa-video fa-2x"></i>
                                     </div>
                                     <h5 class="h5 mb-3">Video Tutorials</h5>
                                     <p class="text-muted small mb-4">Step-by-step video guides</p>
-                                    <a href="#" class="btn btn-outline-primary">Watch Videos</a>
+                                    <a href="#" class="btn btn-outline-kp-primary">Watch Videos</a>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-4">
                             <div class="card text-center h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
-                                    <div class="icon-xl bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4">
+                                    <div class="icon-xl bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4">
                                         <i class="fas fa-code fa-2x"></i>
                                     </div>
                                     <h5 class="h5 mb-3">API Reference</h5>
                                     <p class="text-muted small mb-4">Complete API documentation</p>
-                                    <a href="#" class="btn btn-outline-primary">View API Docs</a>
+                                    <a href="#" class="btn btn-outline-kp-primary">View API Docs</a>
                                 </div>
                             </div>
                         </div>
@@ -552,11 +552,11 @@ document.addEventListener('DOMContentLoaded', function() {
             navigator.clipboard.writeText(block.textContent).then(() => {
                 button.innerHTML = '<i class="fas fa-check"></i>';
                 button.classList.remove('btn-outline-light');
-                button.classList.add('btn-success');
+                button.classList.add('btn-kp-success');
 
                 setTimeout(() => {
                     button.innerHTML = '<i class="fas fa-copy"></i>';
-                    button.classList.remove('btn-success');
+                    button.classList.remove('btn-kp-success');
                     button.classList.add('btn-outline-light');
                 }, 2000);
             });

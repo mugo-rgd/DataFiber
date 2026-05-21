@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-drafting-compass text-primary"></i> Assign Design Requests
+                        <i class="fas fa-drafting-compass text-kp-blue"></i> Assign Design Requests
                     </h1>
                     <p class="text-muted">Assign design requests to regional engineers by Kenya Power region</p>
                 </div>
@@ -18,7 +18,7 @@
                     <a href="{{ route('designer.requests.index') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Back to My Requests
                     </a>
-                    <a href="{{ route('designer.dashboard') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('designer.dashboard') }}" class="btn btn-outline-kp-primary">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
                 </div>
@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Requests
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalRequestsCount }}</div>
@@ -51,7 +51,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Pending Assignment
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingRequestsCount }}</div>
@@ -87,7 +87,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Regions Covered
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ count($regions) }}</div>
@@ -106,10 +106,10 @@
         <div class="card-header bg-white py-3">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-semibold">
-                    <i class="fas fa-list me-2 text-primary"></i>All Design Requests - Assign by Region
+                    <i class="fas fa-list me-2 text-kp-blue"></i>All Design Requests - Assign by Region
                 </h5>
                 <div class="d-flex gap-2 align-items-center">
-                    <span class="badge bg-primary">
+                    <span class="badge bg-kp-blue">
                         <i class="fas fa-filter me-1"></i>
                         Filter: <span id="currentFilter">All</span>
                     </span>
@@ -143,8 +143,8 @@
             <!-- Region Filter -->
             <div class="row mb-4">
                 <div class="col-md-6">
-                    <div class="card border-primary">
-                        <div class="card-header bg-primary text-white py-2">
+                    <div class="card border-kp-blue">
+                        <div class="card-header bg-kp-blue text-white py-2">
                             <h6 class="mb-0"><i class="fas fa-map me-2"></i>Select Kenya Power Region</h6>
                         </div>
                         <div class="card-body">
@@ -159,7 +159,7 @@
                                 <div class="list-group" id="regionList">
                                     <button type="button" class="list-group-item list-group-item-action region-btn active"
                                             data-region="All">
-                                        <i class="fas fa-globe me-2 text-primary"></i>
+                                        <i class="fas fa-globe me-2 text-kp-blue"></i>
                                         All Regions
                                         <span class="badge bg-secondary float-end">
                                             {{ $totalRequestsCount }}
@@ -168,7 +168,7 @@
                                     @foreach($regions as $region)
                                         <button type="button" class="list-group-item list-group-item-action region-btn"
                                                 data-region="{{ $region }}">
-                                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                                            <i class="fas fa-map-marker-alt me-2 text-kp-blue"></i>
                                             {{ $region }}
                                             <span class="badge bg-secondary float-end">
                                                 {{ $regionRequests[$region] ?? 0 }}
@@ -182,8 +182,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="card border-success">
-                        <div class="card-header bg-success text-white py-2">
+                    <div class="card border-kp-green">
+                        <div class="card-header bg-kp-green text-white py-2">
                             <h6 class="mb-0"><i class="fas fa-user-tie me-2"></i>Available Regional Engineers</h6>
                         </div>
                         <div class="card-body">
@@ -279,7 +279,7 @@
                                 </td>
                                 {{-- <td>
                                     @if($request->region)
-                                        <span class="badge bg-primary">
+                                        <span class="badge bg-kp-blue">
                                             <i class="fas fa-map me-1"></i>
                                             {{ $request->county->region }}
                                         </span>
@@ -305,13 +305,13 @@
                                     <div class="btn-group btn-group-sm">
                                         <!-- View Request -->
                                         <a href="{{ route('designer.requests.show', $request) }}"
-                                           class="btn btn-outline-primary" title="View Details">
+                                           class="btn btn-outline-kp-primary" title="View Details">
                                             <i class="fas fa-eye"></i>
                                         </a>
 
                                         <!-- Quick Assign Button -->
                                         <button type="button"
-                                                class="btn btn-outline-success assign-single-btn"
+                                                class="btn btn-outline-kp-success assign-single-btn"
                                                 data-request-id="{{ $request->id }}"
                                                 title="Quick Assign">
                                             <i class="fas fa-user-plus"></i>
@@ -334,8 +334,8 @@
 
             <!-- Bulk Actions -->
             @if($requests->count() > 0)
-                <div class="card mt-4 border-primary">
-                    <div class="card-header bg-primary text-white py-3">
+                <div class="card mt-4 border-kp-blue">
+                    <div class="card-header bg-kp-blue text-white py-3">
                         <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>Bulk Assign Selected Requests</h5>
                     </div>
                     <div class="card-body">
@@ -348,7 +348,7 @@
                                 <button type="button" class="btn btn-outline-secondary" id="clearSelection">
                                     <i class="fas fa-times me-2"></i>Clear Selection
                                 </button>
-                                <button type="button" class="btn btn-success" id="bulkAssignBtn" disabled>
+                                <button type="button" class="btn btn-kp-success" id="bulkAssignBtn" disabled>
                                     <i class="fas fa-user-check me-2"></i>Assign Selected
                                 </button>
                             </div>
@@ -445,7 +445,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmAssign">
+                <button type="button" class="btn btn-kp-primary" id="confirmAssign">
                     <i class="fas fa-user-check me-2"></i>Assign Request(s)
                 </button>
             </div>
@@ -508,12 +508,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Remove active class from all buttons
             regionList.querySelectorAll('.region-btn').forEach(b => {
-                b.classList.remove('active', 'bg-primary', 'text-white');
+                b.classList.remove('active', 'bg-kp-blue', 'text-white');
                 b.classList.add('list-group-item-action');
             });
 
             // Add active class to clicked button
-            regionBtn.classList.add('active', 'bg-primary', 'text-white');
+            regionBtn.classList.add('active', 'bg-kp-blue', 'text-white');
             regionBtn.classList.remove('list-group-item-action');
 
             selectedRegion = regionBtn.getAttribute('data-region');
@@ -554,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const rowRegion = row.getAttribute('data-region');
             const rowStatus = row.getAttribute('data-status');
             const rowICT = row.getAttribute('data-ict');
-            const hasCounty = row.querySelector('td:nth-child(7) .badge.bg-success') !== null;
+            const hasCounty = row.querySelector('td:nth-child(7) .badge.bg-kp-green') !== null;
 
             let showRow = true;
 
@@ -758,7 +758,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <strong>${requestNumber}</strong> - ${title}
                     <div class="mt-1">
                         <span class="badge bg-secondary me-1">${projectType}</span>
-                        <span class="badge bg-primary me-1">
+                        <span class="badge bg-kp-blue me-1">
                             <i class="fas fa-map me-1"></i>${region}
                         </span>
                         <span class="badge bg-info">
@@ -956,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 /* Region badge styling */
-.badge.bg-primary {
+.badge.bg-kp-blue {
     background-color: #0d6efd !important;
 }
 

@@ -8,11 +8,11 @@
                 <div class="card-header">
                     <h3>Invoice {{ $invoice->invoice_number }}</h3>
                     <div class="btn-group">
-                        <a href="{{ route('admin.invoices.download', $invoice->id) }}" class="btn btn-primary">
+                        <a href="{{ route('admin.invoices.download', $invoice->id) }}" class="btn btn-kp-primary">
                             Download PDF
                         </a>
                         @if($invoice->status !== 'sent')
-                        <a href="{{ route('admin.invoices.send', $invoice->id) }}" class="btn btn-success">
+                        <a href="{{ route('admin.invoices.send', $invoice->id) }}" class="btn btn-kp-success">
                             Send Invoice
                         </a>
                         @endif

@@ -905,55 +905,106 @@ public function updateForAccountManager(Request $request, Lease $lease)
     /**
      * Approve lease
      */
-    public function approve(Lease $lease)
-    {
-        try {
-            // Check if lease can be approved
-            if (!in_array($lease->status, ['pending', 'draft'])) {
-                return redirect()->back()
-                    ->with('error', 'Only pending or draft leases can be approved.');
+public function approve(Lease $lease)
+{
+    try {
+        $approvedLease = DB::transaction(function () use ($lease) {
+
+            $lockedLease = Lease::where('id', $lease->id)
+                ->whereIn('status', ['pending', 'draft'])
+                ->lockForUpdate()
+                ->first();
+
+            if (!$lockedLease) {
+                return null;
             }
 
-            $lease->update([
+            $lockedLease->update([
                 'status' => 'active',
                 'approved_at' => now(),
-                'approved_by' => Auth::id()
+                'approved_by' => Auth::id(),
+                'rejection_reason' => null,
+                'rejected_at' => null,
+                'rejected_by' => null,
             ]);
 
-            return redirect()->back()
-                ->with('success', 'Lease #' . $lease->lease_number . ' approved successfully and is now active.');
+            return $lockedLease;
+        });
 
-        } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Failed to approve lease: ' . $e->getMessage());
+        if (!$approvedLease) {
+            return redirect()
+                ->route('admin.leases.index')
+                ->with('error', 'Only pending or draft leases can be approved.');
         }
+
+        return redirect()
+            ->route('admin.leases.index', $approvedLease)
+            ->with('success', 'Lease #' . $approvedLease->lease_number . ' approved successfully.');
+
+          
+    } catch (\Throwable $e) {
+        Log::error('Lease approval failed', [
+            'lease_id' => $lease->id,
+            'error' => $e->getMessage(),
+        ]);
+
+        return redirect()
+            ->route('admin.leases.index')
+            ->with('error', 'Failed to approve lease. Please try again.');
     }
+}
 
-    /**
-     * Generate PDF for lease
-     */
-    // public function generatePdf(Lease $lease)
-    // {
-    //     try {
-    //         // Load the lease with customer relationship
-    //         $lease->load('customer');
+   public function reject(Request $request, Lease $lease)
+{
+    $validated = $request->validate([
+        'rejection_reason' => 'required|string|min:5|max:1000',
+    ]);
 
-    //         // Generate PDF using the view
-    //         $pdf = PDF::loadView('admin.leases.pdf', compact('lease'));
+    try {
+        $rejectedLease = DB::transaction(function () use ($lease, $validated) {
 
-    //         // Set PDF options
-    //         $pdf->setPaper('A4', 'portrait');
-    //         $pdf->setOption('dpi', 150);
-    //         $pdf->setOption('defaultFont', 'DejaVu Sans');
+            $lockedLease = Lease::where('id', $lease->id)
+                ->whereIn('status', ['pending', 'draft'])
+                ->lockForUpdate()
+                ->first();
 
-    //         // Return PDF for download
-    //         return $pdf->download('lease-' . $lease->lease_number . '.pdf');
+            if (!$lockedLease) {
+                return null;
+            }
 
-    //     } catch (\Exception $e) {
-    //         return redirect()->route('admin.leases.index')
-    //             ->with('error', 'Failed to generate PDF: ' . $e->getMessage());
-    //     }
-    // }
+            $lockedLease->update([
+                'status' => 'rejected',
+                'rejection_reason' => $validated['rejection_reason'],
+                'rejected_at' => now(),
+                'rejected_by' => Auth::id(),
+                'approved_at' => null,
+                'approved_by' => null,
+            ]);
+
+            return $lockedLease;
+        });
+
+        if (!$rejectedLease) {
+            return redirect()
+                ->route('admin.leases.index')
+                ->with('error', 'Only pending or draft leases can be rejected.');
+        }
+
+        return redirect()
+            ->route('admin.leases.index')
+            ->with('success', 'Lease #' . $rejectedLease->lease_number . ' has been rejected.');
+
+    } catch (\Throwable $e) {
+        Log::error('Lease rejection failed', [
+            'lease_id' => $lease->id,
+            'error' => $e->getMessage(),
+        ]);
+
+        return redirect()
+            ->route('admin.leases.index')
+            ->with('error', 'Failed to reject lease. Please try again.');
+    }
+}
 
     /**
      * Generate acceptance certificate PDF

@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">
-            <i class="fas fa-exchange-alt text-primary me-2"></i>Currency Analysis Report
+            <i class="fas fa-exchange-alt text-kp-blue me-2"></i>Currency Analysis Report
         </h1>
         <a href="{{ route('finance.debt.dashboard') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
@@ -22,9 +22,9 @@
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="card-title mb-0">
                             @if($summary->currency == 'USD')
-                                <i class="fas fa-dollar-sign text-primary"></i> US Dollar (USD)
+                                <i class="fas fa-dollar-sign text-kp-blue"></i> US Dollar (USD)
                             @else
-                                <i class="fas fa-shilling-sign text-success"></i> Kenyan Shilling (KSH)
+                                <i class="fas fa-shilling-sign text-kp-green"></i> Kenyan Shilling (KSH)
                             @endif
                         </h5>
                         <span class="badge bg-{{ $summary->currency == 'USD' ? 'primary' : 'success' }} fs-6">
@@ -46,7 +46,7 @@
                             </div>
                             <div class="mb-3">
                                 <small class="text-muted d-block">Total Paid</small>
-                                <strong class="h5 text-success">
+                                <strong class="h5 text-kp-green">
                                     @if($summary->currency == 'USD')
                                         ${{ number_format($summary->total_paid, 2) }}
                                     @else
@@ -73,7 +73,7 @@
                                         ($summary->total_paid / $summary->total_billed) * 100 : 0;
                                 @endphp
                                 <div class="progress mb-1" style="height: 8px;">
-                                    <div class="progress-bar bg-success" style="width: {{ $collectionRate }}%"></div>
+                                    <div class="progress-bar bg-kp-green" style="width: {{ $collectionRate }}%"></div>
                                 </div>
                                 <small class="text-muted">{{ number_format($collectionRate, 1) }}%</small>
                             </div>

@@ -15,7 +15,7 @@
 
             <!-- Design Request Details Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-info-circle me-2"></i>
                         Request Information #{{ $designRequest->id }}
@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-primary">Request Details</h6>
+                            <h6 class="text-kp-blue">Request Details</h6>
                             <table class="table table-borderless table-sm">
                                 <tr>
                                     <td><strong>ID:</strong></td>
@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <h6 class="text-primary">Customer Information</h6>
+                            <h6 class="text-kp-blue">Customer Information</h6>
                             @if($designRequest->customer)
                                 <table class="table table-borderless table-sm">
                                     <tr>
@@ -93,7 +93,7 @@
                     <div class="row mt-4">
                         @if($designRequest->description)
                         <div class="col-12 mb-3">
-                            <h6 class="text-primary">Description</h6>
+                            <h6 class="text-kp-blue">Description</h6>
                             <div class="border rounded p-3 bg-light">
                                 {{ $designRequest->description }}
                             </div>
@@ -102,7 +102,7 @@
 
                         @if($designRequest->address)
                         <div class="col-12">
-                            <h6 class="text-primary">Address/Location</h6>
+                            <h6 class="text-kp-blue">Address/Location</h6>
                             <div class="border rounded p-3 bg-light">
                                 <i class="fas fa-map-marker-alt text-danger me-2"></i>
                                 {{ $designRequest->address }}
@@ -121,10 +121,10 @@
                         <a href="{{ route('surveyor.routes') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back to Routes
                         </a>
-                        <a href="#" class="btn btn-success">
+                        <a href="#" class="btn btn-kp-success">
                             <i class="fas fa-map-marked-alt me-1"></i> Get Directions
                         </a>
-                        <button class="btn btn-warning">
+                        <button class="btn btn-kp-warning">
                             <i class="fas fa-edit me-1"></i> Update Status
                         </button>
                         <button class="btn btn-info">

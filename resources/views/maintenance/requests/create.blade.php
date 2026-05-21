@@ -129,7 +129,7 @@
                             <a href="{{ url()->previous() }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-1"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-save me-1"></i>Create Maintenance Request
                             </button>
                         </div>

@@ -16,7 +16,7 @@
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <div>
             <h4 class="mb-0">
-                <i class="fas fa-network-wired me-2 text-warning"></i> NFP Compliance Preview
+                <i class="fas fa-network-wired me-2 text-kp-yellow"></i> NFP Compliance Preview
             </h4>
             <small class="text-muted">Return ID: #{{ $record->id }} | Created: {{ $record->created_at->format('d M Y H:i') }}</small>
         </div>
@@ -25,10 +25,10 @@
             <span class="badge
                 @if($record->status == 'draft') bg-secondary
                 @elseif($record->status == 'generated') bg-dark
-                @elseif($record->status == 'submitted') bg-warning text-dark
+                @elseif($record->status == 'submitted') bg-kp-yellow text-dark
                 @elseif($record->status == 'submitted_to_cak') bg-info
-                @elseif($record->status == 'under_review') bg-primary
-                @elseif($record->status == 'approved') bg-success
+                @elseif($record->status == 'under_review') bg-kp-blue
+                @elseif($record->status == 'approved') bg-kp-green
                 @elseif($record->status == 'rejected') bg-danger
                 @else bg-secondary @endif
                 p-2 fs-6">
@@ -55,23 +55,23 @@
     <div class="card shadow-sm mb-3 bg-light">
         <div class="card-body py-2">
             <div class="d-flex justify-content-between align-items-center flex-wrap small">
-                <div class="text-center {{ $record->status != 'draft' ? 'text-success' : 'text-muted' }}">
+                <div class="text-center {{ $record->status != 'draft' ? 'text-kp-green' : 'text-muted' }}">
                     <i class="fas fa-pencil-alt"></i> Draft
                 </div>
                 <div class="text-muted">→</div>
-                <div class="text-center {{ in_array($record->status, ['submitted', 'generated']) ? 'text-warning' : ($record->status != 'draft' ? 'text-success' : 'text-muted') }}">
+                <div class="text-center {{ in_array($record->status, ['submitted', 'generated']) ? 'text-kp-yellow' : ($record->status != 'draft' ? 'text-kp-green' : 'text-muted') }}">
                     <i class="fas fa-file-pdf"></i> Generated
                 </div>
                 <div class="text-muted">→</div>
-                <div class="text-center {{ $record->status == 'submitted' ? 'text-warning' : ($record->status != 'draft' && $record->status != 'generated' ? 'text-success' : 'text-muted') }}">
+                <div class="text-center {{ $record->status == 'submitted' ? 'text-kp-yellow' : ($record->status != 'draft' && $record->status != 'generated' ? 'text-kp-green' : 'text-muted') }}">
                     <i class="fas fa-paper-plane"></i> Submitted
                 </div>
                 <div class="text-muted">→</div>
-                <div class="text-center {{ in_array($record->status, ['submitted_to_cak', 'under_review']) ? 'text-info' : ($record->status == 'approved' ? 'text-success' : 'text-muted') }}">
+                <div class="text-center {{ in_array($record->status, ['submitted_to_cak', 'under_review']) ? 'text-info' : ($record->status == 'approved' ? 'text-kp-green' : 'text-muted') }}">
                     <i class="fas fa-clock"></i> Under Review
                 </div>
                 <div class="text-muted">→</div>
-                <div class="text-center {{ $record->status == 'approved' ? 'text-success' : ($record->status == 'rejected' ? 'text-danger' : 'text-muted') }}">
+                <div class="text-center {{ $record->status == 'approved' ? 'text-kp-green' : ($record->status == 'rejected' ? 'text-danger' : 'text-muted') }}">
                     <i class="fas {{ $record->status == 'approved' ? 'fa-check-circle' : 'fa-times-circle' }}"></i>
                     {{ $record->status == 'approved' ? 'Approved' : ($record->status == 'rejected' ? 'Rejected' : 'Final') }}
                 </div>
@@ -82,7 +82,7 @@
     <!-- BASIC INFO CARD -->
     <div class="card shadow-sm mb-3">
         <div class="card-header bg-white">
-            <strong><i class="fas fa-info-circle me-1 text-warning"></i> Basic Information</strong>
+            <strong><i class="fas fa-info-circle me-1 text-kp-yellow"></i> Basic Information</strong>
         </div>
         <div class="card-body">
             <div class="row">
@@ -192,7 +192,7 @@
             <div class="d-flex flex-wrap gap-2">
 
                 <!-- PRINT / DOWNLOAD PDF -->
-                <a href="{{ route('nfp.print', $record->id) }}" target="_blank" class="btn btn-primary">
+                <a href="{{ route('nfp.print', $record->id) }}" target="_blank" class="btn btn-kp-primary">
                     <i class="fas fa-print me-1"></i> Print / Download PDF
                 </a>
 
@@ -208,7 +208,7 @@
 
                 <!-- EDIT (only for draft, generated, or rejected) -->
                 @if(in_array($record->status, ['draft', 'generated', 'rejected']))
-                    <a href="{{ route('nfp.edit', $record->id) }}" class="btn btn-warning">
+                    <a href="{{ route('nfp.edit', $record->id) }}" class="btn btn-kp-warning">
                         <i class="fas fa-edit me-1"></i> Edit Return
                     </a>
                 @endif
@@ -218,7 +218,7 @@
                     <form method="POST" action="{{ route('nfp.submit', $record->id) }}" class="d-inline"
                           onsubmit="return confirm('Submit this NFP return for processing?\n\nYou will be able to generate a PDF after submission.')">
                         @csrf
-                        <button class="btn btn-success">
+                        <button class="btn btn-kp-success">
                             <i class="fas fa-check-circle me-1"></i> Submit Return
                         </button>
                     </form>
@@ -229,7 +229,7 @@
                     <form method="POST" action="{{ route('nfp.submit-to-cak', $record->id) }}" class="d-inline"
                           onsubmit="return confirm('Submit this return to the Communications Authority of Kenya for review?\n\nThis action cannot be undone.')">
                         @csrf
-                        <button class="btn btn-success">
+                        <button class="btn btn-kp-success">
                             <i class="fas fa-paper-plane me-1"></i> Submit to CAK
                         </button>
                     </form>
@@ -248,7 +248,7 @@
 
                 <!-- CHECK CAK STATUS -->
                 @if(in_array($record->status, ['submitted_to_cak', 'under_review']))
-                    <button type="button" class="btn btn-outline-primary" onclick="checkCAKStatus({{ $record->id }})">
+                    <button type="button" class="btn btn-outline-kp-primary" onclick="checkCAKStatus({{ $record->id }})">
                         <i class="fas fa-sync-alt me-1"></i> Check CAK Status
                     </button>
                 @endif
@@ -281,7 +281,7 @@
     @if($infrastructure && count($infrastructure) > 0)
     <div class="card shadow-sm mb-3">
         <div class="card-header bg-white">
-            <strong><i class="fas fa-tower-broadcast me-1 text-warning"></i> Infrastructure Deployed</strong>
+            <strong><i class="fas fa-tower-broadcast me-1 text-kp-yellow"></i> Infrastructure Deployed</strong>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -313,7 +313,7 @@
     <!-- FORM DATA DISPLAY (PARSED FROM JSON) -->
     <div class="card shadow-sm">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <strong><i class="fas fa-database me-1 text-warning"></i> Captured Form Data</strong>
+            <strong><i class="fas fa-database me-1 text-kp-yellow"></i> Captured Form Data</strong>
             <button class="btn btn-sm btn-outline-secondary" onclick="toggleRawData()">
                 <i class="fas fa-code"></i> Toggle Raw JSON
             </button>
@@ -388,12 +388,12 @@
                 @foreach($attachments as $name => $path)
                     <div class="col-md-4 mb-2">
                         <div class="border rounded p-2">
-                            <i class="fas fa-file-{{ Str::endsWith($path, '.pdf') ? 'pdf text-danger' : 'image text-primary' }} me-2"></i>
+                            <i class="fas fa-file-{{ Str::endsWith($path, '.pdf') ? 'pdf text-danger' : 'image text-kp-blue' }} me-2"></i>
                             <strong>{{ ucwords(str_replace('_', ' ', $name)) }}</strong>
                             <br>
                             <small class="text-muted">{{ basename($path) }}</small>
                             <br>
-                            <a href="{{ Storage::url($path) }}" target="_blank" class="btn btn-sm btn-outline-primary mt-1">
+                            <a href="{{ Storage::url($path) }}" target="_blank" class="btn btn-sm btn-outline-kp-primary mt-1">
                                 <i class="fas fa-download"></i> Download
                             </a>
                         </div>
@@ -429,7 +429,7 @@
                 <div class="row mt-2">
                     <div class="col-md-4">
                         <label class="text-muted">CAK Approved:</label>
-                        <div class="text-success">{{ \Carbon\Carbon::parse($record->cak_approved_at)->format('d M Y H:i:s') }}</div>
+                        <div class="text-kp-green">{{ \Carbon\Carbon::parse($record->cak_approved_at)->format('d M Y H:i:s') }}</div>
                     </div>
                 </div>
             @endif

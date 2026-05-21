@@ -8,7 +8,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-drafting-compass text-primary"></i> Manage Design Requests
+                <i class="fas fa-drafting-compass text-kp-blue"></i> Manage Design Requests
             </h1>
             <p class="text-muted">Assign design requests to available designers</p>
         </div>
@@ -52,7 +52,7 @@
 
     <!-- Flash Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -62,7 +62,7 @@
     <div class="row mb-5">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h5 class="mb-0">
                         <i class="fas fa-clock me-2"></i>Pending Design Requests
                         <span class="badge bg-dark ms-2">{{ $pendingRequests->count() }}</span>
@@ -108,7 +108,7 @@
                                             <td>{{ $request->created_at->format('M d, Y') }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
-                                                    <button class="btn btn-primary btn-sm"
+                                                    <button class="btn btn-kp-primary btn-sm"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#assignModal{{ $request->id }}">
                                                         <i class="fas fa-user-plus me-1"></i>Assign
@@ -125,7 +125,7 @@
                                                     <!-- Quote Button -->
 <button class="btn btn-outline-info btn-sm">
 <a href="{{ route('admin.quotations.create', ['design_request_id' => $request->id]) }}"
-   class="btn btn-success btn-sm">
+   class="btn btn-kp-success btn-sm">
     <i class="fas fa-file-invoice-dollar me-1"></i>Quote
 
 </a>
@@ -162,7 +162,7 @@
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-primary">Assign Designer</button>
+                                                            <button type="submit" class="btn btn-kp-primary">Assign Designer</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -187,7 +187,7 @@
                                                             <div class="col-md-6">
                                                                 <p><strong>Requested:</strong> {{ $request->created_at->format('M d, Y H:i') }}</p>
                                                                 <p><strong>Status:</strong>
-                                                                    <span class="badge bg-warning">Pending Assignment</span>
+                                                                    <span class="badge bg-kp-yellow">Pending Assignment</span>
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -211,7 +211,7 @@
                         </div>
                     @else
                         <div class="text-center py-4">
-                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <i class="fas fa-check-circle fa-3x text-kp-green mb-3"></i>
                             <p class="text-muted">No pending design requests. All caught up!</p>
                         </div>
                     @endif
@@ -224,7 +224,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-user-check me-2"></i>Assigned Design Requests
                         <span class="badge bg-light text-dark ms-2">{{ $assignedRequests->count() }}</span>
@@ -284,14 +284,14 @@
                                                               method="POST" class="d-inline">
                                                             @csrf
                                                             @method('POST')
-                                                            <button type="submit" class="btn btn-warning btn-sm"
+                                                            <button type="submit" class="btn btn-kp-warning btn-sm"
                                                                     onclick="return confirm('Are you sure you want to unassign this request?')">
                                                                 <i class="fas fa-user-times me-1"></i>Unassign
                                                             </button>
                                                         </form>
                                                     @endif
 
-                                                    <button class="btn btn-outline-primary btn-sm"
+                                                    <button class="btn btn-outline-kp-primary btn-sm"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#detailsModal{{ $request->id }}">
                                                         <i class="fas fa-eye me-1"></i>View
@@ -299,7 +299,7 @@
 
                                                     <!-- Quote Button -->
                                                     <a href="{{ route('admin.quotations.create', ['design_request_id' => $request->id]) }}"
-                                                       class="btn btn-success btn-sm">
+                                                       class="btn btn-kp-success btn-sm">
                                                         <i class="fas fa-file-invoice-dollar me-1"></i>Quote
                                                     </a>
                                                 </div>
@@ -327,11 +327,11 @@
 <div class="card shadow mb-4">
     <div class="card-header bg-white py-3">
         <h5 class="mb-0">
-            <i class="fas fa-user-check text-primary"></i> Survey Management
+            <i class="fas fa-user-check text-kp-blue"></i> Survey Management
             @if($designRequest->surveyor)
-                <span class="badge bg-success ms-2">Assigned</span>
+                <span class="badge bg-kp-green ms-2">Assigned</span>
             @else
-                <span class="badge bg-warning ms-2">Pending Assignment</span>
+                <span class="badge bg-kp-yellow ms-2">Pending Assignment</span>
             @endif
         </h5>
     </div>
@@ -343,7 +343,7 @@
                 <div class="col-md-6">
                     <h6>Assigned Surveyor:</h6>
                     <div class="d-flex align-items-center mb-3">
-                        <div class="avatar bg-primary text-white rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                        <div class="avatar bg-kp-blue text-white rounded-circle me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                             {{ substr($designRequest->surveyor->user->name, 0, 1) }}
                         </div>
                         <div>

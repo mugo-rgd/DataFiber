@@ -56,7 +56,7 @@ function getCurrentLocation() {
                 document.getElementById('latitude').value = position.coords.latitude.toFixed(7);
                 document.getElementById('longitude').value = position.coords.longitude.toFixed(7);
                 statusSpan.textContent = '✓ Location captured';
-                statusSpan.className = 'ms-2 small text-success';
+                statusSpan.className = 'ms-2 small text-kp-green';
                 setTimeout(() => { statusSpan.textContent = ''; }, 3000);
             },
             function(error) {

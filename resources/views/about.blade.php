@@ -17,7 +17,7 @@
                 <h1 class="display-4 fw-bold text-white mb-4">Revolutionizing Fibre Infrastructure Management</h1>
                 <p class="lead text-light opacity-85 mb-4">We are pioneers in creating intelligent solutions for fibre network operators, ISPs, and telecommunications companies across Africa and beyond.</p>
                 <div class="d-flex gap-3">
-                    <a href="{{ route('contact') }}" class="btn btn-primary btn-lg px-4">
+                    <a href="{{ route('contact') }}" class="btn btn-kp-primary btn-lg px-4">
                         <i class="fas fa-envelope me-2"></i> Contact Us
                     </a>
                     <a href="{{ route('documentation') }}" class="btn btn-outline-light btn-lg px-4">
@@ -29,16 +29,16 @@
                 <div class="text-center">
                     <div class="network-visualization position-relative d-inline-block">
                         <div class="node node-center">
-                            <i class="fas fa-network-wired fa-3x text-primary"></i>
+                            <i class="fas fa-network-wired fa-3x text-kp-blue"></i>
                         </div>
                         <div class="node node-top">
-                            <i class="fas fa-server fa-2x text-success"></i>
+                            <i class="fas fa-server fa-2x text-kp-green"></i>
                         </div>
                         <div class="node node-right">
                             <i class="fas fa-cloud fa-2x text-info"></i>
                         </div>
                         <div class="node node-bottom">
-                            <i class="fas fa-users fa-2x text-warning"></i>
+                            <i class="fas fa-users fa-2x text-kp-yellow"></i>
                         </div>
                         <div class="node node-left">
                             <i class="fas fa-chart-line fa-2x text-danger"></i>
@@ -60,14 +60,14 @@
                     <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80"
                          alt="Fibre Network Operations"
                          class="img-fluid rounded-3 shadow-lg mb-4">
-                    <div class="bg-primary text-white p-4 rounded-3 shadow position-absolute bottom-0 end-0" style="max-width: 300px;">
+                    <div class="bg-kp-blue text-white p-4 rounded-3 shadow position-absolute bottom-0 end-0" style="max-width: 300px;">
                         <h5 class="mb-2"><i class="fas fa-trophy me-2"></i> Industry Leaders</h5>
                         <p class="small mb-0">Serving 50+ telecom companies across Africa since 2020</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">Our Story</span>
+                <span class="badge bg-kp-blue bg-opacity-10 text-kp-blue mb-3 px-3 py-2">Our Story</span>
                 <h2 class="display-5 fw-bold mb-4">Building Africa's Digital Backbone</h2>
                 <p class="lead mb-4">Founded in Nairobi, Kenya, Dark Fibre CRM was born out of a clear need: the African continent's rapidly expanding fibre infrastructure required smarter, more efficient management tools.</p>
 
@@ -103,17 +103,17 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-4">
-                            <div class="icon-wrapper bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-3">
+                            <div class="icon-wrapper bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle p-3 me-3">
                                 <i class="fas fa-bullseye fa-2x"></i>
                             </div>
                             <h3 class="h4 mb-0">Our Mission</h3>
                         </div>
                         <p>To empower fibre infrastructure providers with intelligent tools that simplify complex network management, reduce operational costs, and enhance service delivery across Africa.</p>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Simplify complex network operations</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Reduce operational costs by 40%</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Enhance service reliability</li>
-                            <li><i class="fas fa-check-circle text-success me-2"></i> Support Africa's digital transformation</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Simplify complex network operations</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Reduce operational costs by 40%</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Enhance service reliability</li>
+                            <li><i class="fas fa-check-circle text-kp-green me-2"></i> Support Africa's digital transformation</li>
                         </ul>
                     </div>
                 </div>
@@ -122,17 +122,17 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-4">
-                            <div class="icon-wrapper bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-3">
+                            <div class="icon-wrapper bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle p-3 me-3">
                                 <i class="fas fa-eye fa-2x"></i>
                             </div>
                             <h3 class="h4 mb-0">Our Vision</h3>
                         </div>
                         <p>To become the leading platform for fibre infrastructure management in emerging markets, connecting communities and businesses through reliable, efficient, and intelligent network solutions.</p>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Lead in emerging markets by 2025</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Connect 10,000+ km of fibre</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Power 500+ telecom operators</li>
-                            <li><i class="fas fa-check-circle text-success me-2"></i> Enable 1M+ digital connections</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Lead in emerging markets by 2025</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Connect 10,000+ km of fibre</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Power 500+ telecom operators</li>
+                            <li><i class="fas fa-check-circle text-kp-green me-2"></i> Enable 1M+ digital connections</li>
                         </ul>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
         <!-- Core Values -->
         <div class="row mb-5">
             <div class="col-12 text-center mb-5">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">Our Values</span>
+                <span class="badge bg-kp-blue bg-opacity-10 text-kp-blue mb-3 px-3 py-2">Our Values</span>
                 <h2 class="display-5 fw-bold mb-4">What Guides Us</h2>
                 <p class="lead text-muted mx-auto" style="max-width: 700px;">Our core values shape our culture and drive our commitment to excellence in everything we do.</p>
             </div>
@@ -151,7 +151,7 @@
                 <div class="card border-0 shadow-sm h-100 hover-lift">
                     <div class="card-body p-4 text-center">
                         <div class="value-icon-wrapper mb-4">
-                            <i class="fas fa-lightbulb fa-3x text-primary"></i>
+                            <i class="fas fa-lightbulb fa-3x text-kp-blue"></i>
                         </div>
                         <h4 class="h5 mb-3">Innovation</h4>
                         <p class="mb-0">We constantly push boundaries to develop cutting-edge solutions that solve real-world problems in fibre management.</p>
@@ -163,7 +163,7 @@
                 <div class="card border-0 shadow-sm h-100 hover-lift">
                     <div class="card-body p-4 text-center">
                         <div class="value-icon-wrapper mb-4">
-                            <i class="fas fa-handshake fa-3x text-success"></i>
+                            <i class="fas fa-handshake fa-3x text-kp-green"></i>
                         </div>
                         <h4 class="h5 mb-3">Reliability</h4>
                         <p class="mb-0">We build systems that telecom operators can depend on 24/7, ensuring uninterrupted connectivity for their customers.</p>
@@ -187,7 +187,7 @@
                 <div class="card border-0 shadow-sm h-100 hover-lift">
                     <div class="card-body p-4 text-center">
                         <div class="value-icon-wrapper mb-4">
-                            <i class="fas fa-shield-alt fa-3x text-warning"></i>
+                            <i class="fas fa-shield-alt fa-3x text-kp-yellow"></i>
                         </div>
                         <h4 class="h5 mb-3">Integrity</h4>
                         <p class="mb-0">We maintain the highest standards of honesty and transparency in all our business dealings and data handling.</p>
@@ -199,14 +199,14 @@
         <!-- Key Features -->
         <div class="row align-items-center mb-5">
             <div class="col-lg-6">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">Why Choose Us</span>
+                <span class="badge bg-kp-blue bg-opacity-10 text-kp-blue mb-3 px-3 py-2">Why Choose Us</span>
                 <h2 class="display-5 fw-bold mb-4">Powerful Features for Modern Networks</h2>
                 <p class="lead mb-4">Our platform combines industry expertise with technological innovation to deliver unparalleled value.</p>
 
                 <div class="feature-list">
                     <div class="feature-item d-flex mb-4">
                         <div class="feature-icon me-4">
-                            <i class="fas fa-bolt fa-2x text-primary"></i>
+                            <i class="fas fa-bolt fa-2x text-kp-blue"></i>
                         </div>
                         <div>
                             <h4 class="h5 mb-2">Real-time Monitoring</h4>
@@ -216,7 +216,7 @@
 
                     <div class="feature-item d-flex mb-4">
                         <div class="feature-icon me-4">
-                            <i class="fas fa-robot fa-2x text-success"></i>
+                            <i class="fas fa-robot fa-2x text-kp-green"></i>
                         </div>
                         <div>
                             <h4 class="h5 mb-2">AI-Powered Analytics</h4>
@@ -240,11 +240,11 @@
                 <div class="card border-0 shadow-lg overflow-hidden">
                     <div class="card-body p-0">
                         <div class="stats-grid">
-                            <div class="stat-item bg-primary text-white">
+                            <div class="stat-item bg-kp-blue text-white">
                                 <h3 class="display-4 fw-bold mb-2">50+</h3>
                                 <p class="mb-0">Telecom Partners</p>
                             </div>
-                            <div class="stat-item bg-success text-white">
+                            <div class="stat-item bg-kp-green text-white">
                                 <h3 class="display-4 fw-bold mb-2">5,000+</h3>
                                 <p class="mb-0">KM Fibre Managed</p>
                             </div>
@@ -252,7 +252,7 @@
                                 <h3 class="display-4 fw-bold mb-2">24/7</h3>
                                 <p class="mb-0">Support Available</p>
                             </div>
-                            <div class="stat-item bg-warning text-white">
+                            <div class="stat-item bg-kp-yellow text-white">
                                 <h3 class="display-4 fw-bold mb-2">99.9%</h3>
                                 <p class="mb-0">Uptime SLA</p>
                             </div>
@@ -265,7 +265,7 @@
         <!-- Team Section (Optional - Can be added later) -->
         <div class="row mb-5">
             <div class="col-12 text-center">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">Leadership</span>
+                <span class="badge bg-kp-blue bg-opacity-10 text-kp-blue mb-3 px-3 py-2">Leadership</span>
                 <h2 class="display-5 fw-bold mb-5">Meet Our Leadership Team</h2>
             </div>
 
@@ -273,10 +273,10 @@
                 <div class="card border-0 shadow-sm h-100 text-center">
                     <div class="card-body p-4">
                         <div class="team-avatar mb-4 mx-auto">
-                            <i class="fas fa-user-circle fa-5x text-primary"></i>
+                            <i class="fas fa-user-circle fa-5x text-kp-blue"></i>
                         </div>
                         <h4 class="h5 mb-2">Benjamen Muoki</h4>
-                        <p class="text-primary mb-3">Telecommunications Manager ICT</p>
+                        <p class="text-kp-blue mb-3">Telecommunications Manager ICT</p>
                         <p class="mb-0">15+ years in telecommunications and network infrastructure management.</p>
                     </div>
                 </div>
@@ -286,10 +286,10 @@
                 <div class="card border-0 shadow-sm h-100 text-center">
                     <div class="card-body p-4">
                         <div class="team-avatar mb-4 mx-auto">
-                            <i class="fas fa-user-circle fa-5x text-success"></i>
+                            <i class="fas fa-user-circle fa-5x text-kp-green"></i>
                         </div>
                         <h4 class="h5 mb-2">Eng. Eric Wanjala</h4>
-                        <p class="text-primary mb-3">Chief TBU</p>
+                        <p class="text-kp-blue mb-3">Chief TBU</p>
                         <p class="mb-0">Expert in cloud infrastructure, AI, and network security with 12 years experience.</p>
                     </div>
                 </div>
@@ -302,7 +302,7 @@
                             <i class="fas fa-user-circle fa-5x text-info"></i>
                         </div>
                         <h4 class="h5 mb-2">Michael Chege</h4>
-                        <p class="text-primary mb-3">Head of Operations</p>
+                        <p class="text-kp-blue mb-3">Head of Operations</p>
                         <p class="mb-0">Specializes in large-scale network deployments and operational efficiency.</p>
                     </div>
                 </div>
@@ -315,7 +315,7 @@
                             <i class="fas fa-user-circle fa-5x text-info"></i>
                         </div>
                         <h4 class="h5 mb-2">Wilson Mwirigi</h4>
-                        <p class="text-primary mb-3">Head of Marketing</p>
+                        <p class="text-kp-blue mb-3">Head of Marketing</p>
                         <p class="mb-0">Specializes in marketing of dark Fiber network deployments and operational efficiency.</p>
                     </div>
                 </div>
@@ -325,7 +325,7 @@
         <!-- CTA Section -->
         <div class="row">
             <div class="col-12">
-                <div class="card border-0 shadow-lg bg-primary text-white overflow-hidden">
+                <div class="card border-0 shadow-lg bg-kp-blue text-white overflow-hidden">
                     <div class="card-body p-5">
                         <div class="row align-items-center">
                             <div class="col-lg-8">

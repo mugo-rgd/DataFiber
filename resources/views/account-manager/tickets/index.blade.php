@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800">Support Tickets</h1>
-                <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-primary">
+                <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-kp-primary">
                     <i class="fas fa-plus"></i> Create New Ticket
                 </a>
             </div>
@@ -113,7 +113,7 @@
                                     </td>
                                     <td>{{ $ticket->created_at->format('M d, Y') }}</td>
                                     <td>
-                                        <a href="{{ route('account-manager.tickets.show', $ticket) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('account-manager.tickets.show', $ticket) }}" class="btn btn-sm btn-kp-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </td>
@@ -133,7 +133,7 @@
                         <i class="fas fa-ticket-alt fa-3x text-gray-300 mb-3"></i>
                         <h4 class="text-gray-500">No Support Tickets Found</h4>
                         <p class="text-gray-500">You don't have any support tickets matching your criteria.</p>
-                        <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-primary">Create Your First Ticket</a>
+                        <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-kp-primary">Create Your First Ticket</a>
                     </div>
                     @endif
                 </div>

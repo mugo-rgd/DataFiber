@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-award text-success me-2"></i>Generate Acceptance Certificate
+                        <i class="fas fa-award text-kp-green me-2"></i>Generate Acceptance Certificate
                     </h1>
                     <p class="text-muted mb-0">ICT Engineer - Create Acceptance Certificate for Design Request</p>
                 </div>
@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white py-3">
+                <div class="card-header bg-kp-green text-white py-3">
                     <h5 class="mb-0">
                         <i class="fas fa-award me-2"></i>
                         Acceptance Certificate Form
@@ -51,7 +51,7 @@
 
                         <!-- Certificate Header -->
                         <div class="text-center mb-4">
-                            <h4 class="fw-bold text-primary">Certificate of Acceptance</h4>
+                            <h4 class="fw-bold text-kp-blue">Certificate of Acceptance</h4>
                             <p class="text-muted">THE KENYA POWER & LIGHTING COMPANY PLC</p>
                         </div>
 
@@ -130,7 +130,7 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <div class="border rounded p-3 h-100">
-                                            <h6 class="bg-primary text-white p-2 rounded mb-3">LESSOR</h6>
+                                            <h6 class="bg-kp-blue text-white p-2 rounded mb-3">LESSOR</h6>
                                             <div class="mb-3">
                                                 <label class="form-label">Company Name</label>
                                                 <input type="text" class="form-control"
@@ -142,7 +142,7 @@
 
                                     <div class="col-md-6 mb-3">
                                         <div class="border rounded p-3 h-100">
-                                            <h6 class="bg-success text-white p-2 rounded mb-3">LESSEE</h6>
+                                            <h6 class="bg-kp-green text-white p-2 rounded mb-3">LESSEE</h6>
                                             <div class="mb-3">
                                                 <label class="form-label required">Company Name</label>
                                                 <input type="text" class="form-control" name="lessee"
@@ -172,7 +172,7 @@
                             <div class="card-body">
                                 <!-- Witness 1 -->
                                 <div class="signatory-card border rounded p-3 mb-3">
-                                    <div class="signatory-header bg-primary text-white p-2 rounded mb-3">
+                                    <div class="signatory-header bg-kp-blue text-white p-2 rounded mb-3">
                                         1. INFRASTRUCTURE SUPPORT ENGINEER - TBU (WITNESS)
                                     </div>
 
@@ -218,7 +218,7 @@
 
                                 <!-- Witness 2 -->
                                 <div class="signatory-card border rounded p-3 mb-3">
-                                    <div class="signatory-header bg-primary text-white p-2 rounded mb-3">
+                                    <div class="signatory-header bg-kp-blue text-white p-2 rounded mb-3">
                                         2. TELECOM LEAD ENGINEER
                                     </div>
 
@@ -262,7 +262,7 @@
 
                                 <!-- Witness 3 -->
                                 <div class="signatory-card border rounded p-3 mb-3">
-                                    <div class="signatory-header bg-primary text-white p-2 rounded mb-3">
+                                    <div class="signatory-header bg-kp-blue text-white p-2 rounded mb-3">
                                         3. TELECOM MANAGER
                                     </div>
 
@@ -314,7 +314,7 @@
                             <div class="card-body">
                                 <!-- Lessee 1 -->
                                 <div class="signatory-card border rounded p-3 mb-3">
-                                    <div class="signatory-header bg-success text-white p-2 rounded mb-3">
+                                    <div class="signatory-header bg-kp-green text-white p-2 rounded mb-3">
                                         1. LESSEE - LEAD ENGINEER / TECHNICAL REPRESENTATIVE
                                     </div>
 
@@ -358,7 +358,7 @@
 
                                 <!-- Lessee 2 -->
                                 <div class="signatory-card border rounded p-3 mb-3">
-                                    <div class="signatory-header bg-success text-white p-2 rounded mb-3">
+                                    <div class="signatory-header bg-kp-green text-white p-2 rounded mb-3">
                                         2. LESSEE - MANAGER
                                     </div>
 
@@ -455,7 +455,7 @@
                                     <div class="col-md-6">
                                         <p><strong>Effective Date:</strong> <span id="previewDate">{{ date('F d, Y') }}</span></p>
                                         <p><strong>Signatories:</strong> <span id="previewSignatories">0 of 5 completed</span></p>
-                                        <p><strong>Status:</strong> <span class="badge bg-success">Ready to Generate</span></p>
+                                        <p><strong>Status:</strong> <span class="badge bg-kp-green">Ready to Generate</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -466,7 +466,7 @@
                             <a href="{{ route('ictengineer.requests') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-success" id="generateCertificateBtn">
+                            <button type="submit" class="btn btn-kp-success" id="generateCertificateBtn">
                                 <i class="fas fa-file-certificate me-2"></i>Generate Acceptance Certificate
                             </button>
                         </div>

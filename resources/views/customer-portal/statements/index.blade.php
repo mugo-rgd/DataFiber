@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="fas fa-file-invoice me-2"></i>My Statements
                     </h4>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
@@ -55,7 +55,7 @@
                                             {{ $statement->period_end->format('d M Y') }}
                                         </td>
                                         <td class="text-end">${{ number_format($statement->opening_balance, 2) }}</td>
-                                        <td class="text-end {{ $statement->closing_balance >= 0 ? 'text-success' : 'text-danger' }}">
+                                        <td class="text-end {{ $statement->closing_balance >= 0 ? 'text-kp-green' : 'text-danger' }}">
                                             <strong>${{ number_format($statement->closing_balance, 2) }}</strong>
                                         </td>
                                         <td>
@@ -64,9 +64,9 @@
                                             @elseif($statement->status == 'generated')
                                                 <span class="badge bg-info">Generated</span>
                                             @elseif($statement->status == 'sent')
-                                                <span class="badge bg-success">Sent</span>
+                                                <span class="badge bg-kp-green">Sent</span>
                                             @elseif($statement->status == 'viewed')
-                                                <span class="badge bg-primary">Viewed</span>
+                                                <span class="badge bg-kp-blue">Viewed</span>
                                             @endif
                                         </td>
                                         <td class="text-center">
@@ -78,7 +78,7 @@
                                                     <i class="fas fa-download"></i>
                                                 </a>
                                                 <a href="{{ route('customer.statements.show', $statement->id) }}"
-                                                   class="btn btn-primary"
+                                                   class="btn btn-kp-primary"
                                                    title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
@@ -98,7 +98,7 @@
                             <i class="fas fa-file-invoice fa-4x text-muted mb-3"></i>
                             <h5 class="text-muted">No Statements Found</h5>
                             <p class="text-muted mb-4">You haven't generated any statements yet.</p>
-                            <a href="{{ route('customer.statements.create') }}" class="btn btn-primary">
+                            <a href="{{ route('customer.statements.create') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-plus-circle me-2"></i>Generate Your First Statement
                             </a>
                         </div>

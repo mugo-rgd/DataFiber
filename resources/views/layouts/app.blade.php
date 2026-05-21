@@ -8,7 +8,7 @@
     <meta name="pusher-key" content="{{ env('PUSHER_APP_KEY') }}">
     <meta name="pusher-cluster" content="{{ env('PUSHER_APP_CLUSTER', 'mt1') }}">
 
-    <title>@yield('title', 'Dark Fibre CRM')</title>
+    <title>@yield('title', 'Dark Fibre CRM') - Kenya Power</title>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -20,6 +20,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
     <style>
+    /* ========================================
+       KENYA POWER CORPORATE COLORS
+    ========================================= */
+    :root {
+        --kp-blue: #0066B3;
+        --kp-green: #009639;
+        --kp-yellow: #FFD700;
+        --kp-dark: #003f20;
+        --kp-light-blue: #e8f4fd;
+        --kp-light-green: #e6f7ec;
+        --kp-light-yellow: #fff8e1;
+        --kp-white: #ffffff;
+        --kp-gray: #6c757d;
+    }
+
     /* Fixed navbar offset */
     body {
         padding-top: 76px;
@@ -28,8 +43,9 @@
         flex-direction: column;
     }
 
-    /* Ensure navbar stays on top */
+    /* Navbar styling - Kenya Power Colors */
     .navbar {
+        background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%) !important;
         box-shadow: 0 2px 10px rgba(0,0,0,.1);
         z-index: 1030;
         position: fixed;
@@ -38,259 +54,367 @@
         right: 0;
     }
 
-    /* Fix dropdown z-index */
-    .dropdown-menu {
-        z-index: 1050;
-        pointer-events: auto !important;
+    .navbar-brand {
+        color: white !important;
+        font-weight: 600;
     }
 
-    /* Custom styles for better appearance */
+    .navbar-brand:hover {
+        color: var(--kp-yellow) !important;
+        transform: scale(1.02);
+        transition: all 0.3s ease;
+    }
+
+    .navbar-nav .nav-link {
+        color: white !important;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: var(--kp-yellow) !important;
+        transform: translateY(-1px);
+    }
+
+    .navbar-nav .nav-link.active {
+        background-color: rgba(255,255,255,0.1);
+        border-radius: 5px;
+        color: var(--kp-yellow) !important;
+    }
+
+    /* ========================================
+       DROPDOWN STYLES - FIXED
+    ========================================= */
+    /* Base dropdown - let Bootstrap control display */
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1050;
+        min-width: 10rem;
+        padding: 0.5rem 0;
+        margin: 0.125rem 0 0;
+        font-size: 1rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-top: 3px solid var(--kp-yellow);
+    }
+
+    /* Right-aligned dropdown */
+    .dropdown-menu-end {
+        right: 0;
+        left: auto;
+    }
+
+    /* Dropdown items */
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 0.5rem 1.5rem;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        background-color: var(--kp-light-blue);
+        color: var(--kp-dark);
+    }
+
+    .dropdown-item:active {
+        background-color: var(--kp-blue);
+        color: white;
+    }
+
+    /* Dropdown header */
+    .dropdown-header {
+        display: block;
+        padding: 0.5rem 1.5rem;
+        margin-bottom: 0;
+        font-size: 0.875rem;
+        color: var(--kp-dark);
+        white-space: nowrap;
+        background: linear-gradient(135deg, var(--kp-light-blue), var(--kp-light-green));
+    }
+
+    /* Dropdown divider */
+    .dropdown-divider {
+        height: 0;
+        margin: 0.5rem 0;
+        overflow: hidden;
+        border-top: 1px solid #e9ecef;
+    }
+
+    /* Dropdown toggle arrow */
+    .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: 0.255em;
+        vertical-align: 0.255em;
+        content: "";
+        border-top: 0.3em solid;
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
+    }
+
+    /* Main Content */
     .main-content {
         flex: 1;
         padding-top: 1rem;
         padding-bottom: 2rem;
     }
 
-    .navbar-brand {
-        font-weight: 600;
-    }
-
-    .dropdown-header {
-        font-size: 0.875rem;
-        padding: 0.5rem 1rem;
-    }
-
-    /* Improved responsive behavior */
-    .navbar-nav {
-        flex-wrap: wrap;
-    }
-
-    .nav-item {
-        white-space: nowrap;
-    }
-
-    /* Ensure dropdowns don't cause overflow */
-    .dropdown-menu {
-        max-height: 70vh;
-        overflow-y: auto;
-    }
-
-    /* Better mobile handling */
-    @media (max-width: 991.98px) {
-        body {
-            padding-top: 56px;
-        }
-
-        .navbar-collapse {
-            max-height: 80vh;
-            overflow-y: auto;
-            margin-top: 0.5rem;
-            background-color: #212529;
-            padding: 1rem;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .navbar-collapse.show {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            z-index: 1040;
-        }
-
-        .nav-item {
-            width: 100%;
-        }
-
-        .dropdown-menu {
-            position: static !important;
-            transform: none !important;
-            border: none;
-            background-color: transparent;
-            padding-left: 1.5rem;
-            box-shadow: none;
-        }
-
-        .dropdown-divider {
-            margin-left: 1.5rem;
-        }
-    }
-
-    /* Prevent horizontal scroll on very small screens */
-    @media (max-width: 575.98px) {
-        .container-fluid {
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-
-        .navbar-brand {
-            font-size: 1rem;
-        }
-    }
-
-    /* Card styling for consistency */
+    /* Card styling - Kenya Power */
     .card {
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 102, 179, 0.1);
         border: 1px solid #e3e6f0;
-        border-radius: 0.35rem;
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 102, 179, 0.15);
     }
 
     .card-header {
-        background-color: #f8f9fc;
-        border-bottom: 1px solid #e3e6f0;
+        background-color: var(--kp-light-blue);
+        border-bottom: 2px solid var(--kp-blue);
         padding: 0.75rem 1.25rem;
+        font-weight: 600;
+        color: var(--kp-dark);
+        border-radius: 12px 12px 0 0;
     }
 
-    /* Statistics cards styling */
+    /* Statistics cards - Kenya Power colors */
     .border-left-primary {
-        border-left: 0.25rem solid #4e73df !important;
+        border-left: 4px solid var(--kp-blue) !important;
     }
 
     .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
+        border-left: 4px solid var(--kp-green) !important;
     }
 
     .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
+        border-left: 4px solid var(--kp-yellow) !important;
     }
 
     .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
+        border-left: 4px solid #36b9cc !important;
     }
 
-    .text-gray-800 {
-        color: #5a5c69 !important;
+    .text-kp-blue {
+        color: var(--kp-blue) !important;
     }
 
-    .text-gray-300 {
-        color: #dddfeb !important;
+    .text-kp-green {
+        color: var(--kp-green) !important;
+    }
+
+    .text-kp-yellow {
+        color: var(--kp-yellow) !important;
+    }
+
+    .bg-kp-blue {
+        background-color: var(--kp-blue) !important;
+    }
+
+    .bg-kp-green {
+        background-color: var(--kp-green) !important;
+    }
+
+    .bg-kp-yellow {
+        background-color: var(--kp-yellow) !important;
+    }
+
+    /* Buttons - Kenya Power */
+    .btn-kp-primary {
+        background-color: var(--kp-blue);
+        border-color: var(--kp-blue);
+        transition: all 0.3s ease;
+    }
+
+    .btn-kp-primary:hover {
+        background-color: #005499;
+        border-color: #005499;
+        transform: translateY(-1px);
+    }
+
+    .btn-kp-success {
+        background-color: var(--kp-green);
+        border-color: var(--kp-green);
+        transition: all 0.3s ease;
+    }
+
+    .btn-kp-success:hover {
+        background-color: #00802c;
+        border-color: #00802c;
+        transform: translateY(-1px);
+    }
+
+    .btn-kp-warning {
+        background-color: var(--kp-yellow);
+        border-color: var(--kp-yellow);
+        color: var(--kp-dark);
+        transition: all 0.3s ease;
+    }
+
+    .btn-kp-warning:hover {
+        background-color: #e6c300;
+        border-color: #e6c300;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-kp-primary {
+        border-color: var(--kp-blue);
+        color: var(--kp-blue);
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-kp-primary:hover {
+        background-color: var(--kp-blue);
+        border-color: var(--kp-blue);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-kp-success {
+        border-color: var(--kp-green);
+        color: var(--kp-green);
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-kp-success:hover {
+        background-color: var(--kp-green);
+        border-color: var(--kp-green);
+        color: white;
+        transform: translateY(-1px);
     }
 
     /* Table styling */
     .table th {
         border-top: none;
         font-weight: 600;
-        color: #6e707e;
-        background-color: #f8f9fc;
+        color: var(--kp-dark);
+        background-color: var(--kp-light-blue);
+        border-bottom: 2px solid var(--kp-blue);
     }
 
-    /* Alert styling */
-    .alert {
-        border: none;
-        border-radius: 0.35rem;
-        padding: 1rem 1.25rem;
+    .table-hover tbody tr:hover {
+        background-color: var(--kp-light-yellow);
     }
 
-    /* Avatar styling */
-    .avatar-sm {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 0.875rem;
+    /* Alert styling - Kenya Power */
+    .alert-kp-success {
+        background-color: var(--kp-light-green);
+        border-left: 4px solid var(--kp-green);
+        color: var(--kp-dark);
+        border-radius: 10px;
+    }
+
+    .alert-kp-warning {
+        background-color: var(--kp-light-yellow);
+        border-left: 4px solid var(--kp-yellow);
+        color: var(--kp-dark);
+        border-radius: 10px;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+        border-radius: 10px;
+    }
+
+    .alert-info {
+        background-color: var(--kp-light-blue);
+        border-left: 4px solid var(--kp-blue);
+        color: var(--kp-dark);
+        border-radius: 10px;
     }
 
     /* Badge styling */
-    .badge {
-        font-weight: 500;
-        padding: 0.25em 0.6em;
+    .badge.bg-kp-blue {
+        background-color: var(--kp-blue) !important;
     }
 
-    /* Button styling */
-    .btn {
-        border-radius: 0.35rem;
-        font-weight: 500;
+    .badge.bg-kp-green {
+        background-color: var(--kp-green) !important;
     }
 
-    /* Footer styling */
-    footer {
-        margin-top: auto;
-        background-color: #212529 !important;
+    .badge.bg-kp-yellow {
+        background-color: var(--kp-yellow) !important;
+        color: var(--kp-dark);
     }
 
-    /* Loading spinner */
-    .spinner-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 200px;
+    /* Pagination */
+    .pagination .page-item.active .page-link {
+        background-color: var(--kp-blue);
+        border-color: var(--kp-blue);
     }
 
-    /* Print styles */
-    @media print {
-        .navbar, footer, .no-print {
-            display: none !important;
-        }
-
-        body {
-            padding-top: 0;
-        }
-
-        .card {
-            border: none;
-            box-shadow: none;
-        }
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-
-    /* Kenya Fibre Dashboard link base styles */
-    .kenya-fibre-link {
-        position: relative;
+    .pagination .page-link {
+        color: var(--kp-blue);
         transition: all 0.3s ease;
     }
 
-    .kenya-fibre-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-1px);
+    .pagination .page-link:hover {
+        background-color: var(--kp-green);
+        border-color: var(--kp-green);
+        color: white;
     }
 
-    .kenya-fibre-link.active {
-        background: rgba(79, 70, 229, 0.2);
-        color: #fff !important;
-        border-radius: 5px;
+    /* Progress bar */
+    .progress {
+        border-radius: 10px;
+        background-color: var(--kp-light-blue);
     }
 
-    /* Modal fixes */
-    .modal-backdrop {
-        z-index: 1040 !important;
+    .progress-bar {
+        background-color: var(--kp-green);
+        border-radius: 10px;
     }
 
-    .modal {
-        z-index: 1055 !important;
+    /* Modal styling */
+    .modal-header {
+        background: linear-gradient(135deg, var(--kp-blue), var(--kp-green));
+        color: white;
+        border-bottom: none;
     }
 
-    /* Footer Styles */
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
+
+    .modal-footer {
+        border-top: 1px solid var(--kp-light-blue);
+    }
+
+    /* Footer - Kenya Power Colors */
     .footer-compact {
-        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-        border-top: 3px solid #4f46e5;
+        background: linear-gradient(135deg, var(--kp-dark) 0%, #001a0d 100%) !important;
+        border-top: 3px solid var(--kp-yellow);
         font-size: 0.875rem;
     }
 
     .footer-brand .brand-icon {
         width: 40px;
         height: 40px;
-        background: rgba(79, 70, 229, 0.1);
+        background: rgba(255, 215, 0, 0.1);
         border-radius: 8px;
         display: flex;
         align-items: center;
@@ -309,7 +433,7 @@
         left: 0;
         width: 25px;
         height: 2px;
-        background: linear-gradient(90deg, #4f46e5, transparent);
+        background: linear-gradient(90deg, var(--kp-yellow), transparent);
         border-radius: 1px;
     }
 
@@ -320,18 +444,7 @@
     }
 
     .footer-link:hover:not(.disabled-link) {
-        color: #fff !important;
-    }
-
-    .footer-link.disabled-link {
-        opacity: 0.5;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
-
-    .footer-link i {
-        width: 16px;
-        text-align: center;
+        color: var(--kp-yellow) !important;
     }
 
     .social-icon.small-icon {
@@ -348,9 +461,9 @@
     }
 
     .social-icon.small-icon:hover {
-        background: #4f46e5;
-        color: white;
-        transform: translateY(-1px);
+        background: var(--kp-yellow);
+        color: var(--kp-dark);
+        transform: translateY(-2px);
     }
 
     .status-dot {
@@ -360,6 +473,10 @@
         display: inline-block;
     }
 
+    .status-dot.bg-kp-green {
+        background-color: var(--kp-green) !important;
+    }
+
     .back-to-top {
         border-radius: 6px;
         padding: 4px 12px;
@@ -367,82 +484,114 @@
         transition: all 0.2s ease;
         border-width: 1px;
         font-size: 0.875rem;
+        border-color: rgba(255,255,255,0.2);
+        color: rgba(255,255,255,0.8);
     }
 
     .back-to-top:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 215, 0, 0.2);
+        color: var(--kp-yellow);
+        border-color: var(--kp-yellow);
     }
 
-    /* Finance dropdown styling */
-    .icon-container {
+    /* Kenya Fibre Dashboard link styles */
+    .kenya-fibre-link {
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .kenya-fibre-link:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+    }
+
+    /* Notification styling */
+    .notification-item.unread {
+        background-color: var(--kp-light-blue);
+        border-left: 3px solid var(--kp-blue);
+    }
+
+    .notification-item.read {
+        background-color: #ffffff;
+        border-left: 3px solid #dee2e6;
+        opacity: 0.85;
+    }
+
+    .notification-item.unread:hover {
+        background-color: #e3f2fd;
+    }
+
+    /* Avatar styling */
+    .avatar-sm {
         width: 32px;
         height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 6px;
-        background-color: rgba(0,0,0,0.05);
+        font-weight: 600;
+        font-size: 0.875rem;
+        background: linear-gradient(135deg, var(--kp-blue), var(--kp-green));
+        color: white;
+        border-radius: 50%;
     }
 
-    .dropdown-item:hover .icon-container {
-        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    /* Form controls */
+    .form-control:focus, .form-select:focus {
+        border-color: var(--kp-blue);
+        box-shadow: 0 0 0 0.2rem rgba(0, 102, 179, 0.25);
     }
 
-    .dropdown-item:active .icon-container {
-        background-color: rgba(var(--bs-primary-rgb), 0.2);
-    }
-
-    /* Finance badge */
-    .navbar .badge.bg-finance {
-        background: linear-gradient(45deg, #28a745, #20c997);
-    }
-
-    /* ===== NAVIGATION FIXES ===== */
-    /* Fix for all nav links */
-    .navbar-nav .nav-link,
-    .nav-link-fix,
-    .kenya-fibre-link {
-        cursor: pointer !important;
-        pointer-events: auto !important;
-    }
-
-    /* Dropdown items */
-    .dropdown-item {
-        cursor: pointer !important;
-        pointer-events: auto !important;
-    }
-
-    /* Mobile navigation fixes */
+    /* ========================================
+       RESPONSIVE STYLES - FIXED FOR DROPDOWNS
+    ========================================= */
     @media (max-width: 991.98px) {
-        .navbar-nav .nav-link,
-        .nav-link-fix,
-        .kenya-fibre-link {
-            padding: 12px 16px !important;
-            margin: 2px 0 !important;
-            width: 100% !important;
-            display: block !important;
+        body {
+            padding-top: 56px;
         }
 
+        .navbar-collapse {
+            background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%);
+            padding: 1rem;
+            border-radius: 0 0 12px 12px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            width: 100%;
+        }
+
+        /* Mobile dropdown styles - different from desktop */
         .dropdown-menu {
             position: static !important;
             width: 100% !important;
             background: transparent !important;
             border: none !important;
-            padding-left: 20px !important;
+            box-shadow: none !important;
+            padding-left: 1.5rem !important;
+            margin-top: 0 !important;
         }
 
         .dropdown-item {
-            color: rgba(255,255,255,0.8) !important;
-            padding: 8px 20px !important;
+            color: white !important;
+            padding: 8px 16px !important;
         }
 
         .dropdown-item:hover {
-            color: rgba(255,255,255,0.9) !important;
-            background-color: transparent !important;
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            color: var(--kp-yellow) !important;
+        }
+
+        .dropdown-divider {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-toggle::after {
+            float: right;
+            margin-top: 8px;
         }
     }
 
-    /* Responsive footer */
     @media (max-width: 768px) {
         .footer-compact {
             text-align: center;
@@ -453,111 +602,68 @@
             transform: translateX(-50%);
         }
 
+        .footer-brand {
+            justify-content: center;
+        }
+
         .footer-meta {
             justify-content: center !important;
-            margin-top: 10px;
         }
     }
 
     @media (max-width: 576px) {
-        .footer-compact {
-            padding-top: 20px !important;
-            padding-bottom: 20px !important;
+        .container-fluid {
+            padding-left: 10px;
+            padding-right: 10px;
         }
 
-        .footer-brand {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .footer-brand .brand-icon {
-            margin: 0 auto 10px;
+        .navbar-brand {
+            font-size: 1rem;
         }
     }
 
-    /* Notification badge styling */
-    .notification-badge {
-        font-size: 0.6rem;
-        padding: 0.25rem 0.4rem;
+    /* Print styles */
+    @media print {
+        .navbar, footer, .no-print {
+            display: none !important;
+        }
+
+        body {
+            padding-top: 0;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            box-shadow: none;
+        }
     }
 
-    /* Notification dropdown styling */
-    .notifications-menu .dropdown-item-text {
-        white-space: normal;
-        padding: 0.5rem 1rem;
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
     }
 
-    .notifications-menu .avatar {
-        flex-shrink: 0;
+    ::-webkit-scrollbar-track {
+        background: var(--kp-light-blue);
+        border-radius: 4px;
     }
 
-    /* Notification dropdown styling */
-.notifications-menu {
-    padding: 0;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.notification-item {
-    transition: all 0.2s ease;
-    padding: 12px 15px;
-}
-
-.notification-item.unread {
-    background-color: #f0f7ff;
-    border-left: 3px solid #0d6efd;
-}
-
-.notification-item.read {
-    background-color: #ffffff;
-    border-left: 3px solid #dee2e6;
-    opacity: 0.85;
-}
-
-.notification-item.unread:hover {
-    background-color: #e3f2fd;
-}
-
-.notification-item.read:hover {
-    background-color: #f8f9fa;
-    opacity: 1;
-}
-
-.notification-item .avatar div {
-    transition: all 0.2s ease;
-}
-
-.notification-item.unread .avatar div {
-    box-shadow: 0 2px 4px rgba(13, 110, 253, 0.3);
-}
-
-.notification-badge {
-    font-size: 0.6rem;
-    padding: 0.25rem 0.4rem;
-}
-
-/* Animation for new notifications */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
+    ::-webkit-scrollbar-thumb {
+        background: var(--kp-blue);
+        border-radius: 4px;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-.notification-item {
-    animation: fadeIn 0.3s ease;
-}
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--kp-green);
+    }
 </style>
 
     @stack('styles')
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <!-- Navbar with Kenya Power Colors -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url('/') }}">
                 <i class="fas fa-network-wired me-2"></i>Dark Fibre CRM
@@ -594,12 +700,6 @@
                                 <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                             </a>
                         </li>
-                          <li class="nav-item">
-                                <a class="nav-link" href="{{ route('finance.emails.settings') }}">
-                                    <i class="fas fa-envelope me-2"></i>
-                                    <span>Email Settings</span>
-                                </a>
-                            </li>
                         @endif
 
                         @if(Auth::user()->role === 'designer')
@@ -728,6 +828,13 @@
                                     <i class="fas fa-drafting-compass me-1"></i>Design Requests
                                 </a>
                             </li>
+<li class="nav-item">
+                            <a href="{{ route('contracts.index') }}"
+   class="nav-link {{ request()->routeIs('contracts.*') ? 'active' : '' }}">
+    <i class="fas fa-file-contract me-2"></i>
+    Contracts
+</a>
+</li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('admin.leases.index') }}">
                                     <i class="fas fa-network-wired me-1"></i>Leases
@@ -740,63 +847,48 @@
                             </li>
 
                             <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle"
-       href="#"
-       id="cakDropdown"
-       role="button"
-       data-bs-toggle="dropdown"
-       aria-expanded="false">
-        <i class="fas fa-file-alt me-1"></i> CAK Compliance
-    </a>
-
-    <ul class="dropdown-menu" aria-labelledby="cakDropdown">
-
-        <li>
-            <a class="dropdown-item" href="{{ route('asp.create') }}">
-                <i class="fas fa-server me-2 text-primary"></i> ASP Return
-            </a>
-        </li>
-
-        <li>
-            <a class="dropdown-item" href="{{ route('csp.create') }}">
-                <i class="fas fa-envelope me-2 text-success"></i> CSP Return
-            </a>
-        </li>
-
-        <li>
-            <a class="dropdown-item" href="{{ route('nfp.create') }}">
-                <i class="fas fa-network-wired me-2 text-warning"></i> NFP Return
-            </a>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        <li>
-            <a class="dropdown-item" href="{{ route('asp.index') }}">
-                <i class="fas fa-list me-2"></i> ASP Submissions
-            </a>
-        </li>
-
-        <li>
-            <a class="dropdown-item" href="{{ route('csp.index') }}">
-                <i class="fas fa-list me-2"></i> CSP Submissions
-            </a>
-        </li>
-
-        <li>
-            <a class="dropdown-item" href="{{ route('nfp.index') }}">
-                <i class="fas fa-list me-2"></i> NFP Submissions
-            </a>
-        </li>
-<li>
-     <a class="dropdown-item" href="{{ route('cak.dashboard') }}">
-    <i class="fas fa-tachometer-alt me-2"></i> CAK Dashboard
-</a>
-</li>
-
-
-    </ul>
-</li>
+                                <a class="nav-link dropdown-toggle" href="#" id="cakDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-file-alt me-1"></i> CAK Compliance
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="cakDropdown">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('asp.create') }}">
+                                            <i class="fas fa-server me-2 text-kp-blue"></i> ASP Return
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('csp.create') }}">
+                                            <i class="fas fa-envelope me-2 text-kp-green"></i> CSP Return
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('nfp.create') }}">
+                                            <i class="fas fa-network-wired me-2 text-kp-yellow"></i> NFP Return
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('asp.index') }}">
+                                            <i class="fas fa-list me-2"></i> ASP Submissions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('csp.index') }}">
+                                            <i class="fas fa-list me-2"></i> CSP Submissions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('nfp.index') }}">
+                                            <i class="fas fa-list me-2"></i> NFP Submissions
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('cak.dashboard') }}">
+                                            <i class="fas fa-tachometer-alt me-2"></i> CAK Dashboard
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         @endif
 
                         <!-- Customer Menu Items -->
@@ -811,6 +903,13 @@
                                     <i class="fas fa-network-wired me-1"></i>My Leases
                                 </a>
                             </li>
+<li class="nav-item">
+                            <a href="{{ route('customer.contracts.index') }}"
+   class="nav-link {{ request()->routeIs('customer.contracts.*') ? 'active' : '' }}">
+    <i class="fas fa-file-contract me-2"></i>
+    My Contracts
+</a>
+</li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('customer.tickets') }}">
                                     <i class="fas fa-ticket-alt me-1"></i>Support
@@ -831,189 +930,164 @@
                                     <i class="fas fa-folder me-1"></i>My Documents
                                 </a>
                             </li>
-                           <li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" id="certificatesDropdown" role="button"
-       data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-certificate me-1"></i> Certificates
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="certificatesDropdown">
-        <li>
-            <a class="dropdown-item" href="{{ route('customer.certificates.conditional.index') }}">
-                <i class="fas fa-file-contract me-2"></i> Conditional Certificates
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('customer.certificates.acceptance.index') }}">
-                <i class="fas fa-check-circle me-2"></i> Acceptance Certificates
-            </a>
-        </li>
-    </ul>
-</li>
-
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="certificatesDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-certificate me-1"></i> Certificates
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="certificatesDropdown">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('customer.certificates.conditional.index') }}">
+                                            <i class="fas fa-file-contract me-2"></i> Conditional Certificates
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('customer.certificates.acceptance.index') }}">
+                                            <i class="fas fa-check-circle me-2"></i> Acceptance Certificates
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         @endif
 
                         <!-- Finance Menu Items - Dropdown -->
-                       @if(Auth::user()->role === 'finance')
-<li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-chart-line me-1"></i>
-        <span class="d-none d-lg-inline">Finance</span>
-    </a>
-    <ul class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
-        <li class="dropdown-header">
-            <div class="d-flex align-items-center">
-                <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
-                    <i class="fas fa-chart-line text-white"></i>
-                </div>
-                <div>
-                    <strong>Finance Dashboard</strong>
-                    <div class="text-muted small">Manage all financial operations</div>
-                </div>
-            </div>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        <!-- Existing Finance Items -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('leases.finance.index') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-file-contract text-primary"></i></div>
-                    <div><div class="fw-medium">Leases Management</div><small class="text-muted">View, search and manage all leases</small></div>
-                </div>
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.billing.index') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-file-invoice-dollar text-success"></i></div>
-                    <div><div class="fw-medium">Lease Billings</div><small class="text-muted">Manage billing cycles and invoices</small></div>
-                </div>
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.payments.followups') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-money-check text-info"></i></div>
-                    <div><div class="fw-medium">Payment Management</div><small class="text-muted">Track and process payments</small></div>
-                </div>
-            </a>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.transactions.index') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-exchange-alt text-warning"></i></div>
-                    <div><div class="fw-medium">Transactions</div><small class="text-muted">View all financial transactions</small></div>
-                </div>
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.auto-billing') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-robot text-secondary"></i></div>
-                    <div><div class="fw-medium">Auto Billing</div><small class="text-muted">Automated billing configurations</small></div>
-                </div>
-            </a>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        <!-- Financial Reports -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.reports') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-chart-bar text-danger"></i></div>
-                    <div><div class="fw-medium">Financial Reports</div><small class="text-muted">Generate detailed financial reports</small></div>
-                </div>
-            </a>
-        </li>
-
-        <!-- AI Analytics Section Header -->
-        <li class="dropdown-header mt-2">
-            <div class="text-muted small text-uppercase">AI Analytics</div>
-        </li>
-
-        <!-- AI Dashboard -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.ai.dashboard') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-brain text-purple"></i></div>
-                    <div>
-                        <div class="fw-medium">Debtors Analytics</div>
-                        <small class="text-muted">AI-powered debt analysis dashboard</small>
-                    </div>
-                </div>
-            </a>
-        </li>
-
-        <!-- Predictive Analytics -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.ai.predictive') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-chart-line text-warning"></i></div>
-                    <div>
-                        <div class="fw-medium">Predictive Analytics</div>
-                        <small class="text-muted">Forecasts and predictions</small>
-                    </div>
-                </div>
-            </a>
-        </li>
-
-        <!-- Recommendations -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.ai.recommendations') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-lightbulb text-success"></i></div>
-                    <div>
-                        <div class="fw-medium">AI Recommendations</div>
-                        <small class="text-muted">Actionable insights</small>
-                    </div>
-                </div>
-            </a>
-        </li>
-
-        <!-- Generate Report -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.ai.report') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-file-pdf text-danger"></i></div>
-                    <div>
-                        <div class="fw-medium">Generate Report</div>
-                        <small class="text-muted">Export analysis report</small>
-                    </div>
-                </div>
-            </a>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        <!-- Finance Analytics -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.financial-analytics.dashboard') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-chart-pie text-info"></i></div>
-                    <div><div class="fw-medium">Finance Analytics</div><small class="text-muted">Comprehensive financial analytics</small></div>
-                </div>
-            </a>
-        </li>
-
-        <li><hr class="dropdown-divider"></li>
-
-        <!-- Financial Parameters -->
-        <li>
-            <a class="dropdown-item py-2" href="{{ route('finance.financial-parameters.index') }}">
-                <div class="d-flex align-items-center">
-                    <div class="icon-container me-3"><i class="fas fa-cog text-dark"></i></div>
-                    <div><div class="fw-medium">Financial Parameters</div><small class="text-muted">Configure financial settings</small></div>
-                </div>
-            </a>
-        </li>
-    </ul>
-</li>
-@endif
+                        @if(Auth::user()->role === 'finance')
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-chart-line me-1"></i>
+                                    <span class="d-none d-lg-inline">Finance</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                                    <li class="dropdown-header">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-kp-blue rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                <i class="fas fa-chart-line text-white"></i>
+                                            </div>
+                                            <div>
+                                                <strong>Finance Dashboard</strong>
+                                                <div class="text-muted small">Manage all financial operations</div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('leases.finance.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-file-contract text-kp-blue"></i></div>
+                                                <div><div class="fw-medium">Leases Management</div><small class="text-muted">View, search and manage all leases</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.billing.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-file-invoice-dollar text-kp-green"></i></div>
+                                                <div><div class="fw-medium">Lease Billings</div><small class="text-muted">Manage billing cycles and invoices</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.payments.followups') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-money-check text-info"></i></div>
+                                                <div><div class="fw-medium">Payment Management</div><small class="text-muted">Track and process payments</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.transactions.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-exchange-alt text-kp-yellow"></i></div>
+                                                <div><div class="fw-medium">Transactions</div><small class="text-muted">View all financial transactions</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.auto-billing') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-robot text-secondary"></i></div>
+                                                <div><div class="fw-medium">Auto Billing</div><small class="text-muted">Automated billing configurations</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.reports') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-chart-bar text-danger"></i></div>
+                                                <div><div class="fw-medium">Financial Reports</div><small class="text-muted">Generate detailed financial reports</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown-header mt-2">
+                                        <div class="text-muted small text-uppercase">AI Analytics</div>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.ai.dashboard') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-brain text-purple"></i></div>
+                                                <div>
+                                                    <div class="fw-medium">Debtors Analytics</div>
+                                                    <small class="text-muted">AI-powered debt analysis dashboard</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.ai.predictive') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-chart-line text-kp-yellow"></i></div>
+                                                <div>
+                                                    <div class="fw-medium">Predictive Analytics</div>
+                                                    <small class="text-muted">Forecasts and predictions</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.ai.recommendations') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-lightbulb text-kp-green"></i></div>
+                                                <div>
+                                                    <div class="fw-medium">AI Recommendations</div>
+                                                    <small class="text-muted">Actionable insights</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.ai.report') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-file-pdf text-danger"></i></div>
+                                                <div>
+                                                    <div class="fw-medium">Generate Report</div>
+                                                    <small class="text-muted">Export analysis report</small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.financial-analytics.dashboard') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-chart-pie text-info"></i></div>
+                                                <div><div class="fw-medium">Finance Analytics</div><small class="text-muted">Comprehensive financial analytics</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{{ route('finance.financial-parameters.index') }}">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-container me-3"><i class="fas fa-cog text-dark"></i></div>
+                                                <div><div class="fw-medium">Financial Parameters</div><small class="text-muted">Configure financial settings</small></div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
 
                         <!-- Designer Menu Items -->
                         @if(Auth::user()->role === 'designer')
@@ -1064,6 +1138,15 @@
                                     <i class="fas fa-users me-1"></i>My Customers
                                 </a>
                             </li>
+<li class="nav-item">
+                            <a href="{{ route('contracts.index') }}"
+   class="nav-link {{ request()->routeIs('contracts.*') ? 'active' : '' }}">
+    <i class="fas fa-file-contract me-2"></i>
+    Contracts
+</a>
+</li>
+
+
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('account-manager.tickets.index') }}">
                                     <i class="fas fa-ticket-alt me-1"></i>Support Tickets
@@ -1081,55 +1164,42 @@
 
                         <!-- Marketing Admin (Account Manager Admin) Menu Items -->
                         @if(Auth::user()->role === 'accountmanager_admin')
-                            <!-- Marketing Analytics Dropdown -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-chart-pie me-1"></i>Marketing Analytics
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.dashboard') }}">
-                                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.analytics') }}">
-                                        <i class="fas fa-chart-line me-2"></i>Performance Analytics
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.campaigns') }}">
-                                        <i class="fas fa-bullhorn me-2"></i>Campaign Management
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.reports') }}">
-                                        <i class="fas fa-file-alt me-2"></i>Marketing Reports
-                                    </a></li>
+                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.dashboard') }}">Dashboard</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.analytics') }}">Performance Analytics</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.campaigns') }}">Campaign Management</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.reports') }}">Marketing Reports</a></li>
                                 </ul>
                             </li>
-
-                            <!-- Team Management Dropdown -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user-tie me-1"></i>Team Management
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('admin.account-managers.index') ?? url('/admin/account-managers/index') }}">
-                                        <i class="fas fa-users me-2"></i>Account Managers
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.performance') ?? url('/marketing-admin/performance') }}">
-                                        <i class="fas fa-trophy me-2"></i>Team Performance
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.targets') ?? url('/marketing-admin/targets') }}">
-                                        <i class="fas fa-bullseye me-2"></i>Sales Targets
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.commissions') ?? url('/marketing-admin/commissions') }}">
-                                        <i class="fas fa-money-bill-wave me-2"></i>Commission Reports
-                                    </a></li>
+                                    <li><a class="dropdown-item" href="{{ route('admin.account-managers.index') ?? url('/admin/account-managers/index') }}">Account Managers</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.performance') ?? url('/marketing-admin/performance') }}">Team Performance</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.targets') ?? url('/marketing-admin/targets') }}">Sales Targets</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.commissions') ?? url('/marketing-admin/commissions') }}">Commission Reports</a></li>
                                 </ul>
                             </li>
 
-                            <!-- STANDALONE LINKS -->
+                            <li class="nav-item">
+                            <a href="{{ route('contracts.index') }}"
+   class="nav-link {{ request()->routeIs('contracts.*') ? 'active' : '' }}">
+    <i class="fas fa-file-contract me-2"></i>
+    Contracts
+</a>
+</li>
+
                             <li class="nav-item">
                                 <a class="nav-link nav-link-fix" href="{{ route('marketing-admin.customer-insights') }}">
                                     <i class="fas fa-user-chart me-1"></i>Customer Insights
                                 </a>
                             </li>
-
                             <li class="nav-item">
                                 <a class="nav-link nav-link-fix" href="{{ route('marketing-admin.sales-pipeline') ?? url('/marketing-admin/sales-pipeline') }}">
                                     <i class="fas fa-funnel-dollar me-1"></i>Sales Pipeline
@@ -1146,37 +1216,37 @@
                             </li>
                         @endif
 
-                          <!-- Statements -->
-                    <li class="nav-item">
-                        @auth
-                            <a class="nav-link nav-link-fix"
-                            href="{{ auth()->user()->role === 'customer'
-                                        ? route('customer.statements')
-                                        : route('statements.index') }}">
-                                <i class="fas fa-file-invoice me-1"></i>
-                                {{ auth()->user()->role === 'customer'
-                                        ? 'My Statements'
-                                        : 'Generate Statements' }}
-                            </a>
-                        @endauth
-                    </li>
+                        <!-- Statements -->
+                        <li class="nav-item">
+                            @auth
+                                <a class="nav-link nav-link-fix"
+                                href="{{ auth()->user()->role === 'customer'
+                                            ? route('customer.statements')
+                                            : route('statements.index') }}">
+                                    <i class="fas fa-file-invoice me-1"></i>
+                                    {{ auth()->user()->role === 'customer'
+                                            ? 'My Statements'
+                                            : 'Generate Statements' }}
+                                </a>
+                            @endauth
+                        </li>
 
                         <!-- Chat Link -->
                         @can('use-chat')
-<li class="nav-item">
-    <a class="nav-link nav-link-fix" href="{{ route('chat.index') }}">
-        <i class="fas fa-comments me-1"></i> WeChat
-        @auth
-            @php
-                $unreadCount = auth()->user()->totalUnreadMessages();
-            @endphp
-            @if($unreadCount > 0)
-                <span class="badge bg-danger ms-1">{{ $unreadCount }}</span>
-            @endif
-        @endauth
-    </a>
-</li>
-@endcan
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-fix" href="{{ route('chat.index') }}">
+                                    <i class="fas fa-comments me-1"></i> WeChat
+                                    @auth
+                                        @php
+                                            $unreadCount = auth()->user()->totalUnreadMessages();
+                                        @endphp
+                                        @if($unreadCount > 0)
+                                            <span class="badge bg-danger ms-1">{{ $unreadCount }}</span>
+                                        @endif
+                                    @endauth
+                                </a>
+                            </li>
+                        @endcan
 
                         <!-- Notifications Dropdown -->
                         @auth
@@ -1201,7 +1271,7 @@
                                 <li class="dropdown-header bg-light d-flex justify-content-between align-items-center">
                                     <span>Notifications</span>
                                     @if($unreadNotificationsCount > 0)
-                                        <span class="badge bg-primary">{{ $unreadNotificationsCount }} new</span>
+                                        <span class="badge bg-kp-blue">{{ $unreadNotificationsCount }} new</span>
                                     @endif
                                 </li>
                                 <div id="notificationsList">
@@ -1224,7 +1294,7 @@
                                                         <small class="fw-bold {{ $isUnread ? 'text-dark' : 'text-secondary' }}">
                                                             {{ $data['sender_name'] ?? 'Someone' }}
                                                             @if($isUnread)
-                                                                <span class="badge bg-primary ms-1" style="font-size: 0.5rem;">New</span>
+                                                                <span class="badge bg-kp-blue ms-1" style="font-size: 0.5rem;">New</span>
                                                             @endif
                                                         </small>
                                                         <small class="text-muted">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</small>
@@ -1232,12 +1302,12 @@
                                                     <small class="d-block {{ $isUnread ? 'text-dark' : 'text-muted' }}">{{ $data['message_preview'] ?? 'New message' }}</small>
                                                     <div class="mt-2 d-flex gap-2">
                                                         <a href="#" onclick="event.preventDefault(); openChat({{ $data['conversation_id'] ?? 0 }})"
-                                                           class="small text-primary text-decoration-none">
+                                                           class="small text-kp-blue text-decoration-none">
                                                             <i class="fas fa-comment"></i> Open Chat
                                                         </a>
                                                         @if($isUnread)
                                                             <a href="#" onclick="event.preventDefault(); markAsRead('{{ $notification->id }}')"
-                                                               class="small text-success text-decoration-none">
+                                                               class="small text-kp-green text-decoration-none">
                                                                 <i class="fas fa-check-circle"></i> Mark Read
                                                             </a>
                                                         @else
@@ -1263,11 +1333,11 @@
                                     <li><hr class="dropdown-divider"></li>
                                     <li class="text-center p-2">
                                         <div class="d-flex justify-content-between">
-                                            <a href="{{ route('notifications.index') }}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ route('notifications.index') }}" class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-list"></i> View All
                                             </a>
                                             @if($unreadNotificationsCount > 0)
-                                                <a href="#" onclick="event.preventDefault(); markAllAsRead()" class="btn btn-sm btn-outline-success">
+                                                <a href="#" onclick="event.preventDefault(); markAllAsRead()" class="btn btn-sm btn-outline-kp-success">
                                                     <i class="fas fa-check-double"></i> Mark All Read
                                                 </a>
                                             @endif
@@ -1308,74 +1378,6 @@
                                     <strong>{{ Auth::user()->email }}</strong>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
-
-                                @if(Auth::user()->role === 'customer')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('customer.profile.show') }}">
-                                            <i class="fas fa-user me-2"></i>My Profile
-                                        </a>
-                                    </li>
-                                @endif
-
-                                @if(Auth::user()->role === 'technician')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('technician.profile') }}">
-                                            <i class="fas fa-id-badge me-2"></i>My Profile
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('technician.equipment.index') }}">
-                                            <i class="fas fa-toolbox me-2"></i>Equipment
-                                        </a>
-                                    </li>
-                                @endif
-
-                                @if(Auth::user()->role === 'surveyor')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('surveyor.profile') }}">
-                                            <i class="fas fa-user me-2"></i>My Profile
-                                        </a>
-                                    </li>
-                                @endif
-
-                                @if(Auth::user()->role === 'designer')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('designer.profile') }}">
-                                            <i class="fas fa-user me-2"></i>My Profile
-                                        </a>
-                                    </li>
-                                @endif
-
-                                @if(Auth::user()->role === 'account_manager')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('account-manager.dashboard') }}">
-                                            <i class="fas fa-user-tie me-2"></i>My Dashboard
-                                        </a>
-                                    </li>
-                                @endif
-
-                                @if(Auth::user()->role === 'debt_manager')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('finance.debt.dashboard') }}">
-                                            <i class="fas fa-user-tie me-2"></i>My Dashboard
-                                        </a>
-                                    </li>
-                                @endif
-
-                                @if(Auth::user()->role === 'accountmanager_admin')
-                                    <li>
-                                        <a class="dropdown-item" href="{{ route('marketing-admin.dashboard') }}">
-                                            <i class="fas fa-chart-pie me-2"></i>Marketing Dashboard
-                                        </a>
-                                    </li>
-                                @endif
-
-                                <li>
-                                    <a class="dropdown-item" href="{{ route('designer.profile') ?? '#' }}">
-                                        <i class="fas fa-cog me-2"></i>Settings
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                         @csrf
@@ -1409,7 +1411,8 @@
     <main class="main-content">
         <div class="container-fluid">
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
                     {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -1417,13 +1420,15 @@
 
             @if(session('error'))
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
                     {{ session('error') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
             @if(session('warning'))
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <div class="alert alert-kp-warning alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
                     {{ session('warning') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -1431,25 +1436,9 @@
 
             @if(session('info'))
                 <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
                     {{ session('info') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            @hasSection('page-title')
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <h1 class="h3 text-gray-800 mb-0">
-                            @yield('page-title')
-                        </h1>
-                        @hasSection('breadcrumbs')
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb">
-                                    @yield('breadcrumbs')
-                                </ol>
-                            </nav>
-                        @endif
-                    </div>
                 </div>
             @endif
 
@@ -1457,34 +1446,18 @@
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer with Kenya Power Colors -->
     <footer class="footer-compact bg-dark text-light py-3 py-sm-4 mt-auto">
         <div class="container-fluid px-3 px-sm-4">
             <div class="row align-items-center g-2 g-sm-3">
                 <div class="col-lg-4 mb-2 mb-lg-0">
                     <div class="footer-brand d-flex align-items-center mb-2">
                         <div class="brand-icon me-2">
-                            <i class="fas fa-network-wired fa-lg text-primary"></i>
+                            <i class="fas fa-network-wired fa-lg" style="color: var(--kp-yellow);"></i>
                         </div>
                         <div>
-                            <h5 class="mb-0 fw-bold text-white">Dark Fibre CRM</h5>
-                            <p class="mb-0 text-light opacity-75 small">Fibre infrastructure management</p>
-                        </div>
-                    </div>
-                    <div class="social-links mt-2">
-                        <div class="d-flex gap-1">
-                            <a href="#" class="social-icon small-icon" title="LinkedIn" data-bs-toggle="tooltip">
-                                <i class="fab fa-linkedin-in fa-sm"></i>
-                            </a>
-                            <a href="#" class="social-icon small-icon" title="Twitter" data-bs-toggle="tooltip">
-                                <i class="fab fa-twitter fa-sm"></i>
-                            </a>
-                            <a href="#" class="social-icon small-icon" title="GitHub" data-bs-toggle="tooltip">
-                                <i class="fab fa-github fa-sm"></i>
-                            </a>
-                            <a href="mailto:Fibre@kplc.co.ke" class="social-icon small-icon" title="Email" data-bs-toggle="tooltip">
-                                <i class="fas fa-envelope fa-sm"></i>
-                            </a>
+                            <h5 class="mb-0 fw-bold" style="color: var(--kp-yellow);">Dark Fibre CRM</h5>
+                            <p class="mb-0 text-light opacity-75 small">Kenya Power Fibre Infrastructure Management</p>
                         </div>
                     </div>
                 </div>
@@ -1492,101 +1465,29 @@
                 <div class="col-lg-5 mb-2 mb-lg-0">
                     <div class="row g-2">
                         <div class="col-6 col-sm-3">
-                            <h6 class="footer-heading mb-1 text-primary small fw-bold">Quick Links</h6>
+                            <h6 class="footer-heading mb-1 small fw-bold" style="color: var(--kp-yellow);">Quick Links</h6>
                             <ul class="list-unstyled footer-links mb-0">
-                                <li class="mb-1">
-                                    @if(Route::has('home'))
-                                        <a href="{{ route('home') }}" class="footer-link small">
-                                            <i class="fas fa-home fa-xs me-1"></i>Home
-                                        </a>
-                                    @else
-                                        <a href="#" class="footer-link disabled-link small" data-bs-toggle="tooltip" title="Route not available">
-                                            <i class="fas fa-home fa-xs me-1"></i>Home
-                                        </a>
-                                    @endif
-                                </li>
-                                <li class="mb-2">
-                                    @if(Route::has('about'))
-                                        <a href="{{ route('about') }}" class="footer-link">
-                                            <i class="fas fa-info-circle fa-fw me-2"></i>About Us
-                                        </a>
-                                    @else
-                                        <a href="#" class="footer-link disabled-link" data-bs-toggle="tooltip" title="Route not available">
-                                            <i class="fas fa-info-circle fa-fw me-2"></i>About Us
-                                        </a>
-                                    @endif
-                                </li>
-                                <li class="mb-1">
-                                    @if(Route::has('contact'))
-                                        <a href="{{ route('contact') }}" class="footer-link small">
-                                            <i class="fas fa-envelope fa-xs me-1"></i>Contact
-                                        </a>
-                                    @else
-                                        <a href="#" class="footer-link disabled-link small" data-bs-toggle="tooltip" title="Route not available">
-                                            <i class="fas fa-envelope fa-xs me-1"></i>Contact
-                                        </a>
-                                    @endif
-                                </li>
-                                <li class="mb-1">
-                                    @if(Route::has('support'))
-                                        <a href="{{ route('support') }}" class="footer-link small">
-                                            <i class="fas fa-headset fa-xs me-1"></i>Support
-                                        </a>
-                                    @else
-                                        <a href="#" class="footer-link disabled-link small" data-bs-toggle="tooltip" title="Route not available">
-                                            <i class="fas fa-headset fa-xs me-1"></i>Support
-                                        </a>
-                                    @endif
-                                </li>
+                                <li class="mb-1"><a href="{{ url('/') }}" class="footer-link small">Home</a></li>
+                                <li class="mb-1"><a href="{{ route('help.index') }}" class="footer-link small">Help Center</a></li>
+                                {{-- <li class="mb-1"><a href="{{ route('cak.dashboard') }}" class="footer-link small">CAK Compliance</a></li> --}}
                             </ul>
                         </div>
                         <div class="col-6 col-sm-3">
-                            <h6 class="footer-heading mb-1 text-primary small fw-bold">Legal</h6>
+                            <h6 class="footer-heading mb-1 small fw-bold" style="color: var(--kp-yellow);">Legal</h6>
                             <ul class="list-unstyled footer-links mb-0">
-                                <li class="mb-1">
-                                    @if(Route::has('privacy'))
-                                        <a href="{{ route('privacy') }}" class="footer-link small">
-                                            <i class="fas fa-shield-alt fa-xs me-1"></i>Privacy
-                                        </a>
-                                    @else
-                                        <a href="#" class="footer-link disabled-link small" data-bs-toggle="tooltip" title="Route not available">
-                                            <i class="fas fa-shield-alt fa-xs me-1"></i>Privacy
-                                        </a>
-                                    @endif
-                                </li>
-                                <li class="mb-1">
-                                    @if(Route::has('terms'))
-                                        <a href="{{ route('terms') }}" class="footer-link small">
-                                            <i class="fas fa-file-contract fa-xs me-1"></i>Terms
-                                        </a>
-                                    @else
-                                        <a href="#" class="footer-link disabled-link small" data-bs-toggle="tooltip" title="Route not available">
-                                            <i class="fas fa-file-contract fa-xs me-1"></i>Terms
-                                        </a>
-                                    @endif
-                                </li>
-                                <li class="mb-2">
-                                    @if(Route::has('documentation'))
-                                        <a href="{{ route('documentation') }}" class="footer-link">
-                                            <i class="fas fa-book fa-fw me-2"></i>Documentation
-                                        </a>
-                                    @else
-                                        <a href="#" class="footer-link disabled-link" data-bs-toggle="tooltip" title="Route not available">
-                                            <i class="fas fa-book fa-fw me-2"></i>Documentation
-                                        </a>
-                                    @endif
-                                </li>
+                                <li class="mb-1"><a href="#" class="footer-link small">Privacy Policy</a></li>
+                                <li class="mb-1"><a href="#" class="footer-link small">Terms of Service</a></li>
                             </ul>
                         </div>
                         <div class="col-12 col-sm-6">
-                            <h6 class="footer-heading mb-1 text-primary small fw-bold">Contact</h6>
+                            <h6 class="footer-heading mb-1 small fw-bold" style="color: var(--kp-yellow);">Contact</h6>
                             <ul class="list-unstyled mb-0 small">
                                 <li class="mb-1 d-flex align-items-start">
-                                    <i class="fas fa-map-marker-alt fa-xs me-1 mt-1 text-primary"></i>
+                                    <i class="fas fa-map-marker-alt fa-xs me-1 mt-1" style="color: var(--kp-yellow);"></i>
                                     <span class="text-light opacity-75">Nairobi, Kenya</span>
                                 </li>
                                 <li class="mb-1 d-flex align-items-start">
-                                    <i class="fas fa-envelope fa-xs me-1 mt-1 text-primary"></i>
+                                    <i class="fas fa-envelope fa-xs me-1 mt-1" style="color: var(--kp-yellow);"></i>
                                     <span class="text-light opacity-75">Fibre@kplc.co.ke</span>
                                 </li>
                             </ul>
@@ -1597,20 +1498,20 @@
                 <div class="col-lg-3">
                     <div class="system-status d-flex align-items-center justify-content-lg-end mb-2">
                         <div class="status-indicator me-2">
-                            <div class="status-dot bg-success"></div>
+                            <div class="status-dot bg-kp-green"></div>
                         </div>
-                        <span class="text-success fw-bold small">Operational</span>
+                        <span class="text-kp-green fw-bold small">System Operational</span>
                     </div>
                     <div class="footer-meta d-flex flex-wrap justify-content-lg-end gap-1 small">
-                        <span class="badge bg-primary text-white px-2 py-1">
+                        <span class="badge px-2 py-1" style="background: linear-gradient(135deg, var(--kp-blue), var(--kp-green)); color: white;">
                             v{{ config('app.version', '1.0.0') }}
                         </span>
                         @if(app()->environment('local'))
-                            <span class="badge bg-warning text-dark px-2 py-1">Dev</span>
+                            <span class="badge px-2 py-1" style="background: var(--kp-yellow); color: var(--kp-dark);">Development</span>
                         @elseif(app()->environment('staging'))
-                            <span class="badge bg-info text-white px-2 py-1">Staging</span>
+                            <span class="badge px-2 py-1" style="background: #17a2b8; color: white;">Staging</span>
                         @else
-                            <span class="badge bg-success text-white px-2 py-1">Prod</span>
+                            <span class="badge px-2 py-1" style="background: var(--kp-green); color: white;">Production</span>
                         @endif
                     </div>
                 </div>
@@ -1622,7 +1523,7 @@
                 <div class="col-md-6 mb-2 mb-md-0">
                     <div class="copyright small">
                         <p class="mb-0 text-light opacity-75">
-                            &copy; {{ date('Y') }} <strong class="text-primary">Dark Fibre CRM</strong>. All rights reserved.
+                            &copy; {{ date('Y') }} <strong style="color: var(--kp-yellow);">Kenya Power and Lighting Company</strong>. All rights reserved.
                         </p>
                     </div>
                 </div>
@@ -1638,190 +1539,150 @@
         </div>
     </footer>
 
-    <!-- jQuery first -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Chart.js -->
+    <!-- Scripts -->
+    {{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/68SIy3Te4Bkz" crossorigin="anonymous"></script> --}}
 
-    <!-- Bootstrap 5 JS Bundle (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Bootstrap JS MUST be loaded after jQuery -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Main Script -->
+
     <script>
-    (function() {
-        // Back to top button functionality
-        document.getElementById('backToTop')?.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        (function() {
+            // Back to top button functionality
+            document.getElementById('backToTop')?.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
 
-        // Initialize tooltips
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
-            try {
-                new bootstrap.Tooltip(el);
-            } catch (e) {
-                console.log('Tooltip error:', e);
-            }
-        });
-
-        // ==================== NOTIFICATION FUNCTIONS ====================
-        window.markAsRead = function(notificationId) {
-            fetch(`/notifications/${notificationId}/read`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            // Initialize tooltips
+            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+                try {
+                    new bootstrap.Tooltip(el);
+                } catch (e) {
+                    console.log('Tooltip error:', e);
                 }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the notification item in the dropdown
-                    const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
-                    if (notificationItem) {
-                        notificationItem.classList.remove('unread');
-                        notificationItem.classList.add('read');
+            });
 
-                        // Update the avatar color
-                        const avatar = notificationItem.querySelector('.avatar div');
-                        if (avatar) {
-                            avatar.classList.remove('bg-primary');
-                            avatar.classList.add('bg-secondary');
-                        }
-
-                        // Update the "New" badge
-                        const newBadge = notificationItem.querySelector('.badge.bg-primary.ms-1');
-                        if (newBadge) newBadge.remove();
-
-                        // Update the action buttons
-                        const actionDiv = notificationItem.querySelector('.mt-2.d-flex.gap-2');
-                        if (actionDiv) {
-                            const markReadBtn = actionDiv.querySelector('a.text-success');
-                            if (markReadBtn) {
-                                const readSpan = document.createElement('span');
-                                readSpan.className = 'small text-muted';
-                                readSpan.innerHTML = '<i class="fas fa-check-double"></i> Read';
-                                actionDiv.replaceChild(readSpan, markReadBtn);
-                            }
-                        }
+            // ==================== NOTIFICATION FUNCTIONS ====================
+            window.markAsRead = function(notificationId) {
+                fetch(`/notifications/${notificationId}/read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
-
-                    // Update the notification badge
-                    window.updateNotificationBadge();
-                }
-            })
-            .catch(error => console.error('Error marking as read:', error));
-        };
-
-        window.markAllAsRead = function() {
-            fetch('/notifications/read-all', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update all notification items
-                    document.querySelectorAll('.notification-item.unread').forEach(item => {
-                        item.classList.remove('unread');
-                        item.classList.add('read');
-
-                        const avatar = item.querySelector('.avatar div');
-                        if (avatar) {
-                            avatar.classList.remove('bg-primary');
-                            avatar.classList.add('bg-secondary');
-                        }
-
-                        const newBadge = item.querySelector('.badge.bg-primary.ms-1');
-                        if (newBadge) newBadge.remove();
-
-                        const actionDiv = item.querySelector('.mt-2.d-flex.gap-2');
-                        if (actionDiv) {
-                            const markReadBtn = actionDiv.querySelector('a.text-success');
-                            if (markReadBtn) {
-                                const readSpan = document.createElement('span');
-                                readSpan.className = 'small text-muted';
-                                readSpan.innerHTML = '<i class="fas fa-check-double"></i> Read';
-                                actionDiv.replaceChild(readSpan, markReadBtn);
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                        if (notificationItem) {
+                            notificationItem.classList.remove('unread');
+                            notificationItem.classList.add('read');
+                            const avatar = notificationItem.querySelector('.avatar div');
+                            if (avatar) {
+                                avatar.classList.remove('bg-kp-blue');
+                                avatar.classList.add('bg-secondary');
+                            }
+                            const newBadge = notificationItem.querySelector('.badge.bg-kp-blue.ms-1');
+                            if (newBadge) newBadge.remove();
+                            const actionDiv = notificationItem.querySelector('.mt-2.d-flex.gap-2');
+                            if (actionDiv) {
+                                const markReadBtn = actionDiv.querySelector('a.text-kp-green');
+                                if (markReadBtn) {
+                                    const readSpan = document.createElement('span');
+                                    readSpan.className = 'small text-muted';
+                                    readSpan.innerHTML = '<i class="fas fa-check-double"></i> Read';
+                                    actionDiv.replaceChild(readSpan, markReadBtn);
+                                }
                             }
                         }
-                    });
+                        window.updateNotificationBadge();
+                    }
+                })
+                .catch(error => console.error('Error marking as read:', error));
+            };
 
-                    // Update the notification badge
-                    window.updateNotificationBadge();
-
-                    // Hide the "Mark All Read" button
-                    const markAllBtn = document.querySelector('.btn-outline-success');
-                    if (markAllBtn) markAllBtn.style.display = 'none';
-
-                    // Update the header badge
-                    const headerBadge = document.querySelector('.dropdown-header .badge.bg-primary');
-                    if (headerBadge) headerBadge.remove();
-                }
-            })
-            .catch(error => console.error('Error marking all as read:', error));
-        };
-
-        window.openChat = function(conversationId) {
-            if (conversationId && conversationId > 0) {
-                window.location.href = '{{ route("chat.index") }}?conversation=' + conversationId;
-            }
-        };
-
-        window.updateNotificationBadge = function() {
-            fetch('/notifications/unread-count', {
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                const badge = document.querySelector('.notification-badge');
-                if (badge) {
-                    if (data.count > 0) {
-                        badge.textContent = data.count > 99 ? '99+' : data.count;
-                        badge.style.display = 'inline';
-
-                        // Update header badge if exists
-                        const headerBadge = document.querySelector('.dropdown-header .badge.bg-primary');
-                        if (headerBadge) {
-                            headerBadge.textContent = data.count + ' new';
-                        }
-                    } else {
-                        badge.style.display = 'none';
-
-                        // Remove header badge if exists
-                        const headerBadge = document.querySelector('.dropdown-header .badge.bg-primary');
+            window.markAllAsRead = function() {
+                fetch('/notifications/read-all', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.querySelectorAll('.notification-item.unread').forEach(item => {
+                            item.classList.remove('unread');
+                            item.classList.add('read');
+                            const avatar = item.querySelector('.avatar div');
+                            if (avatar) {
+                                avatar.classList.remove('bg-kp-blue');
+                                avatar.classList.add('bg-secondary');
+                            }
+                            const newBadge = item.querySelector('.badge.bg-kp-blue.ms-1');
+                            if (newBadge) newBadge.remove();
+                            const actionDiv = item.querySelector('.mt-2.d-flex.gap-2');
+                            if (actionDiv) {
+                                const markReadBtn = actionDiv.querySelector('a.text-kp-green');
+                                if (markReadBtn) {
+                                    const readSpan = document.createElement('span');
+                                    readSpan.className = 'small text-muted';
+                                    readSpan.innerHTML = '<i class="fas fa-check-double"></i> Read';
+                                    actionDiv.replaceChild(readSpan, markReadBtn);
+                                }
+                            }
+                        });
+                        window.updateNotificationBadge();
+                        const markAllBtn = document.querySelector('.btn-outline-kp-success');
+                        if (markAllBtn) markAllBtn.style.display = 'none';
+                        const headerBadge = document.querySelector('.dropdown-header .badge.bg-kp-blue');
                         if (headerBadge) headerBadge.remove();
                     }
+                })
+                .catch(error => console.error('Error marking all as read:', error));
+            };
+
+            window.openChat = function(conversationId) {
+                if (conversationId && conversationId > 0) {
+                    window.location.href = '{{ route("chat.index") }}?conversation=' + conversationId;
                 }
-            })
-            .catch(error => console.error('Error updating badge:', error));
-        };
+            };
 
-        // Update notification badge periodically
-        setInterval(() => {
-            window.updateNotificationBadge();
-        }, 30000); // Update every 30 seconds
-
-        // Initial badge update
-        window.updateNotificationBadge();
-
-        // Listen for Echo events if available
-        if (typeof Echo !== 'undefined' && {{ auth()->id() ?? 0 }} > 0) {
-            Echo.private(`user.{{ auth()->id() }}`)
-                .listen('.message.sent', (e) => {
-                    console.log('New message received, updating notifications');
-                    window.updateNotificationBadge();
-
-                    // Optional: Show a toast notification
-                    if (e.message && e.message.user && e.message.user.id !== {{ auth()->id() }}) {
-                        // You could show a toast here
+            window.updateNotificationBadge = function() {
+                fetch('/notifications/unread-count', {
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
-                });
-        }
-    })();
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.querySelector('.notification-badge');
+                    if (badge) {
+                        if (data.count > 0) {
+                            badge.textContent = data.count > 99 ? '99+' : data.count;
+                            badge.style.display = 'inline';
+                            const headerBadge = document.querySelector('.dropdown-header .badge.bg-kp-blue');
+                            if (headerBadge) {
+                                headerBadge.textContent = data.count + ' new';
+                            }
+                        } else {
+                            badge.style.display = 'none';
+                            const headerBadge = document.querySelector('.dropdown-header .badge.bg-kp-blue');
+                            if (headerBadge) headerBadge.remove();
+                        }
+                    }
+                })
+                .catch(error => console.error('Error updating badge:', error));
+            };
+
+            window.updateNotificationBadge();
+            setInterval(() => window.updateNotificationBadge(), 30000);
+        })();
     </script>
 
     @if(config('app.use_alpine', false))

@@ -13,13 +13,13 @@
             <input type="checkbox" class="invoice-checkbox" value="{{ $billing->id }}">
         </td>
         <td>
-            <strong class="text-primary">#{{ $billing->billing_number ?? 'CONS-' . $billing->id }}</strong>
+            <strong class="text-kp-blue">#{{ $billing->billing_number ?? 'CONS-' . $billing->id }}</strong>
         </td>
         <td>
             @if($billing->user)
                 <div class="d-flex align-items-center">
                     <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-user text-primary"></i>
+                        <i class="fas fa-user text-kp-blue"></i>
                     </div>
                     <div>
                         <strong>{{ $billing->user->name }}</strong>
@@ -34,7 +34,7 @@
             @elseif($billing->User)
                 <div class="d-flex align-items-center">
                     <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-user text-primary"></i>
+                        <i class="fas fa-user text-kp-blue"></i>
                     </div>
                     <div>
                         <strong>{{ $billing->User->name }}</strong>
@@ -130,7 +130,7 @@
                     <i class="fas fa-calendar-alt"></i>
                 </button>
                 <a href="{{ route('finance.debt.invoice.details', $billing->id) }}"
-                   class="btn btn-outline-primary btn-sm"
+                   class="btn btn-outline-kp-primary btn-sm"
                    title="View Details"
                    data-bs-toggle="tooltip">
                     <i class="fas fa-eye"></i>
@@ -143,7 +143,7 @@
     <tr>
         <td colspan="8" class="text-center py-4 text-muted">
             <div class="py-4">
-                <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                <i class="fas fa-check-circle fa-3x mb-3 text-kp-green"></i>
                 <h5>All Clear!</h5>
                 <p class="mb-0">No overdue invoices found.</p>
             </div>

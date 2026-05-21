@@ -17,7 +17,7 @@ use Carbon\Carbon;
                     <i class="fas fa-file-invoice-dollar me-2"></i>Manage Consolidated Billings
                 </h1>
                 <div class="btn-group">
-                    <a href="{{ route('finance.billing.createSingle') }}" class="btn btn-primary">
+                    <a href="{{ route('finance.billing.createSingle') }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus me-2"></i>Create Manual Billing
                     </a>
                     <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filterModal">
@@ -42,7 +42,7 @@ use Carbon\Carbon;
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Invoices</div>
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">Total Invoices</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $billings->total() }}</div>
                         </div>
                         <div class="col-auto">
@@ -58,7 +58,7 @@ use Carbon\Carbon;
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Paid Invoices</div>
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">Paid Invoices</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ ConsolidatedBilling::where('status', 'paid')->count() }}</div>
                         </div>
                         <div class="col-auto">
@@ -74,7 +74,7 @@ use Carbon\Carbon;
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Invoices</div>
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">Pending Invoices</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ ConsolidatedBilling::where('status', 'pending')->count() }}</div>
                         </div>
                         <div class="col-auto">
@@ -109,7 +109,7 @@ use Carbon\Carbon;
 
     <div class="mb-3">
     <div class="btn-group">
-        <button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown">
+        <button type="button" class="btn btn-kp-warning dropdown-toggle" data-bs-toggle="dropdown">
             <i class="fas fa-bell me-1"></i> Bulk Email Actions
         </button>
         <ul class="dropdown-menu">
@@ -275,7 +275,7 @@ use Carbon\Carbon;
                                 <div class="btn-group btn-group-sm" role="group">
                                     <!-- View Details -->
                                     <a href="{{ route('finance.billing.show', $billing->id) }}"
-                                       class="btn btn-outline-primary"
+                                       class="btn btn-outline-kp-primary"
                                        title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </a>
@@ -296,7 +296,7 @@ use Carbon\Carbon;
                                     </a>
 
                                     <!-- More Actions Dropdown -->
-                                    <button type="button" class="btn btn-outline-success dropdown-toggle"
+                                    <button type="button" class="btn btn-outline-kp-success dropdown-toggle"
                                             data-bs-toggle="dropdown"
                                             aria-expanded="false"
                                             title="More Actions">
@@ -305,13 +305,13 @@ use Carbon\Carbon;
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         @if($billing->status !== 'paid')
                                         <li>
-                                            <a class="dropdown-item text-success" href="#"
+                                            <a class="dropdown-item text-kp-green" href="#"
                                                onclick="markAsPaid({{ $billing->id }})">
                                                 <i class="fas fa-check me-2"></i>Mark as Paid
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item text-primary" href="#"
+                                            <a class="dropdown-item text-kp-blue" href="#"
                                                onclick="submitKra({{ $billing->id }})">
                                                 <i class="fas fa-dollar me-2"></i>Submit KRA
                                             </a>
@@ -331,7 +331,7 @@ use Carbon\Carbon;
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item text-warning" href="#"
+                                            <a class="dropdown-item text-kp-yellow" href="#"
                                                onclick="duplicateBilling({{ $billing->id }})">
                                                 <i class="fas fa-copy me-2"></i>Duplicate
                                             </a>
@@ -359,7 +359,7 @@ use Carbon\Carbon;
         <button type="button" class="btn btn-sm btn-info" onclick="sendReminder({{ $billing->id }})" title="Send Reminder">
             <i class="fas fa-bell"></i>
         </button>
-        <button type="button" class="btn btn-sm btn-primary" onclick="sendInvoice({{ $billing->id }})" title="Email Invoice">
+        <button type="button" class="btn btn-sm btn-kp-primary" onclick="sendInvoice({{ $billing->id }})" title="Email Invoice">
             <i class="fas fa-envelope"></i>
         </button>
         <a href="{{ route('finance.billing.show', $billing->id) }}" class="btn btn-sm btn-secondary" title="View">
@@ -375,10 +375,10 @@ use Carbon\Carbon;
                                 <h5 class="text-muted">No consolidated invoices found</h5>
                                 <p class="text-muted">Run the automated billing process or create a manual invoice.</p>
                                 <div class="mt-3">
-                                    <button class="btn btn-primary" onclick="runBillingProcess()">
+                                    <button class="btn btn-kp-primary" onclick="runBillingProcess()">
                                         <i class="fas fa-robot me-2"></i>Run Auto Billing
                                     </button>
-                                    {{-- <a href="{{ route('finance.billing.create') }}" class="btn btn-success">
+                                    {{-- <a href="{{ route('finance.billing.create') }}" class="btn btn-kp-success">
                                         <i class="fas fa-plus me-2"></i>Create Manual Invoice
                                     </a> --}}
                                 </div>
@@ -416,7 +416,7 @@ use Carbon\Carbon;
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="retryKraSubmission()" id="retryKraBtn" style="display: none;">
+                <button type="button" class="btn btn-kp-primary" onclick="retryKraSubmission()" id="retryKraBtn" style="display: none;">
                     <i class="fas fa-redo me-2"></i>Retry Submission
                 </button>
             </div>
@@ -509,7 +509,7 @@ use Carbon\Carbon;
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-outline-danger" onclick="resetFilters()">Reset Filters</button>
-                <button type="button" class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+                <button type="button" class="btn btn-kp-primary" onclick="applyFilters()">Apply Filters</button>
             </div>
         </div>
     </div>

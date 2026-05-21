@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-file-invoice-dollar text-primary"></i> Quotation Details
+                <i class="fas fa-file-invoice-dollar text-kp-blue"></i> Quotation Details
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Quotation: {{ $quotation->quotation_number }}</h5>
                         <span class="badge bg-{{ match($quotation->status) {
@@ -118,7 +118,7 @@
     <div class="row mt-4">
         <div class="col-md-6">
             <div class="card shadow">
-                <div class="card-header bg-warning">
+                <div class="card-header bg-kp-yellow">
                     <h5 class="mb-0">Scope of Work</h5>
                 </div>
                 <div class="card-body">
@@ -149,16 +149,16 @@
                         </a>
                         <div class="btn-group">
                             @if($quotation->status === 'draft')
-                                <button type="button" class="btn btn-primary" onclick="sendQuotation({{ $quotation->id }})">
+                                <button type="button" class="btn btn-kp-primary" onclick="sendQuotation({{ $quotation->id }})">
                                     <i class="fas fa-paper-plane me-2"></i>Send to Customer
                                 </button>
-                                <a href="{{ route('admin.quotations.edit', $quotation) }}" class="btn btn-warning">
+                                <a href="{{ route('admin.quotations.edit', $quotation) }}" class="btn btn-kp-warning">
                                     <i class="fas fa-edit me-2"></i>Edit
                                 </a>
                             @endif
 
                             @if($quotation->status === 'sent' && auth()->user()->can('approve-quotations'))
-                                <button type="button" class="btn btn-success" onclick="approveQuotation({{ $quotation->id }})">
+                                <button type="button" class="btn btn-kp-success" onclick="approveQuotation({{ $quotation->id }})">
                                     <i class="fas fa-check me-2"></i>Approve
                                 </button>
                                 <button type="button" class="btn btn-danger" onclick="rejectQuotation({{ $quotation->id }})">

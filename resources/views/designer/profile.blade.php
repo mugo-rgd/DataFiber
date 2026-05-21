@@ -27,8 +27,8 @@
                             <div class="col-md-6">
                                 <h4>Quick Actions</h4>
                                 <div class="d-grid gap-2">
-                                    <button class="btn btn-primary">Edit Profile</button>
-                                    <button class="btn btn-outline-primary">Change Password</button>
+                                    <button class="btn btn-kp-primary">Edit Profile</button>
+                                    <button class="btn btn-outline-kp-primary">Change Password</button>
                                     <button class="btn btn-outline-info">View Portfolio</button>
                                 </div>
                             </div>

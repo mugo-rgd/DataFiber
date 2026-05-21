@@ -3,7 +3,7 @@
 @section('title', 'CSP Compliance Return')
 @section('page-title', 'Content Service Provider (CSP) Compliance Return')
 <button type="button"
-        class="btn btn-warning btn-lg autofill-form-btn"
+        class="btn btn-kp-warning btn-lg autofill-form-btn"
         data-url="{{ route('csp.autofill-record-2') }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
@@ -569,9 +569,9 @@
         </p>
 
         <div class="submit-buttons">
-            <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">Submit</button>
+            <button type="submit" name="submit" value="submit" class="btn btn-kp-primary btn-lg">Submit</button>
 <button type="button"
-        class="btn btn-warning btn-lg autofill-form-btn"
+        class="btn btn-kp-warning btn-lg autofill-form-btn"
         data-url="{{ route('csp.autofill-record-2') }}">
     Auto Fill
 </button>

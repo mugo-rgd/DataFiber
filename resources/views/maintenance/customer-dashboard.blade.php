@@ -7,7 +7,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">My Maintenance Requests</h1>
-        <a href="{{ route('maintenance.requests.create') }}" class="btn btn-primary">
+        <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-primary">
             <i class="fas fa-plus-circle mr-2"></i> Report Issue
         </a>
     </div>
@@ -17,7 +17,7 @@
         <div class="col-md-3 mb-4">
             <div class="card border-left-primary shadow">
                 <div class="card-body">
-                    <div class="text-primary font-weight-bold">Open Requests</div>
+                    <div class="text-kp-blue font-weight-bold">Open Requests</div>
                     <div class="h5">{{ $customerStats['open_requests'] }}</div>
                 </div>
             </div>
@@ -25,7 +25,7 @@
         <div class="col-md-3 mb-4">
             <div class="card border-left-success shadow">
                 <div class="card-body">
-                    <div class="text-success font-weight-bold">Resolved</div>
+                    <div class="text-kp-green font-weight-bold">Resolved</div>
                     <div class="h5">{{ $customerStats['resolved_requests'] }}</div>
                 </div>
             </div>
@@ -33,7 +33,7 @@
         <div class="col-md-3 mb-4">
             <div class="card border-left-warning shadow">
                 <div class="card-body">
-                    <div class="text-warning font-weight-bold">In Progress</div>
+                    <div class="text-kp-yellow font-weight-bold">In Progress</div>
                     <div class="h5">{{ $customerStats['in_progress'] }}</div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
 
     <!-- Customer's maintenance requests -->
     <div class="card shadow">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header bg-kp-blue text-white">
             <h5 class="mb-0"><i class="fas fa-list mr-2"></i> My Maintenance Requests</h5>
         </div>
         <div class="card-body">
@@ -87,7 +87,7 @@
                             <td>{{ $request->reported_at->format('M d, Y') }}</td>
                             <td>{{ $request->updated_at->format('M d, Y') }}</td>
                             <td>
-                                <a href="{{ route('maintenance.requests.show', $request->id) }}" class="btn btn-sm btn-outline-primary">
+                                <a href="{{ route('maintenance.requests.show', $request->id) }}" class="btn btn-sm btn-outline-kp-primary">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                             </td>

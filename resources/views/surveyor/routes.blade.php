@@ -9,10 +9,10 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>Survey Routes</h1>
                 <div class="btn-group">
-                    <button class="btn btn-outline-primary" id="printRoutes">
+                    <button class="btn btn-outline-kp-primary" id="printRoutes">
                         <i class="fas fa-print me-1"></i>Print Routes
                     </button>
-                    <button class="btn btn-outline-success" id="exportRoutes">
+                    <button class="btn btn-outline-kp-success" id="exportRoutes">
                         <i class="fas fa-download me-1"></i>Export
                     </button>
                 </div>
@@ -21,7 +21,7 @@
             <!-- Route Statistics -->
             <div class="row mb-4">
                 <div class="col-md-3">
-                    <div class="card text-white bg-primary">
+                    <div class="card text-white bg-kp-blue">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card text-white bg-warning">
+                    <div class="card text-white bg-kp-yellow">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="card text-white bg-success">
+                    <div class="card text-white bg-kp-green">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
@@ -130,10 +130,10 @@
                                             </div>
                                             <div class="mt-2">
                                                 <a href="{{ route('surveyor.design-requests.show', $route->id) }}"
-                                                   class="btn btn-sm btn-outline-primary">
+                                                   class="btn btn-sm btn-outline-kp-primary">
                                                     <i class="fas fa-eye me-1"></i>View Details
                                                 </a>
-                                                <a href="#" class="btn btn-sm btn-outline-success">
+                                                <a href="#" class="btn btn-sm btn-outline-kp-success">
                                                     <i class="fas fa-map-marked-alt me-1"></i>Get Directions
                                                 </a>
                                             </div>
@@ -145,7 +145,7 @@
                                     <i class="fas fa-route fa-3x text-muted mb-3"></i>
                                     <h4>No Routes Planned</h4>
                                     <p class="text-muted">You don't have any active survey assignments for route planning.</p>
-                                    <a href="{{ route('surveyor.assignments') }}" class="btn btn-primary">
+                                    <a href="{{ route('surveyor.assignments') }}" class="btn btn-kp-primary">
                                         <i class="fas fa-tasks me-1"></i>View Assignments
                                     </a>
                                 </div>
@@ -166,10 +166,10 @@
                                 <h5>Map Integration</h5>
                                 <p class="text-muted">Map visualization would appear here when integrated with mapping services like Google Maps or Mapbox.</p>
                                 <div class="mt-3">
-                                    <button class="btn btn-outline-primary me-2">
+                                    <button class="btn btn-outline-kp-primary me-2">
                                         <i class="fas fa-map-marked-alt me-1"></i>Open in Google Maps
                                     </button>
-                                    <button class="btn btn-outline-success">
+                                    <button class="btn btn-outline-kp-success">
                                         <i class="fas fa-download me-1"></i>Download GPX
                                     </button>
                                 </div>

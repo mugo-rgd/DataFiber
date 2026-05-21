@@ -10,10 +10,10 @@
             <i class="fas fa-users me-2"></i>Customer Insights
         </h1>
         <div class="btn-group">
-            <button class="btn btn-outline-primary btn-sm">All Customers</button>
-            <button class="btn btn-outline-primary btn-sm">Active</button>
-            <button class="btn btn-outline-primary btn-sm">New</button>
-            <button class="btn btn-outline-primary btn-sm">At Risk</button>
+            <button class="btn btn-outline-kp-primary btn-sm">All Customers</button>
+            <button class="btn btn-outline-kp-primary btn-sm">Active</button>
+            <button class="btn btn-outline-kp-primary btn-sm">New</button>
+            <button class="btn btn-outline-kp-primary btn-sm">At Risk</button>
         </div>
     </div>
 
@@ -24,11 +24,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Customers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\User::where('role', 'customer')->count() }}</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs text-kp-green">
                                 <i class="fas fa-arrow-up me-1"></i>12% growth
                             </div>
                         </div>
@@ -45,11 +45,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Active Customers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ \App\Models\Lease::where('status', 'active')->distinct('customer_id')->count('customer_id') }}</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs text-kp-green">
                                 <i class="fas fa-arrow-up me-1"></i>8% growth
                             </div>
                         </div>
@@ -70,7 +70,7 @@
                                 Avg Customer Value
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">$2,450</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs text-kp-green">
                                 <i class="fas fa-arrow-up me-1"></i>5% increase
                             </div>
                         </div>
@@ -87,11 +87,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Satisfaction Score
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">4.6/5</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs text-kp-green">
                                 <i class="fas fa-arrow-up me-1"></i>0.2 improvement
                             </div>
                         </div>
@@ -109,7 +109,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Segmentation</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Segmentation</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container" style="position: relative; height: 300px;">
@@ -122,7 +122,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Growth Trend</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Growth Trend</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container" style="position: relative; height: 300px;">
@@ -138,7 +138,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Demographics</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Demographics</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -150,14 +150,14 @@
                                         <td>Telecommunications</td>
                                         <td>35%</td>
                                         <td><div class="progress" style="height: 8px; width: 150px;">
-                                            <div class="progress-bar bg-primary" style="width: 35%"></div>
+                                            <div class="progress-bar bg-kp-blue" style="width: 35%"></div>
                                         </div></td>
                                     </tr>
                                     <tr>
                                         <td>Enterprise IT</td>
                                         <td>28%</td>
                                         <td><div class="progress" style="height: 8px; width: 150px;">
-                                            <div class="progress-bar bg-success" style="width: 28%"></div>
+                                            <div class="progress-bar bg-kp-green" style="width: 28%"></div>
                                         </div></td>
                                     </tr>
                                     <tr>
@@ -171,7 +171,7 @@
                                         <td>Education</td>
                                         <td>12%</td>
                                         <td><div class="progress" style="height: 8px; width: 150px;">
-                                            <div class="progress-bar bg-warning" style="width: 12%"></div>
+                                            <div class="progress-bar bg-kp-yellow" style="width: 12%"></div>
                                         </div></td>
                                     </tr>
                                     <tr>
@@ -192,14 +192,14 @@
                                         <td>North America</td>
                                         <td>42%</td>
                                         <td><div class="progress" style="height: 8px; width: 150px;">
-                                            <div class="progress-bar bg-primary" style="width: 42%"></div>
+                                            <div class="progress-bar bg-kp-blue" style="width: 42%"></div>
                                         </div></td>
                                     </tr>
                                     <tr>
                                         <td>Europe</td>
                                         <td>31%</td>
                                         <td><div class="progress" style="height: 8px; width: 150px;">
-                                            <div class="progress-bar bg-success" style="width: 31%"></div>
+                                            <div class="progress-bar bg-kp-green" style="width: 31%"></div>
                                         </div></td>
                                     </tr>
                                     <tr>
@@ -213,7 +213,7 @@
                                         <td>Other Regions</td>
                                         <td>9%</td>
                                         <td><div class="progress" style="height: 8px; width: 150px;">
-                                            <div class="progress-bar bg-warning" style="width: 9%"></div>
+                                            <div class="progress-bar bg-kp-yellow" style="width: 9%"></div>
                                         </div></td>
                                     </tr>
                                 </table>
@@ -230,7 +230,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Behavior Insights</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Behavior Insights</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -247,9 +247,9 @@
                         <div class="col-md-4 text-center">
                             <div class="card border-left-success">
                                 <div class="card-body">
-                                    <i class="fas fa-clock fa-2x text-success mb-3"></i>
+                                    <i class="fas fa-clock fa-2x text-kp-green mb-3"></i>
                                     <h5>Average Tenure</h5>
-                                    <h3 class="text-success">18 months</h3>
+                                    <h3 class="text-kp-green">18 months</h3>
                                     <small class="text-muted">Customer lifetime</small>
                                 </div>
                             </div>
@@ -257,9 +257,9 @@
                         <div class="col-md-4 text-center">
                             <div class="card border-left-warning">
                                 <div class="card-body">
-                                    <i class="fas fa-share-alt fa-2x text-warning mb-3"></i>
+                                    <i class="fas fa-share-alt fa-2x text-kp-yellow mb-3"></i>
                                     <h5>Referral Rate</h5>
-                                    <h3 class="text-warning">23%</h3>
+                                    <h3 class="text-kp-yellow">23%</h3>
                                     <small class="text-muted">Of customers refer others</small>
                                 </div>
                             </div>

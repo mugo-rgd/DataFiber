@@ -13,180 +13,118 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Cache\RateLimiter;
 
 class AuthController extends Controller
 {
+   /**
+     * Maximum number of login attempts.
+     */
+    protected $maxAttempts = 5;
+
+    /**
+     * Number of minutes to lock out.
+     */
+    protected $decayMinutes = 15;
+
     public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
- ]);
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
+        // Get the rate limiter instance
+        $limiter = app(RateLimiter::class);
+        $throttleKey = Str::lower($request->email) . '|' . $request->ip();
 
-         $request->session()->forget('url.intended');
-        $user = Auth::user();
+        // Check if too many login attempts
+        if ($limiter->tooManyAttempts($throttleKey, $this->maxAttempts)) {
+            $seconds = $limiter->availableIn($throttleKey);
+            $minutes = ceil($seconds / 60);
 
-        // Redirect based on user role using URL paths
-        switch ($user->role) {
-            case 'system_admin':
-            case 'admin':
-            case 'accountmanager_admin':
-            case 'technical_admin':
-                return redirect('/admin/dashboard');
+            return back()->withErrors([
+                'email' => "Too many login attempts. Please try again in {$minutes} minute(s).",
+            ])->onlyInput('email');
+        }
 
-            case 'debt_manager':
-           return redirect('/finance/debt/dashboard');
+        if (Auth::attempt($credentials)) {
+            // Clear attempts on successful login
+            $limiter->clear($throttleKey);
 
-            case 'finance':
-                return redirect('/finance/dashboard');
+            $request->session()->regenerate();
+            $request->session()->forget('url.intended');
+            $user = Auth::user();
 
-            case 'technician':
-                return redirect('/technician/dashboard');
+            // Redirect based on user role using URL paths
+            switch ($user->role) {
+                case 'system_admin':
+                case 'admin':
+                case 'accountmanager_admin':
+                case 'technical_admin':
+                    return redirect('/admin/dashboard');
 
-            case 'customer':
-                return redirect('/customer/customer-dashboard');
+                case 'debt_manager':
+                    return redirect('/finance/debt/dashboard');
 
-            case 'designer':
-                return redirect('/designer/dashboard');
+                case 'finance':
+                    return redirect('/finance/dashboard');
+
+                case 'technician':
+                    return redirect('/technician/dashboard');
+
+                case 'customer':
+                    return redirect('/customer/customer-dashboard');
+
+                case 'designer':
+                    return redirect('/designer/dashboard');
 
                 case 'ict_engineer':
-                return redirect('/ictengineer/dashboard');
+                    return redirect('/ictengineer/dashboard');
 
-            case 'surveyor':
-                return redirect('/surveyor/dashboard');
+                case 'surveyor':
+                    return redirect('/surveyor/dashboard');
 
-            case 'account_manager':
-                return redirect('/account-manager/dashboard');
+                case 'account_manager':
+                    return redirect('/account-manager/dashboard');
 
-            default:
-                return redirect('/home');
+                default:
+                    return redirect('/home');
+            }
         }
+
+        // Increment login attempts on failure
+        $limiter->hit($throttleKey, $this->decayMinutes * 60);
+
+        // Get remaining attempts
+        $attempts = $limiter->attempts($throttleKey);
+        $remainingAttempts = max(0, $this->maxAttempts - $attempts);
+
+        $message = "These credentials do not match our records.";
+        if ($remainingAttempts > 0) {
+            $message .= " You have {$remainingAttempts} attempt(s) remaining.";
+        }
+
+        return back()->withErrors([
+            'email' => $message,
+        ])->onlyInput('email');
     }
 
-    return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ])->onlyInput('email');
-}
-public function showLoginForm()
-{
-    return view('auth.login');
-}
-//    public function registerCustomer(Request $request)
-// {
-//     Log::info('Registration data:', $request->all());
-
-//     try {
-//         $user = User::create([
-//             'name' => $request->company_name,
-//             'email' => $request->email,
-//             'password' => Hash::make($request->password),
-//             'role' => 'customer',
-//         ]);
-
-//         Log::info('User created:', ['id' => $user->id]);
-//         return response()->json(['success' => true, 'user_id' => $user->id]);
-
-//     } catch (\Exception $e) {
-//         Log::error('Error: ' . $e->getMessage());
-//         return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
-//     }
-// }
-
-    //  public function registerCustomer(Request $request)
-    // {
-    //     // Debug: Check if request is reaching the controller
-    //     Log::info('Registration attempt', $request->all());
-
-    //     $validator = Validator::make($request->all(), [
-    //         'company_name' => 'required|string|max:255',
-    //         'email' => 'required|email|unique:users',
-    //         'phone' => 'required|string|max:20',
-    //         'password' => 'required|min:8|confirmed',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return back()->withErrors($validator)->withInput();
-    //     }
-
-    //     try {
-    //         $user = User::create([
-    //             'name' => $request->company_name, // Using company_name as name
-    //             'email' => $request->email,
-    //             'phone' => $request->phone,
-    //             'password' => Hash::make($request->password),
-    //             'role' => 'customer', // Make sure you have this field
-    //             'company_name' => $request->company_name,
-    //         ]);
-
-    //         // Log success
-    //         Log::info('User created successfully', ['user_id' => $user->id]);
-
-    //         // Redirect to login with success message
-    //         return redirect()->route('customer.dashboard')->with('success', 'Account created successfully!');
-
-    //     } catch (\Exception $e) {
-    //         Log::error('Registration error: ' . $e->getMessage());
-    //         return back()->with('error', 'Registration failed. Please try again.')->withInput();
-    //     }
-    // }
+    // Rest of your existing methods...
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
 
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-$request->session()->flush();
-$request->session()->regenerate();
+        $request->session()->flush();
+        $request->session()->regenerate();
         return redirect('/');
     }
-
-       ///
-    //  public function registerCustomer(Request $request)
-    // {
-    //     // Step 1: Basic validation for customer registration
-    //     $validated = $request->validate([
-    //         'name' => 'required|string|max:255',
-    //         'email' => 'required|email|unique:users',
-    //         'phone' => 'required|string|max:20',
-    //         'company_name' => 'nullable|string|max:255',
-    //         'password' => 'required|min:8|confirmed',
-    //     ]);
-
-    //     try {
-    //         DB::beginTransaction();
-
-    //         // Step 2: Create customer user with basic info
-    //         $user = User::create([
-    //             'name' => $validated['name'],
-    //             'email' => $validated['email'],
-    //             'phone' => $validated['phone'],
-    //             'company_name' => $validated['company_name'] ?? null,
-    //             'password' => Hash::make($validated['password']),
-    //             'role' => 'customer', // Auto-assign customer role
-    //             'status' => 'active', // Auto-activate
-    //             'email_verified_at' => now(), // Auto-verify for immediate access
-    //         ]);
-
-    //         // Step 3: Automatically log the customer in
-    //         Auth::login($user);
-
-    //         DB::commit();
-
-    //         // Step 4: Redirect to complete profile
-    //         return redirect()->route('customer.complete-profile')
-    //             ->with('success', 'Account created successfully! Please complete your profile setup.');
-
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return redirect()->back()
-    //             ->withInput()
-    //             ->with('error', 'Error creating account: ' . $e->getMessage());
-    //     }
-    // }
-
     public function completeCustomerProfile(Request $request)
     {
         // Ensure customer is logged in

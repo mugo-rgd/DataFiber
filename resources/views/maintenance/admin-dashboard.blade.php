@@ -8,10 +8,10 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Maintenance Admin Dashboard</h1>
         <div class="d-flex">
-            <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-primary mr-2">
+            <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-kp-primary mr-2">
                 <i class="fas fa-plus-circle mr-2"></i> Create Work Order
             </a>
-            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-success">
+            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-success">
                 <i class="fas fa-plus mr-2"></i> New Request
     </a>
         </div>
@@ -25,7 +25,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Requests</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_requests'] }}</div>
                         </div>
@@ -42,7 +42,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Open Requests</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['open_requests'] }}</div>
                         </div>
@@ -76,7 +76,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Resolved This Week</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['resolved_this_week'] }}</div>
                         </div>
@@ -147,7 +147,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Avg Resolution Time</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 @php
@@ -201,12 +201,12 @@
                                             @if($request->workOrders->count() > 0)
                                                 {{ $request->workOrders->first()->technician->name ?? 'Unassigned' }}
                                             @else
-                                                <span class="badge bg-warning">Unassigned</span>
+                                                <span class="badge bg-kp-yellow">Unassigned</span>
                                             @endif
                                         </td>
                                         <td>
                                             <a href="{{ route('maintenance.requests.show', $request->id) }}"
-                                               class="btn btn-sm btn-outline-primary">
+                                               class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                         </td>
@@ -217,8 +217,8 @@
                         </div>
                     @else
                         <div class="text-center py-4">
-                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                            <h5 class="text-success">No Critical Requests</h5>
+                            <i class="fas fa-check-circle fa-3x text-kp-green mb-3"></i>
+                            <h5 class="text-kp-green">No Critical Requests</h5>
                             <p class="text-muted">All critical requests have been addressed!</p>
                         </div>
                     @endif
@@ -263,15 +263,15 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-6 mb-3">
-                            <div class="text-primary font-weight-bold h5">{{ $stats['total_work_orders'] }}</div>
+                            <div class="text-kp-blue font-weight-bold h5">{{ $stats['total_work_orders'] }}</div>
                             <small class="text-muted">Total Work Orders</small>
                         </div>
                         <div class="col-6 mb-3">
-                            <div class="text-success font-weight-bold h5">{{ $stats['completed_work_orders'] }}</div>
+                            <div class="text-kp-green font-weight-bold h5">{{ $stats['completed_work_orders'] }}</div>
                             <small class="text-muted">Completed</small>
                         </div>
                         <div class="col-6">
-                            <div class="text-warning font-weight-bold h5">{{ $stats['pending_work_orders'] }}</div>
+                            <div class="text-kp-yellow font-weight-bold h5">{{ $stats['pending_work_orders'] }}</div>
                             <small class="text-muted">Pending</small>
                         </div>
                         <div class="col-6">
@@ -288,7 +288,7 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-history mr-2"></i> Recent Work Orders
                     </h5>
@@ -326,7 +326,7 @@
                                     <td>{{ $workOrder->scheduled_start->format('M d, Y') }}</td>
                                     <td>
                                         <a href="{{ route('maintenance.work-orders.show', $workOrder->id) }}"
-                                           class="btn btn-sm btn-outline-primary">
+                                           class="btn btn-sm btn-outline-kp-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </td>

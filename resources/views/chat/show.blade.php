@@ -12,25 +12,25 @@
         <div class="col-md-8 col-lg-9">
             <div class="card h-100 d-flex flex-column">
                 <!-- Chat header -->
-                <div class="card-header d-flex align-items-center">
-                    <a href="{{ route('chat.index') }}" class="btn btn-sm btn-outline-secondary me-2 d-md-none">
+                <div class="card-header d-flex align-items-center" style="background: linear-gradient(135deg, #0066B3 0%, #009639 100%); color: white;">
+                    <a href="{{ route('chat.index') }}" class="btn btn-sm me-2 d-md-none" style="background: white; color: #0066B3;">
                         <i class="fas fa-arrow-left"></i>
                     </a>
                     @php
                         $otherUser = $conversation->users->first();
                     @endphp
                     <div class="avatar me-3">
-                        <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-                             style="width: 40px; height: 40px;">
+                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                             style="width: 40px; height: 40px; background: linear-gradient(135deg, #0066B3, #009639);">
                             {{ $otherUser ? strtoupper(substr($otherUser->name, 0, 1)) : '?' }}
                         </div>
                     </div>
                     <div>
-                        <h6 class="mb-0">{{ $otherUser ? $otherUser->name : 'Unknown User' }}</h6>
-                        <small class="text-muted">{{ $otherUser ? $otherUser->getFullRoleName() : '' }}</small>
+                        <h6 class="mb-0 text-white">{{ $otherUser ? $otherUser->name : 'Unknown User' }}</h6>
+                        <small class="opacity-75" style="color: rgba(255,255,255,0.8);">{{ $otherUser ? $otherUser->getFullRoleName() : '' }}</small>
                     </div>
                     <div class="ms-auto">
-                        <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                        <button class="btn btn-sm" style="color: white; border-color: rgba(255,255,255,0.3);" data-bs-toggle="dropdown">
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
                         <ul class="dropdown-menu">
@@ -47,27 +47,27 @@
                         @if($message->user_id === auth()->id())
                             <!-- Sent message -->
                             <div class="message-wrapper mb-3 d-flex justify-content-end">
-                                <div class="message bg-primary text-white rounded p-3" style="max-width: 70%;">
+                                <div class="message rounded p-3 text-white" style="max-width: 70%; background: linear-gradient(135deg, #0066B3, #009639);">
                                     <div class="message-content">
                                         @if($message->type === 'image')
                                             <img src="{{ Storage::url($message->attachment_path) }}"
                                                  alt="Image" class="img-fluid rounded mb-2" style="max-height: 200px;">
                                         @elseif($message->type === 'file')
                                             <div class="file-attachment p-2 bg-white rounded mb-2">
-                                                <i class="fas fa-file me-2 text-primary"></i>
+                                                <i class="fas fa-file me-2" style="color: #0066B3;"></i>
                                                 <a href="{{ Storage::url($message->attachment_path) }}"
                                                    download="{{ $message->attachment_name }}"
-                                                   class="text-decoration-none">
+                                                   class="text-decoration-none" style="color: #0066B3;">
                                                     {{ $message->attachment_name }}
                                                 </a>
                                             </div>
                                         @endif
                                         <p class="mb-0">{{ $message->body }}</p>
                                     </div>
-                                    <small class="d-block text-end mt-1 opacity-75">
+                                    <small class="d-block text-end mt-1 opacity-75" style="color: rgba(255,255,255,0.8);">
                                         {{ $message->created_at->format('h:i A') }}
                                         @if($message->read_at)
-                                            <i class="fas fa-check-double ms-1 text-success"></i>
+                                            <i class="fas fa-check-double ms-1" style="color: #FFD700;"></i>
                                         @else
                                             <i class="fas fa-check ms-1"></i>
                                         @endif
@@ -79,23 +79,23 @@
                             <div class="message-wrapper mb-3">
                                 <div class="d-flex align-items-start">
                                     <div class="avatar me-2">
-                                        <div class="bg-secondary rounded-circle text-white d-flex align-items-center justify-content-center"
-                                             style="width: 32px; height: 32px;">
+                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                                             style="width: 32px; height: 32px; background: linear-gradient(135deg, #0066B3, #009639);">
                                             {{ strtoupper(substr($message->user->name, 0, 1)) }}
                                         </div>
                                     </div>
-                                    <div class="message bg-light rounded p-3" style="max-width: 70%;">
-                                        <small class="text-muted fw-bold">{{ $message->user->name }}</small>
+                                    <div class="message bg-light rounded p-3" style="max-width: 70%; background: #f8f9fa;">
+                                        <small class="fw-bold" style="color: #0066B3;">{{ $message->user->name }}</small>
                                         <div class="message-content mt-1">
                                             @if($message->type === 'image')
                                                 <img src="{{ Storage::url($message->attachment_path) }}"
                                                      alt="Image" class="img-fluid rounded mb-2" style="max-height: 200px;">
                                             @elseif($message->type === 'file')
                                                 <div class="file-attachment p-2 bg-white rounded mb-2">
-                                                    <i class="fas fa-file me-2 text-primary"></i>
+                                                    <i class="fas fa-file me-2" style="color: #0066B3;"></i>
                                                     <a href="{{ Storage::url($message->attachment_path) }}"
                                                        download="{{ $message->attachment_name }}"
-                                                       class="text-decoration-none">
+                                                       class="text-decoration-none" style="color: #0066B3;">
                                                         {{ $message->attachment_name }}
                                                     </a>
                                                 </div>
@@ -113,10 +113,10 @@
                 </div>
 
                 <!-- Attachment preview area (initially hidden) -->
-                <div id="attachment-preview-area" class="border-top bg-light p-3 d-none">
+                <div id="attachment-preview-area" class="border-top bg-light p-3 d-none" style="background: #f8f9fa;">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="mb-0"><i class="fas fa-paperclip me-2"></i>Attachment Preview</h6>
-                        <button type="button" class="btn btn-sm btn-outline-danger" id="remove-attachment-btn">
+                        <h6 class="mb-0" style="color: #0066B3;"><i class="fas fa-paperclip me-2"></i>Attachment Preview</h6>
+                        <button type="button" class="btn btn-sm" id="remove-attachment-btn" style="border-color: #dc3545; color: #dc3545;">
                             <i class="fas fa-times"></i> Remove
                         </button>
                     </div>
@@ -128,19 +128,19 @@
                     <form id="send-message-form" data-conversation-id="{{ $conversation->id }}">
                         @csrf
                         <div class="input-group">
-                            <button type="button" class="btn btn-outline-secondary" id="attachment-btn" data-bs-toggle="dropdown">
+                            <button type="button" class="btn" id="attachment-btn" data-bs-toggle="dropdown" style="border-color: #dee2e6; color: #0066B3;">
                                 <i class="fas fa-paperclip"></i>
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
                                     <label class="dropdown-item" for="image-upload">
-                                        <i class="fas fa-image me-2"></i> Image
+                                        <i class="fas fa-image me-2" style="color: #0066B3;"></i> Image
                                     </label>
                                     <input type="file" id="image-upload" accept="image/*" class="d-none" data-type="image">
                                 </li>
                                 <li>
                                     <label class="dropdown-item" for="file-upload">
-                                        <i class="fas fa-file me-2"></i> File
+                                        <i class="fas fa-file me-2" style="color: #0066B3;"></i> File
                                     </label>
                                     <input type="file" id="file-upload" class="d-none" data-type="file">
                                 </li>
@@ -150,7 +150,7 @@
                                    class="form-control"
                                    placeholder="Type your message..."
                                    autocomplete="off">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -174,6 +174,7 @@
 
     #attachment-preview-area {
         transition: all 0.3s ease;
+        border-top: 1px solid #dee2e6 !important;
     }
 
     .attachment-preview-item {
@@ -193,7 +194,7 @@
 
     .attachment-file-icon {
         font-size: 2rem;
-        color: #6c757d;
+        color: #0066B3;
     }
 
     .attachment-info {
@@ -208,6 +209,8 @@
     #remove-attachment-btn:hover {
         transform: scale(1.05);
         transition: transform 0.2s;
+        background: #dc3545;
+        color: white !important;
     }
 
     /* Smooth scroll for messages */
@@ -221,12 +224,31 @@
     }
 
     #chat-messages::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
+        background: #0066B3;
         border-radius: 4px;
     }
 
     #chat-messages::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
+        background: #009639;
+    }
+
+    .message {
+        word-wrap: break-word;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .message a {
+        text-decoration: none;
+    }
+
+    .message a:hover {
+        text-decoration: underline;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #0066B3;
+        border-color: #0066B3;
+        color: white;
     }
 </style>
 @endpush
@@ -271,10 +293,10 @@
             } else if (message.type === 'file' && message.attachment_path) {
                 attachmentHtml = `
                     <div class="file-attachment p-2 bg-white rounded mb-2">
-                        <i class="fas fa-file me-2 text-primary"></i>
+                        <i class="fas fa-file me-2" style="color: #0066B3;"></i>
                         <a href="/storage/${message.attachment_path}"
                            download="${message.attachment_name}"
-                           class="text-decoration-none">
+                           class="text-decoration-none" style="color: #0066B3;">
                             ${message.attachment_name}
                         </a>
                     </div>
@@ -283,12 +305,12 @@
 
             const messageHtml = isOwnMessage ? `
                 <div class="message-wrapper mb-3 d-flex justify-content-end">
-                    <div class="message bg-primary text-white rounded p-3" style="max-width: 70%;">
+                    <div class="message rounded p-3 text-white" style="max-width: 70%; background: linear-gradient(135deg, #0066B3, #009639);">
                         <div class="message-content">
                             ${attachmentHtml}
-                            <p class="mb-0">${message.body}</p>
+                            <p class="mb-0">${escapeHtml(message.body)}</p>
                         </div>
-                        <small class="d-block text-end mt-1 opacity-75">
+                        <small class="d-block text-end mt-1 opacity-75" style="color: rgba(255,255,255,0.8);">
                             ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                             <i class="fas fa-check ms-1"></i>
                         </small>
@@ -298,16 +320,16 @@
                 <div class="message-wrapper mb-3">
                     <div class="d-flex align-items-start">
                         <div class="avatar me-2">
-                            <div class="bg-secondary rounded-circle text-white d-flex align-items-center justify-content-center"
-                                 style="width: 32px; height: 32px;">
+                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                                 style="width: 32px; height: 32px; background: linear-gradient(135deg, #0066B3, #009639);">
                                 ${message.user ? message.user.name.charAt(0).toUpperCase() : '?'}
                             </div>
                         </div>
-                        <div class="message bg-light rounded p-3" style="max-width: 70%;">
-                            <small class="text-muted fw-bold">${message.user ? message.user.name : 'Unknown'}</small>
+                        <div class="message bg-light rounded p-3" style="max-width: 70%; background: #f8f9fa;">
+                            <small class="fw-bold" style="color: #0066B3;">${message.user ? message.user.name : 'Unknown'}</small>
                             <div class="message-content mt-1">
                                 ${attachmentHtml}
-                                <p class="mb-0">${message.body}</p>
+                                <p class="mb-0">${escapeHtml(message.body)}</p>
                             </div>
                             <small class="d-block text-muted mt-1">
                                 ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -321,6 +343,14 @@
 
             // Scroll to bottom
             scrollToBottom();
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // Handle image upload
@@ -387,7 +417,7 @@
                                      class="attachment-image-preview rounded">
                             </div>
                             <div class="attachment-info">
-                                <div class="fw-bold">${attachment.name}</div>
+                                <div class="fw-bold">${escapeHtml(attachment.name)}</div>
                                 <div class="attachment-file-size">${attachment.size} • ${attachment.type.toUpperCase()}</div>
                             </div>
                         </div>
@@ -409,7 +439,7 @@
                             <i class="${fileIcon} attachment-file-icon"></i>
                         </div>
                         <div class="attachment-info">
-                            <div class="fw-bold">${attachment.name}</div>
+                            <div class="fw-bold">${escapeHtml(attachment.name)}</div>
                             <div class="attachment-file-size">${attachment.size} • ${getFileExtension(attachment.name).toUpperCase()} File</div>
                         </div>
                     </div>
@@ -455,15 +485,15 @@
 
             const iconMap = {
                 'pdf': 'fas fa-file-pdf text-danger',
-                'doc': 'fas fa-file-word text-primary',
-                'docx': 'fas fa-file-word text-primary',
-                'xls': 'fas fa-file-excel text-success',
-                'xlsx': 'fas fa-file-excel text-success',
-                'ppt': 'fas fa-file-powerpoint text-warning',
-                'pptx': 'fas fa-file-powerpoint text-warning',
-                'txt': 'fas fa-file-alt text-secondary',
-                'zip': 'fas fa-file-archive text-warning',
-                'rar': 'fas fa-file-archive text-warning',
+                'doc': 'fas fa-file-word',
+                'docx': 'fas fa-file-word',
+                'xls': 'fas fa-file-excel text-kp-green',
+                'xlsx': 'fas fa-file-excel text-kp-green',
+                'ppt': 'fas fa-file-powerpoint text-kp-yellow',
+                'pptx': 'fas fa-file-powerpoint text-kp-yellow',
+                'txt': 'fas fa-file-alt',
+                'zip': 'fas fa-file-archive text-kp-yellow',
+                'rar': 'fas fa-file-archive text-kp-yellow',
                 'mp3': 'fas fa-file-audio text-info',
                 'mp4': 'fas fa-file-video text-info',
                 'jpg': 'fas fa-file-image text-info',
@@ -472,7 +502,7 @@
                 'gif': 'fas fa-file-image text-info'
             };
 
-            return iconMap[ext] || 'fas fa-file text-secondary';
+            return iconMap[ext] || 'fas fa-file';
         }
 
         // Get file extension

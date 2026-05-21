@@ -14,7 +14,7 @@
                             <div class="input-group input-group-sm" style="width: 250px;">
                                 <input type="text" name="search" class="form-control" placeholder="Search billing number or customer..." value="{{ request('search') }}">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-kp-primary">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
@@ -45,7 +45,7 @@
                                         <input type="date" name="date_to" class="form-control" value="{{ request('date_to') }}" placeholder="To Date">
                                     </div>
                                     <div class="col-md-3">
-                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <button type="submit" class="btn btn-kp-primary">Filter</button>
                                         <a href="{{ route('finance.debt.payments') }}" class="btn btn-secondary">Reset</a>
                                     </div>
                                 </div>
@@ -93,7 +93,7 @@
         <td class="text-end">$ {{ number_format($balanceUSD, 2) }}</td>
         <td>
             <div class="progress" style="height: 20px;">
-                <div class="progress-bar {{ $paymentPercentage >= 100 ? 'bg-success' : ($paymentPercentage > 0 ? 'bg-warning' : 'bg-secondary') }}"
+                <div class="progress-bar {{ $paymentPercentage >= 100 ? 'bg-kp-green' : ($paymentPercentage > 0 ? 'bg-kp-yellow' : 'bg-secondary') }}"
                      role="progressbar"
                      style="width: {{ min(100, $paymentPercentage) }}%;">
                     {{ number_format($paymentPercentage, 1) }}%
@@ -108,13 +108,13 @@
         <td>{{ $payment->payment_date ? $payment->payment_date->format('d/m/Y H:i') : 'N/A' }}</td>
         <td>
             <div class="btn-group">
-                <a href="{{ route('finance.debt.payments.edit', $payment) }}" class="btn btn-sm btn-primary">
+                <a href="{{ route('finance.debt.payments.edit', $payment) }}" class="btn btn-sm btn-kp-primary">
                     <i class="fas fa-edit"></i> Edit
                 </a>
                 @if($payment->kra_status != 'verified')
                 <form action="{{ route('finance.debt.payments.verify', $payment) }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Mark this payment as verified?')">
+                    <button type="submit" class="btn btn-sm btn-kp-success" onclick="return confirm('Mark this payment as verified?')">
                         <i class="fas fa-check"></i> Verify
                     </button>
                 </form>

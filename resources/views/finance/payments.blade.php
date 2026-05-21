@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="h3 text-gray-800"><i class="fas fa-file-invoice-dollar text-primary"></i> Payments Management</h1>
+            <h1 class="h3 text-gray-800"><i class="fas fa-file-invoice-dollar text-kp-blue"></i> Payments Management</h1>
         </div>
     </div>
     <!-- payments content here -->

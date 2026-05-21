@@ -10,7 +10,7 @@
         </h1>
         <div>
             <a href="{{ route('marketing-admin.performance.export', ['period' => $period, 'currency' => $currency]) }}"
-               class="btn btn-success btn-sm">
+               class="btn btn-kp-success btn-sm">
                 <i class="fas fa-download me-1"></i> Export Report
             </a>
         </div>
@@ -37,7 +37,7 @@
                     </select>
                 </div>
                 <div class="col-md-6 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-kp-primary">
                         <i class="fas fa-filter me-1"></i> Apply Filter
                     </button>
                     <a href="{{ route('marketing-admin.performance') }}" class="btn btn-secondary ms-2">
@@ -55,7 +55,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Team MRR
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -75,7 +75,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Active Customers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -115,7 +115,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Team Performance
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -136,7 +136,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-chart-line me-1"></i> Period-over-Period Growth
                     </h6>
                 </div>
@@ -145,7 +145,7 @@
                         <div class="col-md-4 text-center">
                             <div class="border rounded p-3">
                                 <small class="text-muted">MRR Growth</small>
-                                <h4 class="mb-0 {{ $comparison['growth']['mrr_growth'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                <h4 class="mb-0 {{ $comparison['growth']['mrr_growth'] >= 0 ? 'text-kp-green' : 'text-danger' }}">
                                     {{ $comparison['growth']['mrr_growth'] >= 0 ? '+' : '' }}{{ $comparison['growth']['mrr_growth'] }}%
                                 </h4>
                                 <small>{{ $comparison['previous']['total_mrr'] }} → {{ $comparison['current']['total_mrr'] }}</small>
@@ -154,7 +154,7 @@
                         <div class="col-md-4 text-center">
                             <div class="border rounded p-3">
                                 <small class="text-muted">Customer Growth</small>
-                                <h4 class="mb-0 {{ $comparison['growth']['customer_growth'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                <h4 class="mb-0 {{ $comparison['growth']['customer_growth'] >= 0 ? 'text-kp-green' : 'text-danger' }}">
                                     {{ $comparison['growth']['customer_growth'] >= 0 ? '+' : '' }}{{ $comparison['growth']['customer_growth'] }}%
                                 </h4>
                                 <small>{{ $comparison['previous']['total_customers'] }} → {{ $comparison['current']['total_customers'] }}</small>
@@ -163,7 +163,7 @@
                         <div class="col-md-4 text-center">
                             <div class="border rounded p-3">
                                 <small class="text-muted">Lease Growth</small>
-                                <h4 class="mb-0 {{ $comparison['growth']['lease_growth'] >= 0 ? 'text-success' : 'text-danger' }}">
+                                <h4 class="mb-0 {{ $comparison['growth']['lease_growth'] >= 0 ? 'text-kp-green' : 'text-danger' }}">
                                     {{ $comparison['growth']['lease_growth'] >= 0 ? '+' : '' }}{{ $comparison['growth']['lease_growth'] }}%
                                 </h4>
                                 <small>{{ $comparison['previous']['total_leases'] }} → {{ $comparison['current']['total_leases'] }}</small>
@@ -180,7 +180,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-crown me-1"></i> Top 5 Performers
                     </h6>
                 </div>
@@ -205,7 +205,7 @@
                                 <tr>
                                     <td>
                                         @if($index == 0)
-                                            <i class="fas fa-trophy text-warning"></i> 1st
+                                            <i class="fas fa-trophy text-kp-yellow"></i> 1st
                                         @elseif($index == 1)
                                             <i class="fas fa-medal text-secondary"></i> 2nd
                                         @elseif($index == 2)
@@ -241,7 +241,7 @@
                                     <td>{{ number_format($performer['metrics']['total_customers']) }}</td>
                                     <td>{{ number_format($performer['metrics']['total_leases']) }}</td>
                                     <td>
-                                        <span class="text-success">
+                                        <span class="text-kp-green">
                                             <i class="fas fa-user-plus"></i> +{{ $performer['metrics']['new_customers'] }}
                                         </span>
                                     </td>
@@ -302,7 +302,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-chart-area me-1"></i> Team Revenue Trend
                     </h6>
                 </div>
@@ -316,7 +316,7 @@
     <!-- Full Team Performance Table -->
     <div class="card shadow">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+            <h6 class="m-0 font-weight-bold text-kp-blue">
                 <i class="fas fa-table me-1"></i> Complete Team Performance
             </h6>
         </div>
@@ -365,7 +365,7 @@
                             <td>{{ $currency == 'KSH' ? 'KSh' : '$' }} {{ number_format($metrics['metrics']['total_mrr'], 2) }}</td>
                             <td>{{ number_format($metrics['metrics']['total_customers']) }}</td>
                             <td>{{ number_format($metrics['metrics']['total_leases']) }}</td>
-                            <td class="text-success">+{{ number_format($metrics['metrics']['new_customers']) }}</td>
+                            <td class="text-kp-green">+{{ number_format($metrics['metrics']['new_customers']) }}</td>
                             <td>{{ number_format($metrics['metrics']['total_distance_km'], 2) }}</td>
                             <td>{{ number_format($metrics['metrics']['total_cores']) }}</td>
                             <td>{{ $currency == 'KSH' ? 'KSh' : '$' }} {{ number_format($metrics['metrics']['avg_lease_value'], 2) }}</td>

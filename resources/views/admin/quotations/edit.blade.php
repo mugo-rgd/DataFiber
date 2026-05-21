@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-edit text-primary"></i> Edit Quotation: {{ $quotation->quotation_number }}
+                <i class="fas fa-edit text-kp-blue"></i> Edit Quotation: {{ $quotation->quotation_number }}
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -28,7 +28,7 @@
                     You are editing a draft quotation. Only administrators can send quotations to customers.
                 </div>
             @else
-                <div class="alert alert-warning">
+                <div class="alert alert-kp-warning">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     You are editing a draft quotation. Remember to send it to the customer when ready.
                 </div>
@@ -45,7 +45,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-kp-blue text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-info-circle me-2"></i>Design Request Information
                         </h5>
@@ -92,7 +92,7 @@
             <!-- Commercial Routes -->
             <div class="col-lg-6">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-kp-green text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="fas fa-route me-2"></i>Commercial Routes
                         </h5>
@@ -181,7 +181,7 @@
             <!-- Colocation Services -->
             <div class="col-lg-6">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-kp-yellow text-dark d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="fas fa-server me-2"></i>Colocation Services
                         </h5>
@@ -333,7 +333,7 @@
                                 </div>
                             @endif
                         </div>
-                        <button type="button" id="addCustomItem" class="btn btn-outline-primary btn-sm">
+                        <button type="button" id="addCustomItem" class="btn btn-outline-kp-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Add Custom Item
                         </button>
                     </div>
@@ -345,7 +345,7 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-kp-blue text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-calculator me-2"></i>Pricing Summary
                         </h5>
@@ -413,7 +413,7 @@
                                 <strong class="h5">Total Amount:</strong>
                             </div>
                             <div class="col-6 text-end">
-                                <span id="total_amount" class="h5 text-primary">${{ number_format($quotation->total_amount, 2) }}</span>
+                                <span id="total_amount" class="h5 text-kp-blue">${{ number_format($quotation->total_amount, 2) }}</span>
                             </div>
                         </div>
                     </div>
@@ -481,11 +481,11 @@
                                 @endif
                             </div>
                             <div>
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-kp-primary">
                                     <i class="fas fa-save me-2"></i>Update Quotation
                                 </button>
                                 @if(auth()->user()->role === 'admin')
-                                    <button type="button" class="btn btn-success" onclick="sendQuotation({{ $quotation->id }})">
+                                    <button type="button" class="btn btn-kp-success" onclick="sendQuotation({{ $quotation->id }})">
                                         <i class="fas fa-paper-plane me-2"></i>Update & Send
                                     </button>
                                 @endif

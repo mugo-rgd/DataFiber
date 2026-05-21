@@ -7,7 +7,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2 text-primary">
+            <h1 class="h2 text-kp-blue">
                 <i class="fas fa-user-edit me-2"></i>Edit User: {{ $user->name }}
             </h1>
             <p class="text-muted mb-0">Update user information and permissions</p>
@@ -21,7 +21,7 @@
 
     <!-- Success/Error Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show d-flex align-items-center" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             <div class="flex-grow-1">{{ session('success') }}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -40,7 +40,7 @@
         <div class="col-lg-8">
             <!-- User Information Card -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-user me-2"></i>User Information
                     </h5>
@@ -154,7 +154,7 @@
                         <!-- Customer Specific Fields -->
                         <div id="customerFields" style="{{ $user->role == 'customer' ? 'display: block;' : 'display: none;' }}">
                             <hr>
-                            <h6 class="text-primary mb-3"><i class="fas fa-building me-2"></i>Customer Information</h6>
+                            <h6 class="text-kp-blue mb-3"><i class="fas fa-building me-2"></i>Customer Information</h6>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="lease_start_date" class="form-label">Lease Start Date</label>
@@ -203,7 +203,7 @@
                         </div>
 
                         <div class="text-end mt-4">
-                            <button type="submit" class="btn btn-primary px-4">
+                            <button type="submit" class="btn btn-kp-primary px-4">
                                 <i class="fas fa-save me-2"></i>Update User
                             </button>
                         </div>
@@ -223,7 +223,7 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-3">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                        <div class="bg-kp-blue text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
                              style="width: 80px; height: 80px;">
                             <i class="fas fa-user fa-2x"></i>
                         </div>
@@ -264,7 +264,7 @@
 
             <!-- Quick Actions -->
             <div class="card shadow-sm">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-bolt me-2"></i>Quick Actions
                     </h5>
@@ -287,7 +287,7 @@
                                     @csrf
                                     @method('PUT')
                                     <input type="hidden" name="status" value="active">
-                                    <button type="submit" class="btn btn-outline-success w-100">
+                                    <button type="submit" class="btn btn-outline-kp-success w-100">
                                         <i class="fas fa-play me-2"></i>Activate User
                                     </button>
                                 </form>

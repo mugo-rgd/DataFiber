@@ -43,7 +43,7 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h5 class="border-bottom pb-2 mb-3">
-                                        <i class="fas fa-user text-primary me-2"></i>Customer Information
+                                        <i class="fas fa-user text-kp-blue me-2"></i>Customer Information
                                     </h5>
                                 </div>
 
@@ -85,7 +85,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                     @if($customers->isEmpty())
-                                        <small class="text-warning">
+                                        <small class="text-kp-yellow">
                                             <i class="fas fa-exclamation-triangle"></i>
                                             No customers are currently assigned to your account.
                                             <a href="{{ route('customers.index') }}">Contact administrator</a> to get customers assigned.
@@ -98,7 +98,7 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h5 class="border-bottom pb-2 mb-3">
-                                        <i class="fas fa-network-wired text-success me-2"></i>Link Information
+                                        <i class="fas fa-network-wired text-kp-green me-2"></i>Link Information
                                     </h5>
                                 </div>
 
@@ -189,7 +189,7 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h5 class="border-bottom pb-2 mb-3">
-                                        <i class="fas fa-money-bill-wave text-warning me-2"></i>Pricing Information
+                                        <i class="fas fa-money-bill-wave text-kp-yellow me-2"></i>Pricing Information
                                     </h5>
                                 </div>
 
@@ -199,13 +199,13 @@
                                     <div class="btn-group w-100" role="group">
                                         <input type="radio" class="btn-check" name="currency" id="currency_usd" value="USD"
                                                {{ old('currency', 'USD') == 'USD' ? 'checked' : '' }} autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="currency_usd">
+                                        <label class="btn btn-outline-kp-primary" for="currency_usd">
                                             <i class="fas fa-dollar-sign me-1"></i> USD (US Dollar)
                                         </label>
 
                                         <input type="radio" class="btn-check" name="currency" id="currency_kes" value="KES"
                                                {{ old('currency') == 'KES' ? 'checked' : '' }} autocomplete="off">
-                                        <label class="btn btn-outline-primary" for="currency_kes">
+                                        <label class="btn btn-outline-kp-primary" for="currency_kes">
                                             <i class="fas fa-shilling-sign me-1"></i> KES (Kenyan Shilling)
                                         </label>
                                     </div>
@@ -338,7 +338,7 @@
                                         <a href="{{ route('conversion-data.index') }}" class="btn btn-secondary">
                                             <i class="fas fa-times me-1"></i> Cancel
                                         </a>
-                                        <button type="submit" class="btn btn-primary">
+                                        <button type="submit" class="btn btn-kp-primary">
                                             <i class="fas fa-save me-1"></i> Save Fibre Link
                                         </button>
                                     </div>
@@ -381,13 +381,13 @@
         color: #004085;
     }
 
-    .btn-primary {
+    .btn-kp-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
         padding: 0.5rem 2rem;
     }
 
-    .btn-primary:hover {
+    .btn-kp-primary:hover {
         background: linear-gradient(135deg, #5a6fd8 0%, #6a4290 100%);
         transform: translateY(-1px);
     }
@@ -440,14 +440,14 @@
     }
 
     /* Radio button group styling */
-    .btn-group .btn-outline-primary.active,
-    .btn-group .btn-check:checked + .btn-outline-primary {
+    .btn-group .btn-outline-kp-primary.active,
+    .btn-group .btn-check:checked + .btn-outline-kp-primary {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border-color: #667eea;
     }
 
-    .btn-group .btn-outline-primary:hover {
+    .btn-group .btn-outline-kp-primary:hover {
         background: linear-gradient(135deg, #7b8eed 0%, #8b5cb2 100%);
         color: white;
         border-color: #667eea;
@@ -722,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /* Smooth transitions */
-    .btn-primary, .btn-secondary {
+    .btn-kp-primary, .btn-secondary {
         transition: all 0.3s ease;
     }
 

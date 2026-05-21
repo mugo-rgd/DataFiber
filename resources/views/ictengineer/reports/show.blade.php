@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-drafting-compass text-primary"></i> Design Request Details
+                    <i class="fas fa-drafting-compass text-kp-blue"></i> Design Request Details
                 </h1>
                 <a href="{{ route('ictengineer.requests') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Requests
@@ -27,7 +27,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Design Request: {{ $request->request_number }}</h5>
                         <div>
@@ -172,7 +172,7 @@
         <div class="col-md-6">
             <!-- ICT Status & Actions -->
             <div class="card shadow">
-                <div class="card-header bg-warning">
+                <div class="card-header bg-kp-yellow">
                     <h5 class="mb-0">ICT Status & Actions</h5>
                 </div>
                 <div class="card-body">
@@ -198,15 +198,15 @@
                                 <i class="fas fa-info-circle"></i> This request has been assigned to you. Please schedule an inspection.
                             </div>
                         @elseif($request->ict_status == 'inspection_scheduled')
-                            <div class="alert alert-warning">
+                            <div class="alert alert-kp-warning">
                                 <i class="fas fa-calendar-check"></i> Inspection scheduled for {{ $request->inspection_date ? $request->inspection_date->format('M d, Y') : 'TBD' }}.
                             </div>
                         @elseif($request->ict_status == 'inspection_completed')
-                            <div class="alert alert-primary">
+                            <div class="alert alert-kp-primary">
                                 <i class="fas fa-clipboard-check"></i> Inspection completed. Ready to generate certificate.
                             </div>
                         @elseif($request->ict_status == 'certificate_generated')
-                            <div class="alert alert-success">
+                            <div class="alert alert-kp-success">
                                 <i class="fas fa-certificate"></i> Certificate has been generated.
                             </div>
                         @endif
@@ -251,7 +251,7 @@
                                       placeholder="Add any technical notes or comments...">{{ old('engineer_notes', $request->engineer_notes) }}</textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-kp-primary">
                             <i class="fas fa-save"></i> Update Status
                         </button>
                     </form>
@@ -265,7 +265,7 @@
 
             <!-- Survey Information -->
             <div class="card shadow mt-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">Survey Information</h5>
                 </div>
                 <div class="card-body">
@@ -370,7 +370,7 @@
 
         <div class="col-md-6">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">Timeline</h5>
                 </div>
                 <div class="card-body">
@@ -447,7 +447,7 @@
                                 <div class="card-body text-center">
                                     <i class="fas fa-file-pdf fa-3x text-danger mb-2"></i>
                                     <h6>{{ $attachment['name'] ?? 'Document' }}</h6>
-                                    <a href="{{ $attachment['path'] ?? '#' }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                    <a href="{{ $attachment['path'] ?? '#' }}" class="btn btn-sm btn-outline-kp-primary" target="_blank">
                                         <i class="fas fa-download"></i> Download
                                     </a>
                                 </div>

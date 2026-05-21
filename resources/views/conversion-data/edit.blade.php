@@ -47,7 +47,7 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h5 class="border-bottom pb-2 mb-3">
-                                        <i class="fas fa-user text-primary me-2"></i>Customer Information
+                                        <i class="fas fa-user text-kp-blue me-2"></i>Customer Information
                                     </h5>
                                 </div>
 
@@ -90,7 +90,7 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h5 class="border-bottom pb-2 mb-3">
-                                        <i class="fas fa-network-wired text-success me-2"></i>Link Information
+                                        <i class="fas fa-network-wired text-kp-green me-2"></i>Link Information
                                     </h5>
                                 </div>
 
@@ -182,7 +182,7 @@
                             <div class="row mb-4">
                                 <div class="col-12">
                                     <h5 class="border-bottom pb-2 mb-3">
-                                        <i class="fas fa-money-bill-wave text-warning me-2"></i>Pricing Information
+                                        <i class="fas fa-money-bill-wave text-kp-yellow me-2"></i>Pricing Information
                                     </h5>
                                 </div>
 
@@ -305,7 +305,7 @@
                                             </button>
                                         </div>
                                         <div>
-                                            <button type="submit" class="btn btn-primary">
+                                            <button type="submit" class="btn btn-kp-primary">
                                                 <i class="fas fa-save me-1"></i> Update Fibre Link
                                             </button>
                                         </div>
@@ -431,14 +431,14 @@ document.addEventListener('DOMContentLoaded', function() {
     border-color: #e9ecef;
 }
 
-.btn-primary {
+.btn-kp-primary {
     background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
     border: none;
     color: #212529;
     padding: 0.5rem 2rem;
 }
 
-.btn-primary:hover {
+.btn-kp-primary:hover {
     background: linear-gradient(135deg, #f4c152 0%, #fc8c66 100%);
     transform: translateY(-1px);
     color: #212529;

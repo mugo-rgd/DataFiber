@@ -25,7 +25,7 @@
 
         @can('update', $existingQuotation)
             <a href="{{ route('designer.quotations.edit', $existingQuotation) }}"
-               class="btn btn-warning btn-sm" title="Edit Quotation">
+               class="btn btn-kp-warning btn-sm" title="Edit Quotation">
                 <i class="fas fa-edit"></i>
             </a>
         @endcan
@@ -40,7 +40,7 @@
 @elseif($canGenerateQuote)
     <!-- Generate Quote -->
     <a href="{{ route('designer.quotations.create', ['design_request_id' => $request->id]) }}"
-       class="btn btn-success btn-sm" title="Generate Quote">
+       class="btn btn-kp-success btn-sm" title="Generate Quote">
         <i class="fas fa-plus-circle"></i> Create Quote
     </a>
 

@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-file-contract text-primary"></i> Create New Lease
+                        <i class="fas fa-file-contract text-kp-blue"></i> Create New Lease
                     </h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -54,7 +54,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-plus-circle me-2"></i>Lease Information
                     </h6>
@@ -78,7 +78,7 @@
                                             <br><small class="text-muted">Email: {{ $selectedCustomer->email }}</small>
                                         </div>
                                         <input type="hidden" name="customer_id" value="{{ $customerId }}">
-                                        <div class="form-text text-success">
+                                        <div class="form-text text-kp-green">
                                             <i class="fas fa-check-circle"></i> Customer automatically assigned.
                                         </div>
                                     </div>
@@ -441,7 +441,7 @@
                                     <a href="{{ route('account-manager.leases.index', ['customer_id' => $customerId]) }}" class="btn btn-secondary">
                                         <i class="fas fa-arrow-left me-2"></i>Cancel
                                     </a>
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-kp-primary">
                                         <i class="fas fa-save me-2"></i>Create Lease
                                     </button>
                                 </div>

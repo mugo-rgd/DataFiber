@@ -26,7 +26,7 @@
                         <i class="fas fa-eye"></i>
                     </a>
                     <a href="{{ route('design-requests.documents', $request->id) }}"
-                       class="btn btn-primary" title="View Documents">
+                       class="btn btn-kp-primary" title="View Documents">
                         <i class="fas fa-file-alt"></i> Documents
                     </a>
                     @if($request->documents_count > 0)

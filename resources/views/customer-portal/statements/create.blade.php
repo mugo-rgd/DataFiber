@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-8 mx-auto">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h4 class="mb-0">
                         <i class="fas fa-file-invoice me-2"></i>Generate Custom Statement
                     </h4>
@@ -64,10 +64,10 @@
                             <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-secondary me-md-2">
                                 <i class="fas fa-times me-1"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary" id="previewBtn">
+                            <button type="submit" class="btn btn-kp-primary" id="previewBtn">
                                 <i class="fas fa-eye me-1"></i>Preview Statement
                             </button>
-                            <button type="button" class="btn btn-success" id="downloadBtn">
+                            <button type="button" class="btn btn-kp-success" id="downloadBtn">
                                 <i class="fas fa-download me-1"></i>Download PDF
                             </button>
                         </div>

@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-file-contract text-primary"></i> Lease Details
+                        <i class="fas fa-file-contract text-kp-blue"></i> Lease Details
                     </h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
@@ -24,10 +24,10 @@
                     <a href="{{ route('account-manager.leases.index') }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left me-2"></i>Back to Leases
                     </a>
-                    <a href="{{ route('account-manager.leases.edit', $lease) }}" class="btn btn-primary">
+                    <a href="{{ route('account-manager.leases.edit', $lease) }}" class="btn btn-kp-primary">
                         <i class="fas fa-edit me-2"></i>Edit Lease
                     </a>
-                    <a href="{{ route('account-manager.leases.pdf', $lease) }}" class="btn btn-outline-primary">
+                    <a href="{{ route('account-manager.leases.pdf', $lease) }}" class="btn btn-outline-kp-primary">
                         <i class="fas fa-file-pdf me-2"></i>PDF
                     </a>
                 </div>
@@ -37,7 +37,7 @@
 
     <!-- Success/Error Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -57,7 +57,7 @@
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-info-circle me-2"></i>Lease Information
                     </h6>
                 </div>
@@ -164,7 +164,7 @@
             @if($lease->technical_specifications)
             <div class="card shadow mb-4">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-cogs me-2"></i>Technical Specifications
                     </h6>
                 </div>
@@ -178,7 +178,7 @@
             @if($lease->service_level_agreement)
             <div class="card shadow mb-4">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-handshake me-2"></i>Service Level Agreement
                     </h6>
                 </div>
@@ -192,7 +192,7 @@
             @if($lease->notes)
             <div class="card shadow mb-4">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-sticky-note me-2"></i>Additional Notes
                     </h6>
                 </div>
@@ -207,16 +207,16 @@
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-cogs me-2"></i>Actions
                     </h6>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{{ route('account-manager.leases.edit', $lease) }}" class="btn btn-primary">
+                        <a href="{{ route('account-manager.leases.edit', $lease) }}" class="btn btn-kp-primary">
                             <i class="fas fa-edit me-2"></i>Edit Lease
                         </a>
-                        <a href="{{ route('account-manager.leases.pdf', $lease) }}" class="btn btn-outline-primary">
+                        <a href="{{ route('account-manager.leases.pdf', $lease) }}" class="btn btn-outline-kp-primary">
                             <i class="fas fa-file-pdf me-2"></i>Generate PDF
                         </a>
                         <a href="{{ route('account-manager.leases.index') }}" class="btn btn-outline-secondary">
@@ -229,7 +229,7 @@
             <!-- Customer Information -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-user me-2"></i>Customer Information
                     </h6>
                 </div>
@@ -260,18 +260,18 @@
             <!-- Contract Timeline -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-calendar me-2"></i>Contract Timeline
                     </h6>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <strong>Start Date:</strong>
-                        <div class="text-success">{{ $lease->start_date->format('M d, Y') }}</div>
+                        <div class="text-kp-green">{{ $lease->start_date->format('M d, Y') }}</div>
                     </div>
                     <div class="mb-3">
                         <strong>End Date:</strong>
-                        <div class="text-primary">{{ $lease->end_date->format('M d, Y') }}</div>
+                        <div class="text-kp-blue">{{ $lease->end_date->format('M d, Y') }}</div>
                     </div>
                     <div class="mb-3">
                         <strong>Duration:</strong>
@@ -279,7 +279,7 @@
                     </div>
                     <div class="mb-3">
                         <strong>Remaining:</strong>
-                        <div class="{{ $lease->isExpired() ? 'text-danger' : 'text-warning' }}">
+                        <div class="{{ $lease->isExpired() ? 'text-danger' : 'text-kp-yellow' }}">
                             @if($lease->isExpired())
                                 Expired
                             @else

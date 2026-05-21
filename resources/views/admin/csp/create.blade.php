@@ -769,7 +769,7 @@
         </p>
 
         <div class="submit-buttons">
-            <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">
+            <button type="submit" name="submit" value="submit" class="btn btn-kp-primary btn-lg">
                 <i class="fas fa-paper-plane"></i> Submit to CAK
             </button>
 

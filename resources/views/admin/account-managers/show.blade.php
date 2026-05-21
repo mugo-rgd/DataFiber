@@ -9,7 +9,7 @@
             <i class="fas fa-user-tie me-2"></i>Account Manager Details
         </h1>
         <div>
-            <a href="{{ route('admin.account-managers.edit', $manager->id) }}" class="btn btn-primary me-2">
+            <a href="{{ route('admin.account-managers.edit', $manager->id) }}" class="btn btn-kp-primary me-2">
                 <i class="fas fa-edit me-2"></i>Edit
             </a>
             <a href="{{ route('admin.account-managers.index') }}" class="btn btn-secondary">
@@ -23,7 +23,7 @@
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
-                    <div class="avatar-circle bg-primary text-white mx-auto mb-3"
+                    <div class="avatar-circle bg-kp-blue text-white mx-auto mb-3"
                          style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 48px;">
                         {{ strtoupper(substr($manager->name, 0, 1)) }}
                     </div>
@@ -31,7 +31,7 @@
                     <p class="text-muted mb-2">{{ $manager->email }}</p>
                     <div class="mb-3">
                         @if($manager->status === 'active')
-                            <span class="badge bg-success px-3 py-2">Active</span>
+                            <span class="badge bg-kp-green px-3 py-2">Active</span>
                         @else
                             <span class="badge bg-secondary px-3 py-2">Inactive</span>
                         @endif
@@ -57,7 +57,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                         Total Customers</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
                                         {{ $manager->managed_customers_count }}
@@ -76,7 +76,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                         Active Customers</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
                                         {{ $manager->managedCustomers ? $manager->managedCustomers->where('status', 'active')->count() : 0 }}
@@ -114,7 +114,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                         This Month Assignments</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
                                         {{ $manager->managedCustomers ? $manager->managedCustomers->where('assigned_at', '>=', now()->startOfMonth())->count() : 0 }}
@@ -133,11 +133,11 @@
 
     <!-- Assigned Customers List -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary text-white">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-kp-blue text-white">
             <h6 class="m-0 font-weight-bold">
                 <i class="fas fa-users me-2"></i>Assigned Customers
             </h6>
-            <span class="badge bg-light text-primary px-3 py-2">{{ $manager->managed_customers_count }} customers</span>
+            <span class="badge bg-light text-kp-blue px-3 py-2">{{ $manager->managed_customers_count }} customers</span>
         </div>
 
         <div class="card-body">
@@ -170,9 +170,9 @@
                                 </td>
                                 <td>
                                     @if($customer->status === 'active')
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-kp-green">Active</span>
                                     @elseif($customer->status === 'inactive')
-                                        <span class="badge bg-warning text-dark">Inactive</span>
+                                        <span class="badge bg-kp-yellow text-dark">Inactive</span>
                                     @else
                                         <span class="badge bg-danger">Suspended</span>
                                     @endif
@@ -211,7 +211,7 @@
                     </div>
                     <h5 class="text-muted">No Customers Assigned</h5>
                     <p class="text-muted mb-3">This account manager doesn't have any customers yet.</p>
-                    <a href="{{ route('admin.customers.index') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.customers.index') }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus me-2"></i>Assign Customers
                     </a>
                 </div>
@@ -223,7 +223,7 @@
     @if($manager->assignment_notes)
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+            <h6 class="m-0 font-weight-bold text-kp-blue">
                 <i class="fas fa-sticky-note me-2"></i>Assignment Notes
             </h6>
         </div>
@@ -237,7 +237,7 @@
     @if($manager->managedCustomers && $manager->managedCustomers->whereNotNull('assigned_at')->count() > 0)
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+            <h6 class="m-0 font-weight-bold text-kp-blue">
                 <i class="fas fa-chart-line me-2"></i>Recent Assignment Activity
             </h6>
         </div>
@@ -246,7 +246,7 @@
                 @foreach($manager->managedCustomers->whereNotNull('assigned_at')->sortByDesc('assigned_at')->take(5) as $customer)
                     <div class="timeline-item">
                         <div class="timeline-item-marker">
-                            <div class="timeline-item-marker-indicator bg-primary"></div>
+                            <div class="timeline-item-marker-indicator bg-kp-blue"></div>
                         </div>
                         <div class="timeline-item-content">
                             <small class="text-muted">{{ \Carbon\Carbon::parse($customer->assigned_at)->diffForHumans() }}</small>
@@ -315,7 +315,7 @@
         font-size: 0.875rem;
     }
 
-    .bg-primary {
+    .bg-kp-blue {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     }
 </style>

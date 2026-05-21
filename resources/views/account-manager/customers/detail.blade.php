@@ -22,13 +22,13 @@
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800">Customer Details</h1>
                 <div class="btn-group">
-                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-primary">
+                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus"></i> New Ticket
                     </a>
-                    <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-success">
+                    <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-success">
                         <i class="fas fa-money-bill-wave"></i> New Payment
                     </a>
-                    <a href="{{ route('account-manager.leases.create', ['customer_id' => $customer->id]) }}" class="btn btn-primary ms-2">
+                    <a href="{{ route('account-manager.leases.create', ['customer_id' => $customer->id]) }}" class="btn btn-kp-primary ms-2">
                         <i class="fas fa-file-contract"></i> New Lease
                     </a>
                 </div>
@@ -49,7 +49,7 @@
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Information</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Information</h6>
                 </div>
                 <div class="card-body">
                     <table class="table table-borderless">
@@ -88,7 +88,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                         Open Tickets</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
                                         {{ $customer->supportTickets->whereIn('status', ['open', 'in_progress'])->count() }}
@@ -126,7 +126,7 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                         Total Tickets</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
                                         {{ $customer->supportTickets->count() }}
@@ -145,13 +145,13 @@
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                         Total Leases
                                     </div>
                                     <div class="h5 mb-2 font-weight-bold text-gray-800">
                                         {{ App\Models\Lease::where('customer_id', $customer->id)->count() }}
                                     </div>
-                                    <a href="{{ route('account-manager.leases.index', ['customer_id' => $customer->id]) }}" class="btn btn-outline-success btn-sm">Manage Leases</a>
+                                    <a href="{{ route('account-manager.leases.index', ['customer_id' => $customer->id]) }}" class="btn btn-outline-kp-success btn-sm">Manage Leases</a>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-file-contract fa-2x text-gray-300"></i>
@@ -169,8 +169,8 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Support Tickets</h6>
-                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-primary btn-sm">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Support Tickets</h6>
+                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary btn-sm">
                         <i class="fas fa-plus"></i> New Ticket
                     </a>
                 </div>
@@ -215,7 +215,7 @@
                                     </td>
                                     <td>{{ $ticket->created_at->format('M d, Y') }}</td>
                                     <td>
-                                        <a href="{{ route('account-manager.tickets.show', $ticket) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('account-manager.tickets.show', $ticket) }}" class="btn btn-sm btn-kp-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </td>
@@ -228,7 +228,7 @@
                     <div class="text-center py-4">
                         <i class="fas fa-ticket-alt fa-3x text-gray-300 mb-3"></i>
                         <p class="text-muted">No support tickets for this customer.</p>
-                        <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-primary">Create First Ticket</a>
+                        <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary">Create First Ticket</a>
                     </div>
                     @endif
                 </div>
@@ -241,8 +241,8 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Payment Followups</h6>
-                    <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-primary btn-sm">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Payment Followups</h6>
+                    <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary btn-sm">
                         <i class="fas fa-plus"></i> New Payment
                     </a>
                 </div>
@@ -265,7 +265,7 @@
                                 <tr>
                                     <td class="font-weight-bold">${{ number_format($payment->amount, 2) }}</td>
                                     <td>
-                                        <span class="{{ $payment->isOverdue() ? 'text-danger' : ($payment->isDueSoon() ? 'text-warning' : '') }}">
+                                        <span class="{{ $payment->isOverdue() ? 'text-danger' : ($payment->isDueSoon() ? 'text-kp-yellow' : '') }}">
                                             {{ $payment->due_date->format('M d, Y') }}
                                         </span>
                                     </td>
@@ -280,14 +280,14 @@
                                         @if($payment->status === 'pending')
                                         <form action="{{ route('account-manager.payments.remind', $payment) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-warning" title="Mark as Reminded">
+                                            <button type="submit" class="btn btn-sm btn-kp-warning" title="Mark as Reminded">
                                                 <i class="fas fa-bell"></i>
                                             </button>
                                         </form>
                                         @endif
                                         <form action="{{ route('account-manager.payments.paid', $payment) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-success" title="Mark as Paid">
+                                            <button type="submit" class="btn btn-sm btn-kp-success" title="Mark as Paid">
                                                 <i class="fas fa-check"></i>
                                             </button>
                                         </form>
@@ -301,7 +301,7 @@
                     <div class="text-center py-4">
                         <i class="fas fa-money-bill-wave fa-3x text-gray-300 mb-3"></i>
                         <p class="text-muted">No payment followups for this customer.</p>
-                        <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-primary">Create First Payment</a>
+                        <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary">Create First Payment</a>
                     </div>
                     @endif
                 </div>

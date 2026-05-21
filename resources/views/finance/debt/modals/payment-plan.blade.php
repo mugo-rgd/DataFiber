@@ -177,7 +177,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i>Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-kp-primary">
                         <i class="fas fa-save me-2"></i>Create Payment Plan
                     </button>
                 </div>

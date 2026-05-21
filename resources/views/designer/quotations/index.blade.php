@@ -38,7 +38,7 @@
                                             <td>{{ $quotation->valid_until->format('M d, Y') }}</td>
                                             <td>
                                                 <a href="{{ route('designer.quotations.show', $quotation) }}"
-                                                   class="btn btn-sm btn-primary">
+                                                   class="btn btn-sm btn-kp-primary">
                                                     View
                                                 </a>
                                             </td>

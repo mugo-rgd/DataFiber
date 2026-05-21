@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-file-contract text-primary"></i> My Leases
+                <i class="fas fa-file-contract text-kp-blue"></i> My Leases
             </h1>
         </div>
     </div>
@@ -46,21 +46,28 @@
                                         <td>
                                             <!-- Option 1: Use existing lease show route if available -->
  <a href="{{ url('/customer/leases/' . $lease->id) }}"
-   class="btn btn-sm btn-primary">
+   class="btn btn-sm btn-kp-primary">
     <i class="fas fa-eye"></i> View Details
 </a>
+@if($lease->pdf_path)
+    <a href="{{ asset('storage/' . $lease->pdf_path) }}"
+       target="_blank"
+       class="btn btn-outline-dark">
+        <i class="fas fa-print me-1"></i>Print / Download Lease PDF
+    </a>
+@endif
 
                                             <!-- Option 2: If the above doesn't work, use this temporary solution -->
                                             <!--
                                             <a href="{{ url('/customer/leases/' . $lease->id) }}"
-                                               class="btn btn-sm btn-primary">
+                                               class="btn btn-sm btn-kp-primary">
                                                 <i class="fas fa-eye"></i> View Details
                                             </a>
                                             -->
 
                                             <!-- Option 3: Temporary disabled button with message -->
                                             <!--
-                                            <button class="btn btn-sm btn-primary" disabled title="Details coming soon">
+                                            <button class="btn btn-sm btn-kp-primary" disabled title="Details coming soon">
                                                 <i class="fas fa-eye"></i> View Details
                                             </button>
                                             -->
@@ -81,7 +88,7 @@
                         <div class="text-center py-4">
                             <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
                             <p class="text-muted">No leases found for your account.</p>
-                            <a href="{{ route('customer.dashboard') }}" class="btn btn-primary">
+                            <a href="{{ route('customer.dashboard') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                             </a>
                         </div>

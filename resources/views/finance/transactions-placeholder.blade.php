@@ -19,7 +19,7 @@
             <i class="fas fa-tools fa-4x text-muted mb-3"></i>
             <h3 class="text-muted">Transactions Module</h3>
             <p class="text-muted">This feature is currently under development.</p>
-            <a href="{{ route('finance.billing.index') }}" class="btn btn-primary">
+            <a href="{{ route('finance.billing.index') }}" class="btn btn-kp-primary">
                 <i class="fas fa-arrow-left me-2"></i>Back to Billings
             </a>
         </div>

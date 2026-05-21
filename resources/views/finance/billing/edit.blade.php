@@ -166,7 +166,7 @@
                                             <th width="200">Status:</th>
                                             <td>
                                                 @if($billing->tevin_status == 'validated')
-                                                    <span class="badge bg-success">Validated</span>
+                                                    <span class="badge bg-kp-green">Validated</span>
                                                 @elseif($billing->tevin_status == 'queued')
                                                     <span class="badge bg-info">Queued</span>
                                                 @elseif($billing->tevin_status == 'failed')
@@ -214,7 +214,7 @@
                                 <a href="{{ route('finance.billing.show', $billing->id) }}" class="btn btn-secondary">
                                     <i class="fas fa-times me-2"></i>Cancel
                                 </a>
-                                <button type="submit" class="btn btn-primary float-end">
+                                <button type="submit" class="btn btn-kp-primary float-end">
                                     <i class="fas fa-save me-2"></i>Update Billing
                                 </button>
                             </div>

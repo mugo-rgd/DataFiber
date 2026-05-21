@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-file-alt text-primary"></i> Design Request Details
+                    <i class="fas fa-file-alt text-kp-blue"></i> Design Request Details
                 </h1>
                 <a href="{{ route('admin.design-requests.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left me-1"></i> Back to List
@@ -22,7 +22,7 @@
         <div class="col-lg-8">
             <!-- Design Request Details Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">Request Information</h5>
                 </div>
                 <div class="card-body">
@@ -105,7 +105,7 @@
         <div class="col-lg-4">
             <!-- Survey Information Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h5 class="mb-0">Survey Information</h5>
                 </div>
                 <div class="card-body">
@@ -142,7 +142,7 @@
                     @if(!$designRequest->surveyor_id)
                     <div class="mt-3">
                         <a href="{{ route('account-manager.design-requests.assign-surveyor', $designRequest->request_number) }}"
-                           class="btn btn-primary btn-sm w-100">
+                           class="btn btn-kp-primary btn-sm w-100">
                             <i class="fas fa-user-plus me-1"></i> Assign Surveyor
                         </a>
                     </div>
@@ -179,7 +179,7 @@
                         </form>
                         @else
                         <a href="{{ route('account-manager.design-requests.assign-designer', $designRequest->request_number) }}"
-                           class="btn btn-outline-primary btn-sm w-100">
+                           class="btn btn-outline-kp-primary btn-sm w-100">
                             <i class="fas fa-user-plus me-1"></i> Assign Designer
                         </a>
                         @endif
@@ -187,7 +187,7 @@
                         @if($designRequest->status !== 'completed')
                         <form action="{{ route('admin.design-requests.complete', $designRequest->request_number) }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-outline-success btn-sm w-100"
+                            <button type="submit" class="btn btn-outline-kp-success btn-sm w-100"
                                     onclick="return confirm('Mark this design request as completed?')">
                                 <i class="fas fa-check me-1"></i> Mark Complete
                             </button>

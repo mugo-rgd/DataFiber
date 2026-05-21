@@ -25,7 +25,7 @@
                     <p class="text-muted mb-0">Access and download your project documents</p>
                 </div>
                 <div>
-                    <a href="{{ route('customer.documents.index') }}" class="btn btn-success">
+                    <a href="{{ route('customer.documents.index') }}" class="btn btn-kp-success">
                         <i class="fas fa-file-import me-2"></i>Request Missing Documents
                     </a>
                 </div>
@@ -83,7 +83,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0">
-                                                    <i class="fas fa-project-diagram text-primary"></i>
+                                                    <i class="fas fa-project-diagram text-kp-blue"></i>
                                                 </div>
                                                 <div class="flex-grow-1 ms-3">
                                                     <h6 class="mb-1">{{ $lease->title }}</h6>
@@ -92,7 +92,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-primary">
+                                            <span class="badge bg-kp-blue">
                                                 {{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}
                                             </span>
                                         </td>
@@ -101,7 +101,7 @@
                                                 <i class="fas fa-map-marker-alt text-danger"></i> {{ $lease->start_location }}
                                             </small>
                                             <small class="text-muted d-block">
-                                                <i class="fas fa-map-marker-alt text-success"></i> {{ $lease->end_location }}
+                                                <i class="fas fa-map-marker-alt text-kp-green"></i> {{ $lease->end_location }}
                                             </small>
                                         </td>
                                         <td>
@@ -118,13 +118,13 @@
                                                 @endif
 
                                                 @if($hasContract)
-                                                <span class="badge bg-warning" data-bs-toggle="tooltip" title="Contract">
+                                                <span class="badge bg-kp-yellow" data-bs-toggle="tooltip" title="Contract">
                                                     <i class="fas fa-file-contract"></i>
                                                 </span>
                                                 @endif
 
                                                 @if($hasAcceptance)
-                                                <span class="badge bg-success" data-bs-toggle="tooltip" title="Acceptance Certificate">
+                                                <span class="badge bg-kp-green" data-bs-toggle="tooltip" title="Acceptance Certificate">
                                                     <i class="fas fa-certificate"></i>
                                                 </span>
                                                 @endif
@@ -151,10 +151,10 @@
                                         <td>
                                             <div class="btn-group">
                                                 <a href="{{ route('customer.documents.lease.show', $lease->id) }}"
-                                                   class="btn btn-sm btn-primary">
+                                                   class="btn btn-sm btn-kp-primary">
                                                     <i class="fas fa-eye me-1"></i> View All
                                                 </a>
-                                                <button type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split"
+                                                <button type="button" class="btn btn-sm btn-kp-primary dropdown-toggle dropdown-toggle-split"
                                                         data-bs-toggle="dropdown" aria-expanded="false">
                                                     <span class="visually-hidden">Toggle Dropdown</span>
                                                 </button>
@@ -204,7 +204,7 @@
                             <i class="fas fa-folder-open fa-4x text-muted mb-4"></i>
                             <h5 class="text-muted">No Projects Found</h5>
                             <p class="text-muted mb-4">You don't have any active projects yet.</p>
-                            <a href="{{ route('customer.leases.create') }}" class="btn btn-primary">
+                            <a href="{{ route('customer.leases.create') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-plus me-2"></i> Create Your First Project
                             </a>
                         </div>
@@ -261,7 +261,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit Request</button>
+                    <button type="submit" class="btn btn-kp-primary">Submit Request</button>
                 </div>
             </form>
         </div>

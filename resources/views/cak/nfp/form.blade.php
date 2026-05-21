@@ -3,7 +3,7 @@
 @section('title', 'NFP Compliance Return')
 @section('page-title', 'Network Facilities Provider (NFP) Compliance Return')
 <button type="button"
-        class="btn btn-warning btn-lg autofill-form-btn"
+        class="btn btn-kp-warning btn-lg autofill-form-btn"
         data-url="{{ route('nfp.autofill-record-2') }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
@@ -581,9 +581,9 @@
         </table>
 
         <div class="submit-buttons">
-            <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">Submit</button>
+            <button type="submit" name="submit" value="submit" class="btn btn-kp-primary btn-lg">Submit</button>
            <button type="button"
-        class="btn btn-warning btn-lg autofill-form-btn"
+        class="btn btn-kp-warning btn-lg autofill-form-btn"
         data-url="{{ route('nfp.autofill-record-2') }}">
     Auto Fill
 </button>

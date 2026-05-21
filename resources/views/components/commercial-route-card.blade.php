@@ -87,7 +87,7 @@
 
                             <!-- Monthly Cost -->
                             <div class="mb-1">
-                                <span class="text-success small">
+                                <span class="text-kp-green small">
                                     <i class="fas fa-calendar-alt me-1"></i>
                                     <strong>Monthly Cost ({{ $defaultCores }} cores):</strong> {{ $route->currency }} {{ number_format($defaultMonthly, 2) }}/month
                                 </span>
@@ -105,7 +105,7 @@
 
                             <!-- Currency -->
                             <div class="mb-1">
-                                <span class="text-warning small">
+                                <span class="text-kp-yellow small">
                                     <i class="fas fa-money-bill-wave me-1"></i>
                                     <strong>Currency:</strong> {{ $route->currency }}
                                 </span>
@@ -157,7 +157,7 @@
                                 <div class="route-cost small bg-white p-2 rounded border">
                                     <div class="d-flex justify-content-between mb-1">
                                         <span class="text-muted">Monthly:</span>
-                                        <span class="monthly-cost fw-bold text-success"
+                                        <span class="monthly-cost fw-bold text-kp-green"
                                               data-route-id="{{ $route->id }}"
                                               data-base-monthly="{{ $defaultMonthly }}">
                                             {{ $route->currency }} {{ number_format($defaultMonthly, 2) }}
@@ -175,7 +175,7 @@
                                     <hr class="my-1">
                                     <div class="d-flex justify-content-between">
                                         <span class="text-dark fw-bold">Total:</span>
-                                        <span class="total-cost fw-bold text-primary"
+                                        <span class="total-cost fw-bold text-kp-blue"
                                               data-route-id="{{ $route->id }}">
                                             {{ $route->currency }} {{ number_format($defaultTotal, 2) }}
                                         </span>

@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-file-contract text-warning me-2"></i>Generate Conditional Certificate
+                        <i class="fas fa-file-contract text-kp-yellow me-2"></i>Generate Conditional Certificate
                     </h1>
                     <p class="text-muted mb-0">ICT Engineer - Create Conditional Certificate for Design Request</p>
                 </div>
@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-white py-3">
+                <div class="card-header bg-kp-yellow text-white py-3">
                     <h5 class="mb-0">
                         <i class="fas fa-file-contract me-2"></i>
                         Conditional Certificate Form
@@ -274,7 +274,7 @@
                             <a href="{{ route('ictengineer.requests') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-warning" id="generateCertificateBtn">
+                            <button type="submit" class="btn btn-kp-warning" id="generateCertificateBtn">
                                 <i class="fas fa-file-certificate me-2"></i>Generate Conditional Certificate
                             </button>
                         </div>
@@ -286,37 +286,37 @@
         <!-- Sidebar -->
         <div class="col-lg-4">
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white py-3">
+                <div class="card-header bg-kp-blue text-white py-3">
                     <h6 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>Certificate Information
                     </h6>
                 </div>
                 <div class="card-body">
-                    <h6 class="text-primary mb-3">About Conditional Certificates</h6>
+                    <h6 class="text-kp-blue mb-3">About Conditional Certificates</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <i class="fas fa-check-circle text-kp-green me-2"></i>
                             <small>Issued after preliminary inspection</small>
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <i class="fas fa-check-circle text-kp-green me-2"></i>
                             <small>Valid for 30 days from issue date</small>
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <i class="fas fa-check-circle text-kp-green me-2"></i>
                             <small>Lists conditions for full certification</small>
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <i class="fas fa-check-circle text-kp-green me-2"></i>
                             <small>Requires OTDR test report</small>
                         </li>
                         <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <i class="fas fa-check-circle text-kp-green me-2"></i>
                             <small>Signed by ICT Engineer</small>
                         </li>
                     </ul>
 
-                    <div class="alert alert-warning mt-3">
+                    <div class="alert alert-kp-warning mt-3">
                         <h6><i class="fas fa-exclamation-triangle me-2"></i>Important Notes</h6>
                         <small class="mb-0">
                             <ul class="mb-0 ps-3">

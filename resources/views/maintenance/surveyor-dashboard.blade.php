@@ -21,7 +21,7 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                                 Assigned Work Orders</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $assignedWorkOrders->count() }}</div>
                                         </div>
@@ -38,7 +38,7 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                                 Recent Surveys</div>
                                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $recentSurveys->count() }}</div>
                                         </div>
@@ -142,12 +142,12 @@
                                                         Created: {{ $survey->created_at->format('M j, Y') }}
                                                     </p>
                                                     @if($survey->maintenance_requests_count > 0)
-                                                        <small class="text-warning">
+                                                        <small class="text-kp-yellow">
                                                             <i class="fas fa-exclamation-triangle me-1"></i>
                                                             Requires maintenance attention
                                                         </small>
                                                     @else
-                                                        <small class="text-success">
+                                                        <small class="text-kp-green">
                                                             <i class="fas fa-check-circle me-1"></i>
                                                             No maintenance issues
                                                         </small>
@@ -176,12 +176,12 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-3 mb-3">
-                                            <a href="{{ route('surveyor.assignments') }}" class="btn btn-outline-primary w-100">
+                                            <a href="{{ route('surveyor.assignments') }}" class="btn btn-outline-kp-primary w-100">
                                                 <i class="fas fa-tasks me-2"></i>View Assignments
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <a href="{{ route('surveyor.routes') }}" class="btn btn-outline-success w-100">
+                                            <a href="{{ route('surveyor.routes') }}" class="btn btn-outline-kp-success w-100">
                                                 <i class="fas fa-route me-2"></i>Manage Routes
                                             </a>
                                         </div>

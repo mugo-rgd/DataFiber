@@ -44,6 +44,21 @@ class CommercialRoute extends Model
         return round($monthlyCost, 2);
     }
 
+    // In app/Models/CommercialRoute.php
+
+public static function getGroupedByOption()
+{
+    $routes = [];
+    $options = ['Premium', 'Non Premium', 'Metro'];
+
+    foreach ($options as $option) {
+        $routes[$option] = self::where('option', $option)
+            ->where('availability', 'YES')
+            ->get();
+    }
+
+    return $routes;
+}
     /**
      * Calculate total contract value
      */

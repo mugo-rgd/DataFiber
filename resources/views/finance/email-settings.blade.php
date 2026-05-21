@@ -23,7 +23,7 @@
                                         <label class="form-label">Test Email Address</label>
                                         <input type="email" id="testEmail" class="form-control" value="{{ config('mail.from.address') }}">
                                     </div>
-                                    <button onclick="sendTestEmail()" class="btn btn-primary">
+                                    <button onclick="sendTestEmail()" class="btn btn-kp-primary">
                                         <i class="fas fa-paper-plane me-1"></i> Send Test Email
                                     </button>
                                 </div>
@@ -34,7 +34,7 @@
                                 <div class="card-body">
                                     <h6><i class="fas fa-bell me-2"></i>Bulk Email Actions</h6>
                                     <hr>
-                                    <button onclick="sendOverdueNotices()" class="btn btn-warning w-100 mb-2">
+                                    <button onclick="sendOverdueNotices()" class="btn btn-kp-warning w-100 mb-2">
                                         <i class="fas fa-exclamation-triangle me-1"></i> Send Overdue Notices
                                     </button>
                                     <button onclick="sendDueReminders()" class="btn btn-info w-100">

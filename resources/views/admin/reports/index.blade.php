@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-chart-bar text-primary"></i> Reports & Analytics
+                <i class="fas fa-chart-bar text-kp-blue"></i> Reports & Analytics
             </h1>
             <p class="text-muted">Comprehensive system reports and analytics dashboard</p>
         </div>
@@ -16,7 +16,7 @@
     <!-- Report Filters -->
     <div class="card shadow mb-4">
         <div class="card-header bg-white py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+            <h6 class="m-0 font-weight-bold text-kp-blue">
                 <i class="fas fa-filter me-2"></i>Report Filters
             </h6>
         </div>
@@ -67,7 +67,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="form-label">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-kp-primary w-100">
                                 <i class="fas fa-search me-1"></i> Generate
                             </button>
                         </div>
@@ -84,12 +84,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Revenue
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">$245,380</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 12.5%</span>
+                                <span class="text-kp-green me-2"><i class="fas fa-arrow-up"></i> 12.5%</span>
                                 <span>Since last month</span>
                             </div>
                         </div>
@@ -106,12 +106,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Active Leases
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">342</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 8.2%</span>
+                                <span class="text-kp-green me-2"><i class="fas fa-arrow-up"></i> 8.2%</span>
                                 <span>Since last month</span>
                             </div>
                         </div>
@@ -133,7 +133,7 @@
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">48</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
-                                <span class="text-success me-2"><i class="fas fa-arrow-up"></i> 15.3%</span>
+                                <span class="text-kp-green me-2"><i class="fas fa-arrow-up"></i> 15.3%</span>
                                 <span>Since last month</span>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Pending Requests
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
@@ -173,7 +173,7 @@
         <!-- Financial Reports -->
         <div class="col-lg-6 mb-4">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white py-3">
+                <div class="card-header bg-kp-blue text-white py-3">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-chart-line me-2"></i>Financial Reports
                     </h6>
@@ -182,14 +182,14 @@
                     <div class="list-group list-group-flush">
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-file-invoice-dollar text-primary me-2"></i>
+                                <i class="fas fa-file-invoice-dollar text-kp-blue me-2"></i>
                                 Revenue Report
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-money-bill-wave text-success me-2"></i>
+                                <i class="fas fa-money-bill-wave text-kp-green me-2"></i>
                                 Payment Collection Report
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
@@ -203,7 +203,7 @@
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-chart-pie text-warning me-2"></i>
+                                <i class="fas fa-chart-pie text-kp-yellow me-2"></i>
                                 Revenue by Service Type
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
@@ -216,7 +216,7 @@
         <!-- Customer Reports -->
         <div class="col-lg-6 mb-4">
             <div class="card shadow">
-                <div class="card-header bg-success text-white py-3">
+                <div class="card-header bg-kp-green text-white py-3">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-users me-2"></i>Customer Reports
                     </h6>
@@ -225,21 +225,21 @@
                     <div class="list-group list-group-flush">
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-user-plus text-success me-2"></i>
+                                <i class="fas fa-user-plus text-kp-green me-2"></i>
                                 Customer Acquisition Report
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-chart-bar text-primary me-2"></i>
+                                <i class="fas fa-chart-bar text-kp-blue me-2"></i>
                                 Customer Segmentation
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-star text-warning me-2"></i>
+                                <i class="fas fa-star text-kp-yellow me-2"></i>
                                 Customer Satisfaction
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
@@ -275,21 +275,21 @@
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-file-invoice text-primary me-2"></i>
+                                <i class="fas fa-file-invoice text-kp-blue me-2"></i>
                                 Quotation Performance
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-map-marked-alt text-success me-2"></i>
+                                <i class="fas fa-map-marked-alt text-kp-green me-2"></i>
                                 Survey Completion Rate
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-tools text-warning me-2"></i>
+                                <i class="fas fa-tools text-kp-yellow me-2"></i>
                                 Maintenance Reports
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
@@ -302,7 +302,7 @@
         <!-- Export Options -->
         <div class="col-lg-6 mb-4">
             <div class="card shadow">
-                <div class="card-header bg-warning text-dark py-3">
+                <div class="card-header bg-kp-yellow text-dark py-3">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-download me-2"></i>Export Reports
                     </h6>
@@ -318,14 +318,14 @@
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-file-excel text-success me-2"></i>
+                                <i class="fas fa-file-excel text-kp-green me-2"></i>
                                 Export as Excel
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
                         </a>
                         <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                             <div>
-                                <i class="fas fa-file-csv text-primary me-2"></i>
+                                <i class="fas fa-file-csv text-kp-blue me-2"></i>
                                 Export as CSV
                             </div>
                             <i class="fas fa-chevron-right text-muted"></i>
@@ -356,13 +356,13 @@
                     <div class="row text-center">
                         <div class="col-md-2 mb-3">
                             <div class="border rounded p-3">
-                                <h4 class="text-primary">1,248</h4>
+                                <h4 class="text-kp-blue">1,248</h4>
                                 <small class="text-muted">Total Customers</small>
                             </div>
                         </div>
                         <div class="col-md-2 mb-3">
                             <div class="border rounded p-3">
-                                <h4 class="text-success">856</h4>
+                                <h4 class="text-kp-green">856</h4>
                                 <small class="text-muted">Active Leases</small>
                             </div>
                         </div>
@@ -374,7 +374,7 @@
                         </div>
                         <div class="col-md-2 mb-3">
                             <div class="border rounded p-3">
-                                <h4 class="text-warning">128</h4>
+                                <h4 class="text-kp-yellow">128</h4>
                                 <small class="text-muted">Pending Surveys</small>
                             </div>
                         </div>

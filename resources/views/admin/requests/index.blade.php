@@ -6,7 +6,7 @@
 
     {{-- Success message --}}
     @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-kp-success">{{ session('success') }}</div>
     @endif
 
     {{-- Table of requests --}}
@@ -35,9 +35,9 @@
                 <td>{{ $req->justification }}</td>
                 <td>
                     @if($req->status === 'pending')
-                        <span class="badge bg-warning">Pending</span>
+                        <span class="badge bg-kp-yellow">Pending</span>
                     @elseif($req->status === 'approved')
-                        <span class="badge bg-success">Approved</span>
+                        <span class="badge bg-kp-green">Approved</span>
                     @else
                         <span class="badge bg-danger">Rejected</span>
                     @endif
@@ -47,7 +47,7 @@
                     @if($req->status === 'pending')
                         <form action="{{ route('admin.requests.approve', $req) }}" method="POST" style="display:inline;">
                             @csrf
-                            <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                            <button type="submit" class="btn btn-sm btn-kp-success">Approve</button>
                         </form>
                         <form action="{{ route('admin.requests.reject', $req) }}" method="POST" style="display:inline;">
                             @csrf

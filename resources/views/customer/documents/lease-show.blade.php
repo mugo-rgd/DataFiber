@@ -39,7 +39,7 @@
                             <p class="card-text">
                                 <i class="fas fa-network-wired text-muted me-2"></i>
                                 <strong>Service Type:</strong>
-                                <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}</span>
+                                <span class="badge bg-kp-blue">{{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}</span>
                             </p>
                             <p class="card-text">
                                 <i class="fas fa-calendar-alt text-muted me-2"></i>
@@ -58,7 +58,7 @@
                         <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Back to Projects
                         </a>
-                        <a href="{{ route('customer.documents.requests.index') }}" class="btn btn-primary">
+                        <a href="{{ route('customer.documents.requests.index') }}" class="btn btn-kp-primary">
                             <i class="fas fa-file-import me-2"></i>Request Missing Documents
                         </a>
                     </div>
@@ -72,7 +72,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-file-invoice me-2"></i>Quotations
                     </h5>
@@ -108,16 +108,16 @@
                                         <div class="btn-group btn-group-sm">
                                             @if($quotation->document && $quotation->document->file_path)
                                             <a href="{{ Storage::url($quotation->document->file_path) }}"
-                                               target="_blank" class="btn btn-outline-primary">
+                                               target="_blank" class="btn btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                             <a href="{{ Storage::url($quotation->document->file_path) }}"
-                                               download class="btn btn-outline-success">
+                                               download class="btn btn-outline-kp-success">
                                                 <i class="fas fa-download"></i> Download
                                             </a>
                                             @else
                                             <a href="{{ route('customer.quotations.show', $quotation->id) }}"
-                                               class="btn btn-outline-primary">
+                                               class="btn btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View Details
                                             </a>
                                             @endif
@@ -139,7 +139,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-warning text-white">
+                <div class="card-header bg-kp-yellow text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-file-contract me-2"></i>Contracts
                     </h5>
@@ -171,16 +171,16 @@
                                         <div class="btn-group btn-group-sm">
                                             @if($contract->document && $contract->document->file_path)
                                             <a href="{{ Storage::url($contract->document->file_path) }}"
-                                               target="_blank" class="btn btn-outline-primary">
+                                               target="_blank" class="btn btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                             <a href="{{ Storage::url($contract->document->file_path) }}"
-                                               download class="btn btn-outline-success">
+                                               download class="btn btn-outline-kp-success">
                                                 <i class="fas fa-download"></i> Download
                                             </a>
                                             @else
                                             <a href="{{ route('customer.contracts.show', $contract->id) }}"
-                                               class="btn btn-outline-primary">
+                                               class="btn btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View Details
                                             </a>
                                             @endif
@@ -202,7 +202,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-certificate me-2"></i>Certificates
                     </h5>
@@ -233,11 +233,11 @@
                                         @if($cert->test_report_path)
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ Storage::url($cert->test_report_path) }}"
-                                               target="_blank" class="btn btn-outline-primary">
+                                               target="_blank" class="btn btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                             <a href="{{ Storage::url($cert->test_report_path) }}"
-                                               download class="btn btn-outline-success">
+                                               download class="btn btn-outline-kp-success">
                                                 <i class="fas fa-download"></i> Download
                                             </a>
                                         </div>
@@ -275,11 +275,11 @@
                                         @if($cert->inspection_report_path)
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ Storage::url($cert->inspection_report_path) }}"
-                                               target="_blank" class="btn btn-outline-primary">
+                                               target="_blank" class="btn btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                             <a href="{{ Storage::url($cert->inspection_report_path) }}"
-                                               download class="btn btn-outline-success">
+                                               download class="btn btn-outline-kp-success">
                                                 <i class="fas fa-download"></i> Download
                                             </a>
                                         </div>
@@ -321,11 +321,11 @@
                             </p>
                             <div class="btn-group btn-group-sm mt-2">
                                 <a href="{{ Storage::url($doc->file_path) }}"
-                                   target="_blank" class="btn btn-outline-primary btn-sm">
+                                   target="_blank" class="btn btn-outline-kp-primary btn-sm">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                                 <a href="{{ Storage::url($doc->file_path) }}"
-                                   download class="btn btn-outline-success btn-sm">
+                                   download class="btn btn-outline-kp-success btn-sm">
                                     <i class="fas fa-download"></i> Download
                                 </a>
                             </div>
@@ -358,11 +358,11 @@
                             </p>
                             <div class="btn-group btn-group-sm mt-2">
                                 <a href="{{ Storage::url($doc->file_path) }}"
-                                   target="_blank" class="btn btn-outline-primary btn-sm">
+                                   target="_blank" class="btn btn-outline-kp-primary btn-sm">
                                     <i class="fas fa-eye"></i> View
                                 </a>
                                 <a href="{{ Storage::url($doc->file_path) }}"
-                                   download class="btn btn-outline-success btn-sm">
+                                   download class="btn btn-outline-kp-success btn-sm">
                                     <i class="fas fa-download"></i> Download
                                 </a>
                             </div>
@@ -416,11 +416,11 @@
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ Storage::url($doc->file_path) }}"
-                                               target="_blank" class="btn btn-outline-primary">
+                                               target="_blank" class="btn btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ Storage::url($doc->file_path) }}"
-                                               download class="btn btn-outline-success">
+                                               download class="btn btn-outline-kp-success">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                         </div>
@@ -450,10 +450,10 @@
                     <h5 class="text-muted">No Documents Available</h5>
                     <p class="text-muted mb-4">No documents have been uploaded for this project yet.</p>
                     <div class="d-flex justify-content-center gap-3">
-                        <a href="{{ route('customer.documents.requests.index') }}" class="btn btn-primary">
+                        <a href="{{ route('customer.documents.requests.index') }}" class="btn btn-kp-primary">
                             <i class="fas fa-file-import me-2"></i>Request Documents
                         </a>
-                        <a href="{{ route('customer.design-requests.create') }}" class="btn btn-success">
+                        <a href="{{ route('customer.design-requests.create') }}" class="btn btn-kp-success">
                             <i class="fas fa-plus me-2"></i>Create Design Request
                         </a>
                     </div>

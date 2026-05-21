@@ -9,7 +9,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-drafting-compass text-primary"></i> Design Request Details
+                    <i class="fas fa-drafting-compass text-kp-blue"></i> Design Request Details
                 </h1>
                 <a href="{{ route('ictengineer.requests') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Requests
@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Design Request: {{ $request->request_id }}</h5>
                         <div>
@@ -131,7 +131,7 @@
                                     <tr>
                                         <td>{{ $item->request_number }}</td>
                                         <td>
-                                            <span class="badge bg-primary">{{ $item->technology_type }}</span>
+                                            <span class="badge bg-kp-blue">{{ $item->technology_type }}</span>
                                         </td>
                                         <td>{{ $item->link_class }}</td>
                                         <td>{{ $item->cores_required }}</td>
@@ -142,10 +142,10 @@
                                         <td>
                                             <strong>${{ number_format($totalContract, 2) }}</strong>
                                             <small class="text-muted d-block">+ tax: ${{ number_format($taxAmount, 2) }}</small>
-                                            <small class="text-success d-block">Total: ${{ number_format($totalWithTax, 2) }}</small>
+                                            <small class="text-kp-green d-block">Total: ${{ number_format($totalWithTax, 2) }}</small>
                                         </td>
                                         <td>
-                                            <a href="{{ route('design-items.show', $item->id) }}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ route('design-items.show', $item->id) }}" class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             @if($request->ict_engineer_id == auth()->id())
@@ -192,7 +192,7 @@
                                         <td>
                                             <strong>${{ number_format($totalContractValue, 2) }}</strong>
                                             <small class="text-muted d-block">+ tax: ${{ number_format($totalTax, 2) }}</small>
-                                            <small class="text-success d-block">Grand Total: ${{ number_format($grandTotal, 2) }}</small>
+                                            <small class="text-kp-green d-block">Grand Total: ${{ number_format($grandTotal, 2) }}</small>
                                         </td>
                                         <td></td>
                                     </tr>
@@ -266,7 +266,7 @@
                             <i class="fas fa-drafting-compass fa-3x text-muted mb-3"></i>
                             <p class="text-muted">No design items created for this request yet.</p>
                             @if($request->ict_engineer_id == auth()->id() && $request->status != 'cancelled')
-                            {{-- <a href="{{ route('design-items.create', ['design_request_id' => $request->id]) }}" class="btn btn-primary">
+                            {{-- <a href="{{ route('design-items.create', ['design_request_id' => $request->id]) }}" class="btn btn-kp-primary">
                                 <i class="fas fa-plus"></i> Add First Design Item
                             </a> --}}
                             @endif
@@ -309,7 +309,7 @@
 
         <div class="col-md-6">
             <div class="card shadow">
-                <div class="card-header bg-warning">
+                <div class="card-header bg-kp-yellow">
                     <h5 class="mb-0">Technical Specifications</h5>
                 </div>
                 <div class="card-body">
@@ -340,7 +340,7 @@
             <!-- Status Update (Only for assigned ICT Engineer) -->
             @if($request->ict_engineer_id == auth()->id())
             <div class="card shadow mt-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">Update Status</h5>
                 </div>
                 <div class="card-body">
@@ -379,7 +379,7 @@
                                       placeholder="Add any technical notes or comments...">{{ old('engineer_notes', $request->engineer_notes) }}</textarea>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-kp-primary">
                             <i class="fas fa-save"></i> Update Request
                         </button>
                     </form>
@@ -448,7 +448,7 @@
                                             @endif
                                         </td>
                                         {{-- <td>
-                                            <a href="{{ route('quotations.show', $quotation->id) }}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ route('quotations.show', $quotation->id) }}" class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                             @if($quotation->status == 'draft' && $request->ict_engineer_id == auth()->id())
@@ -467,7 +467,7 @@
                             <i class="fas fa-file-invoice-dollar fa-3x text-muted mb-3"></i>
                             <p class="text-muted">No quotations created for this request yet.</p>
                             @if($request->ict_engineer_id == auth()->id() && $request->status != 'cancelled')
-                            <a href="{{ route('quotations.create', ['design_request_id' => $request->id]) }}" class="btn btn-primary">
+                            <a href="{{ route('quotations.create', ['design_request_id' => $request->id]) }}" class="btn btn-kp-primary">
                                 <i class="fas fa-plus"></i> Create First Quotation
                             </a>
                             @endif
@@ -501,7 +501,7 @@
         const prioritySelect = document.getElementById('priority');
 
         function updateStatusBadge() {
-            const statusBadge = document.querySelector('.card-header .badge.bg-primary');
+            const statusBadge = document.querySelector('.card-header .badge.bg-kp-blue');
             if(statusBadge && statusSelect) {
                 const statusText = statusSelect.options[statusSelect.selectedIndex].text;
                 const statusColor = getStatusColor(statusSelect.value);

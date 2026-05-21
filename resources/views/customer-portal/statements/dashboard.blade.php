@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h4 class="mb-0">
                         <i class="fas fa-tachometer-alt me-2"></i>Welcome, {{ $customer->name }}!
                     </h4>
@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card text-white bg-success mb-3">
+                            <div class="card text-white bg-kp-green mb-3">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card text-white bg-warning mb-3">
+                            <div class="card text-white bg-kp-yellow mb-3">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
@@ -63,7 +63,7 @@
                                     <h5 class="mb-0">Quick Actions</h5>
                                 </div>
                                 <div class="card-body">
-                                    <a href="{{ route('customer.statements.create') }}" class="btn btn-primary me-2">
+                                    <a href="{{ route('customer.statements.create') }}" class="btn btn-kp-primary me-2">
                                         <i class="fas fa-file-invoice me-2"></i>Generate New Statement
                                     </a>
                                     <a href="{{ route('customer.statements') }}" class="btn btn-info me-2">
@@ -106,9 +106,9 @@
                                                         @if($statement->status == 'generated')
                                                             <span class="badge bg-info">Generated</span>
                                                         @elseif($statement->status == 'sent')
-                                                            <span class="badge bg-success">Sent</span>
+                                                            <span class="badge bg-kp-green">Sent</span>
                                                         @elseif($statement->status == 'viewed')
-                                                            <span class="badge bg-primary">Viewed</span>
+                                                            <span class="badge bg-kp-blue">Viewed</span>
                                                         @endif
                                                     </td>
                                                     <td>
@@ -155,7 +155,7 @@
                                                     <td>{{ $transaction->transaction_date->format('d M Y') }}</td>
                                                     <td>{{ $transaction->description }}</td>
                                                     <td>{{ $transaction->reference ?? '-' }}</td>
-                                                    <td class="text-end {{ $transaction->direction == 'in' ? 'text-success' : 'text-danger' }}">
+                                                    <td class="text-end {{ $transaction->direction == 'in' ? 'text-kp-green' : 'text-danger' }}">
                                                         {{ $transaction->direction == 'in' ? '+' : '-' }}${{ number_format($transaction->amount, 2) }}
                                                     </td>
                                                     <td class="text-end">${{ number_format($transaction->balance, 2) }}</td>

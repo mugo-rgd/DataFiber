@@ -213,7 +213,7 @@
                                             <a href="{{ route('finance.debt.payments') }}" class="btn btn-secondary">
                                                 Cancel
                                             </a>
-                                            <button type="submit" class="btn btn-primary">
+                                            <button type="submit" class="btn btn-kp-primary">
                                                 <i class="fas fa-save"></i> Update Payment
                                             </button>
                                         </div>

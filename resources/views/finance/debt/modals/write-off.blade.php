@@ -16,7 +16,7 @@
 
                 <div class="modal-body">
                     <!-- Warning Alert -->
-                    <div class="alert alert-warning">
+                    <div class="alert alert-kp-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         <strong>Warning:</strong> Writing off debt will permanently mark this invoice as uncollectible.
                         This action should only be taken after all collection efforts have been exhausted.

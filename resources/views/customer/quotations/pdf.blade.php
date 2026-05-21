@@ -837,7 +837,12 @@
                                         <td>{{ $route['metadata']['technology_type'] ?? 'OPGW' }}</td>
                                         <td>Premium</td>
                                         <td>{{ $route['metadata']['cores'] ?? 1 }}</td>
-                                        <td>{{ $route['metadata']['route_name'] ?? $route['description'] }}</td>
+                                        {{-- <td>{{ $route['metadata']['route_name'] ?? $route['description'] }}</td> --}}
+                                        <td><strong>{{ $route['metadata']['route_name'] ?? $route['description'] }}
+                                        @if(!empty($route['metadata']['is_custom_route']))
+                                            <span style="color:#f59e0b;">(Custom)</span>
+                                        @endif
+                                    </strong></td>
                                     </tr>
                                 @endforeach
                             </tbody>

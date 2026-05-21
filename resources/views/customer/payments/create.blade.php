@@ -40,7 +40,7 @@
                             </div>
                             <div class="col-md-6 text-right">
                                 <strong>Amount Due:</strong><br>
-                                <h4 class="text-primary">${{ number_format((float)$billing->total_amount, 2) }}</h4>
+                                <h4 class="text-kp-blue">${{ number_format((float)$billing->total_amount, 2) }}</h4>
                                 @if($billing->isOverdue())
                                     <small class="text-danger">
                                         + 10% late fee: ${{ number_format((float)$billing->total_amount * 0.1, 2) }}
@@ -110,13 +110,13 @@
                         </div>
 
                         <!-- Payment Method Instructions -->
-                        <div id="payment-instructions" class="alert alert-warning mt-3" style="display: none;">
+                        <div id="payment-instructions" class="alert alert-kp-warning mt-3" style="display: none;">
                             <h6 class="alert-heading" id="method-title">Payment Instructions</h6>
                             <div id="method-instructions"></div>
                         </div>
 
                         <div class="form-group mt-4">
-                            <button type="submit" class="btn btn-success btn-lg btn-block">
+                            <button type="submit" class="btn btn-kp-success btn-lg btn-block">
                                 <i class="fas fa-paper-plane me-2"></i>Submit Payment
                             </button>
                         </div>

@@ -66,7 +66,7 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Create Parameter</button>
+                        <button type="submit" class="btn btn-kp-primary">Create Parameter</button>
                         <a href="{{ route('finance.financial-parameters.index') }}" class="btn btn-secondary">Cancel</a>
                     </form>
                 </div>

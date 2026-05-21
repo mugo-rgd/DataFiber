@@ -1,5 +1,5 @@
 <div class="document-details">
-    <h5 class="mb-4"><i class="fas fa-file-invoice-dollar text-primary mr-2"></i>Quotation Details</h5>
+    <h5 class="mb-4"><i class="fas fa-file-invoice-dollar text-kp-blue mr-2"></i>Quotation Details</h5>
 
     <div class="row">
         <div class="col-md-6">
@@ -28,7 +28,7 @@
                         <tr>
                             <th>Design Request:</th>
                             <td>
-                                <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-primary">
+                                <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-kp-blue">
                                     {{ $document->designRequest->request_number ?? 'N/A' }}
                                 </a>
                             </td>
@@ -59,7 +59,7 @@
                         </tr>
                         <tr>
                             <th>Total Amount:</th>
-                            <td><strong class="text-success">{{ number_format($document->total_amount, 2) }}</strong></td>
+                            <td><strong class="text-kp-green">{{ number_format($document->total_amount, 2) }}</strong></td>
                         </tr>
                         <tr>
                             <th>Created By:</th>
@@ -111,7 +111,7 @@
                             <th>Valid Until:</th>
                             <td>
                                 <span class="{{
-                                    \Carbon\Carbon::parse($document->valid_until)->isPast() ? 'text-danger' : 'text-success'
+                                    \Carbon\Carbon::parse($document->valid_until)->isPast() ? 'text-danger' : 'text-kp-green'
                                 }}">
                                     {{ $document->valid_until }}
                                     @if(\Carbon\Carbon::parse($document->valid_until)->isPast())
@@ -183,14 +183,14 @@
     <div class="mt-4 text-right">
         @if(auth()->user()->role !== 'customer' || $document->customer_approval_status == 'approved')
             <a href="{{ route('quotations.download', $document->id) }}"
-               class="btn btn-success btn-sm">
+               class="btn btn-kp-success btn-sm">
                 <i class="fas fa-download mr-1"></i> Download PDF
             </a>
         @endif
 
         @if(auth()->user()->can('view', $document))
             <a href="{{ route('quotations.show', $document->id) }}"
-               class="btn btn-primary btn-sm">
+               class="btn btn-kp-primary btn-sm">
                 <i class="fas fa-external-link-alt mr-1"></i> Open Full Details
             </a>
         @endif

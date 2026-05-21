@@ -40,11 +40,11 @@
         <h5 class="text-center mb-2" style="font-size: 16px;">EDIT COMPLIANCE RETURN</h5>
         <p class="text-muted text-center small mb-0">
             Compliance ID: {{ $return->compliance_id ?? 'Draft' }} |
-            Status: <span class="badge bg-warning">{{ ucfirst($return->status) }}</span>
+            Status: <span class="badge bg-kp-yellow">{{ ucfirst($return->status) }}</span>
         </p>
     </div>
 
-    <div class="alert alert-warning">
+    <div class="alert alert-kp-warning">
         <i class="fas fa-info-circle"></i> You are editing a draft. Make your changes and submit when ready.
     </div>
 
@@ -303,7 +303,7 @@
         </div>
 
         <div class="btn-submit-section text-center">
-            <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">
+            <button type="submit" name="submit" value="submit" class="btn btn-kp-primary btn-lg">
                 <i class="fas fa-paper-plane"></i> Submit to CAK
             </button>
             <button type="submit" name="save_draft" value="1" class="btn btn-secondary btn-lg">

@@ -13,7 +13,7 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <i class="fas fa-user-circle fa-4x text-primary mb-3"></i>
+                        <i class="fas fa-user-circle fa-4x text-kp-blue mb-3"></i>
                         <h4>{{ Auth::user()->name }}</h4>
                         <p class="text-muted">Technician</p>
                     </div>

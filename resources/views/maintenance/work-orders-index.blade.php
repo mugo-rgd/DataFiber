@@ -12,7 +12,7 @@
                         <i class="fas fa-clipboard-check me-2"></i>Work Orders Management
                     </h5>
                     @can('assign-work-orders')
-                        <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-kp-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Create Work Order
                         </a>
                     @endcan
@@ -156,7 +156,7 @@
                                             <td>
                                                 <div class="btn-group btn-group-sm">
                                                     <a href="{{ route('maintenance.work-orders.show', $workOrder->id) }}"
-                                                       class="btn btn-outline-primary" title="View">
+                                                       class="btn btn-outline-kp-primary" title="View">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     @can('assign-work-orders')
@@ -169,7 +169,7 @@
                                                         <form action="{{ route('maintenance.work-orders.complete', $workOrder->id) }}"
                                                               method="POST" class="d-inline">
                                                             @csrf
-                                                            <button type="submit" class="btn btn-outline-success" title="Complete"
+                                                            <button type="submit" class="btn btn-outline-kp-success" title="Complete"
                                                                     onclick="return confirm('Mark this work order as completed?')">
                                                                 <i class="fas fa-check"></i>
                                                             </button>
@@ -202,7 +202,7 @@
                                 @endif
                             </p>
                             @can('assign-work-orders')
-                                <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-primary">
+                                <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-plus me-1"></i>Create First Work Order
                                 </a>
                             @endcan

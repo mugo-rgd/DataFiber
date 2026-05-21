@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Messages</h5>
-        <a href="{{ route('chat.create') }}" class="btn btn-sm btn-primary">
+        <a href="{{ route('chat.create') }}" class="btn btn-sm btn-kp-primary">
             <i class="fas fa-plus"></i>
         </a>
     </div>
@@ -17,7 +17,7 @@
                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {{ $conversation->id == request()->route('conversation') ? 'active' : '' }} {{ $unreadCount > 0 ? 'bg-light' : '' }}">
                     <div class="d-flex align-items-center">
                         <div class="avatar me-3">
-                            <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
+                            <div class="bg-kp-blue rounded-circle text-white d-flex align-items-center justify-content-center"
                                  style="width: 40px; height: 40px;">
                                 {{ $otherUser ? strtoupper(substr($otherUser->name, 0, 1)) : '?' }}
                             </div>

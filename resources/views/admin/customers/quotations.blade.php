@@ -6,13 +6,13 @@
     <div class="header-actions">
         <div>
             <h1 class="h3 text-gray-800 mb-2">
-                <i class="fas fa-file-invoice text-primary me-2"></i> Customer Quotations
+                <i class="fas fa-file-invoice text-kp-blue me-2"></i> Customer Quotations
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-decoration-none"><i class="fas fa-home me-1"></i>Dashboard</a></li>
                    <li class="breadcrumb-item"><a href="{{ route('admin.customers.index') }}" class="text-decoration-none"><i class="fas fa-users me-1"></i>Customers</a></li>
-                    <li class="breadcrumb-item active text-primary"><i class="fas fa-file-invoice me-1"></i>Quotations</li>
+                    <li class="breadcrumb-item active text-kp-blue"><i class="fas fa-file-invoice me-1"></i>Quotations</li>
                 </ol>
             </nav>
         </div>
@@ -38,7 +38,7 @@
                     @endif
                 </div>
                 <div class="col-md-4 text-end">
-                    <span class="badge bg-primary fs-6">Total Quotations: {{ $quotations->total() }}</span>
+                    <span class="badge bg-kp-blue fs-6">Total Quotations: {{ $quotations->total() }}</span>
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                    <button type="button" class="btn btn-sm btn-outline-kp-primary dropdown-toggle" data-bs-toggle="dropdown">
                                         <i class="fas fa-cog"></i>
                                     </button>
                                     <ul class="dropdown-menu">

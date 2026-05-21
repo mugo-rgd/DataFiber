@@ -133,7 +133,7 @@
                                     <td class="text-end">
                                         @if(isset($comparisons['revenue'][$metric]['change']))
                                             @php $change = $comparisons['revenue'][$metric]['change']; @endphp
-                                            <span class="{{ $change > 0 ? 'text-success' : ($change < 0 ? 'text-danger' : 'text-muted') }}">
+                                            <span class="{{ $change > 0 ? 'text-kp-green' : ($change < 0 ? 'text-danger' : 'text-muted') }}">
                                                 {{ $change > 0 ? '+' : '' }}{{ number_format($change, 1) }}%
                                             </span>
                                         @else
@@ -143,7 +143,7 @@
                                     <td>
                                         @if(isset($comparisons['revenue'][$metric]['trend']))
                                             @if($comparisons['revenue'][$metric]['trend'] == 'up')
-                                                <i class="fas fa-arrow-up text-success"></i>
+                                                <i class="fas fa-arrow-up text-kp-green"></i>
                                             @elseif($comparisons['revenue'][$metric]['trend'] == 'down')
                                                 <i class="fas fa-arrow-down text-danger"></i>
                                             @else
@@ -244,7 +244,7 @@
                                     <td class="text-end">
                                         @if(isset($comparisons['profitability'][$metric]['change']))
                                             @php $change = $comparisons['profitability'][$metric]['change']; @endphp
-                                            <span class="{{ $change > 0 ? 'text-success' : ($change < 0 ? 'text-danger' : 'text-muted') }}">
+                                            <span class="{{ $change > 0 ? 'text-kp-green' : ($change < 0 ? 'text-danger' : 'text-muted') }}">
                                                 {{ $change > 0 ? '+' : '' }}{{ number_format($change, 1) }}%
                                             </span>
                                         @else
@@ -254,7 +254,7 @@
                                     <td>
                                         @if(isset($comparisons['profitability'][$metric]['trend']))
                                             @if($comparisons['profitability'][$metric]['trend'] == 'up')
-                                                <i class="fas fa-arrow-up text-success"></i>
+                                                <i class="fas fa-arrow-up text-kp-green"></i>
                                             @elseif($comparisons['profitability'][$metric]['trend'] == 'down')
                                                 <i class="fas fa-arrow-down text-danger"></i>
                                             @else
@@ -349,7 +349,7 @@
                                     <td class="text-end">
                                         @if(isset($comparisons['liquidity'][$metric]['change']))
                                             @php $change = $comparisons['liquidity'][$metric]['change']; @endphp
-                                            <span class="{{ $change > 0 ? 'text-success' : ($change < 0 ? 'text-danger' : 'text-muted') }}">
+                                            <span class="{{ $change > 0 ? 'text-kp-green' : ($change < 0 ? 'text-danger' : 'text-muted') }}">
                                                 {{ $change > 0 ? '+' : '' }}{{ number_format($change, 1) }}%
                                             </span>
                                         @else
@@ -359,7 +359,7 @@
                                     <td>
                                         @if(isset($comparisons['liquidity'][$metric]['trend']))
                                             @if($comparisons['liquidity'][$metric]['trend'] == 'up')
-                                                <i class="fas fa-arrow-up text-success"></i>
+                                                <i class="fas fa-arrow-up text-kp-green"></i>
                                             @elseif($comparisons['liquidity'][$metric]['trend'] == 'down')
                                                 <i class="fas fa-arrow-down text-danger"></i>
                                             @else
@@ -463,7 +463,7 @@
                         @if(count($recommendations) > 0)
                             @foreach($recommendations as $recommendation)
                                 <li class="mb-2">
-                                    <i class="fas fa-lightbulb text-warning me-2"></i>{{ $recommendation }}
+                                    <i class="fas fa-lightbulb text-kp-yellow me-2"></i>{{ $recommendation }}
                                 </li>
                             @endforeach
                         @else

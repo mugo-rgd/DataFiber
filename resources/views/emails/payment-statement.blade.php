@@ -127,7 +127,7 @@
             background: #f0f0f0;
             font-weight: bold;
         }
-        .text-success {
+        .text-kp-green {
             color: #28a745;
         }
         .text-danger {
@@ -220,7 +220,7 @@
                     </tr>
                     <tr>
                         <th>Closing Balance</th>
-                        <td class="text-end {{ ($statement->closing_balance ?? 0) >= 0 ? 'text-success' : 'text-danger' }}">
+                        <td class="text-end {{ ($statement->closing_balance ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }}">
                             @php
                                 $closing = $statement->closing_balance ?? 0;
                             @endphp

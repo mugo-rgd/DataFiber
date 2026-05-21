@@ -11,7 +11,7 @@
             <a href="{{ route('surveyor.assignments') }}" class="btn btn-secondary mr-2">
                 <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Assignments
             </a>
-            <a href="{{ route('surveyor.dashboard') }}" class="btn btn-primary">
+            <a href="{{ route('surveyor.dashboard') }}" class="btn btn-kp-primary">
                 <i class="fas fa-tachometer-alt fa-sm text-white-50"></i> Dashboard
             </a>
         </div>
@@ -22,7 +22,7 @@
         <div class="col-lg-8">
             <!-- Route Information Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-route mr-2"></i>
                         {{ $surveyRoute->route_name }}
@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="font-weight-bold text-primary">Route Information</h6>
+                            <h6 class="font-weight-bold text-kp-blue">Route Information</h6>
                             <p><strong>Route Name:</strong> {{ $surveyRoute->route_name }}</p>
                             <p><strong>Design Request:</strong> {{ $surveyRoute->designRequest->request_number }}</p>
                             <p><strong>Customer:</strong> {{ $surveyRoute->designRequest->customer->name }}</p>
@@ -42,7 +42,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="font-weight-bold text-primary">Route Statistics</h6>
+                            <h6 class="font-weight-bold text-kp-blue">Route Statistics</h6>
                             <p><strong>Total Distance:</strong> {{ $surveyRoute->total_distance ?? '0' }} km</p>
                             <p><strong>Estimated Cost:</strong> ${{ number_format($surveyRoute->estimated_cost ?? 0, 2) }}</p>
                             <p><strong>Total Segments:</strong> {{ $surveyRoute->routeSegments->count() }}</p>
@@ -52,7 +52,7 @@
 
                     @if($surveyRoute->route_description)
                     <div class="mt-3">
-                        <h6 class="font-weight-bold text-primary">Route Description</h6>
+                        <h6 class="font-weight-bold text-kp-blue">Route Description</h6>
                         <p class="border p-3 rounded bg-light">{{ $surveyRoute->route_description }}</p>
                     </div>
                     @endif
@@ -61,7 +61,7 @@
 
             <!-- Route Segments -->
             <div class="card shadow">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-map-signs mr-2"></i>
                         Route Segments ({{ $surveyRoute->routeSegments->count() }})
@@ -108,7 +108,7 @@
                                         <td>{{ $segment->cost_multiplier }}x</td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="#" class="btn btn-outline-primary" title="Edit Segment">
+                                                <a href="#" class="btn btn-outline-kp-primary" title="Edit Segment">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <a href="#" class="btn btn-outline-info" title="View Details">
@@ -141,7 +141,7 @@
                             <h4 class="text-gray-500">No Segments Created</h4>
                             <p class="text-gray-400 mb-4">Start by creating your first route segment to document the infrastructure details.</p>
                             <a href="{{ route('surveyor.route-segments.create', $surveyRoute->id) }}"
-                               class="btn btn-primary btn-lg">
+                               class="btn btn-kp-primary btn-lg">
                                 <i class="fas fa-plus-circle mr-2"></i> Create First Segment
                             </a>
                         </div>
@@ -153,7 +153,7 @@
         <div class="col-lg-4">
             <!-- Quick Actions -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h5 class="mb-0">
                         <i class="fas fa-bolt mr-2"></i>
                         Quick Actions
@@ -162,7 +162,7 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ route('surveyor.route-segments.create', $surveyRoute->id) }}"
-                           class="btn btn-success btn-block">
+                           class="btn btn-kp-success btn-block">
                             <i class="fas fa-plus-circle mr-2"></i> Add New Segment
                         </a>
 
@@ -171,11 +171,11 @@
                             <i class="fas fa-arrow-left mr-2"></i> Back to Assignment
                         </a>
 
-                        <button type="button" class="btn btn-primary btn-block" data-bs-toggle="modal" data-bs-target="#updateRouteStatusModal">
+                        <button type="button" class="btn btn-kp-primary btn-block" data-bs-toggle="modal" data-bs-target="#updateRouteStatusModal">
                             <i class="fas fa-sync-alt mr-2"></i> Update Route Status
                         </button>
 
-                        <button type="button" class="btn btn-warning btn-block">
+                        <button type="button" class="btn btn-kp-warning btn-block">
                             <i class="fas fa-file-export mr-2"></i> Export Route Data
                         </button>
 
@@ -207,7 +207,7 @@
                                 @foreach($installationTypes as $type => $segments)
                                 <div class="d-flex justify-content-between mb-1">
                                     <span class="text-capitalize">{{ $type }}</span>
-                                    <span class="badge bg-primary">{{ $segments->count() }} segments</span>
+                                    <span class="badge bg-kp-blue">{{ $segments->count() }} segments</span>
                                 </div>
                                 @endforeach
                             </div>
@@ -268,7 +268,7 @@
                 <div class="card-body">
                     <div class="timeline">
                         <div class="timeline-item active">
-                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-marker bg-kp-blue"></div>
                             <div class="timeline-content">
                                 <h6 class="font-weight-bold">Route Created</h6>
                                 <small class="text-muted">{{ $surveyRoute->created_at->format('M d, Y H:i') }}</small>
@@ -277,7 +277,7 @@
 
                         @if($surveyRoute->routeSegments->count() > 0)
                         <div class="timeline-item active">
-                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-marker bg-kp-green"></div>
                             <div class="timeline-content">
                                 <h6 class="font-weight-bold">First Segment Added</h6>
                                 <small class="text-muted">{{ $surveyRoute->routeSegments->first()->created_at->format('M d, Y H:i') }}</small>
@@ -327,7 +327,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Status</button>
+                    <button type="submit" class="btn btn-kp-primary">Update Status</button>
                 </div>
             </form>
         </div>
@@ -354,10 +354,10 @@
         border-radius: 50%;
         background-color: #dee2e6;
     }
-    .timeline-marker.bg-primary,
+    .timeline-marker.bg-kp-blue,
     .timeline-marker.bg-info,
-    .timeline-marker.bg-warning,
-    .timeline-marker.bg-success {
+    .timeline-marker.bg-kp-yellow,
+    .timeline-marker.bg-kp-green {
         background-color: var(--bs-primary) !important;
     }
     .timeline-item.active .timeline-marker {

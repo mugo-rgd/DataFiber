@@ -15,7 +15,7 @@
                     @foreach($leases as $lease)
                     <div class="col-md-6 mb-4">
                         <div class="card shadow">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header bg-kp-blue text-white">
                                 <h5 class="mb-0">Lease #{{ $lease->lease_number }}</h5>
                             </div>
                             <div class="card-body">
@@ -24,11 +24,11 @@
 
                                 <div class="d-grid gap-2">
                                     <a href="{{ route('customer.leases.show', $lease) }}#documents"
-                                       class="btn btn-outline-primary btn-sm">
+                                       class="btn btn-outline-kp-primary btn-sm">
                                         <i class="fas fa-eye me-1"></i> View Documents
                                     </a>
                                     <a href="{{ route('customer.documents.store', $lease) }}"
-                                       class="btn btn-outline-success btn-sm">
+                                       class="btn btn-outline-kp-success btn-sm">
                                         <i class="fas fa-upload me-1"></i> Upload New Document
                                     </a>
                                 </div>
@@ -43,7 +43,7 @@
                         <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
                         <h4 class="text-muted">No Leases Found</h4>
                         <p class="text-muted">You need to have an active lease to upload documents.</p>
-                        <a href="{{ route('customer.leases.index') }}" class="btn btn-primary">
+                        <a href="{{ route('customer.leases.index') }}" class="btn btn-kp-primary">
                             <i class="fas fa-list me-1"></i> View My Leases
                         </a>
                     </div>

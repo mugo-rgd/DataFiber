@@ -178,7 +178,7 @@
                 </div>
 
                 <div class="mt-4 text-center">
-                    <button type="submit" class="btn btn-primary btn-lg" id="generateBtn">
+                    <button type="submit" class="btn btn-kp-primary btn-lg" id="generateBtn">
                         <span id="btnText">Generate Certificate</span>
                         <span id="btnSpinner" class="spinner-border spinner-border-sm d-none"></span>
                     </button>

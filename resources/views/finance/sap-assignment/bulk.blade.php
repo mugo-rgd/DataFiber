@@ -77,7 +77,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Quick Actions</label><br>
-                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="autoGenerateAll()">
+                                <button type="button" class="btn btn-outline-kp-primary btn-sm" onclick="autoGenerateAll()">
                                     <i class="fas fa-bolt"></i> Auto-generate All
                                 </button>
                                 <button type="button" class="btn btn-outline-danger btn-sm" onclick="clearAll()">
@@ -86,7 +86,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 text-end">
-                            <button type="submit" class="btn btn-primary btn-lg">
+                            <button type="submit" class="btn btn-kp-primary btn-lg">
                                 <i class="fas fa-save"></i> Assign {{ $customers->count() }} SAP Accounts
                             </button>
                         </div>
@@ -94,7 +94,7 @@
                 </div>
             </form>
             @else
-            <div class="alert alert-success">
+            <div class="alert alert-kp-success">
                 <i class="fas fa-check-circle"></i> All customers already have SAP accounts assigned!
             </div>
             @endif

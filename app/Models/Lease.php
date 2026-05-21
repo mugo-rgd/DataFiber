@@ -41,6 +41,7 @@ class Lease extends Model
         'attachments' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'pdf_generated_at' => 'datetime',
     ];
 
     /**
@@ -91,6 +92,8 @@ class Lease extends Model
         'county_id',
         'quotation_id',
         'design_request_id',
+        'pdf_path',
+    'pdf_generated_at',
     ];
 
          protected $appends = [

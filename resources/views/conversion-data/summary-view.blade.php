@@ -8,7 +8,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Customers Summary</h1>
         <div>
-            <a href="{{ route('conversion-data.create') }}" class="btn btn-primary shadow-sm">
+            <a href="{{ route('conversion-data.create') }}" class="btn btn-kp-primary shadow-sm">
                 <i class="fas fa-plus me-1"></i> Add New Data
             </a>
             <button onclick="window.print()" class="btn btn-secondary shadow-sm">
@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Customers</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $customers->total() }}</div>
                             <div class="text-xs text-muted mt-1">
@@ -44,7 +44,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Total Contracts</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($totalContracts) }}</div>
                         </div>
@@ -78,7 +78,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Total Value (KES)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">KES {{ number_format($totalValueKES, 2) }}</div>
                         </div>
@@ -120,9 +120,9 @@
     <!-- Main Table Card -->
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
-            <h6 class="m-0 font-weight-bold text-primary">Customers Contract Summary</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Customers Contract Summary</h6>
             <div class="dropdown">
-                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                <button class="btn btn-sm btn-outline-kp-primary dropdown-toggle" type="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-download me-1"></i> Export
                 </button>
@@ -130,7 +130,7 @@
                     <a href="{{ route('conversion-data.export.excel') }}"
            class="list-group-item list-group-item-action"
            onclick="applyExportFilters(this)">
-            <i class="fas fa-file-excel text-success me-2"></i> Export as Excel
+            <i class="fas fa-file-excel text-kp-green me-2"></i> Export as Excel
         </a>
 
         <a href="{{ route('conversion-data.export.csv') }}"
@@ -148,7 +148,7 @@
         <!-- Option 2: Using single route with format parameter -->
         <a href="{{ route('conversion-data.export', ['format' => 'excel']) }}"
            class="list-group-item list-group-item-action d-none">
-            <i class="fas fa-file-excel text-success me-2"></i> Export as Excel
+            <i class="fas fa-file-excel text-kp-green me-2"></i> Export as Excel
         </a>
 
                 </ul>
@@ -199,9 +199,9 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge bg-primary rounded-pill">{{ $contractCount }}</span>
+                                <span class="badge bg-kp-blue rounded-pill">{{ $contractCount }}</span>
                             </td>
-                            <td class="text-success">
+                            <td class="text-kp-green">
                                 <strong>
                                     @if($totalUSD > 0)
                                         ${{ number_format($totalUSD, 2) }}
@@ -210,7 +210,7 @@
                                     @endif
                                 </strong>
                             </td>
-                            <td class="text-warning">
+                            <td class="text-kp-yellow">
                                 <strong>
                                     @if($totalKES > 0)
                                         KES {{ number_format($totalKES, 2) }}
@@ -228,7 +228,7 @@
                             </td>
                             <td>
                                 <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar bg-primary" role="progressbar"
+                                    <div class="progress-bar bg-kp-blue" role="progressbar"
                                          style="width: {{ min($shareOfTotal, 100) }}%"
                                          aria-valuenow="{{ $shareOfTotal }}"
                                          aria-valuemin="0"
@@ -251,8 +251,8 @@
                         <tr>
                             <td colspan="3" class="text-end"><strong>GRAND TOTAL</strong></td>
                             <td><strong>{{ number_format($totalContracts) }}</strong></td>
-                            <td class="text-success"><strong>${{ number_format($totalValueUSD, 2) }}</strong></td>
-                            <td class="text-warning"><strong>KES {{ number_format($totalValueKES, 2) }}</strong></td>
+                            <td class="text-kp-green"><strong>${{ number_format($totalValueUSD, 2) }}</strong></td>
+                            <td class="text-kp-yellow"><strong>KES {{ number_format($totalValueKES, 2) }}</strong></td>
                             <td><strong>{{ number_format($totalDistanceKM, 2) }} km</strong></td>
                             <td><strong>100%</strong></td>
                         </tr>
@@ -278,9 +278,9 @@
         <div class="col-lg-6 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Top 10 Customers by Value (USD)</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Top 10 Customers by Value (USD)</h6>
                     @if(isset($topCustomers) && $topCustomers->count() > 0)
-                        <span class="badge bg-primary">{{ $topCustomers->count() }} customers</span>
+                        <span class="badge bg-kp-blue">{{ $topCustomers->count() }} customers</span>
                     @endif
                 </div>
                 <div class="card-body">
@@ -302,14 +302,14 @@
         <div class="col-lg-6 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Currency Distribution</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Currency Distribution</h6>
                     @php
                         $usdOnly = $currencyDistribution->usd_only ?? 0;
                         $kesOnly = $currencyDistribution->kes_only ?? 0;
                         $both = $currencyDistribution->both ?? 0;
                     @endphp
                     @if(($usdOnly + $kesOnly + $both) > 0)
-                        <span class="badge bg-primary">{{ $usdOnly + $kesOnly + $both }} customers</span>
+                        <span class="badge bg-kp-blue">{{ $usdOnly + $kesOnly + $both }} customers</span>
                     @endif
                 </div>
                 <div class="card-body">
@@ -331,7 +331,7 @@
     <!-- Notes Section -->
     <div class="card shadow mt-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">
+            <h6 class="m-0 font-weight-bold text-kp-blue">
                 <i class="fas fa-info-circle me-2"></i>Summary Notes
             </h6>
         </div>
@@ -691,10 +691,10 @@
         max-width: 100%;
     }
     /* Currency-specific text colors */
-    .text-success {
+    .text-kp-green {
         color: #28a745 !important;
     }
-    .text-warning {
+    .text-kp-yellow {
         color: #ffc107 !important;
     }
 </style>

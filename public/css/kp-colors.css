@@ -1,0 +1,318 @@
+/* ========================================
+   KENYA POWER CORPORATE COLORS
+   ======================================== */
+:root {
+    --kp-blue: #0066B3;
+    --kp-green: #009639;
+    --kp-yellow: #FFD700;
+    --kp-dark: #003f20;
+    --kp-light-blue: #e8f4fd;
+    --kp-light-green: #e6f7ec;
+    --kp-light-yellow: #fff8e1;
+    --kp-white: #ffffff;
+    --kp-gray: #6c757d;
+    --kp-black: #212529;
+}
+
+/* Background Colors */
+.bg-kp-blue {
+    background-color: var(--kp-blue);
+}
+
+.bg-kp-green {
+    background-color: var(--kp-green);
+}
+
+.bg-kp-yellow {
+    background-color: var(--kp-yellow);
+}
+
+.bg-kp-dark {
+    background-color: var(--kp-dark);
+}
+
+.bg-kp-light-blue {
+    background-color: var(--kp-light-blue);
+}
+
+.bg-kp-light-green {
+    background-color: var(--kp-light-green);
+}
+
+.bg-kp-light-yellow {
+    background-color: var(--kp-light-yellow);
+}
+
+/* Text Colors */
+.text-kp-blue {
+    color: var(--kp-blue);
+}
+
+.text-kp-green {
+    color: var(--kp-green);
+}
+
+.text-kp-yellow {
+    color: var(--kp-yellow);
+}
+
+.text-kp-dark {
+    color: var(--kp-dark);
+}
+
+/* Border Colors */
+.border-kp-blue {
+    border-color: var(--kp-blue);
+}
+
+.border-kp-green {
+    border-color: var(--kp-green);
+}
+
+.border-kp-yellow {
+    border-color: var(--kp-yellow);
+}
+
+.border-kp-dark {
+    border-color: var(--kp-dark);
+}
+
+/* Gradient Background */
+.bg-gradient-kp {
+    background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%);
+}
+
+.bg-gradient-kp-horizontal {
+    background: linear-gradient(90deg, var(--kp-blue) 0%, var(--kp-green) 100%);
+}
+
+/* ========================================
+   BUTTON STYLES
+   ======================================== */
+.btn-kp-primary {
+    background-color: var(--kp-blue);
+    border-color: var(--kp-blue);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-kp-primary:hover {
+    background-color: #005499;
+    border-color: #005499;
+    color: white;
+}
+
+.btn-kp-primary:active,
+.btn-kp-primary:focus {
+    background-color: #004d80;
+    border-color: #004d80;
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 179, 0.25);
+}
+
+.btn-kp-primary:disabled,
+.btn-kp-primary.disabled {
+    background-color: #8bb3d1;
+    border-color: #8bb3d1;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.btn-kp-success {
+    background-color: var(--kp-green);
+    border-color: var(--kp-green);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-kp-success:hover {
+    background-color: #00802c;
+    border-color: #00802c;
+    color: white;
+}
+
+.btn-kp-success:active,
+.btn-kp-success:focus {
+    background-color: #006628;
+    border-color: #006628;
+    box-shadow: 0 0 0 0.2rem rgba(0, 150, 57, 0.25);
+}
+
+.btn-kp-success:disabled,
+.btn-kp-success.disabled {
+    background-color: #8bc49a;
+    border-color: #8bc49a;
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.btn-kp-warning {
+    background-color: var(--kp-yellow);
+    border-color: var(--kp-yellow);
+    color: var(--kp-dark);
+    transition: all 0.3s ease;
+}
+
+.btn-kp-warning:hover {
+    background-color: #e6c300;
+    border-color: #e6c300;
+    color: var(--kp-dark);
+}
+
+.btn-kp-warning:active,
+.btn-kp-warning:focus {
+    background-color: #d4b800;
+    border-color: #d4b800;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+}
+
+.btn-outline-kp-primary {
+    border-color: var(--kp-blue);
+    color: var(--kp-blue);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-kp-primary:hover {
+    background-color: var(--kp-blue);
+    border-color: var(--kp-blue);
+    color: white;
+}
+
+.btn-outline-kp-primary:active,
+.btn-outline-kp-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 179, 0.25);
+}
+
+.btn-outline-kp-success {
+    border-color: var(--kp-green);
+    color: var(--kp-green);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-kp-success:hover {
+    background-color: var(--kp-green);
+    border-color: var(--kp-green);
+    color: white;
+}
+
+.btn-outline-kp-success:active,
+.btn-outline-kp-success:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 150, 57, 0.25);
+}
+
+/* ========================================
+   CARD STYLES
+   ======================================== */
+.card-kp {
+    border-left: 4px solid var(--kp-blue);
+}
+
+.card-kp-green {
+    border-left: 4px solid var(--kp-green);
+}
+
+.card-kp-yellow {
+    border-left: 4px solid var(--kp-yellow);
+}
+
+/* ========================================
+   BADGE STYLES
+   ======================================== */
+.badge-kp-blue {
+    background-color: var(--kp-blue);
+    color: white;
+}
+
+.badge-kp-green {
+    background-color: var(--kp-green);
+    color: white;
+}
+
+.badge-kp-yellow {
+    background-color: var(--kp-yellow);
+    color: var(--kp-dark);
+}
+
+.badge-kp-dark {
+    background-color: var(--kp-dark);
+    color: white;
+}
+
+/* ========================================
+   PROGRESS BAR
+   ======================================== */
+.progress-bar-kp {
+    background-color: var(--kp-green);
+}
+
+/* ========================================
+   ALERT STYLES
+   ======================================== */
+.alert-kp-primary {
+    background-color: var(--kp-light-blue);
+    border-left: 4px solid var(--kp-blue);
+    color: var(--kp-dark);
+}
+
+.alert-kp-success {
+    background-color: var(--kp-light-green);
+    border-left: 4px solid var(--kp-green);
+    color: var(--kp-dark);
+}
+
+.alert-kp-warning {
+    background-color: var(--kp-light-yellow);
+    border-left: 4px solid var(--kp-yellow);
+    color: var(--kp-dark);
+}
+
+/* ========================================
+   LINK STYLES
+   ======================================== */
+.link-kp {
+    color: var(--kp-blue);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.link-kp:hover {
+    color: var(--kp-green);
+    text-decoration: underline;
+}
+
+/* ========================================
+   TABLE HEADER
+   ======================================== */
+.table-header-kp thead th {
+    background-color: var(--kp-light-blue);
+    color: var(--kp-dark);
+    border-bottom: 2px solid var(--kp-blue);
+}
+
+/* ========================================
+   PAGINATION
+   ======================================== */
+.pagination-kp .page-item.active .page-link {
+    background-color: var(--kp-blue);
+    border-color: var(--kp-blue);
+}
+
+.pagination-kp .page-link {
+    color: var(--kp-blue);
+    transition: all 0.2s ease;
+}
+
+.pagination-kp .page-link:hover {
+    background-color: var(--kp-green);
+    border-color: var(--kp-green);
+    color: white;
+}
+
+/* ========================================
+   MODAL HEADER
+   ======================================== */
+.modal-header-kp {
+    background: linear-gradient(135deg, var(--kp-blue), var(--kp-green));
+    color: white;
+}

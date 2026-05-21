@@ -109,9 +109,9 @@
                 <div class="card-body text-center py-5">
                     <div class="mb-4">
                         @if($canAccessDashboard)
-                            <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                            <i class="fas fa-check-circle fa-4x text-kp-green mb-3"></i>
                         @else
-                            <i class="fas fa-user-check fa-4x text-warning mb-3"></i>
+                            <i class="fas fa-user-check fa-4x text-kp-yellow mb-3"></i>
                         @endif
                         <h3>Welcome, {{ $user->name }}!</h3>
                         <p class="text-muted">
@@ -157,7 +157,7 @@
                                     <div class="card-body">
                                         <h6><i class="fas fa-file-alt me-2"></i>Required Documents (40%)</h6>
                                         <div class="progress mb-2" style="height: 10px;">
-                                            <div class="progress-bar bg-success"
+                                            <div class="progress-bar bg-kp-green"
                                                  style="width: {{ $documentCompletionPercentage }}%">
                                             </div>
                                         </div>
@@ -167,16 +167,16 @@
 
                                         @if($uploadedDocumentTypes >= $totalRequiredDocumentTypes)
                                             @if($pendingDocs->count() > 0)
-                                                <div class="text-warning mt-1">
+                                                <div class="text-kp-yellow mt-1">
                                                     <i class="fas fa-clock"></i> Awaiting review ({{ $pendingDocs->count() }} pending)
                                                 </div>
                                             @else
-                                                <div class="text-success mt-1">
+                                                <div class="text-kp-green mt-1">
                                                     <i class="fas fa-check-circle"></i> All documents approved!
                                                 </div>
                                             @endif
                                         @else
-                                            <div class="text-warning mt-1">
+                                            <div class="text-kp-yellow mt-1">
                                                 <i class="fas fa-exclamation-triangle"></i>
                                                 {{ $totalRequiredDocumentTypes - $uploadedDocumentTypes }} more required
                                             </div>
@@ -188,16 +188,16 @@
                     </div>
 
                     @if($canAccessDashboard && $pendingDocs->count() == 0)
-                        <div class="alert alert-success">
+                        <div class="alert alert-kp-success">
                             <i class="fas fa-check-circle me-2"></i>
                             <strong>Congratulations!</strong> Your profile is complete and all documents are approved. You now have full access to all system features.
                         </div>
 
                         <div class="mt-4">
-                            <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-success btn-lg">
+                            <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-kp-success btn-lg">
                                 <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
                             </a>
-                            <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-primary btn-lg ms-2">
+                            <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-kp-primary btn-lg ms-2">
                                 <i class="fas fa-folder me-2"></i>View Documents
                             </a>
                         </div>
@@ -209,7 +209,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <a href="{{ route('customer.documents.index') }}" class="btn btn-primary btn-lg">
+                            <a href="{{ route('customer.documents.index') }}" class="btn btn-kp-primary btn-lg">
                                 <i class="fas fa-folder me-2"></i>Check Document Status
                             </a>
                         </div>
@@ -226,7 +226,7 @@
                         </div>
 
                         <div class="mt-4">
-                            <a href="{{ route('customer.profile.edit') }}" class="btn btn-primary btn-lg">
+                            <a href="{{ route('customer.profile.edit') }}" class="btn btn-kp-primary btn-lg">
                                 <i class="fas fa-user-plus me-2"></i>Complete Your Profile
                             </a>
                         </div>
@@ -255,7 +255,7 @@
                     <!-- Document Upload Status Details -->
                     @if(count($missingDocumentTypes) > 0)
                         <div class="mt-4 text-start">
-                            <div class="alert alert-warning">
+                            <div class="alert alert-kp-warning">
                                 <h6><i class="fas fa-exclamation-triangle me-2"></i>Missing Documents ({{ count($missingDocumentTypes) }}):</h6>
                                 <ul class="mb-0">
                                     @foreach($missingDocumentTypes as $type)

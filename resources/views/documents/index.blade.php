@@ -45,7 +45,7 @@
                                             <h6 class="dropdown-header">Managed Companies</h6>
                                             @foreach($assignedCompanies as $company)
                                                 <span class="dropdown-item-text">
-                                                    <i class="fas fa-check-circle text-success mr-1"></i>
+                                                    <i class="fas fa-check-circle text-kp-green mr-1"></i>
                                                     {{ $company }}
                                                 </span>
                                             @endforeach
@@ -156,7 +156,7 @@
 
                     {{-- Display messages --}}
                     @if(isset($message))
-                        <div class="alert alert-warning">
+                        <div class="alert alert-kp-warning">
                             <i class="fas fa-info-circle mr-2"></i>{{ $message }}
                         </div>
                     @endif
@@ -261,11 +261,11 @@
                                                 @if($designRequest)
                                                     @if(Route::has('design-requests.show'))
                                                         <a href="{{ route('design-requests.show', $designRequest->id) }}"
-                                                           class="text-primary">
+                                                           class="text-kp-blue">
                                                             {{ $designRequest->request_number }}
                                                         </a>
                                                     @else
-                                                        <span class="text-primary">
+                                                        <span class="text-kp-blue">
                                                             {{ $designRequest->request_number }}
                                                         </span>
                                                     @endif
@@ -312,7 +312,7 @@
                                                             @endif
                                                             @if(Route::has('account-manager.quotations.download'))
                                                                 <a href="{{ route('account-manager.quotations.download', $document->id) }}"
-                                                                   class="btn btn-primary" title="Download Quotation">
+                                                                   class="btn btn-kp-primary" title="Download Quotation">
                                                                     <i class="fas fa-download"></i>
                                                                 </a>
                                                             @endif
@@ -326,7 +326,7 @@
                                                             </button>
                                                         @if (Route::has('ictengineer.certificates.conditional.download'))
                                                         <a href="{{ route('ictengineer.certificates.conditional.download', $document->id) }}"
-                                                        class="btn btn-primary"
+                                                        class="btn btn-kp-primary"
                                                         title="Download Conditional Certificate">
                                                             <i class="fas fa-download"></i>
                                                         </a>
@@ -341,7 +341,7 @@
                                                             </button>
                                                             @if(Route::has('certificates.acceptance.download'))
                                                                 <a href="{{ route('certificates.acceptance.download', ['type' => $doc['type'], 'id' => $document->id]) }}"
-                                                                   class="btn btn-primary" title="Download Acceptance Certificate">
+                                                                   class="btn btn-kp-primary" title="Download Acceptance Certificate">
                                                                     <i class="fas fa-download"></i>
                                                                 </a>
                                                             @endif
@@ -355,7 +355,7 @@
                                                             @endif
                                                              @if(Route::has('admin.contracts.download'))
                                                                 <a href="{{ route('admin.contracts.download', $document->id) }}"
-                                                                   class="btn btn-primary" title="Download Contract">
+                                                                   class="btn btn-kp-primary" title="Download Contract">
                                                                     <i class="fas fa-download"></i>
                                                                 </a>
                                                             @endif
@@ -450,7 +450,7 @@
                                     <div class="card-body">
                                         @if(auth()->user()->role === 'account_manager')
                                             @if(Route::has('design-requests.index'))
-                                                <a href="{{ route('design-requests.index') }}" class="btn btn-primary btn-block mb-2">
+                                                <a href="{{ route('design-requests.index') }}" class="btn btn-kp-primary btn-block mb-2">
                                                     <i class="fas fa-list mr-2"></i> View Design Requests
                                                 </a>
                                             @endif
@@ -462,7 +462,7 @@
                                         @endif
 
                                         @if(auth()->user()->role === 'customer' && Route::has('design-requests.create'))
-                                            <a href="{{ route('design-requests.create') }}" class="btn btn-success btn-block mb-2">
+                                            <a href="{{ route('design-requests.create') }}" class="btn btn-kp-success btn-block mb-2">
                                                 <i class="fas fa-plus mr-2"></i> New Design Request
                                             </a>
                                         @endif
@@ -571,7 +571,7 @@ $(document).ready(function() {
             beforeSend: function() {
                 $('#documentDetails').html(`
                     <div class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
+                        <div class="spinner-border text-kp-blue" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
                         <p class="mt-3">Loading document details...</p>

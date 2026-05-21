@@ -17,7 +17,7 @@
         @endif
     </div>
     <div class="col-md-4 text-end">
-        <a href="{{ route('kpi.export', ['account_manager_id' => $accountManagerId, 'currency' => $currency]) }}" class="btn btn-success">
+        <a href="{{ route('kpi.export', ['account_manager_id' => $accountManagerId, 'currency' => $currency]) }}" class="btn btn-kp-success">
             <i class="bi bi-download"></i> Export CSV
         </a>
     </div>
@@ -65,7 +65,7 @@
             </div>
 
             <div class="col-md-5 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-kp-primary">
                     <i class="bi bi-funnel"></i> Apply Filter
                 </button>
                 @if($accountManagerId || $currency)
@@ -90,7 +90,7 @@
 @else
     @foreach($kpis as $kpi)
         <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-kp-blue text-white">
                 <h3 class="mb-0">{{ $kpi['account_manager']['name'] }}</h3>
                 <small>{{ $kpi['account_manager']['email'] }}</small>
                 @if($kpi['filter_currency'])
@@ -102,9 +102,9 @@
                 <div class="row mb-4">
                     <div class="col-md-12">
                         <div class="alert
-                            @if($kpi['performance_summary']['rating'] == 'Excellent') alert-success
+                            @if($kpi['performance_summary']['rating'] == 'Excellent') alert-kp-success
                             @elseif($kpi['performance_summary']['rating'] == 'Good') alert-info
-                            @elseif($kpi['performance_summary']['rating'] == 'Average') alert-warning
+                            @elseif($kpi['performance_summary']['rating'] == 'Average') alert-kp-warning
                             @else alert-danger @endif">
                             <strong>Performance Rating: {{ $kpi['performance_summary']['rating'] }}</strong>
                             (Score: {{ $kpi['performance_summary']['score'] }}/100)
@@ -118,7 +118,7 @@
                         <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Total MRR</h5>
-                                <h3 class="text-primary">
+                                <h3 class="text-kp-blue">
                                     @if(!$kpi['filter_currency'])
                                         ${{ number_format($kpi['financial']['total_mrr'], 2) }}
                                         <small class="text-muted">(Combined)</small>
@@ -136,7 +136,7 @@
                         <div class="card bg-light">
                             <div class="card-body text-center">
                                 <h5 class="card-title">Total TCV</h5>
-                                <h3 class="text-success">
+                                <h3 class="text-kp-green">
                                     @if(!$kpi['filter_currency'])
                                         ${{ number_format($kpi['financial']['total_tcv'], 2) }}
                                     @elseif($kpi['filter_currency'] == 'USD')
@@ -283,7 +283,7 @@
 
                 <!-- Renewals Alert -->
                 @if($kpi['contract_health']['upcoming_renewals_90days'] > 0)
-                    <div class="alert alert-warning">
+                    <div class="alert alert-kp-warning">
                         <i class="bi bi-exclamation-triangle"></i>
                         <strong>{{ $kpi['contract_health']['upcoming_renewals_90days'] }} contracts</strong> expiring in next 90 days
                         (Revenue at risk:
@@ -295,7 +295,7 @@
                             KSh {{ number_format($kpi['contract_health']['renewal_revenue_at_risk'], 2) }}
                         @endif
                         )
-                        <button class="btn btn-sm btn-warning float-end" type="button" data-bs-toggle="collapse" data-bs-target="#renewalsList{{ $loop->index }}">
+                        <button class="btn btn-sm btn-kp-warning float-end" type="button" data-bs-toggle="collapse" data-bs-target="#renewalsList{{ $loop->index }}">
                             View Details
                         </button>
                         <div class="collapse mt-3" id="renewalsList{{ $loop->index }}">

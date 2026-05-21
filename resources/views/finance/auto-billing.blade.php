@@ -10,18 +10,18 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800 mb-1">
-                        <i class="fas fa-robot text-primary me-2"></i>Auto Billing Dashboard
+                        <i class="fas fa-robot text-kp-blue me-2"></i>Auto Billing Dashboard
                     </h1>
                     <p class="text-muted mb-0">Automate your billing process and manage recurring payments</p>
                 </div>
                 <div class="btn-group">
                     <form method="POST" action="{{ route('finance.generate-invoices') }}" class="me-2">
                         @csrf
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="btn btn-kp-primary btn-lg">
                             <i class="fas fa-bolt me-2"></i>Generate Billings Now
                         </button>
                     </form>
-                    <a href="{{ route('finance.billing.createSingle') }}" class="btn btn-outline-primary btn-lg">
+                    <a href="{{ route('finance.billing.createSingle') }}" class="btn btn-outline-kp-primary btn-lg">
                         <i class="fas fa-plus me-2"></i>Create Manual Billing
                     </a>
                 </div>
@@ -36,12 +36,12 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">Due Today</div>
+                            <div class="text-xs fw-bold text-kp-blue text-uppercase mb-1">Due Today</div>
                             <div class="h5 mb-0 fw-bold text-gray-800">{{ $stats['due_today'] ?? 0 }}</div>
                             <small class="text-muted">Customers</small>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar-day fa-2x text-primary opacity-50"></i>
+                            <i class="fas fa-calendar-day fa-2x text-kp-blue opacity-50"></i>
                         </div>
                     </div>
                 </div>
@@ -53,12 +53,12 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">Pending Generation</div>
+                            <div class="text-xs fw-bold text-kp-yellow text-uppercase mb-1">Pending Generation</div>
                             <div class="h5 mb-0 fw-bold text-gray-800">{{ $stats['pending_generation'] ?? 0 }}</div>
                             <small class="text-muted">Ready to process</small>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-clock fa-2x text-warning opacity-50"></i>
+                            <i class="fas fa-clock fa-2x text-kp-yellow opacity-50"></i>
                         </div>
                     </div>
                 </div>
@@ -70,12 +70,12 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-grow-1">
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">Auto Billing Enabled</div>
+                            <div class="text-xs fw-bold text-kp-green text-uppercase mb-1">Auto Billing Enabled</div>
                             <div class="h5 mb-0 fw-bold text-gray-800">{{ $stats['auto_billing_customers'] ?? 0 }}</div>
                             <small class="text-muted">Active customers</small>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-success opacity-50"></i>
+                            <i class="fas fa-users fa-2x text-kp-green opacity-50"></i>
                         </div>
                     </div>
                 </div>
@@ -192,11 +192,11 @@
             <div class="card shadow h-100">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="fas fa-clock text-warning me-2"></i>
+                        <i class="fas fa-clock text-kp-yellow me-2"></i>
                         Customers Due for Billing
-                        <span class="badge bg-warning ms-2">{{ $dueCustomers->total() }}</span>
+                        <span class="badge bg-kp-yellow ms-2">{{ $dueCustomers->total() }}</span>
                     </h5>
-                    <a href="{{ route('finance.billing.create') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('finance.billing.create') }}" class="btn btn-sm btn-outline-kp-primary">
                         <i class="fas fa-plus me-1"></i>New Billing
                     </a>
                 </div>
@@ -207,7 +207,7 @@
                             <div class="list-group-item d-flex justify-content-between align-items-center px-0">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm bg-light rounded-circle d-flex align-items-center justify-content-center me-3">
-                                        <i class="fas fa-user text-primary"></i>
+                                        <i class="fas fa-user text-kp-blue"></i>
                                     </div>
                                     <div>
                                         <h6 class="mb-0">{{ $customer->name }}</h6>
@@ -215,8 +215,8 @@
                                     </div>
                                 </div>
                                 <div class="text-end">
-                                    <div class="badge bg-warning mb-1">{{ $customer->leaseBillings->count() }} pending</div>
-                                    <div class="text-success fw-bold">${{ number_format($customer->leaseBillings->sum('total_amount'), 2) }}</div>
+                                    <div class="badge bg-kp-yellow mb-1">{{ $customer->leaseBillings->count() }} pending</div>
+                                    <div class="text-kp-green fw-bold">${{ number_format($customer->leaseBillings->sum('total_amount'), 2) }}</div>
                                 </div>
                             </div>
                             @endforeach
@@ -228,7 +228,7 @@
                         @endif
                     @else
                         <div class="text-center py-4">
-                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <i class="fas fa-check-circle fa-3x text-kp-green mb-3"></i>
                             <h5 class="text-muted">All Caught Up!</h5>
                             <p class="text-muted">No customers due for billing today.</p>
                         </div>
@@ -242,11 +242,11 @@
             <div class="card shadow h-100">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="fas fa-robot text-success me-2"></i>
+                        <i class="fas fa-robot text-kp-green me-2"></i>
                         Auto Billing Customers
-                        <span class="badge bg-success ms-2">{{ $autoBillingCustomers->total() }}</span>
+                        <span class="badge bg-kp-green ms-2">{{ $autoBillingCustomers->total() }}</span>
                     </h5>
-                    <a href="{{ route('finance.billing.index') }}" class="btn btn-sm btn-outline-success">
+                    <a href="{{ route('finance.billing.index') }}" class="btn btn-sm btn-outline-kp-success">
                         <i class="fas fa-eye me-1"></i>View All
                     </a>
                 </div>
@@ -257,7 +257,7 @@
                             <div class="list-group-item d-flex justify-content-between align-items-center px-0">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm bg-light rounded-circle d-flex align-items-center justify-content-center me-3">
-                                        <i class="fas fa-user-check text-success"></i>
+                                        <i class="fas fa-user-check text-kp-green"></i>
                                     </div>
                                     <div>
                                         <h6 class="mb-0">{{ $customer->name }}</h6>
@@ -269,7 +269,7 @@
                                         {{ $customer->pending_billings_count }} pending
                                     </span>
                                     <div>
-                                        <span class="badge bg-success">
+                                        <span class="badge bg-kp-green">
                                             <i class="fas fa-robot me-1"></i>Auto
                                         </span>
                                     </div>
@@ -287,7 +287,7 @@
                             <i class="fas fa-robot fa-3x text-muted mb-3"></i>
                             <h5 class="text-muted">No Auto Billing Customers</h5>
                             <p class="text-muted">Enable auto billing for customers to see them here.</p>
-                            <a href="{{ route('finance.billing.index') }}" class="btn btn-primary">
+                            <a href="{{ route('finance.billing.index') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-cog me-2"></i>Configure Billing
                             </a>
                         </div>
@@ -308,10 +308,10 @@
                             <p class="card-text text-muted mb-0">Check out our documentation or contact support for assistance with setting up automated billing.</p>
                         </div>
                         <div class="col-md-4 text-md-end">
-                            <button class="btn btn-outline-primary me-2">
+                            <button class="btn btn-outline-kp-primary me-2">
                                 <i class="fas fa-book me-2"></i>Documentation
                             </button>
-                            <button class="btn btn-primary">
+                            <button class="btn btn-kp-primary">
                                 <i class="fas fa-headset me-2"></i>Contact Support
                             </button>
                         </div>

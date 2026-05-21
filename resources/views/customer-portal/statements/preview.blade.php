@@ -30,7 +30,7 @@
 
     // Format amount with appropriate class
     function getAmountClass($amount) {
-        return $amount >= 0 ? 'text-success' : 'text-danger';
+        return $amount >= 0 ? 'text-kp-green' : 'text-danger';
     }
 @endphp
 
@@ -41,7 +41,7 @@
         </h5>
         <div>
             @if(count($currencies) > 1)
-                <span class="badge bg-warning text-dark me-2">Multi-Currency</span>
+                <span class="badge bg-kp-yellow text-dark me-2">Multi-Currency</span>
             @endif
             <span class="badge bg-light text-dark">Generated: {{ now()->format('d M Y H:i') }}</span>
         </div>
@@ -114,7 +114,7 @@
                             <div class="col-md-3">
                                 <div class="text-center">
                                     <label class="text-muted">Total Credits</label>
-                                    <h4 class="text-success">
+                                    <h4 class="text-kp-green">
                                         {{ formatCurrency($totalCredits, $primaryCurrency) }}
                                     </h4>
                                 </div>
@@ -172,14 +172,14 @@
                             <td>{{ $transaction->description }}</td>
                             <td>{{ $transaction->reference ?? '-' }}</td>
                             <td>
-                                <span class="badge {{ $txCurrency === 'USD' ? 'bg-primary' : 'bg-warning text-dark' }}">
+                                <span class="badge {{ $txCurrency === 'USD' ? 'bg-kp-blue' : 'bg-kp-yellow text-dark' }}">
                                     {{ $txCurrency }}
                                 </span>
                             </td>
                             <td class="text-end text-danger">
                                 {{ $transaction->direction == 'out' ? formatCurrency($transaction->amount, $txCurrency) : '-' }}
                             </td>
-                            <td class="text-end text-success">
+                            <td class="text-end text-kp-green">
                                 {{ $transaction->direction == 'in' ? formatCurrency($transaction->amount, $txCurrency) : '-' }}
                             </td>
                             <td class="text-end">
@@ -238,7 +238,7 @@
             <button type="button" class="btn btn-secondary me-2" onclick="window.print()">
                 <i class="fas fa-print me-1"></i>Print
             </button>
-            <button type="button" class="btn btn-success" id="downloadFromPreview">
+            <button type="button" class="btn btn-kp-success" id="downloadFromPreview">
                 <i class="fas fa-download me-1"></i>Download PDF
             </button>
         </div>
@@ -254,7 +254,7 @@
     .table td {
         vertical-align: middle;
     }
-    .text-success {
+    .text-kp-green {
         color: #28a745 !important;
         font-weight: 500;
     }
@@ -262,10 +262,10 @@
         color: #dc3545 !important;
         font-weight: 500;
     }
-    .bg-primary {
+    .bg-kp-blue {
         background-color: #007bff !important;
     }
-    .bg-warning {
+    .bg-kp-yellow {
         background-color: #ffc107 !important;
     }
 </style>

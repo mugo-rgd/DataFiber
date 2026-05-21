@@ -14,7 +14,7 @@
             </nav>
 
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">
                             <i class="fas fa-users me-2"></i>Customers
@@ -26,7 +26,7 @@
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
                             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
@@ -58,7 +58,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-sm bg-light rounded me-2">
-                                                    <i class="fas fa-user text-primary p-2"></i>
+                                                    <i class="fas fa-user text-kp-blue p-2"></i>
                                                 </div>
                                                 <div>
                                                     <strong>{{ $customer->name }}</strong>
@@ -85,7 +85,7 @@
                                         <td>
                                             <div class="btn-group btn-group-sm">
                                                 <a href="{{ route('customers.show', $customer->id) }}"
-                                                   class="btn btn-outline-primary" title="View">
+                                                   class="btn btn-outline-kp-primary" title="View">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 <a href="{{ route('customers.edit', $customer->id) }}"
@@ -93,7 +93,7 @@
                                                     <i class="fas fa-edit"></i>
                                                 </a>
                                                 <a href="{{ route('finance.billing.create', ['customer_id' => $customer->id]) }}"
-                                                   class="btn btn-outline-success" title="Create Bill">
+                                                   class="btn btn-outline-kp-success" title="Create Bill">
                                                     <i class="fas fa-file-invoice"></i>
                                                 </a>
                                             </div>
@@ -112,7 +112,7 @@
                             <i class="fas fa-users fa-3x text-muted mb-3"></i>
                             <h4 class="text-muted">No Customers Found</h4>
                             <p class="text-muted">Get started by adding your first customer.</p>
-                            <a href="{{ route('customers.create') }}" class="btn btn-primary">
+                            <a href="{{ route('customers.create') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-plus me-2"></i>Add First Customer
                             </a>
                         </div>

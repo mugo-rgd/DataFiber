@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-drafting-compass text-primary"></i>
+                        <i class="fas fa-drafting-compass text-kp-blue"></i>
                         Design Request: {{ $designRequest->request_number }}
                     </h1>
                     <nav aria-label="breadcrumb">
@@ -21,7 +21,7 @@
                     </nav>
                 </div>
                 <div class="btn-group">
-                    <button class="btn btn-warning" disabled title="You are not authorized to edit this design request">
+                    <button class="btn btn-kp-warning" disabled title="You are not authorized to edit this design request">
         <i class="fas fa-edit me-2"></i>Edit
     </button>
                     <a href="{{ route('designer.dashboard') }}" class="btn btn-secondary">
@@ -34,7 +34,7 @@
 
     <!-- Alert Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -54,7 +54,7 @@
         <div class="col-lg-8">
             <!-- Basic Information Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>Basic Information
                     </h5>
@@ -87,7 +87,7 @@
                                             <i class="fas fa-user-tie me-2 text-muted"></i>
                                             {{ $designRequest->designer->name }}
                                         @else
-                                            <span class="badge bg-warning">Not Assigned</span>
+                                            <span class="badge bg-kp-yellow">Not Assigned</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -146,7 +146,7 @@
                                     <th>Design Completed:</th>
                                     <td>
                                         @if($designRequest->design_completed_at)
-                                            <i class="fas fa-check-circle me-2 text-success"></i>
+                                            <i class="fas fa-check-circle me-2 text-kp-green"></i>
                                             {{ $designRequest->design_completed_at->format('M d, Y H:i') }}
                                         @else
                                             <span class="text-muted">Pending</span>
@@ -189,7 +189,7 @@
 
             <!-- Route Information -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-route me-2"></i>Route Information
                     </h5>
@@ -203,11 +203,11 @@
                                 <p><strong>Distance:</strong> {{ $designRequest->total_distance }} km</p>
 
                                 @if($designRequest->route_points)
-                                    <button class="btn btn-sm btn-outline-primary" onclick="showRoutePoints()">
+                                    <button class="btn btn-sm btn-outline-kp-primary" onclick="showRoutePoints()">
                                         <i class="fas fa-list me-1"></i>View Route Points
                                     </button>
                                     <a href="{{ route('admin.design-requests.generate-kml', $designRequest) }}"
-                                       class="btn btn-sm btn-outline-success">
+                                       class="btn btn-sm btn-outline-kp-success">
                                         <i class="fas fa-download me-1"></i>Download KML
                                     </a>
                                 @endif
@@ -251,7 +251,7 @@
             <!-- Design Specifications -->
             @if($designRequest->design_specifications || $designRequest->design_notes)
             <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h5 class="mb-0">
                         <i class="fas fa-file-alt me-2"></i>Design Specifications
                     </h5>
@@ -288,7 +288,7 @@
                         <!-- Assign Designer -->
                         @if($designRequest->status === 'pending')
                             <a href="{{ route('admin.design-requests.assign-designer-form', $designRequest) }}"
-                               class="btn btn-outline-primary btn-sm">
+                               class="btn btn-outline-kp-primary btn-sm">
                                 <i class="fas fa-user-tie me-2"></i>Assign Designer
                             </a>
                         @endif
@@ -329,7 +329,7 @@
 
             <!-- Quotations Section -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-file-invoice-dollar me-2"></i>Quotations
                         @if($designRequest->quotations && $designRequest->quotations->count() > 0)
@@ -353,7 +353,7 @@
                                     </div>
                                     <div class="btn-group">
                                         <a href="{{ route('admin.quotations.show', $quotation) }}"
-                                           class="btn btn-sm btn-outline-primary">
+                                           class="btn btn-sm btn-outline-kp-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         @can('update', $quotation)
@@ -382,7 +382,7 @@
                     @if($canGenerateQuote)
                         <div class="mt-3">
                             <a href="{{ route('admin.quotations.create', ['design_request_id' => $designRequest->id]) }}"
-                               class="btn btn-success w-100">
+                               class="btn btn-kp-success w-100">
                                 <i class="fas fa-plus me-2"></i>Create Quotation
                             </a>
                         </div>
@@ -408,7 +408,7 @@
                         @if($designRequest->quoted_amount)
                         <tr>
                             <th>Quoted Amount:</th>
-                            <td class="text-end text-success"><strong>${{ number_format($designRequest->quoted_amount, 2) }}</strong></td>
+                            <td class="text-end text-kp-green"><strong>${{ number_format($designRequest->quoted_amount, 2) }}</strong></td>
                         </tr>
                         @endif
                         @if($designRequest->unit_cost && $designRequest->cores_required)
@@ -424,7 +424,7 @@
             <!-- Survey Information -->
             @if($designRequest->surveyor || $designRequest->survey_status !== 'not_required')
             <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h5 class="mb-0">
                         <i class="fas fa-ruler-combined me-2"></i>Survey Information
                     </h5>
@@ -475,7 +475,7 @@
 <div class="modal fade" id="routePointsModal" tabindex="-1" aria-labelledby="routePointsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title" id="routePointsModalLabel">
                     <i class="fas fa-route me-2"></i>Route Points
                 </h5>

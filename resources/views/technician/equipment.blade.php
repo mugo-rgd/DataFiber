@@ -81,9 +81,9 @@
                                                     @if($item->next_calibration->isPast())
                                                         <span class="badge bg-danger">Overdue</span>
                                                     @elseif($item->next_calibration->diffInDays(now()) <= 30)
-                                                        <span class="badge bg-warning">Due Soon</span>
+                                                        <span class="badge bg-kp-yellow">Due Soon</span>
                                                     @else
-                                                        <span class="badge bg-success">On Schedule</span>
+                                                        <span class="badge bg-kp-green">On Schedule</span>
                                                     @endif
                                                     <br>
                                                     <small class="text-muted">{{ $item->next_calibration->format('M j, Y') }}</small>
@@ -94,12 +94,12 @@
                                             <td>{{ $item->location ?? 'Not specified' }}</td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <button type="button" class="btn btn-outline-primary"
+                                                    <button type="button" class="btn btn-outline-kp-primary"
                                                             data-bs-toggle="modal" data-bs-target="#equipmentModal{{ $item->id }}">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
                                                     @if($item->status === 'available')
-                                                        <button type="button" class="btn btn-outline-success"
+                                                        <button type="button" class="btn btn-outline-kp-success"
                                                                 onclick="updateEquipmentStatus({{ $item->id }}, 'in_use')">
                                                             <i class="fas fa-play"></i>
                                                         </button>
@@ -166,7 +166,7 @@
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                                 @if($item->status === 'available')
-                                                                    <button type="button" class="btn btn-primary"
+                                                                    <button type="button" class="btn btn-kp-primary"
                                                                             onclick="updateEquipmentStatus({{ $item->id }}, 'in_use')">
                                                                         Mark as In Use
                                                                     </button>
@@ -193,7 +193,7 @@
                             <i class="fas fa-toolbox fa-4x text-muted mb-3"></i>
                             <h4>No Equipment Found</h4>
                             <p class="text-muted">No equipment matches your current filter criteria.</p>
-                            <a href="?status=all" class="btn btn-primary">
+                            <a href="?status=all" class="btn btn-kp-primary">
                                 <i class="fas fa-sync me-1"></i>Show All Equipment
                             </a>
                         </div>

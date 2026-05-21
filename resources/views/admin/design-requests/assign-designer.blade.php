@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-user-plus text-primary"></i> Assign Designer
+                    <i class="fas fa-user-plus text-kp-blue"></i> Assign Designer
                 </h1>
                 {{-- ✅ CHANGE: Use request_number instead of id --}}
                 <a href="{{ route('admin.design-requests.show', $designRequest->request_number) }}" class="btn btn-secondary">
@@ -22,7 +22,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">Select Designer</h5>
                 </div>
                 <div class="card-body">
@@ -55,7 +55,7 @@
                             <a href="{{ route('admin.design-requests.show', $designRequest->request_number) }}" class="btn btn-secondary me-md-2">
                                 Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-user-plus me-1"></i> Assign Designer
                             </button>
                         </div>

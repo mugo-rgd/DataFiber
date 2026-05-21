@@ -11,10 +11,10 @@
                         <a href="{{ route('customer.certificates.conditional.index') }}" class="btn btn-sm btn-secondary">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
-                        <a href="{{ route('customer.certificates.conditional.preview', $certificate->id) }}" class="btn btn-sm btn-primary" target="_blank">
+                        <a href="{{ route('customer.certificates.conditional.preview', $certificate->id) }}" class="btn btn-sm btn-kp-primary" target="_blank">
                             <i class="fas fa-file-pdf"></i> Preview PDF
                         </a>
-                        <a href="{{ route('customer.certificates.conditional.download', $certificate->id) }}" class="btn btn-sm btn-success">
+                        <a href="{{ route('customer.certificates.conditional.download', $certificate->id) }}" class="btn btn-sm btn-kp-success">
                             <i class="fas fa-download"></i> Download Package
                         </a>
                     </div>
@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-bordered">
-                                        <thead class="bg-success text-white">
+                                        <thead class="bg-kp-green text-white">
                                             <tr>
                                                 <th>Total Length (km)</th>
                                                 <th>Average Loss (dB/km)</th>
@@ -200,10 +200,10 @@
                                                 <div class="info-box-content">
                                                     <span class="info-box-text">Inspection Report</span>
                                                     <span class="info-box-number">
-                                                        <a href="{{ Storage::url($certificate->inspection_report_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                        <a href="{{ Storage::url($certificate->inspection_report_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                             <i class="fas fa-eye"></i> View
                                                         </a>
-                                                        <a href="{{ Storage::url($certificate->inspection_report_path) }}" download class="btn btn-sm btn-success">
+                                                        <a href="{{ Storage::url($certificate->inspection_report_path) }}" download class="btn btn-sm btn-kp-success">
                                                             <i class="fas fa-download"></i> Download
                                                         </a>
                                                     </span>
@@ -214,11 +214,11 @@
                                         @if($certificate->engineer_signature_path)
                                         <div class="col-md-4">
                                             <div class="info-box">
-                                                <span class="info-box-icon bg-warning"><i class="fas fa-signature"></i></span>
+                                                <span class="info-box-icon bg-kp-yellow"><i class="fas fa-signature"></i></span>
                                                 <div class="info-box-content">
                                                     <span class="info-box-text">Engineer Signature</span>
                                                     <span class="info-box-number">
-                                                        <a href="{{ Storage::url($certificate->engineer_signature_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                        <a href="{{ Storage::url($certificate->engineer_signature_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                             <i class="fas fa-eye"></i> View
                                                         </a>
                                                     </span>

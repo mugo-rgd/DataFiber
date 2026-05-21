@@ -15,7 +15,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Account Manager Information</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Account Manager Information</h6>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.account-managers.store') }}" method="POST">
@@ -89,7 +89,7 @@
                 <hr>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-kp-primary">
                         <i class="fas fa-save me-2"></i>Create Account Manager
                     </button>
                 </div>

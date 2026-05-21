@@ -13,7 +13,7 @@
                         <i class="fas fa-clipboard-check me-2"></i>Work Order #WO-{{ $workOrder->id }}
                     </h5>
                     <div class="btn-group">
-                        <a href="{{ route('maintenance.work-orders.edit', $workOrder->id) }}" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ route('maintenance.work-orders.edit', $workOrder->id) }}" class="btn btn-outline-kp-primary btn-sm">
                             <i class="fas fa-edit me-1"></i>Edit
                         </a>
                         <a href="{{ route('maintenance.work-orders.index') }}" class="btn btn-outline-secondary btn-sm">
@@ -258,7 +258,7 @@
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="in_progress">
-                                <button type="submit" class="btn btn-primary w-100 mb-2">
+                                <button type="submit" class="btn btn-kp-primary w-100 mb-2">
                                     <i class="fas fa-play me-1"></i>Start Work
                                 </button>
                             </form>
@@ -269,7 +269,7 @@
                                 @csrf
                                 @method('PATCH')
                                 <input type="hidden" name="status" value="completed">
-                                <button type="submit" class="btn btn-success w-100 mb-2">
+                                <button type="submit" class="btn btn-kp-success w-100 mb-2">
                                     <i class="fas fa-check me-1"></i>Mark Complete
                                 </button>
                             </form>
@@ -287,7 +287,7 @@
                             </form>
                         @endif
 
-                        <a href="{{ route('maintenance.work-orders.edit', $workOrder->id) }}" class="btn btn-outline-primary w-100 mb-2">
+                        <a href="{{ route('maintenance.work-orders.edit', $workOrder->id) }}" class="btn btn-outline-kp-primary w-100 mb-2">
                             <i class="fas fa-edit me-1"></i>Edit Details
                         </a>
 
@@ -309,7 +309,7 @@
                 <div class="card-body">
                     <div class="timeline">
                         <div class="timeline-item {{ $workOrder->status == 'assigned' ? 'active' : '' }}">
-                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-marker bg-kp-blue"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-0">Assigned</h6>
                                 <small class="text-muted">{{ $workOrder->created_at->format('M j, Y g:i A') }}</small>
@@ -334,7 +334,7 @@
 
                         @if($workOrder->status == 'completed')
                         <div class="timeline-item active">
-                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-marker bg-kp-green"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-0">Completed</h6>
                                 <small class="text-muted">

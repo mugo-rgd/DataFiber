@@ -16,7 +16,7 @@
                 <a href="{{ route('surveyor.assignment.show', $surveyRoute->designRequest->id) }}" class="btn btn-secondary mr-2">
                     <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Assignment
                 </a>
-                <a href="{{ route('surveyor.dashboard') }}" class="btn btn-primary">
+                <a href="{{ route('surveyor.dashboard') }}" class="btn btn-kp-primary">
                     <i class="fas fa-tachometer-alt fa-sm text-white-50"></i> Dashboard
                 </a>
             </div>
@@ -26,7 +26,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-kp-blue text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-route mr-2"></i>
                             {{ $surveyRoute->route_name }}
@@ -35,14 +35,14 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold text-primary">Route Information</h6>
+                                <h6 class="font-weight-bold text-kp-blue">Route Information</h6>
                                 <p><strong>Route Code:</strong> {{ $surveyRoute->route_code }}</p>
                                 <p><strong>Design Request:</strong> {{ $surveyRoute->designRequest->request_number }}</p>
                                 <p><strong>Total Distance:</strong> {{ $surveyRoute->total_distance }} km</p>
                                 <p><strong>Estimated Cost:</strong> ${{ number_format($surveyRoute->estimated_cost, 2) }}</p>
                             </div>
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold text-primary">Status & Details</h6>
+                                <h6 class="font-weight-bold text-kp-blue">Status & Details</h6>
                                 <p><strong>Status:</strong>
                                     <span class="badge bg-{{ $surveyRoute->status == 'completed' ? 'success' : ($surveyRoute->status == 'in_progress' ? 'info' : 'warning') }}">
                                         {{ ucfirst($surveyRoute->status) }}
@@ -55,7 +55,7 @@
 
                         @if($surveyRoute->route_description)
                         <div class="mt-3">
-                            <h6 class="font-weight-bold text-primary">Route Description</h6>
+                            <h6 class="font-weight-bold text-kp-blue">Route Description</h6>
                             <p class="border p-3 rounded bg-light">{{ $surveyRoute->route_description }}</p>
                         </div>
                         @endif
@@ -64,7 +64,7 @@
 
                 <!-- Route Segments -->
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-kp-green text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-map-signs mr-2"></i>
                             Route Segments
@@ -115,7 +115,7 @@
                                             </td>
                                             <td>{{ $segment->cost_multiplier }}x</td>
                                             <td>
-                                                <button class="btn btn-outline-primary btn-sm">
+                                                <button class="btn btn-outline-kp-primary btn-sm">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                             </td>
@@ -130,7 +130,7 @@
                                 <h5 class="text-gray-500">No Route Segments Created</h5>
                                 <p class="text-gray-400">Start by creating your first route segment.</p>
                                 <a href="{{ route('surveyor.route-segments.create', $surveyRoute->id) }}"
-                                   class="btn btn-primary">
+                                   class="btn btn-kp-primary">
                                     <i class="fas fa-plus mr-2"></i> Create First Segment
                                 </a>
                             </div>
@@ -142,7 +142,7 @@
             <div class="col-lg-4">
                 <!-- Quick Actions -->
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card-header bg-kp-yellow text-dark">
                         <h5 class="mb-0">
                             <i class="fas fa-bolt mr-2"></i>
                             Quick Actions
@@ -151,7 +151,7 @@
                     <div class="card-body">
                         <div class="d-grid gap-2">
                             <a href="{{ route('surveyor.route-segments.create', $surveyRoute->id) }}"
-                               class="btn btn-primary btn-block">
+                               class="btn btn-kp-primary btn-block">
                                 <i class="fas fa-plus-circle mr-2"></i> Add Segment
                             </a>
 
@@ -159,7 +159,7 @@
                                 <i class="fas fa-sync-alt mr-2"></i> Update Status
                             </button>
 
-                            <button type="button" class="btn btn-success btn-block">
+                            <button type="button" class="btn btn-kp-success btn-block">
                                 <i class="fas fa-check-circle mr-2"></i> Mark Complete
                             </button>
 

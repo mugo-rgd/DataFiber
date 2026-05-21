@@ -13,7 +13,7 @@
             <a href="{{ route('customer.billings.index') }}" class="btn btn-sm btn-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Back to Billings
             </a>
-            <a href="{{ route('customer.billings.download', $billing->id) }}" class="btn btn-sm btn-primary">
+            <a href="{{ route('customer.billings.download', $billing->id) }}" class="btn btn-sm btn-kp-primary">
                 <i class="fas fa-download me-2"></i>Download PDF
             </a>
             <a href="{{ route('customer.billings.preview', $billing->id) }}" class="btn btn-sm btn-info" target="_blank">
@@ -27,14 +27,14 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h5 class="text-primary">Kenya Power & Lighting Co. Ltd</h5>
+                    <h5 class="text-kp-blue">Kenya Power & Lighting Co. Ltd</h5>
                     <p class="mb-1">Dark Fibre Services Division</p>
                     <p class="mb-1">P.O. Box 30099 - 00100</p>
                     <p class="mb-1">Nairobi, Kenya</p>
                     <p class="mb-1">Tel: +254 20 320 1000</p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <h2 class="text-primary">INVOICE</h2>
+                    <h2 class="text-kp-blue">INVOICE</h2>
                     <h4 class="mb-0">{{ $billing->billing_number }}</h4>
                     <p class="text-muted mb-1">Consolidated Billing</p>
 
@@ -157,7 +157,7 @@
     @if($billing->tevin_control_code || $billing->tevin_qr_code || $billing->kra_qr_code)
     <div class="card shadow mb-4">
         <div class="card-header bg-light">
-            <h6 class="mb-0"><i class="fas fa-check-circle text-success me-2"></i>KRA Validation</h6>
+            <h6 class="mb-0"><i class="fas fa-check-circle text-kp-green me-2"></i>KRA Validation</h6>
         </div>
         <div class="card-body">
             <div class="row">
@@ -204,14 +204,14 @@
     <!-- Payment Section -->
     @if($billing->status === 'pending')
     <div class="card shadow mb-4">
-        <div class="card-header bg-success text-white">
+        <div class="card-header bg-kp-green text-white">
             <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Make Payment</h6>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <h5>Total Amount Due:</h5>
-                    <h3 class="text-success">{{ $billing->currency }} {{ number_format($billing->total_amount * 1.16, 2) }}</h3>
+                    <h3 class="text-kp-green">{{ $billing->currency }} {{ number_format($billing->total_amount * 1.16, 2) }}</h3>
                     <p class="text-muted">(Including 16% VAT)</p>
                 </div>
                 <div class="col-md-6 text-end">
@@ -227,7 +227,7 @@
                                 <option value="debit_card">Debit Card</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-success btn-lg">
+                        <button type="submit" class="btn btn-kp-success btn-lg">
                             <i class="fas fa-credit-card me-2"></i>Pay Now
                         </button>
                     </form>
@@ -249,7 +249,7 @@
         </div>
     </div>
     @elseif($billing->status === 'paid')
-    <div class="alert alert-success">
+    <div class="alert alert-kp-success">
         <i class="fas fa-check-circle me-2"></i>
         This invoice has been paid. Thank you for your payment!
     </div>

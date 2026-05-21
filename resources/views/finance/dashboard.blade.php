@@ -12,7 +12,7 @@ use Carbon\Carbon;
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2 mb-1">
-                <i class="fas fa-chart-line text-primary me-2"></i>Finance Dashboard
+                <i class="fas fa-chart-line text-kp-blue me-2"></i>Finance Dashboard
             </h1>
             <p class="text-muted mb-0">Financial overview and real-time metrics</p>
             <div class="small text-muted">
@@ -22,24 +22,53 @@ use Carbon\Carbon;
                 {{ now()->format('h:i A') }}
             </div>
         </div>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary" id="refreshBtn">
+
+        <div class="d-flex justify-content-between align-items-center">
+    <div>
+        <h5 class="mb-0">Welcome back, {{ Auth::user()->name ?? 'User' }}!</h5>
+        <small class="text-muted">{{ now()->format('l, F j, Y') }}</small>
+    </div>
+
+    <div class="d-flex gap-2 align-items-center">
+
+        <!-- Help Widget -->
+        @include('partials.role-help-widget')
+
+        <!-- Action Buttons -->
+        <div class="btn-group" role="group">
+            <!-- Refresh Button -->
+            <button class="btn btn-outline-secondary"
+                    id="refreshBtn"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    title="Refresh Dashboard">
                 <i class="fas fa-sync-alt"></i>
+                <span class="d-none d-md-inline ms-1">Refresh</span>
             </button>
-            <form method="POST" action="{{ route('logout') }}">
+
+            <!-- Logout Button -->
+            <form method="POST" action="{{ route('logout') }}" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-outline-danger">
-                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                <button type="submit" class="btn btn-outline-danger"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="d-none d-md-inline ms-1">Logout</span>
                 </button>
             </form>
         </div>
+    </div>
+</div>
+
+<hr class="mt-2 mb-4">
     </div>
 
     <!-- USD Summary Cards -->
     <div class="row mb-3">
         <div class="col-12">
             <h5 class="mb-3">
-                <span class="badge bg-primary me-2">USD</span> US Dollar Summary
+                <span class="badge bg-kp-blue me-2">USD</span> US Dollar Summary
             </h5>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
@@ -51,7 +80,7 @@ use Carbon\Carbon;
                             <h2 class="card-title mb-0">{{ $financialMetrics['usd']['total_revenue']['formatted'] ?? '$0.00' }}</h2>
                             @if(isset($financialMetrics['usd']['total_revenue']['change']) && $financialMetrics['usd']['total_revenue']['change'] != 0)
                                 <div class="mt-2">
-                                    <span class="badge bg-white text-primary">
+                                    <span class="badge bg-white text-kp-blue">
                                         <i class="fas fa-arrow-{{ $financialMetrics['usd']['total_revenue']['change'] > 0 ? 'up' : 'down' }} me-1"></i>
                                         {{ abs($financialMetrics['usd']['total_revenue']['change']) }}%
                                     </span>
@@ -80,7 +109,7 @@ use Carbon\Carbon;
                                 </div>
                             @endif
                         </div>
-                        <div class="icon-circle bg-warning-20">
+                        <div class="icon-circle bg-kp-yellow-20">
                             <i class="fas fa-file-invoice fa-2x"></i>
                         </div>
                     </div>
@@ -130,7 +159,7 @@ use Carbon\Carbon;
     <div class="row mb-4">
         <div class="col-12">
             <h5 class="mb-3">
-                <span class="badge bg-success me-2">KSH</span> Kenyan Shilling Summary
+                <span class="badge bg-kp-green me-2">KSH</span> Kenyan Shilling Summary
             </h5>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
@@ -142,7 +171,7 @@ use Carbon\Carbon;
                             <h2 class="card-title mb-0">{{ $financialMetrics['ksh']['total_revenue']['formatted'] ?? 'KSH 0.00' }}</h2>
                             @if(isset($financialMetrics['ksh']['total_revenue']['change']) && $financialMetrics['ksh']['total_revenue']['change'] != 0)
                                 <div class="mt-2">
-                                    <span class="badge bg-white text-success">
+                                    <span class="badge bg-white text-kp-green">
                                         <i class="fas fa-arrow-{{ $financialMetrics['ksh']['total_revenue']['change'] > 0 ? 'up' : 'down' }} me-1"></i>
                                         {{ abs($financialMetrics['ksh']['total_revenue']['change']) }}%
                                     </span>
@@ -171,7 +200,7 @@ use Carbon\Carbon;
                                 </div>
                             @endif
                         </div>
-                        <div class="icon-circle bg-warning-20">
+                        <div class="icon-circle bg-kp-yellow-20">
                             <i class="fas fa-file-invoice fa-2x"></i>
                         </div>
                     </div>
@@ -244,7 +273,7 @@ use Carbon\Carbon;
                             <h6 class="text-white-50 mb-2">
                                 <i class="fas fa-clock me-1"></i>Pending Amount
                             </h6>
-                            <h3 class="mb-0 text-warning">{{ $financialMetrics['combined']['pending_amount']['formatted'] ?? '$0.00' }}</h3>
+                            <h3 class="mb-0 text-kp-yellow">{{ $financialMetrics['combined']['pending_amount']['formatted'] ?? '$0.00' }}</h3>
                             <small class="text-white-50">
                                 <i class="fas fa-exchange-alt me-1"></i>
                                 KSH {{ number_format(($financialMetrics['combined']['pending_amount']['value'] ?? 0) * ($financialMetrics['combined']['exchange_rate'] ?? 130), 2) }}
@@ -310,7 +339,7 @@ use Carbon\Carbon;
         <div class="col-xl-2 col-md-4 col-6 mb-3">
             <div class="card border h-100">
                 <div class="card-body text-center p-3">
-                    <div class="text-primary mb-2">
+                    <div class="text-kp-blue mb-2">
                         <i class="fas fa-check-circle fa-2x"></i>
                     </div>
                     <div class="h4 mb-1">{{ ($financialMetrics['usd']['paid_invoices']['value'] ?? 0) + ($financialMetrics['ksh']['paid_invoices']['value'] ?? 0) }}</div>
@@ -322,7 +351,7 @@ use Carbon\Carbon;
         <div class="col-xl-2 col-md-4 col-6 mb-3">
             <div class="card border h-100">
                 <div class="card-body text-center p-3">
-                    <div class="text-success mb-2">
+                    <div class="text-kp-green mb-2">
                         <i class="fas fa-cash-register fa-2x"></i>
                     </div>
                     <div class="h5 mb-0">{{ $financialMetrics['usd']['monthly_revenue']['formatted'] ?? '$0.00' }}</div>
@@ -345,7 +374,7 @@ use Carbon\Carbon;
         <div class="col-xl-2 col-md-4 col-6 mb-3">
             <div class="card border h-100">
                 <div class="card-body text-center p-3">
-                    <div class="text-warning mb-2">
+                    <div class="text-kp-yellow mb-2">
                         <i class="fas fa-percentage fa-2x"></i>
                     </div>
                     <div class="h4 mb-1">{{ $financialMetrics['combined']['collection_rate']['value'] ?? 0 }}%</div>
@@ -402,16 +431,16 @@ use Carbon\Carbon;
             <div class="card shadow h-100">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                        <i class="fas fa-bolt text-kp-yellow me-2"></i>Quick Actions
                     </h5>
-                    <span class="badge bg-primary">8 Actions</span>
+                    <span class="badge bg-kp-blue">8 Actions</span>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ route('finance.billing.index') }}" class="card action-card text-center h-100">
                                 <div class="card-body">
-                                    <div class="action-icon bg-primary mb-3">
+                                    <div class="action-icon bg-kp-blue mb-3">
                                         <i class="fas fa-file-invoice-dollar fa-2x"></i>
                                     </div>
                                     <h6 class="card-title mb-2">Manage Billings</h6>
@@ -423,7 +452,7 @@ use Carbon\Carbon;
                         <div class="col-md-3">
                             <a href="{{ route('finance.payments.followups') }}" class="card action-card text-center h-100">
                                 <div class="card-body">
-                                    <div class="action-icon bg-success mb-3">
+                                    <div class="action-icon bg-kp-green mb-3">
                                         <i class="fas fa-credit-card fa-2x"></i>
                                     </div>
                                     <h6 class="card-title mb-2">View Payments</h6>
@@ -459,7 +488,7 @@ use Carbon\Carbon;
                         <div class="col-md-3">
                             <a href="{{ route('finance.transactions.index') }}" class="card action-card text-center h-100">
                                 <div class="card-body">
-                                    <div class="action-icon bg-warning mb-3">
+                                    <div class="action-icon bg-kp-yellow mb-3">
                                         <i class="fas fa-exchange-alt fa-2x"></i>
                                     </div>
                                     <h6 class="card-title mb-2">Transactions</h6>
@@ -531,7 +560,7 @@ use Carbon\Carbon;
                                         </small>
                                     </div>
                                     <div class="text-end">
-                                        <div class="h6 mb-1 @if(($transaction->type ?? '') === 'debit') text-danger @else text-success @endif">
+                                        <div class="h6 mb-1 @if(($transaction->type ?? '') === 'debit') text-danger @else text-kp-green @endif">
                                             ${{ number_format($transaction->amount ?? 0, 2) }}
                                         </div>
                                         <span class="badge bg-{{ $transaction->status === 'completed' ? 'success' : ($transaction->status === 'pending' ? 'warning' : 'secondary') }}">
@@ -550,7 +579,7 @@ use Carbon\Carbon;
                     @endif
                 </div>
                 <div class="card-footer bg-white text-center">
-                    <a href="{{ route('finance.transactions.index') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('finance.transactions.index') }}" class="btn btn-sm btn-outline-kp-primary">
                         <i class="fas fa-list me-1"></i>View All Transactions
                     </a>
                 </div>
@@ -564,7 +593,7 @@ use Carbon\Carbon;
             <div class="card shadow h-100">
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0">
-                        <i class="fas fa-chart-bar text-primary me-2"></i>Revenue Trend
+                        <i class="fas fa-chart-bar text-kp-blue me-2"></i>Revenue Trend
                     </h5>
                 </div>
                 <div class="card-body">
@@ -584,7 +613,7 @@ use Carbon\Carbon;
             <div class="card shadow h-100">
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0">
-                        <i class="fas fa-chart-pie text-success me-2"></i>Payment Status Distribution
+                        <i class="fas fa-chart-pie text-kp-green me-2"></i>Payment Status Distribution
                     </h5>
                 </div>
                 <div class="card-body">
@@ -696,7 +725,7 @@ use Carbon\Carbon;
     .bg-white-20 {
         background: rgba(255, 255, 255, 0.2);
     }
-    .bg-warning-20 {
+    .bg-kp-yellow-20 {
         background: rgba(255, 255, 255, 0.2);
     }
     .action-card {
@@ -786,3 +815,23 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endsection
 @endsection
+
+@push('scripts')
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+
+    // Refresh button with animation
+    document.getElementById('refreshBtn')?.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        icon.classList.add('fa-spin');
+        this.disabled = true;
+        setTimeout(() => {
+            location.reload();
+        }, 500);
+    });
+</script>
+@endpush

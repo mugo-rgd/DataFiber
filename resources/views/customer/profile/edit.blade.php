@@ -20,7 +20,7 @@
 
     <!-- Success/Error Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -238,7 +238,7 @@
                             <a href="{{ route('customer.profile.show') }}" class="btn btn-light">
                                 <i class="fas fa-arrow-left me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-save me-2"></i>Update Profile
                             </button>
                         </div>
@@ -267,23 +267,23 @@
                         <h5 class="font-16">Required Fields</h5>
                         <ul class="ps-3 mb-0">
                             <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <i class="fas fa-check-circle text-kp-green me-2"></i>
                                 Company Name
                             </li>
                             <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <i class="fas fa-check-circle text-kp-green me-2"></i>
                                 KRA PIN
                             </li>
                             <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <i class="fas fa-check-circle text-kp-green me-2"></i>
                                 Registration Number
                             </li>
                             <li class="mb-2">
-                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <i class="fas fa-check-circle text-kp-green me-2"></i>
                                 Contact Information
                             </li>
                             <li>
-                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <i class="fas fa-check-circle text-kp-green me-2"></i>
                                 Physical Address
                             </li>
                         </ul>
@@ -294,7 +294,7 @@
                         <p class="text-muted small">
                             Need help updating your profile? Contact our support team.
                         </p>
-                        <a href="mailto:Fiber@kplc.co.ke" class="btn btn-outline-primary w-100">
+                        <a href="mailto:Fiber@kplc.co.ke" class="btn btn-outline-kp-primary w-100">
                             <i class="fas fa-envelope me-2"></i>Email Support
                         </a>
                     </div>
@@ -303,7 +303,7 @@
 
             <!-- Document Upload Card - NEW SECTION -->
             <div class="card mt-3">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-upload me-2"></i>Upload Documents
                     </h5>
@@ -316,7 +316,7 @@
                         <div class="upload-area mb-3" id="uploadArea">
                             <div class="upload-area-content text-center p-4">
                                 <div class="document-icon mb-3">
-                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary"></i>
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-kp-blue"></i>
                                 </div>
                                 <h6>Drag & Drop or Click to Upload</h6>
                                 <p class="text-muted small mb-0">Supported formats: PDF, DOC, DOCX, JPG, PNG</p>
@@ -355,7 +355,7 @@
                             <span id="fileSize" class="text-muted ms-2"></span>
                         </div>
 
-                        <button type="submit" class="btn btn-success w-100">
+                        <button type="submit" class="btn btn-kp-success w-100">
                             <i class="fas fa-upload me-2"></i>Upload Document
                         </button>
                     </form>
@@ -381,9 +381,9 @@
                                                 if (str_contains($document->file_name, '.pdf')) {
                                                     $icon = 'file-pdf text-danger';
                                                 } elseif (str_contains($document->file_name, ['.doc', '.docx'])) {
-                                                    $icon = 'file-word text-primary';
+                                                    $icon = 'file-word text-kp-blue';
                                                 } elseif (str_contains($document->file_name, ['.jpg', '.jpeg', '.png'])) {
-                                                    $icon = 'file-image text-success';
+                                                    $icon = 'file-image text-kp-green';
                                                 }
                                             @endphp
                                             <i class="fas fa-{{ $icon }} me-2"></i>
@@ -393,7 +393,7 @@
                                                 {{ $document->created_at->format('d M Y') }} |
                                                 {{ round($document->file_size / 1024, 1) }} KB
                                                 @if($document->status)
-                                                    | <span class="badge bg-warning">{{ $document->status }}</span>
+                                                    | <span class="badge bg-kp-yellow">{{ $document->status }}</span>
                                                 @endif
                                             </small>
                                         </div>

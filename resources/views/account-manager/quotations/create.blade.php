@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-file-invoice-dollar text-primary"></i> Create Quotation
+                <i class="fas fa-file-invoice-dollar text-kp-blue"></i> Create Quotation
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>Design Request Information
                     </h5>
@@ -79,7 +79,7 @@
             <!-- Commercial Routes -->
             <div class="col-lg-6">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-kp-green text-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="fas fa-route me-2"></i>Commercial Routes
                         </h5>
@@ -163,7 +163,7 @@
             <!-- Colocation Services -->
             <div class="col-lg-6">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                    <div class="card-header bg-kp-yellow text-dark d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="fas fa-server me-2"></i>Colocation Services
                         </h5>
@@ -279,7 +279,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="addCustomItem" class="btn btn-outline-primary btn-sm">
+                        <button type="button" id="addCustomItem" class="btn btn-outline-kp-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Add Custom Item
                         </button>
                     </div>
@@ -291,7 +291,7 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-kp-blue text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-calculator me-2"></i>Pricing Summary
                         </h5>
@@ -359,7 +359,7 @@
                                 <strong class="h5">Total Amount:</strong>
                             </div>
                             <div class="col-6 text-end">
-                                <span id="total_amount" class="h5 text-primary">$0.00</span>
+                                <span id="total_amount" class="h5 text-kp-blue">$0.00</span>
                             </div>
                         </div>
                     </div>
@@ -384,10 +384,10 @@
                         <small class="text-muted">(Detailed description of services and deliverables)</small>
                     </label>
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn btn-outline-primary" onclick="loadDefaultScope()">
+                        <button type="button" class="btn btn-outline-kp-primary" onclick="loadDefaultScope()">
                             <i class="fas fa-bolt me-1"></i>Quick Fill
                         </button>
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#scopeTemplatesModal">
+                        <button type="button" class="btn btn-outline-kp-success" data-bs-toggle="modal" data-bs-target="#scopeTemplatesModal">
                             <i class="fas fa-layer-group me-1"></i>Templates
                         </button>
                         <button type="button" class="btn btn-outline-info" onclick="formatScopeOfWork()">
@@ -575,7 +575,7 @@
 <div class="modal fade" id="scopeTemplatesModal" tabindex="-1" aria-labelledby="scopeTemplatesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title" id="scopeTemplatesModalLabel">
                     <i class="fas fa-templates me-2"></i>Scope of Work Templates
                 </h5>
@@ -585,8 +585,8 @@
                 <div class="row g-3">
                     <!-- Standard Colocation Template -->
                     <div class="col-md-6">
-                        <div class="card h-100 template-card border-primary" onclick="loadTemplate('standard_colocation')">
-                            <div class="card-header bg-primary text-white py-2">
+                        <div class="card h-100 template-card border-kp-blue" onclick="loadTemplate('standard_colocation')">
+                            <div class="card-header bg-kp-blue text-white py-2">
                                 <h6 class="mb-0">
                                     <i class="fas fa-server me-2"></i>Standard Colocation
                                 </h6>
@@ -608,8 +608,8 @@
 
                     <!-- Premium Colocation Template -->
                     <div class="col-md-6">
-                        <div class="card h-100 template-card border-warning" onclick="loadTemplate('premium_colocation')">
-                            <div class="card-header bg-warning text-dark py-2">
+                        <div class="card h-100 template-card border-kp-yellow" onclick="loadTemplate('premium_colocation')">
+                            <div class="card-header bg-kp-yellow text-dark py-2">
                                 <h6 class="mb-0">
                                     <i class="fas fa-crown me-2"></i>Premium Colocation
                                 </h6>
@@ -631,8 +631,8 @@
 
                     <!-- Managed Services Template -->
                     <div class="col-md-6">
-                        <div class="card h-100 template-card border-success" onclick="loadTemplate('managed_services')">
-                            <div class="card-header bg-success text-white py-2">
+                        <div class="card h-100 template-card border-kp-green" onclick="loadTemplate('managed_services')">
+                            <div class="card-header bg-kp-green text-white py-2">
                                 <h6 class="mb-0">
                                     <i class="fas fa-headset me-2"></i>Managed Services
                                 </h6>
@@ -725,7 +725,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-1"></i>Close
                 </button>
-                <button type="button" class="btn btn-outline-primary" onclick="saveCustomTemplate()">
+                <button type="button" class="btn btn-outline-kp-primary" onclick="saveCustomTemplate()">
                     <i class="fas fa-save me-1"></i>Save as Custom Template
                 </button>
             </div>
@@ -745,15 +745,15 @@
                             </a>
                             <div>
                                 @if((auth()->user()->role === 'account_manager') or (auth()->user()->role === 'designer'))
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-kp-primary">
                                         <i class="fas fa-save me-2"></i>Save as Draft
                                     </button>
                                     <small class="text-muted d-block mt-1">Only admins can send quotations to customers</small>
                                 @else
-                                    <button type="submit" name="action" value="draft" class="btn btn-outline-primary">
+                                    <button type="submit" name="action" value="draft" class="btn btn-outline-kp-primary">
                                         <i class="fas fa-save me-2"></i>Save as Draft
                                     </button>
-                                    <button type="submit" name="action" value="send" class="btn btn-primary">
+                                    <button type="submit" name="action" value="send" class="btn btn-kp-primary">
                                         <i class="fas fa-paper-plane me-2"></i>Save & Send to Customer
                                     </button>
                                 @endif
@@ -856,7 +856,7 @@
     }
 }
 
-.text-warning {
+.text-kp-yellow {
     color: #ffc107 !important;
 }
 
@@ -1102,9 +1102,9 @@ function updateCharacterCount(counterId, textarea) {
 
     // Add warning for very long content
     if (textarea.value.length > 2000) {
-        counter.classList.add('text-warning', 'fw-bold');
+        counter.classList.add('text-kp-yellow', 'fw-bold');
     } else {
-        counter.classList.remove('text-warning', 'fw-bold');
+        counter.classList.remove('text-kp-yellow', 'fw-bold');
     }
 }
 

@@ -15,12 +15,12 @@
                 </ol>
             </nav>
             <h1 class="h3 mb-0">
-                <i class="fas fa-user text-primary me-2"></i>{{ $customer->name }}
+                <i class="fas fa-user text-kp-blue me-2"></i>{{ $customer->name }}
                 <small class="text-muted ms-2">({{ $customer->email }})</small>
             </h1>
         </div>
         <div class="btn-group">
-            <button class="btn btn-outline-primary" onclick="window.print()">
+            <button class="btn btn-outline-kp-primary" onclick="window.print()">
                 <i class="fas fa-print me-2"></i>Print
             </button>
             <a href="{{ route('finance.debt.dashboard') }}" class="btn btn-secondary">
@@ -40,7 +40,7 @@
                 <div class="col-md-3">
                     <div class="card border-left-primary shadow">
                         <div class="card-body">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Outstanding ({{ $currency }})
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -56,7 +56,7 @@
                 <div class="col-md-3">
                     <div class="card border-left-warning shadow">
                         <div class="card-body">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Avg Days Overdue ({{ $currency }})
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -97,7 +97,7 @@
                 <div class="col-md-3">
                     <div class="card border-left-success shadow">
                         <div class="card-body">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Total Paid ({{ $currency }})
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -122,7 +122,7 @@
         <div class="col-md-6">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customer Information</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Information</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -166,12 +166,12 @@
         <div class="col-md-6">
             <div class="card shadow">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Quick Actions</h6>
                 </div>
                 <div class="card-body">
                     <div class="row g-2">
                         <div class="col-6">
-                            <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#sendReminderModal">
+                            <button class="btn btn-outline-kp-primary w-100" data-bs-toggle="modal" data-bs-target="#sendReminderModal">
                                 <i class="fas fa-envelope me-2"></i>Send Reminder
                             </button>
                         </div>
@@ -201,7 +201,7 @@
         <div class="col-md-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Overdue Invoices</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Overdue Invoices</h6>
                 </div>
                 <div class="card-body">
                     @if($overdueInvoices->count() > 0)
@@ -254,7 +254,7 @@
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" onclick="sendReminderSingle({{ $invoice->id }})">
+                                            <button class="btn btn-outline-kp-primary" onclick="sendReminderSingle({{ $invoice->id }})">
                                                 <i class="fas fa-envelope"></i>
                                             </button>
                                             <a href="{{ route('finance.billing.show', $invoice->id) }}" class="btn btn-outline-info">
@@ -287,7 +287,7 @@
                     </div>
                     @else
                     <div class="text-center py-5">
-                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <i class="fas fa-check-circle fa-3x text-kp-green mb-3"></i>
                         <h5>No Overdue Invoices</h5>
                         <p class="text-muted">This customer has no overdue invoices.</p>
                     </div>
@@ -302,7 +302,7 @@
         <div class="col-md-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Payment History</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Payment History</h6>
                 </div>
                 <div class="card-body">
                     @if($paymentHistory->count() > 0)
@@ -339,7 +339,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="badge bg-success">
+                                        <span class="badge bg-kp-green">
                                             <i class="fas fa-check me-1"></i>Paid
                                         </span>
                                     </td>

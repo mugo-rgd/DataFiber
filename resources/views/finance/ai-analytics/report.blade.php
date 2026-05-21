@@ -92,7 +92,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="insight-card">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-chart-line me-2"></i>Executive Summary
                     </h4>
                     <p class="lead">{{ $reportData['summary']['executive_summary'] }}</p>
@@ -100,7 +100,7 @@
                     <div class="row mt-4">
                         <div class="col-md-3">
                             <div class="text-center p-3 bg-light rounded">
-                                <h2 class="text-primary mb-1">${{ number_format($reportData['metrics']['total_outstanding'], 0) }}</h2>
+                                <h2 class="text-kp-blue mb-1">${{ number_format($reportData['metrics']['total_outstanding'], 0) }}</h2>
                                 <small class="text-muted">Total Outstanding</small>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
                         </div>
                         <div class="col-md-3">
                             <div class="text-center p-3 bg-light rounded">
-                                <h2 class="text-success mb-1">{{ number_format($reportData['metrics']['collection_rate'], 1) }}%</h2>
+                                <h2 class="text-kp-green mb-1">{{ number_format($reportData['metrics']['collection_rate'], 1) }}%</h2>
                                 <small class="text-muted">Collection Rate</small>
                             </div>
                         </div>
@@ -132,13 +132,13 @@
             <div class="col-lg-6">
                 <!-- Key Findings -->
                 <div class="insight-card h-100">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-search me-2"></i>Key Findings
                     </h4>
                     <ul class="list-group list-group-flush">
                         @foreach($reportData['insights']['key_findings'] as $finding)
                         <li class="list-group-item d-flex align-items-start border-0 px-0">
-                            <i class="fas fa-check-circle text-success mt-1 me-2"></i>
+                            <i class="fas fa-check-circle text-kp-green mt-1 me-2"></i>
                             <span>{{ $finding }}</span>
                         </li>
                         @endforeach
@@ -148,12 +148,12 @@
             <div class="col-lg-6">
                 <!-- Priority Actions -->
                 <div class="insight-card h-100">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-bullseye me-2"></i>Priority Actions
                     </h4>
                     <div class="list-group">
                         @foreach($reportData['summary']['priority_actions'] as $index => $action)
-                        <div class="list-group-item border-start-4 border-primary mb-2">
+                        <div class="list-group-item border-start-4 border-kp-blue mb-2">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">Action {{ $index + 1 }}</h6>
                                 <small class="text-muted">High Priority</small>
@@ -170,13 +170,13 @@
         <div class="row mb-4">
             <div class="col-lg-6">
                 <div class="insight-card h-100">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-exclamation-triangle me-2"></i>Risk Analysis
                     </h4>
                     <div class="row">
                         @foreach($reportData['insights']['risk_analysis'] as $risk)
                         <div class="col-md-6 mb-3">
-                            <div class="card border-warning">
+                            <div class="card border-kp-yellow">
                                 <div class="card-body py-2">
                                     <p class="mb-0 small">{{ $risk }}</p>
                                 </div>
@@ -188,7 +188,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="insight-card h-100">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-lightbulb me-2"></i>All Recommendations
                     </h4>
                     <div class="list-group list-group-flush">
@@ -209,7 +209,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="insight-card">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-calendar-alt me-2"></i>Aging Analysis
                     </h4>
                     <div class="table-responsive">
@@ -260,7 +260,7 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="insight-card">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-users me-2"></i>Top {{ count($reportData['top_debtors']) }} Debtors
                     </h4>
                     <div class="table-responsive">
@@ -325,26 +325,26 @@
         <div class="row">
             <div class="col-12">
                 <div class="insight-card">
-                    <h4 class="text-primary mb-3">
+                    <h4 class="text-kp-blue mb-3">
                         <i class="fas fa-chart-line me-2"></i>Collection Trends Summary
                     </h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="metric-card">
                                 <h6 class="text-muted">Total Collected ({{ count($reportData['collection_trends']['labels']) }} days)</h6>
-                                <h2 class="text-success">${{ number_format($reportData['collection_trends']['total_collected'], 0) }}</h2>
+                                <h2 class="text-kp-green">${{ number_format($reportData['collection_trends']['total_collected'], 0) }}</h2>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="metric-card">
                                 <h6 class="text-muted">Average Daily Collection</h6>
-                                <h2 class="text-success">${{ number_format($reportData['collection_trends']['average_daily'], 0) }}</h2>
+                                <h2 class="text-kp-green">${{ number_format($reportData['collection_trends']['average_daily'], 0) }}</h2>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="metric-card">
                                 <h6 class="text-muted">Total Payments</h6>
-                                <h2 class="text-success">{{ array_sum($reportData['collection_trends']['counts']) }}</h2>
+                                <h2 class="text-kp-green">{{ array_sum($reportData['collection_trends']['counts']) }}</h2>
                             </div>
                         </div>
                     </div>

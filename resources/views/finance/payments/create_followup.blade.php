@@ -98,7 +98,7 @@
 
                         <div class="row">
                             <div class="col-12">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-kp-primary">
                                     <i class="fas fa-save"></i> Create Followup
                                 </button>
                                 <a href="{{ route('finance.payments.followups') }}" class="btn btn-secondary">

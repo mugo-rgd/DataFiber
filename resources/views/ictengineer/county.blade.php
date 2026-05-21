@@ -9,7 +9,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-map-marker-alt text-primary"></i> {{ $county->name }} - Design Requests
+                    <i class="fas fa-map-marker-alt text-kp-blue"></i> {{ $county->name }} - Design Requests
                 </h1>
                 <a href="{{ route('ictengineer.dashboard') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
@@ -28,7 +28,7 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">County Information</h5>
                 </div>
                 <div class="card-body">
@@ -68,7 +68,7 @@
                         <div class="col-4 text-center">
                             <div class="card bg-light">
                                 <div class="card-body p-2">
-                                    <h3 class="text-primary mb-0">{{ $statusCounts['pending'] }}</h3>
+                                    <h3 class="text-kp-blue mb-0">{{ $statusCounts['pending'] }}</h3>
                                     <small class="text-muted">Pending</small>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                         <div class="col-4 text-center">
                             <div class="card bg-light">
                                 <div class="card-body p-2">
-                                    <h3 class="text-warning mb-0">{{ $statusCounts['in_progress'] }}</h3>
+                                    <h3 class="text-kp-yellow mb-0">{{ $statusCounts['in_progress'] }}</h3>
                                     <small class="text-muted">In Progress</small>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                         <div class="col-4 text-center">
                             <div class="card bg-light">
                                 <div class="card-body p-2">
-                                    <h3 class="text-success mb-0">{{ $statusCounts['completed'] }}</h3>
+                                    <h3 class="text-kp-green mb-0">{{ $statusCounts['completed'] }}</h3>
                                     <small class="text-muted">Completed</small>
                                 </div>
                             </div>
@@ -167,7 +167,7 @@
                                         <td>{{ $request->created_at->format('M d, Y') }}</td>
                                         <td>
                                             <a href="{{ route('ictengineer.requests.show', $request->id) }}"
-                                               class="btn btn-sm btn-outline-primary">
+                                               class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                         </td>
@@ -186,7 +186,7 @@
                             <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
                             <h4>No Design Requests Found</h4>
                             <p class="text-muted">You don't have any design requests in {{ $county->name }} county.</p>
-                            <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-primary">
+                            <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-list"></i> View All Requests
                             </a>
                         </div>
@@ -201,15 +201,15 @@
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="mb-0">County Location</h5>
                 </div>
                 <div class="card-body">
                     <div class="text-center">
-                        <i class="fas fa-map-marked-alt fa-3x text-success mb-3"></i>
+                        <i class="fas fa-map-marked-alt fa-3x text-kp-green mb-3"></i>
                         <p><strong>Coordinates:</strong> {{ $county->latitude }}, {{ $county->longitude }}</p>
                         <a href="https://maps.google.com/?q={{ $county->latitude }},{{ $county->longitude }}"
-                           target="_blank" class="btn btn-outline-success">
+                           target="_blank" class="btn btn-outline-kp-success">
                             <i class="fas fa-external-link-alt"></i> View on Google Maps
                         </a>
                     </div>

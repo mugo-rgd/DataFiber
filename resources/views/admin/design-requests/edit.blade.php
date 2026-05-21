@@ -255,7 +255,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">Update Design Request</button>
+                            <button type="submit" class="btn btn-kp-primary">Update Design Request</button>
                             <a href="{{ route('admin.design-requests.index') }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>

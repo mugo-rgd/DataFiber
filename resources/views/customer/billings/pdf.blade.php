@@ -22,8 +22,8 @@
         .total-row { background-color: #f8f9fa; font-weight: bold; }
         .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 10px; color: #6c757d; text-align: center; }
         .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
-        .bg-success { background-color: #1cc88a; color: white; }
-        .bg-warning { background-color: #f6c23e; color: white; }
+        .bg-kp-green { background-color: #1cc88a; color: white; }
+        .bg-kp-yellow { background-color: #f6c23e; color: white; }
         .bg-danger { background-color: #e74a3b; color: white; }
         .bg-secondary { background-color: #858796; color: white; }
     </style>

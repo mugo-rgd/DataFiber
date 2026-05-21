@@ -13,13 +13,14 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0">
-            <i class="fas fa-exclamation-triangle text-warning me-2"></i>Debt Management Dashboard
+            <i class="fas fa-exclamation-triangle text-kp-yellow me-2"></i>Debt Management Dashboard
         </h1>
+        @include('partials.role-help-widget')
         <div class="btn-group">
-            <button class="btn btn-outline-primary">
+            <button class="btn btn-outline-kp-primary">
                 <i class="fas fa-download me-2"></i>Export Report
             </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sendReminderModal">
+            <button class="btn btn-kp-primary" data-bs-toggle="modal" data-bs-target="#sendReminderModal">
                 <i class="fas fa-envelope me-2"></i>Send Reminders
             </button>
         </div>
@@ -58,7 +59,7 @@ function filterByCurrency(currency) {
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
                             ${{ number_format($overdueSummary->total_overdue_usd ?? 0, 2) }}
                         </div>
-                        <div class="h6 mb-0 font-weight-bold text-success">
+                        <div class="h6 mb-0 font-weight-bold text-kp-green">
                             KSH {{ number_format($overdueSummary->total_overdue_ksh ?? 0, 2) }}
                         </div>
                     @else
@@ -87,7 +88,7 @@ function filterByCurrency(currency) {
 <div class="col-lg-6 mb-4">
     <div class="card shadow">
         <div class="card-header bg-white py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Aging Analysis</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Aging Analysis</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -120,7 +121,7 @@ function filterByCurrency(currency) {
                                     $invoiceCount = is_object($bucket) ? $bucket->invoice_count : $bucket['invoice_count'];
                                 @endphp
                                 <span class="badge
-                                    @if(str_contains($ageBucket, '0-30')) bg-warning
+                                    @if(str_contains($ageBucket, '0-30')) bg-kp-yellow
                                     @elseif(str_contains($ageBucket, '31-60')) bg-orange
                                     @elseif(str_contains($ageBucket, '61-90')) bg-danger
                                     @else bg-dark @endif">
@@ -194,7 +195,7 @@ function filterByCurrency(currency) {
 <div class="col-lg-6 mb-4">
     <div class="card shadow">
         <div class="card-header bg-white py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Top Debtors</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Top Debtors</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -214,7 +215,7 @@ function filterByCurrency(currency) {
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm bg-light rounded-circle me-2 d-flex align-items-center justify-content-center">
-                                        <i class="fas fa-user text-primary"></i>
+                                        <i class="fas fa-user text-kp-blue"></i>
                                     </div>
                                     <div>
                                         <strong>{{ $debtor->name }}</strong><br>
@@ -241,7 +242,7 @@ function filterByCurrency(currency) {
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary" onclick="viewCustomerDebt({{ $debtor->id }})">
+                                <button class="btn btn-sm btn-outline-kp-primary" onclick="viewCustomerDebt({{ $debtor->id }})">
                                     <i class="fas fa-eye"></i>
                                 </button>
                             </td>
@@ -266,7 +267,7 @@ function filterByCurrency(currency) {
         <div class="col-lg-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Overdue Invoices</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Overdue Invoices</h6>
                     <div class="btn-group">
                         <button class="btn btn-sm btn-outline-secondary">Filter</button>
                         <button class="btn btn-sm btn-outline-secondary">Sort</button>
@@ -301,7 +302,7 @@ function filterByCurrency(currency) {
         <div class="col-lg-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Payment Trend (Last 6 Months)</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Payment Trend (Last 6 Months)</h6>
                 </div>
                 <div class="card-body">
                     <canvas id="paymentTrendChart" height="100"></canvas>
@@ -711,7 +712,7 @@ $(document).ready(function() {
                 <div class="text-center p-4">
                     <h5>Invoice #${invoiceId}</h5>
                     <p class="text-muted">Detailed view not available</p>
-                    <button class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-kp-primary" data-bs-dismiss="modal">Close</button>
                 </div>
             `);
             $button.prop('disabled', false).html('<i class="fas fa-eye"></i>');

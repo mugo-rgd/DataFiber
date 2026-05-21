@@ -11,7 +11,7 @@
             </h1>
 
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">New Support Request</h5>
                 </div>
                 <div class="card-body">
@@ -67,7 +67,7 @@
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-paper-plane me-1"></i> Submit Ticket
                             </button>
                         </div>

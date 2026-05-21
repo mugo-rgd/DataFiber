@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RoleHelper;
 use App\Models\BillingLineItem;
 use App\Models\ConsolidatedBilling;
 use App\Models\LeaseBilling;
@@ -3660,6 +3661,23 @@ public function financialReports(Request $request)
     }
 }
 
+public function roleCustomerLeases()
+{
+    return view('help.role.customer-leases', [
+        'role' => RoleHelper::getCurrentRole(),
+        'roleDisplayName' => RoleHelper::getRoleDisplayName(),
+        'quickTips' => RoleHelper::getQuickTips(),
+    ]);
+}
+
+public function roleCustomerDocuments()
+{
+    return view('help.role.customer-documents', [
+        'role' => RoleHelper::getCurrentRole(),
+        'roleDisplayName' => RoleHelper::getRoleDisplayName(),
+        'quickTips' => RoleHelper::getQuickTips(),
+    ]);
+}
 /**
  * Export financial reports
  */

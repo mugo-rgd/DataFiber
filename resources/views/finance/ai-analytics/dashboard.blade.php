@@ -12,12 +12,12 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h4 class="page-title mb-0">
-                            <i class="fas fa-brain text-primary me-2"></i>AI-Powered Debt Analytics
+                            <i class="fas fa-brain text-kp-blue me-2"></i>AI-Powered Debt Analytics
                         </h4>
                         <p class="text-muted mb-0">Intelligent insights and predictions for debt management across USD and KSH</p>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a href="{{ route('finance.ai.report') }}" class="btn btn-outline-primary">
+                        <a href="{{ route('finance.ai.report') }}" class="btn btn-outline-kp-primary">
     <i class="fas fa-file-pdf me-1"></i> Generate Report
 </a>
                     </div>
@@ -41,7 +41,7 @@
     @if(isset($insights['alerts']) && count($insights['alerts']) > 0)
     <div class="row mb-4">
         <div class="col-12">
-            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <div class="alert alert-kp-warning alert-dismissible fade show" role="alert">
                 <div class="d-flex align-items-center">
                     <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
                     <div>
@@ -72,7 +72,7 @@
                             </small>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-primary rounded-circle">
+                            <span class="avatar-title bg-kp-blue rounded-circle">
                                 <i class="fas fa-dollar-sign"></i>
                             </span>
                         </div>
@@ -93,7 +93,7 @@
                             </small>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-success rounded-circle">
+                            <span class="avatar-title bg-kp-green rounded-circle">
                                 <i class="fas fa-shilling-sign"></i>
                             </span>
                         </div>
@@ -113,14 +113,14 @@
                                 @if(($metrics['collection_rate_usd'] ?? 0) < 50)
                                 <span class="text-danger">Needs improvement</span>
                                 @elseif(($metrics['collection_rate_usd'] ?? 0) < 80)
-                                <span class="text-warning">Moderate</span>
+                                <span class="text-kp-yellow">Moderate</span>
                                 @else
-                                <span class="text-success">Good</span>
+                                <span class="text-kp-green">Good</span>
                                 @endif
                             </small>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-warning rounded-circle">
+                            <span class="avatar-title bg-kp-yellow rounded-circle">
                                 <i class="fas fa-chart-line"></i>
                             </span>
                         </div>
@@ -140,9 +140,9 @@
                                 @if(($metrics['collection_rate_ksh'] ?? 0) < 50)
                                 <span class="text-danger">Needs improvement</span>
                                 @elseif(($metrics['collection_rate_ksh'] ?? 0) < 80)
-                                <span class="text-warning">Moderate</span>
+                                <span class="text-kp-yellow">Moderate</span>
                                 @else
-                                <span class="text-success">Good</span>
+                                <span class="text-kp-green">Good</span>
                                 @endif
                             </small>
                         </div>
@@ -207,8 +207,8 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-muted mb-1">Today's Collections</h6>
-                            <h3 class="mb-0 text-primary">${{ number_format($metrics['today_collections_usd'] ?? 0, 0) }}</h3>
-                            <h5 class="mb-0 text-success">KSH {{ number_format($metrics['today_collections_ksh'] ?? 0, 0) }}</h5>
+                            <h3 class="mb-0 text-kp-blue">${{ number_format($metrics['today_collections_usd'] ?? 0, 0) }}</h3>
+                            <h5 class="mb-0 text-kp-green">KSH {{ number_format($metrics['today_collections_ksh'] ?? 0, 0) }}</h5>
                             <small class="text-muted">Updated: {{ now()->format('h:i A') }}</small>
                         </div>
                         <div class="avatar-sm">
@@ -229,19 +229,19 @@
             <div class="card h-100">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="fas fa-lightbulb text-warning me-2"></i>AI Insights
+                        <i class="fas fa-lightbulb text-kp-yellow me-2"></i>AI Insights
                     </h5>
                 </div>
                 <div class="card-body">
                     <!-- Key Findings -->
                     <div class="mb-4">
-                        <h6 class="text-primary mb-3">
+                        <h6 class="text-kp-blue mb-3">
                             <i class="fas fa-search me-2"></i>Key Findings
                         </h6>
                         <div class="list-group list-group-flush">
                             @forelse($insights['key_findings'] ?? [] as $finding)
                             <div class="list-group-item d-flex align-items-start">
-                                <i class="fas fa-check-circle text-success mt-1 me-2"></i>
+                                <i class="fas fa-check-circle text-kp-green mt-1 me-2"></i>
                                 <span>{{ $finding }}</span>
                             </div>
                             @empty
@@ -252,13 +252,13 @@
 
                     <!-- Risk Analysis -->
                     <div class="mb-4">
-                        <h6 class="text-primary mb-3">
+                        <h6 class="text-kp-blue mb-3">
                             <i class="fas fa-exclamation-triangle me-2"></i>Risk Analysis
                         </h6>
                         <div class="row">
                             @forelse($insights['risk_analysis'] ?? [] as $risk)
                             <div class="col-md-6 mb-2">
-                                <div class="card border-warning">
+                                <div class="card border-kp-yellow">
                                     <div class="card-body py-2">
                                         <p class="mb-0 small">{{ $risk }}</p>
                                     </div>
@@ -274,7 +274,7 @@
 
                     <!-- Recommendations -->
                     <div>
-                        <h6 class="text-primary mb-3">
+                        <h6 class="text-kp-blue mb-3">
                             <i class="fas fa-bullseye me-2"></i>Recommended Actions
                         </h6>
                         <div class="list-group">
@@ -436,7 +436,7 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="fas fa-chart-line text-success me-2"></i>Collection Trends (Last 30 Days)
+                        <i class="fas fa-chart-line text-kp-green me-2"></i>Collection Trends (Last 30 Days)
                     </h5>
                 </div>
                 <div class="card-body">
@@ -445,35 +445,35 @@
                             <canvas id="collectionChart" height="250"></canvas>
                         </div>
                         <div class="col-md-4">
-                            <div class="card border-success">
+                            <div class="card border-kp-green">
                                 <div class="card-body">
-                                    <h6 class="text-success mb-3">Trend Summary</h6>
+                                    <h6 class="text-kp-green mb-3">Trend Summary</h6>
                                     <div class="mb-3">
                                         <small class="text-muted d-block">Total Collected (USD)</small>
-                                        <h4 class="text-primary">${{ number_format($collectionTrends['total_collected_usd'] ?? 0, 0) }}</h4>
+                                        <h4 class="text-kp-blue">${{ number_format($collectionTrends['total_collected_usd'] ?? 0, 0) }}</h4>
                                     </div>
                                     <div class="mb-3">
                                         <small class="text-muted d-block">Total Collected (KSH)</small>
-                                        <h4 class="text-success">KSH {{ number_format($collectionTrends['total_collected_ksh'] ?? 0, 0) }}</h4>
+                                        <h4 class="text-kp-green">KSH {{ number_format($collectionTrends['total_collected_ksh'] ?? 0, 0) }}</h4>
                                     </div>
                                     <div class="mb-3">
                                         <small class="text-muted d-block">Average Daily (USD)</small>
-                                        <h4 class="text-primary">${{ number_format($collectionTrends['average_daily_usd'] ?? 0, 0) }}</h4>
+                                        <h4 class="text-kp-blue">${{ number_format($collectionTrends['average_daily_usd'] ?? 0, 0) }}</h4>
                                     </div>
                                     <div class="mb-3">
                                         <small class="text-muted d-block">Average Daily (KSH)</small>
-                                        <h4 class="text-success">KSH {{ number_format($collectionTrends['average_daily_ksh'] ?? 0, 0) }}</h4>
+                                        <h4 class="text-kp-green">KSH {{ number_format($collectionTrends['average_daily_ksh'] ?? 0, 0) }}</h4>
                                     </div>
                                     <div class="mb-3">
                                         <small class="text-muted d-block">Total Payments</small>
-                                        <h4 class="text-success">{{ array_sum($collectionTrends['counts'] ?? [0]) }}</h4>
+                                        <h4 class="text-kp-green">{{ array_sum($collectionTrends['counts'] ?? [0]) }}</h4>
                                     </div>
                                     <div>
                                         <small class="text-muted d-block">Trend Analysis</small>
                                         @php
                                             $trend = $collectionTrends['trend'] ?? ['direction' => 'stable', 'percentage' => 0, 'message' => 'No data'];
                                         @endphp
-                                        <h4 class="{{ $trend['direction'] == 'up' ? 'text-success' : ($trend['direction'] == 'down' ? 'text-danger' : 'text-secondary') }}">
+                                        <h4 class="{{ $trend['direction'] == 'up' ? 'text-kp-green' : ($trend['direction'] == 'down' ? 'text-danger' : 'text-secondary') }}">
                                             <i class="fas fa-arrow-{{ $trend['direction'] }} me-1"></i>
                                             {{ $trend['percentage'] ?? 0 }}%
                                         </h4>

@@ -10,13 +10,13 @@
     <div class="header-actions">
         <div>
             <h1 class="h3 text-gray-800 mb-2">
-                <i class="fas fa-drafting-compass text-primary me-2"></i> New Fibre Route Design Request
+                <i class="fas fa-drafting-compass text-kp-blue me-2"></i> New Fibre Route Design Request
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('customer.index') }}" class="text-decoration-none"><i class="fas fa-home me-1"></i>Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('customer.design-requests.index') }}" class="text-decoration-none"><i class="fas fa-list me-1"></i>Design Requests</a></li>
-                    <li class="breadcrumb-item active text-primary"><i class="fas fa-plus-circle me-1"></i>New Request</li>
+                    <li class="breadcrumb-item active text-kp-blue"><i class="fas fa-plus-circle me-1"></i>New Request</li>
                 </ol>
             </nav>
         </div>
@@ -54,7 +54,7 @@
         <div class="col-lg-12">
             <div class="card shadow">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-plus-circle text-success me-2"></i> Create New Fibre Route Design Request</h5>
+                    <h5 class="mb-0"><i class="fas fa-plus-circle text-kp-green me-2"></i> Create New Fibre Route Design Request</h5>
                     <div class="form-text text-muted">Fields marked with <span class="text-danger">*</span> are required</div>
                 </div>
                 <div class="card-body">
@@ -64,7 +64,7 @@
                         <!-- Step 1: Basic Information -->
                         <div class="form-step active" id="step-1">
                             <div class="step-header mb-4">
-                                <h4 class="text-primary mb-2"><i class="fas fa-info-circle me-2"></i>Basic Information</h4>
+                                <h4 class="text-kp-blue mb-2"><i class="fas fa-info-circle me-2"></i>Basic Information</h4>
                                 <p class="text-muted">Let's start with the basic details of your fibre route request</p>
                             </div>
 
@@ -119,7 +119,7 @@
                                 <button type="button" class="btn btn-outline-secondary" disabled>
                                     <i class="fas fa-arrow-left me-2"></i>Previous
                                 </button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                                <button type="button" class="btn btn-kp-primary" onclick="nextStep(2)">
                                     Next <i class="fas fa-arrow-right ms-2"></i>
                                 </button>
                             </div>
@@ -128,7 +128,7 @@
                         <!-- Step 2: Route Information -->
                         <div class="form-step" id="step-2">
                             <div class="step-header mb-4">
-                                <h4 class="text-primary mb-2"><i class="fas fa-route me-2"></i>Route Information</h4>
+                                <h4 class="text-kp-blue mb-2"><i class="fas fa-route me-2"></i>Route Information</h4>
                                 <p class="text-muted">Define your fibre route using the map or enter details manually</p>
                             </div>
 
@@ -138,13 +138,13 @@
 
                             <div class="instructions bg-light rounded p-3 mb-4">
                                 <div class="d-flex align-items-start">
-                                    <i class="fas fa-info-circle text-primary mt-1 me-3"></i>
+                                    <i class="fas fa-info-circle text-kp-blue mt-1 me-3"></i>
                                     <div>
                                         <strong class="d-block mb-2">How to define your route:</strong>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="d-flex align-items-center mb-2">
-                                                    <span class="badge bg-primary me-2">Option 1</span>
+                                                    <span class="badge bg-kp-blue me-2">Option 1</span>
                                                     <span>Click on the map to add route points (recommended)</span>
                                                 </div>
                                                 <ul class="small text-muted ps-3">
@@ -264,7 +264,7 @@
                                 <button type="button" class="btn btn-outline-secondary" onclick="prevStep(2)">
                                     <i class="fas fa-arrow-left me-2"></i>Previous
                                 </button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                                <button type="button" class="btn btn-kp-primary" onclick="nextStep(4)">
                                     Next <i class="fas fa-arrow-right ms-2"></i>
                                 </button>
                             </div>
@@ -280,7 +280,7 @@
                                     </div>
                                 </div>
 
-                                <div class="alert alert-warning validation-alert" id="route-validation-alert" style="display: none;">
+                                <div class="alert alert-kp-warning validation-alert" id="route-validation-alert" style="display: none;">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     <span id="validation-message">Please either define your route on the map OR enter route details manually above.</span>
                                 </div>
@@ -291,7 +291,7 @@
                                     <!-- Loading Overlay -->
                                     <div class="loading-overlay" id="loading-overlay">
                                         <div class="text-center">
-                                            <div class="spinner-border text-primary mb-2" role="status">
+                                            <div class="spinner-border text-kp-blue mb-2" role="status">
                                                 <span class="visually-hidden">Loading map...</span>
                                             </div>
                                             <p class="mb-2">Loading Google Maps...</p>
@@ -306,7 +306,7 @@
                                     <!-- Map Help Box -->
                                     <div id="mapHelp" class="map-help-content">
                                         <div class="map-help-header d-flex justify-content-between align-items-center mb-2" style="cursor: move;">
-                                            <h6 class="mb-0"><i class="fas fa-lightbulb me-2 text-warning"></i>Quick Start Guide</h6>
+                                            <h6 class="mb-0"><i class="fas fa-lightbulb me-2 text-kp-yellow"></i>Quick Start Guide</h6>
                                             <button type="button" class="btn-close" onclick="closeMapHelp()" aria-label="Close"></button>
                                         </div>
                                         <ul class="small mb-2">
@@ -315,7 +315,7 @@
                                             <li>Add at least 2 points to see the route and distance</li>
                                             <li>Click on substations (red markers) for connection options</li>
                                         </ul>
-                                        <button class="btn btn-sm btn-outline-primary w-100" onclick="closeMapHelp()">
+                                        <button class="btn btn-sm btn-outline-kp-primary w-100" onclick="closeMapHelp()">
                                             Got it, let's start!
                                         </button>
                                     </div>
@@ -324,10 +324,10 @@
                                     <div class="map-overlay">
                                         <div class="route-summary-item">
                                             <span>Distance:</span>
-                                            <span id="route-distance-display" class="text-primary fw-bold">0 km</span>
+                                            <span id="route-distance-display" class="text-kp-blue fw-bold">0 km</span>
                                         </div>
                                         <div class="btn-group-vertical">
-                                            <button type="button" class="btn btn-sm btn-primary btn-map-control" id="add-point-mode">
+                                            <button type="button" class="btn btn-sm btn-kp-primary btn-map-control" id="add-point-mode">
                                                 <i class="fas fa-map-marker-alt me-1"></i>Add Points Mode
                                             </button>
                                             <button type="button" class="btn btn-sm btn-outline-danger btn-map-control" id="clear-route">
@@ -379,11 +379,11 @@
                                             </div>
                                             <div class="route-summary-item">
                                                 <span>Distance:</span>
-                                                <span id="route-distance-display" class="text-primary fw-bold">0 km</span>
+                                                <span id="route-distance-display" class="text-kp-blue fw-bold">0 km</span>
                                             </div>
                                             <div class="route-summary-item">
                                                 <span>Points:</span>
-                                                <span id="route-points-count" class="badge bg-primary">0</span>
+                                                <span id="route-points-count" class="badge bg-kp-blue">0</span>
                                             </div>
                                         </div>
 
@@ -423,7 +423,7 @@
                                         <div class="status-filter mt-3">
                                             <h6 class="mb-2"><i class="fas fa-filter me-1"></i>Filter by Status</h6>
                                             <div class="d-flex flex-wrap gap-1">
-                                                <button type="button" class="btn btn-sm btn-outline-success status-filter-btn" data-status="Available">
+                                                <button type="button" class="btn btn-sm btn-outline-kp-success status-filter-btn" data-status="Available">
                                                     Available
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-outline-warning status-filter-btn" data-status="Under Maintenance">
@@ -432,7 +432,7 @@
                                                 <button type="button" class="btn btn-sm btn-outline-secondary status-filter-btn" data-status="Unavailable">
                                                     Unavailable
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-outline-primary" id="show-all-status">
+                                                <button type="button" class="btn btn-sm btn-outline-kp-primary" id="show-all-status">
                                                     All
                                                 </button>
                                             </div>
@@ -455,7 +455,7 @@
                                 <div class="card">
                                     <div class="card-header py-2 d-flex justify-content-between align-items-center">
                                         <h6 class="mb-0"><i class="fas fa-map-marker-alt me-1"></i>Route Points</h6>
-                                        <span class="badge bg-primary" id="point-count">0 points</span>
+                                        <span class="badge bg-kp-blue" id="point-count">0 points</span>
                                     </div>
 
                                     <div class="distance-display" id="total-distance">
@@ -485,7 +485,7 @@
                                 <button type="button" class="btn btn-outline-secondary" onclick="prevStep(1)">
                                     <i class="fas fa-arrow-left me-2"></i>Previous
                                 </button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                                <button type="button" class="btn btn-kp-primary" onclick="nextStep(3)">
                                     Next <i class="fas fa-arrow-right ms-2"></i>
                                 </button>
                             </div>
@@ -494,7 +494,7 @@
                         <!-- Step 3: Colocation Services -->
                         <div class="form-step" id="step-3">
                             <div class="step-header mb-4">
-                                <h4 class="text-primary mb-2"><i class="fas fa-server me-2"></i>Colocation Services</h4>
+                                <h4 class="text-kp-blue mb-2"><i class="fas fa-server me-2"></i>Colocation Services</h4>
                                 <p class="text-muted">Add your colocation site requirements and select any additional services (optional)</p>
                             </div>
 
@@ -502,7 +502,7 @@
                             <div class="card mb-4">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0"><i class="fas fa-data-center me-2"></i>Colocation Sites</h6>
-                                    <button type="button" class="btn btn-sm btn-primary" onclick="addNewSite()">
+                                    <button type="button" class="btn btn-sm btn-kp-primary" onclick="addNewSite()">
                                         <i class="fas fa-plus me-1"></i>Add Site
                                     </button>
                                 </div>
@@ -595,7 +595,7 @@
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="mb-0">Available Additional Services</h6>
-                                    <span class="badge bg-primary" id="services-count">{{ count($colocationServices) }} services available</span>
+                                    <span class="badge bg-kp-blue" id="services-count">{{ count($colocationServices) }} services available</span>
                                 </div>
                                 <div class="row" id="services-grid">
                                     @foreach($colocationServices as $service)
@@ -614,7 +614,7 @@
                                                 </div>
 
                                                 <h6 class="card-title mb-2">{{ $service->service_type }}</h6>
-                                                <span class="badge service-category-badge bg-primary mb-2">{{ $service->service_category }}</span>
+                                                <span class="badge service-category-badge bg-kp-blue mb-2">{{ $service->service_category }}</span>
 
                                                 <div class="service-specs mb-2">
                                                     <small class="text-muted">{{ $service->specifications }}</small>
@@ -622,7 +622,7 @@
 
                                                 @if($service->power_kw)
                                                 <div class="mb-1">
-                                                    <small><i class="fas fa-bolt text-warning me-1"></i><strong>Power:</strong> {{ $service->power_kw }} kW</small>
+                                                    <small><i class="fas fa-bolt text-kp-yellow me-1"></i><strong>Power:</strong> {{ $service->power_kw }} kW</small>
                                                 </div>
                                                 @endif
 
@@ -632,7 +632,7 @@
                                                 </div>
                                                 @endif
 
-                                                <div class="service-price mb-2 text-success">
+                                                <div class="service-price mb-2 text-kp-green">
                                                     <i class="fas fa-dollar-sign me-1"></i>{{ number_format($service->monthly_price_usd, 2) }}/month
                                                 </div>
 
@@ -656,7 +656,7 @@
 
                             <!-- Selected Services Summary -->
                             <div class="card mt-4" id="selected-services-card" style="display: none;">
-                                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                                <div class="card-header bg-kp-green text-white d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0"><i class="fas fa-check-circle me-2"></i>Selected Additional Services</h6>
                                     <span class="badge bg-light text-dark" id="selected-count">0 services</span>
                                 </div>
@@ -674,7 +674,7 @@
                                 <button type="button" class="btn btn-outline-secondary" onclick="prevStep(2)">
                                     <i class="fas fa-arrow-left me-2"></i>Previous
                                 </button>
-                                <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                                <button type="button" class="btn btn-kp-primary" onclick="nextStep(4)">
                                     Next <i class="fas fa-arrow-right ms-2"></i>
                                 </button>
                             </div>
@@ -683,7 +683,7 @@
                         <!-- Step 4: Review & Submit -->
                         <div class="form-step" id="step-4">
                             <div class="step-header mb-4">
-                                <h4 class="text-primary mb-2"><i class="fas fa-clipboard-check me-2"></i>Review & Submit</h4>
+                                <h4 class="text-kp-blue mb-2"><i class="fas fa-clipboard-check me-2"></i>Review & Submit</h4>
                                 <p class="text-muted">Review your information before submitting the request</p>
                             </div>
 
@@ -691,7 +691,7 @@
                             <div class="row mb-4">
                                 <div class="col-md-6 mb-3">
                                     <div class="card h-100">
-                                        <div class="card-header bg-primary text-white">
+                                        <div class="card-header bg-kp-blue text-white">
                                             <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
                                         </div>
                                         <div class="card-body">
@@ -708,7 +708,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="card h-100">
-                                        <div class="card-header bg-success text-white">
+                                        <div class="card-header bg-kp-green text-white">
                                             <h6 class="mb-0"><i class="fas fa-route me-2"></i>Route Details</h6>
                                         </div>
                                         <div class="card-body">
@@ -749,13 +749,13 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="card h-100">
-                                        <div class="card-header bg-warning text-dark">
+                                        <div class="card-header bg-kp-yellow text-dark">
                                             <h6 class="mb-0"><i class="fas fa-server me-2"></i>Colocation Sites & Additional Services</h6>
                                         </div>
                                         <div class="card-body">
                                             <!-- Colocation Sites Review -->
                                             <div class="mb-3">
-                                                <h6 class="text-primary mb-2">Colocation Sites:</h6>
+                                                <h6 class="text-kp-blue mb-2">Colocation Sites:</h6>
                                                 <div id="review-colocation-sites" class="text-muted">
                                                     No colocation sites added
                                                 </div>
@@ -765,7 +765,7 @@
 
                                             <!-- Additional Services Review -->
                                             <div>
-                                                <h6 class="text-primary mb-2">Additional Services:</h6>
+                                                <h6 class="text-kp-blue mb-2">Additional Services:</h6>
                                                 <div id="review-services" class="text-muted">
                                                     No additional services selected
                                                 </div>
@@ -776,7 +776,7 @@
                             </div>
 
                             <!-- Final Validation -->
-                            <div class="alert alert-warning" id="final-validation" style="display: none;">
+                            <div class="alert alert-kp-warning" id="final-validation" style="display: none;">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 <span id="final-validation-message"></span>
                             </div>
@@ -785,7 +785,7 @@
                                 <button type="button" class="btn btn-outline-secondary" onclick="prevStep(3)">
                                     <i class="fas fa-arrow-left me-2"></i>Previous
                                 </button>
-                                <button type="submit" class="btn btn-success" id="submit-btn">
+                                <button type="submit" class="btn btn-kp-success" id="submit-btn">
                                     <i class="fas fa-paper-plane me-2"></i>Submit Request
                                 </button>
                             </div>
@@ -1733,13 +1733,13 @@ class MapManager {
         const button = document.getElementById('add-point-mode');
 
         if (this.isAddingPoints) {
-            button.classList.add('btn-success');
-            button.classList.remove('btn-primary');
+            button.classList.add('btn-kp-success');
+            button.classList.remove('btn-kp-primary');
             button.innerHTML = '<i class="fas fa-map-marker-alt me-1"></i>Adding Points...';
             ToastManager.show('Click on the map to add route points', 'info');
         } else {
-            button.classList.add('btn-primary');
-            button.classList.remove('btn-success');
+            button.classList.add('btn-kp-primary');
+            button.classList.remove('btn-kp-success');
             button.innerHTML = '<i class="fas fa-map-marker-alt me-1"></i>Add Points Mode';
         }
     }
@@ -1952,7 +1952,7 @@ async createSubstationMarker(station) {
 }
 
     createSubstationTooltip(station, hasFibre) {
-        const statusClass = hasFibre ? 'bg-success' : 'bg-secondary';
+        const statusClass = hasFibre ? 'bg-kp-green' : 'bg-secondary';
         const statusText = hasFibre ? 'Fibre Available' : 'No Fibre';
         const capacity = station.capacity && station.capacity !== 'N/A' ? station.capacity : 'Not specified';
         const connectionType = station.connectionType || 'Not specified';
@@ -2067,7 +2067,7 @@ async createSubstationMarker(station) {
 
             if (distanceLabel) {
                 distanceLabel.textContent = `${this.points.length} points`;
-                distanceLabel.className = 'd-block text-success';
+                distanceLabel.className = 'd-block text-kp-green';
             }
 
             // Update route summary panel
@@ -2221,16 +2221,16 @@ async createSubstationMarker(station) {
         if (!startBtn || !endBtn) return;
 
         if (mode === 'start') {
-            startBtn.classList.add('btn-success');
+            startBtn.classList.add('btn-kp-success');
             startBtn.classList.remove('btn-dark');
             endBtn.classList.add('btn-dark');
-            endBtn.classList.remove('btn-success');
+            endBtn.classList.remove('btn-kp-success');
             ToastManager.show('Click on a substation to set as start point', 'info');
         } else if (mode === 'end') {
-            endBtn.classList.add('btn-success');
+            endBtn.classList.add('btn-kp-success');
             endBtn.classList.remove('btn-dark');
             startBtn.classList.add('btn-dark');
-            startBtn.classList.remove('btn-success');
+            startBtn.classList.remove('btn-kp-success');
             ToastManager.show('Click on a substation to set as end point', 'info');
         }
 
@@ -2786,7 +2786,7 @@ function updateAdditionalServicesReview() {
 
         html += `
             <div class="mb-1">
-                <span class="badge bg-primary me-2">${category}</span>
+                <span class="badge bg-kp-blue me-2">${category}</span>
                 ${name} - $${price.toFixed(2)}/month
             </div>
         `;

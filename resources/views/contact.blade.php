@@ -18,7 +18,7 @@
                 <h1 class="display-4 fw-bold text-white mb-4">Get in Touch</h1>
                 <p class="lead text-light opacity-85 mb-4">We're here to help you with your fibre infrastructure needs. Reach out to us for inquiries, support, or partnership opportunities.</p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="#contact-form" class="btn btn-primary btn-lg px-4">
+                    <a href="#contact-form" class="btn btn-kp-primary btn-lg px-4">
                         <i class="fas fa-paper-plane me-2"></i> Send Message
                     </a>
                     <a href="tel:+254700000000" class="btn btn-outline-light btn-lg px-4">
@@ -29,11 +29,11 @@
             <div class="col-lg-6">
                 <div class="contact-visualization position-relative">
                     <div class="contact-node main-node">
-                        <i class="fas fa-headset fa-3x text-primary"></i>
+                        <i class="fas fa-headset fa-3x text-kp-blue"></i>
                         <div class="node-label">Support</div>
                     </div>
                     <div class="contact-node sales-node">
-                        <i class="fas fa-handshake fa-3x text-success"></i>
+                        <i class="fas fa-handshake fa-3x text-kp-green"></i>
                         <div class="node-label">Sales</div>
                     </div>
                     <div class="contact-node tech-node">
@@ -41,7 +41,7 @@
                         <div class="node-label">Technical</div>
                     </div>
                     <div class="contact-node partner-node">
-                        <i class="fas fa-users fa-3x text-warning"></i>
+                        <i class="fas fa-users fa-3x text-kp-yellow"></i>
                         <div class="node-label">Partnership</div>
                     </div>
                     <div class="pulse-ring"></div>
@@ -56,7 +56,7 @@
     <div class="container">
         <div class="row mb-5">
             <div class="col-12 text-center">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">Contact Channels</span>
+                <span class="badge bg-kp-blue bg-opacity-10 text-kp-blue mb-3 px-3 py-2">Contact Channels</span>
                 <h2 class="display-5 fw-bold mb-4">Multiple Ways to Connect</h2>
                 <p class="lead text-muted mx-auto" style="max-width: 700px;">Choose the most convenient way to get in touch with our team. We're always ready to assist.</p>
             </div>
@@ -68,12 +68,12 @@
                 <div class="card border-0 shadow-sm h-100 text-center hover-lift">
                     <div class="card-body p-4">
                         <div class="contact-icon-wrapper mb-4 mx-auto">
-                            <i class="fas fa-phone-alt fa-3x text-primary"></i>
+                            <i class="fas fa-phone-alt fa-3x text-kp-blue"></i>
                         </div>
                         <h4 class="h5 mb-3">Phone Support</h4>
                         <p class="text-muted mb-3">Available 24/7 for urgent issues and emergencies.</p>
                         <div class="contact-info">
-                            <a href="tel:+254700000000" class="btn btn-outline-primary btn-sm">
+                            <a href="tel:+254700000000" class="btn btn-outline-kp-primary btn-sm">
                                 <i class="fas fa-phone me-1"></i> +254 700 000 000
                             </a>
                         </div>
@@ -85,12 +85,12 @@
                 <div class="card border-0 shadow-sm h-100 text-center hover-lift">
                     <div class="card-body p-4">
                         <div class="contact-icon-wrapper mb-4 mx-auto">
-                            <i class="fas fa-envelope fa-3x text-success"></i>
+                            <i class="fas fa-envelope fa-3x text-kp-green"></i>
                         </div>
                         <h4 class="h5 mb-3">Email</h4>
                         <p class="text-muted mb-3">Get detailed responses within 2 hours during business hours.</p>
                         <div class="contact-info">
-                            <a href="mailto:Fiber@kplc.co.ke" class="btn btn-outline-success btn-sm">
+                            <a href="mailto:Fiber@kplc.co.ke" class="btn btn-outline-kp-success btn-sm">
                                 <i class="fas fa-envelope me-1"></i> Fiber@kplc.co.ke
                             </a>
                         </div>
@@ -119,7 +119,7 @@
                 <div class="card border-0 shadow-sm h-100 text-center hover-lift">
                     <div class="card-body p-4">
                         <div class="contact-icon-wrapper mb-4 mx-auto">
-                            <i class="fas fa-calendar-alt fa-3x text-warning"></i>
+                            <i class="fas fa-calendar-alt fa-3x text-kp-yellow"></i>
                         </div>
                         <h4 class="h5 mb-3">Schedule Call</h4>
                         <p class="text-muted mb-3">Book a meeting with our experts at your convenience.</p>
@@ -138,7 +138,7 @@
             <!-- Contact Form -->
             <div class="col-lg-8">
                 <div class="card border-0 shadow-lg" id="contact-form">
-                    <div class="card-header bg-primary text-white py-3">
+                    <div class="card-header bg-kp-blue text-white py-3">
                         <h3 class="h4 mb-0"><i class="fas fa-paper-plane me-2"></i> Send Us a Message</h3>
                     </div>
                     <div class="card-body p-4 p-md-5">
@@ -149,7 +149,7 @@
                                     <label for="name" class="form-label fw-bold">Full Name <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-user text-primary"></i>
+                                            <i class="fas fa-user text-kp-blue"></i>
                                         </span>
                                         <input type="text" class="form-control border-start-0" id="name" name="name" required placeholder="Enter your full name">
                                     </div>
@@ -160,7 +160,7 @@
                                     <label for="email" class="form-label fw-bold">Email Address <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light border-end-0">
-                                            <i class="fas fa-envelope text-primary"></i>
+                                            <i class="fas fa-envelope text-kp-blue"></i>
                                         </span>
                                         <input type="email" class="form-control border-start-0" id="email" name="email" required placeholder="your.email@example.com">
                                     </div>
@@ -172,7 +172,7 @@
                                 <label for="company" class="form-label fw-bold">Company Name</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
-                                        <i class="fas fa-building text-primary"></i>
+                                        <i class="fas fa-building text-kp-blue"></i>
                                     </span>
                                     <input type="text" class="form-control border-start-0" id="company" name="company" placeholder="Your company (optional)">
                                 </div>
@@ -182,7 +182,7 @@
                                 <label for="subject" class="form-label fw-bold">Subject <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0">
-                                        <i class="fas fa-tag text-primary"></i>
+                                        <i class="fas fa-tag text-kp-blue"></i>
                                     </span>
                                     <input type="text" class="form-control border-start-0" id="subject" name="subject" required placeholder="What is this regarding?">
                                 </div>
@@ -220,7 +220,7 @@
                             </div>
 
                             <div class="d-grid gap-2 d-md-flex">
-                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <button type="submit" class="btn btn-kp-primary btn-lg px-5">
                                     <i class="fas fa-paper-plane me-2"></i> Send Message
                                 </button>
                                 <button type="reset" class="btn btn-outline-secondary btn-lg px-5">
@@ -237,13 +237,13 @@
                 <!-- Office Information -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-light py-3">
-                        <h4 class="h5 mb-0"><i class="fas fa-map-marker-alt me-2 text-primary"></i> Our Office</h4>
+                        <h4 class="h5 mb-0"><i class="fas fa-map-marker-alt me-2 text-kp-blue"></i> Our Office</h4>
                     </div>
                     <div class="card-body p-4">
                         <div class="office-info mb-4">
                             <div class="d-flex mb-3">
                                 <div class="office-icon me-3">
-                                    <i class="fas fa-map-pin fa-2x text-primary"></i>
+                                    <i class="fas fa-map-pin fa-2x text-kp-blue"></i>
                                 </div>
                                 <div>
                                     <h5 class="h6 mb-1">Address</h5>
@@ -253,7 +253,7 @@
 
                             <div class="d-flex mb-3">
                                 <div class="office-icon me-3">
-                                    <i class="fas fa-clock fa-2x text-success"></i>
+                                    <i class="fas fa-clock fa-2x text-kp-green"></i>
                                 </div>
                                 <div>
                                     <h5 class="h6 mb-1">Business Hours</h5>
@@ -281,7 +281,7 @@
 
                             <div class="d-flex">
                                 <div class="office-icon me-3">
-                                    <i class="fas fa-envelope fa-2x text-warning"></i>
+                                    <i class="fas fa-envelope fa-2x text-kp-yellow"></i>
                                 </div>
                                 <div>
                                     <h5 class="h6 mb-1">Email Addresses</h5>
@@ -298,13 +298,13 @@
                         <div class="quick-contact">
                             <h5 class="h6 mb-3">Quick Contact</h5>
                             <div class="d-grid gap-2">
-                                <a href="https://wa.me/254700000000" class="btn btn-success" target="_blank">
+                                <a href="https://wa.me/254700000000" class="btn btn-kp-success" target="_blank">
                                     <i class="fab fa-whatsapp me-2"></i> WhatsApp Us
                                 </a>
                                 <a href="skype:darkfibre.crm?call" class="btn btn-info">
                                     <i class="fab fa-skype me-2"></i> Skype Call
                                 </a>
-                                <a href="mailto:Fiber@kplc.co.ke" class="btn btn-warning">
+                                <a href="mailto:Fiber@kplc.co.ke" class="btn btn-kp-warning">
                                     <i class="fas fa-envelope me-2"></i> Quick Email
                                 </a>
                             </div>
@@ -315,13 +315,13 @@
                 <!-- Map Placeholder -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-light py-3">
-                        <h4 class="h5 mb-0"><i class="fas fa-map me-2 text-primary"></i> Our Location</h4>
+                        <h4 class="h5 mb-0"><i class="fas fa-map me-2 text-kp-blue"></i> Our Location</h4>
                     </div>
                     <div class="card-body p-0">
                         <div class="map-placeholder position-relative">
                             <div class="map-overlay d-flex align-items-center justify-content-center">
                                 <div class="text-center">
-                                    <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                                    <i class="fas fa-map-marker-alt fa-3x text-kp-blue mb-3"></i>
                                     <h5 class="mb-2">Nairobi, Kenya</h5>
                                     <p class="small mb-0">Click to view on Google Maps</p>
                                 </div>
@@ -337,9 +337,9 @@
                 <div class="card border-0 shadow-sm mt-4">
                     <div class="card-body p-4 text-center">
                         <div class="response-time">
-                            <i class="fas fa-bolt fa-2x text-primary mb-3"></i>
+                            <i class="fas fa-bolt fa-2x text-kp-blue mb-3"></i>
                             <h5 class="h6 mb-2">Average Response Time</h5>
-                            <div class="display-6 fw-bold text-success mb-2">2.3 hours</div>
+                            <div class="display-6 fw-bold text-kp-green mb-2">2.3 hours</div>
                             <p class="small text-muted mb-0">For all inquiries during business hours</p>
                         </div>
                     </div>
@@ -350,7 +350,7 @@
         <!-- FAQ Section -->
         <div class="row mt-5 pt-5 border-top">
             <div class="col-12 text-center mb-5">
-                <span class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2">FAQ</span>
+                <span class="badge bg-kp-blue bg-opacity-10 text-kp-blue mb-3 px-3 py-2">FAQ</span>
                 <h2 class="display-5 fw-bold mb-4">Frequently Asked Questions</h2>
                 <p class="lead text-muted mx-auto" style="max-width: 700px;">Quick answers to common questions about contacting us.</p>
             </div>
@@ -388,7 +388,7 @@
 <div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title" id="scheduleModalLabel"><i class="fas fa-calendar-alt me-2"></i> Schedule a Call</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -437,7 +437,7 @@
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
+                        <button type="submit" class="btn btn-kp-primary btn-lg">
                             <i class="fas fa-calendar-check me-2"></i> Schedule Appointment
                         </button>
                     </div>
@@ -450,7 +450,7 @@
 <!-- Chat Widget (Simulated) -->
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11; display: none;" id="chatWidget">
     <div class="card shadow-lg border-0" style="width: 350px;">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
             <div>
                 <i class="fas fa-headset me-2"></i>
                 <strong>Live Support</strong>
@@ -467,7 +467,7 @@
             <div class="chat-input p-3 border-top">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Type your message..." id="chatInput">
-                    <button class="btn btn-primary" type="button" id="sendChatBtn">
+                    <button class="btn btn-kp-primary" type="button" id="sendChatBtn">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
@@ -715,9 +715,9 @@ document.addEventListener('DOMContentLoaded', function() {
             charCount.textContent = `${length}/2000 characters`;
 
             if (length > 1800) {
-                charCount.classList.add('text-warning');
+                charCount.classList.add('text-kp-yellow');
             } else {
-                charCount.classList.remove('text-warning');
+                charCount.classList.remove('text-kp-yellow');
             }
 
             if (length > 2000) {

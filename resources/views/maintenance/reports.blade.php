@@ -15,7 +15,7 @@
                         <button type="button" class="btn btn-outline-secondary btn-sm" onclick="window.print()">
                             <i class="fas fa-print me-1"></i>Print Report
                         </button>
-                        <button type="button" class="btn btn-outline-primary btn-sm" id="exportBtn">
+                        <button type="button" class="btn btn-outline-kp-primary btn-sm" id="exportBtn">
                             <i class="fas fa-download me-1"></i>Export
                         </button>
                     </div>
@@ -45,7 +45,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary me-2">Apply Filters</button>
+                                    <button type="submit" class="btn btn-kp-primary me-2">Apply Filters</button>
                                     <a href="{{ route('maintenance.reports') }}" class="btn btn-outline-secondary">Reset</a>
                                 </div>
                             </form>
@@ -55,7 +55,7 @@
                     <!-- Summary Cards -->
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <div class="card bg-primary text-white">
+                            <div class="card bg-kp-blue text-white">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div>
@@ -77,7 +77,7 @@
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-kp-green text-white">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between">
                                         <div>
@@ -162,7 +162,7 @@
                                                 <span class="fw-bold">{{ $type->count }}</span>
                                             </div>
                                             <div class="progress" style="height: 8px;">
-                                                <div class="progress-bar bg-primary"
+                                                <div class="progress-bar bg-kp-blue"
                                                      style="width: {{ ($type->count / $requestsStats['total']) * 100 }}%">
                                                 </div>
                                             </div>
@@ -209,7 +209,7 @@
                                                                     min(5, max(1, 5 - ($performance->avg_completion_time / 24))) : 3;
                                                             @endphp
                                                             @for($i = 1; $i <= 5; $i++)
-                                                                <i class="fas fa-star {{ $i <= $rating ? 'text-warning' : 'text-muted' }}"></i>
+                                                                <i class="fas fa-star {{ $i <= $rating ? 'text-kp-yellow' : 'text-muted' }}"></i>
                                                             @endfor
                                                         </td>
                                                     </tr>

@@ -101,7 +101,7 @@
                             <a href="{{ route('finance.sap-assignment.index') }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to List
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-check-circle"></i> Assign SAP Account
                             </button>
                         </div>

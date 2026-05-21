@@ -9,7 +9,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-drafting-compass text-primary"></i> Design Requests
+                        <i class="fas fa-drafting-compass text-kp-blue"></i> Design Requests
                     </h1>
                     <p class="text-muted">Manage your assigned fibre route design requests</p>
                 </div>
@@ -24,13 +24,13 @@
         <div class="card-header bg-white py-3">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-semibold">
-                    <i class="fas fa-list me-2 text-primary"></i>My Design Requests
+                    <i class="fas fa-list me-2 text-kp-blue"></i>My Design Requests
                 </h5>
                 <div class="d-flex gap-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="goBack()">
                         <i class="fas fa-arrow-left me-1"></i>Back
                     </button>
-                    <a href="{{ route('designer.dashboard') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('designer.dashboard') }}" class="btn btn-sm btn-outline-kp-primary">
                         <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                     </a>
                 </div>
@@ -89,12 +89,12 @@
         <a href="{{ route('designer.quotations.show', $existingQuotation->id) }}"
            target="_blank"
            rel="noopener noreferrer"
-           class="btn btn-warning" title="View Quote">
+           class="btn btn-kp-warning" title="View Quote">
             <i class="fas fa-list"></i>
         </a>
     @else
         <!-- Show disabled button if no quotation exists -->
-        <button class="btn btn-warning" disabled title="No Quote Available">
+        <button class="btn btn-kp-warning" disabled title="No Quote Available">
             <i class="fas fa-list"></i>
         </button>
     @endif
@@ -120,7 +120,7 @@
         @else
         <!-- Generate Acceptance Certificate -->
         <a href="{{ route('ictengineer.certificates.acceptance.create', $request) }}"
-           class="btn btn-warning"
+           class="btn btn-kp-warning"
            title="Generate Acceptance Certificate">
             <i class="fas fa-file-signature"></i>
         </a>
@@ -175,7 +175,7 @@
                                         <button type="button" class="btn btn-outline-secondary me-2" onclick="goBack()">
                                             <i class="fas fa-arrow-left me-1"></i>Back to Previous
                                         </button>
-                                        <a href="{{ route('designer.dashboard') }}" class="btn btn-primary">
+                                        <a href="{{ route('designer.dashboard') }}" class="btn btn-kp-primary">
                                             <i class="fas fa-tachometer-alt me-1"></i>Go to Dashboard
                                         </a>
                                     </div>
@@ -231,7 +231,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveStatus" data-update-url="{{ route('account-manager.design-requests.update-status', ['designRequest' => 'REPLACE_ID']) }}">
+                <button type="button" class="btn btn-kp-primary" id="saveStatus" data-update-url="{{ route('account-manager.design-requests.update-status', ['designRequest' => 'REPLACE_ID']) }}">
                     Update Status
                 </button>
             </div>
@@ -358,12 +358,12 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 /* Optional: Add a visual indicator for links that open in new windows */
-.btn-warning[target="_blank"] {
+.btn-kp-warning[target="_blank"] {
     position: relative;
 }
 
 /* Add a small external link icon to quotation buttons */
-.btn-warning[target="_blank"] i::after {
+.btn-kp-warning[target="_blank"] i::after {
     content: " ↗";
     font-size: 0.7em;
     position: relative;

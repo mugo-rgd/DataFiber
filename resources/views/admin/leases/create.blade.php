@@ -16,7 +16,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-file-contract text-primary"></i> Create New Lease
+                <i class="fas fa-file-contract text-kp-blue"></i> Create New Lease
             </h1>
             <p class="text-muted">Create a new dark fibre lease agreement</p>
         </div>
@@ -44,7 +44,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-plus-circle me-2"></i>Lease Information
                     </h6>
@@ -68,7 +68,7 @@
                                             <br><small class="text-muted">Email: {{ $selectedCustomer->email }}</small>
                                         </div>
                                         <input type="hidden" name="customer_id" value="{{ $customerId }}">
-                                        <div class="form-text text-success">
+                                        <div class="form-text text-kp-green">
                                             <i class="fas fa-check-circle"></i> Customer automatically assigned from customer list.
                                         </div>
                                     </div>
@@ -93,7 +93,7 @@
                                 @if($approvedQuotation)
                                 {{-- Show auto-selected approved quotation --}}
                                 <div class="form-control bg-light">
-                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <i class="fas fa-check-circle text-kp-green me-2"></i>
                                     <strong>Quotation #{{ $approvedQuotation->quotation_number }}</strong>
                                     <span class="text-muted">- Approved</span>
                                     <br>
@@ -104,7 +104,7 @@
                                     @endif
                                 </div>
                                 <input type="hidden" name="quotation_id" value="{{ $approvedQuotation->id }}">
-                                <small class="text-success mt-1">
+                                <small class="text-kp-green mt-1">
                                     <i class="fas fa-check-circle"></i> Approved quotation auto-loaded
                                 </small>
 
@@ -163,7 +163,7 @@
                                 <small class="text-muted">Select an approved quotation to auto-fill lease details</small>
 
                                 @if($designRequest && $quotations->isEmpty())
-                                    <div class="alert alert-warning mt-2">
+                                    <div class="alert alert-kp-warning mt-2">
                                         <i class="fas fa-exclamation-triangle"></i>
                                         No approved quotations found for this design request
                                     </div>
@@ -496,7 +496,7 @@
                                     <a href="{{ route('account-manager.leases.index', ['customer_id' => $customerId]) }}" class="btn btn-secondary">
                                         <i class="fas fa-arrow-left me-2"></i>Cancel
                                     </a>
-                                    <button type="submit" class="btn btn-primary">
+                                    <button type="submit" class="btn btn-kp-primary">
                                         <i class="fas fa-save me-2"></i>Create Lease
                                     </button>
                                 </div>
@@ -955,7 +955,7 @@ function handleManualQuotationSelect(event) {
 function showSuccessMessage(message) {
     // Create and show a simple alert
     const alertDiv = document.createElement('div');
-    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+    alertDiv.className = 'alert alert-kp-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
     alertDiv.style.zIndex = '9999';
     alertDiv.innerHTML = `
         <i class="fas fa-check-circle me-2"></i>

@@ -96,7 +96,7 @@
                         </div>
 
                         <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-save"></i> Create Payment Followup
                             </button>
                             <a href="{{ route('account-manager.payments.index') }}" class="btn btn-secondary">Cancel</a>

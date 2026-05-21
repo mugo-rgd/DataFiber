@@ -8,9 +8,9 @@
         <!-- Sidebar with conversations -->
         <div class="col-md-4 col-lg-3">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Messages</h5>
-                    <button onclick="showNewChatModal()" class="btn btn-sm btn-primary">
+                <div class="card-header d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #0066B3 0%, #009639 100%); color: white;">
+                    <h5 class="mb-0 text-white">Messages</h5>
+                    <button onclick="showNewChatModal()" class="btn btn-sm" style="background: white; color: #0066B3;">
                         <i class="fas fa-plus"></i> New Chat
                     </button>
                 </div>
@@ -36,8 +36,8 @@
                                data-id="{{ $conversation->id }}">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar me-3">
-                                        <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-                                             style="width: 40px; height: 40px;">
+                                        <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                                             style="width: 40px; height: 40px; background: linear-gradient(135deg, #0066B3, #009639);">
                                            {{ substr($userName, 0, 1) }}
                                         </div>
                                     </div>
@@ -59,13 +59,13 @@
                                     </div>
                                 </div>
                                 @if($unreadCount > 0)
-                                    <span class="badge bg-danger rounded-pill unread-badge">{{ $unreadCount }}</span>
+                                    <span class="badge rounded-pill unread-badge" style="background-color: #dc3545;">{{ $unreadCount }}</span>
                                 @endif
                             </a>
                         @empty
                             <div class="text-center py-4">
                                 <p class="text-muted">No conversations yet</p>
-                                <button onclick="showNewChatModal()" class="btn btn-primary">Start a Chat</button>
+                                <button onclick="showNewChatModal()" class="btn" style="background: #0066B3; color: white;">Start a Chat</button>
                             </div>
                         @endforelse
                     </div>
@@ -85,7 +85,7 @@
             <div class="card h-100" id="noChatSelected">
                 <div class="card-body text-center py-5">
                     <div class="text-muted">
-                        <i class="fas fa-comments fa-3x mb-3"></i>
+                        <i class="fas fa-comments fa-3x mb-3" style="color: #0066B3;"></i>
                         <h4>Select a conversation</h4>
                         <p class="mb-0">Choose a chat from the sidebar or start a new one</p>
                     </div>
@@ -100,8 +100,8 @@
                     </button>
                     <div class="d-flex align-items-center flex-grow-1" id="chatHeader">
                         <div class="avatar me-3">
-                            <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-                                 style="width: 45px; height: 45px; font-size: 18px;" id="chatAvatar">
+                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                                 style="width: 45px; height: 45px; font-size: 18px; background: linear-gradient(135deg, #0066B3, #009639);" id="chatAvatar">
                             </div>
                         </div>
                         <div>
@@ -115,7 +115,7 @@
                 <div class="card-body" style="height: 500px; overflow-y: auto;" id="messagesContainer">
                     <div id="messages"></div>
                     <div id="loadingMore" style="display: none;" class="text-center py-2">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <div class="spinner-border spinner-border-sm text-kp-blue" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <span class="ms-2">Loading more messages...</span>
@@ -125,9 +125,9 @@
                 <div class="card-footer">
                     <!-- File Upload Preview Area -->
                     <div id="filePreviewArea" class="mb-2" style="display: none;">
-                        <div class="alert alert-info mb-2 p-2 d-flex justify-content-between align-items-center">
+                        <div class="alert mb-2 p-2 d-flex justify-content-between align-items-center" style="background: #e7f1ff; border-color: #0066B3;">
                             <div class="d-flex align-items-center">
-                                <i class="fas fa-file me-2"></i>
+                                <i class="fas fa-file me-2" style="color: #0066B3;"></i>
                                 <span id="selectedFileName"></span>
                                 <small class="text-muted ms-2" id="selectedFileSize"></small>
                             </div>
@@ -148,7 +148,7 @@
                             style="resize: none;"
                             onkeydown="handleMessageKeydown(event)"
                         ></textarea>
-                        <button class="btn btn-primary" onclick="sendMessage()" id="sendButton">
+                        <button class="btn" onclick="sendMessage()" id="sendButton" style="background: linear-gradient(135deg, #0066B3, #009639); color: white;">
                             <i class="fas fa-paper-plane"></i> Send
                         </button>
                     </div>
@@ -165,11 +165,11 @@
 <div class="modal fade" id="newChatModal" tabindex="-1" aria-labelledby="newChatModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="newChatModalLabel">
+            <div class="modal-header" style="background: linear-gradient(135deg, #0066B3 0%, #009639 100%);">
+                <h5 class="modal-title text-white" id="newChatModalLabel">
                     <i class="fas fa-comment me-2"></i>Start New Chat
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -193,11 +193,11 @@
                 <div class="mt-3">
                     <small class="text-muted d-block mb-2">Quick filter by role:</small>
                     <div class="d-flex gap-2 flex-wrap">
-                        <span class="badge bg-primary cursor-pointer" onclick="filterByRole('customer')">Customers</span>
-                        <span class="badge bg-info cursor-pointer" onclick="filterByRole('account_manager')">Account Managers</span>
-                        <span class="badge bg-success cursor-pointer" onclick="filterByRole('finance')">Finance</span>
-                        <span class="badge bg-warning cursor-pointer" onclick="filterByRole('ict_engineer')">ICT Engineers</span>
-                        <span class="badge bg-secondary cursor-pointer" onclick="filterByRole('technician')">Technicians</span>
+                        <span class="badge cursor-pointer" style="background: #0066B3;" onclick="filterByRole('customer')">Customers</span>
+                        <span class="badge cursor-pointer" style="background: #009639;" onclick="filterByRole('account_manager')">Account Managers</span>
+                        <span class="badge cursor-pointer" style="background: #17a2b8;" onclick="filterByRole('finance')">Finance</span>
+                        <span class="badge cursor-pointer" style="background: #FFD700; color: #003f20;" onclick="filterByRole('ict_engineer')">ICT Engineers</span>
+                        <span class="badge cursor-pointer" style="background: #6c757d;" onclick="filterByRole('technician')">Technicians</span>
                     </div>
                 </div>
             </div>
@@ -210,8 +210,8 @@
         <div class="card-header bg-transparent border-bottom-0 pt-4 px-4">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                 <div class="d-flex align-items-center gap-2">
-                    <div class="bg-primary bg-opacity-10 p-2 rounded-3">
-                        <i class="fas fa-headset text-primary fa-fw"></i>
+                    <div class="p-2 rounded-3" style="background: rgba(0, 102, 179, 0.1);">
+                        <i class="fas fa-headset fa-fw" style="color: #0066B3;"></i>
                     </div>
                     <div>
                         <h5 class="mb-0 fw-semibold">Contact Us</h5>
@@ -219,7 +219,7 @@
                     </div>
                 </div>
 
-                <a href="{{ route('contact') }}" class="btn btn-primary btn-sm rounded-pill px-3">
+                <a href="{{ route('contact') }}" class="btn btn-sm rounded-pill px-3" style="background: #0066B3; color: white;">
                     <i class="fas fa-envelope fa-sm me-2"></i>
                     Get in Touch
                     <i class="fas fa-arrow-right fa-xs ms-2"></i>
@@ -373,7 +373,7 @@ function openConversation(conversationId) {
 
     document.getElementById('messages').innerHTML = `
         <div class="text-center text-muted py-5">
-            <div class="spinner-border text-primary mb-3" role="status">
+            <div class="spinner-border text-kp-blue mb-3" role="status" style="color: #0066B3;">
                 <span class="visually-hidden">Loading...</span>
             </div>
             <p>Loading messages...</p>
@@ -429,7 +429,7 @@ function openConversation(conversationId) {
                 <i class="fas fa-exclamation-circle fa-2x mb-3 text-danger"></i>
                 <p>Failed to load messages.</p>
                 <p class="small text-muted">Error: ${error.message}</p>
-                <button class="btn btn-sm btn-primary mt-2" onclick="openConversation(${conversationId})">
+                <button class="btn btn-sm btn-kp-primary mt-2" style="background: #0066B3;" onclick="openConversation(${conversationId})">
                     Try Again
                 </button>
             </div>
@@ -454,7 +454,7 @@ function renderMessages(messages) {
     if (!messages || messages.length === 0) {
         container.innerHTML = `
             <div class="text-center text-muted py-5">
-                <i class="fas fa-comment-dots fa-3x mb-3"></i>
+                <i class="fas fa-comment-dots fa-3x mb-3" style="color: #0066B3;"></i>
                 <p>No messages yet. Send your first message!</p>
             </div>
         `;
@@ -472,12 +472,12 @@ function renderMessages(messages) {
 
             return `
                 <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
-                    <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
-                         style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                    <div class="d-inline-block ${msg.user_id === currentUser.id ? 'text-white' : 'bg-light'}"
+                         style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px; background: linear-gradient(135deg, #0066B3, #009639);' : 'border-bottom-left-radius: 4px; background: #f8f9fa;'}">
                         <div class="message-file text-center">
                             <i class="fas ${fileIcon} fa-2x mb-2"></i>
                             <div class="message-text">
-                                <a href="/chat/download/${fileId}" target="_blank" class="${msg.user_id === currentUser.id ? 'text-white' : 'text-primary'} text-decoration-underline">
+                                <a href="/chat/download/${fileId}" target="_blank" class="${msg.user_id === currentUser.id ? 'text-white' : 'text-kp-blue'} text-decoration-underline">
                                     ${escapeHtml(fileName)}
                                 </a>
                             </div>
@@ -494,8 +494,8 @@ function renderMessages(messages) {
             // Text message
             return `
                 <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
-                    <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
-                         style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                    <div class="d-inline-block ${msg.user_id === currentUser.id ? 'text-white' : 'bg-light'}"
+                         style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px; background: linear-gradient(135deg, #0066B3, #009639);' : 'border-bottom-left-radius: 4px; background: #f8f9fa;'}">
                         <div class="message-text">${escapeHtml(msg.body)}</div>
                         <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
                             <span>${formatTime(msg.created_at)}</span>
@@ -601,8 +601,8 @@ function addMessageToUI(message) {
 
         messageHtml = `
             <div class="message mb-3 text-end" data-id="${message.id}">
-                <div class="d-inline-block bg-primary text-white"
-                     style="max-width: 70%; padding: 10px 15px; border-radius: 18px; border-bottom-right-radius: 4px;">
+                <div class="d-inline-block text-white"
+                     style="max-width: 70%; padding: 10px 15px; border-radius: 18px; border-bottom-right-radius: 4px; background: linear-gradient(135deg, #0066B3, #009639);">
                     <div class="message-file text-center">
                         <i class="fas ${fileIcon} fa-2x mb-2"></i>
                         <div class="message-text">
@@ -621,8 +621,8 @@ function addMessageToUI(message) {
     } else {
         messageHtml = `
             <div class="message mb-3 text-end" data-id="${message.id}">
-                <div class="d-inline-block bg-primary text-white"
-                     style="max-width: 70%; padding: 10px 15px; border-radius: 18px; border-bottom-right-radius: 4px;">
+                <div class="d-inline-block text-white"
+                     style="max-width: 70%; padding: 10px 15px; border-radius: 18px; border-bottom-right-radius: 4px; background: linear-gradient(135deg, #0066B3, #009639);">
                     <div class="message-text">${escapeHtml(message.body)}</div>
                     <div class="message-meta" style="font-size: 11px; margin-top: 5px; color: rgba(255,255,255,0.8)">
                         <span>Just now</span>
@@ -668,7 +668,7 @@ function searchUsers(query) {
 
     resultsEl.innerHTML = `
         <div class="list-group-item text-center py-3">
-            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <div class="spinner-border spinner-border-sm text-kp-blue" role="status" style="color: #0066B3;"></div>
             <span class="ms-2 small">Searching users...</span>
         </div>
     `;
@@ -701,15 +701,15 @@ function searchUsers(query) {
                    onclick="startNewConversation(${user.id})">
                     <div class="d-flex align-items-center">
                         <div class="avatar me-3">
-                            <div class="bg-${getUserColor(user.role)} rounded-circle text-white d-flex align-items-center justify-content-center"
-                                 style="width: 45px; height: 45px; font-size: 16px;">
+                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                                 style="width: 45px; height: 45px; font-size: 16px; background: linear-gradient(135deg, #0066B3, #009639);">
                                 ${getInitials(user.name)}
                             </div>
                         </div>
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-1 fw-bold">${escapeHtml(user.name)}</h6>
-                                <span class="badge bg-${getRoleBadgeColor(user.role)}">${user.role || 'User'}</span>
+                                <span class="badge" style="background: ${getRoleColor(user.role)};">${user.role || 'User'}</span>
                             </div>
                             <p class="mb-0 small text-muted">
                                 <i class="fas fa-envelope me-1"></i>${escapeHtml(user.email)}
@@ -727,10 +727,24 @@ function searchUsers(query) {
                 <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
                 <p class="text-danger mb-0">Failed to search users. Please try again.</p>
                 <small class="text-muted">${error.message}</small>
-                <button class="btn btn-sm btn-outline-primary mt-2" onclick="searchUsers('${query}')">Retry</button>
+                <button class="btn btn-sm btn-outline-kp-primary mt-2" style="color: #0066B3; border-color: #0066B3;" onclick="searchUsers('${query}')">Retry</button>
             </div>
         `;
     });
+}
+
+function getRoleColor(role) {
+    const colors = {
+        'admin': '#dc3545',
+        'system_admin': '#343a40',
+        'account_manager': '#009639',
+        'finance': '#17a2b8',
+        'customer': '#0066B3',
+        'ict_engineer': '#FFD700',
+        'technician': '#6c757d',
+        'surveyor': '#17a2b8'
+    };
+    return colors[role] || '#6c757d';
 }
 
 // ==================== START NEW CONVERSATION ====================
@@ -738,7 +752,7 @@ function startNewConversation(userId) {
     const resultsEl = document.getElementById('searchResults');
     resultsEl.innerHTML = `
         <div class="list-group-item text-center py-3">
-            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <div class="spinner-border spinner-border-sm text-kp-blue" role="status" style="color: #0066B3;"></div>
             <span class="ms-2 small">Creating conversation...</span>
         </div>
     `;
@@ -793,7 +807,7 @@ function updateNotificationBadge() {
                 if (existingBadge) {
                     existingBadge.textContent = count;
                 } else {
-                    chatLink.insertAdjacentHTML('beforeend', `<span class="badge bg-danger ms-1">${count}</span>`);
+                    chatLink.insertAdjacentHTML('beforeend', `<span class="badge ms-1" style="background: #dc3545;">${count}</span>`);
                 }
             } else if (existingBadge) {
                 existingBadge.remove();
@@ -919,12 +933,12 @@ function loadMoreMessages() {
                 const fileId = msg.id;
                 return `
                     <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
-                        <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
-                             style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                        <div class="d-inline-block ${msg.user_id === currentUser.id ? 'text-white' : 'bg-light'}"
+                             style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px; background: linear-gradient(135deg, #0066B3, #009639);' : 'border-bottom-left-radius: 4px; background: #f8f9fa;'}">
                             <div class="message-file text-center">
                                 <i class="fas ${fileIcon} fa-2x mb-2"></i>
                                 <div class="message-text">
-                                    <a href="/chat/download/${fileId}" target="_blank" class="${msg.user_id === currentUser.id ? 'text-white' : 'text-primary'} text-decoration-underline">
+                                    <a href="/chat/download/${fileId}" target="_blank" class="${msg.user_id === currentUser.id ? 'text-white' : 'text-kp-blue'} text-decoration-underline">
                                         ${escapeHtml(fileName)}
                                     </a>
                                 </div>
@@ -939,8 +953,8 @@ function loadMoreMessages() {
             } else {
                 return `
                     <div class="message mb-3 ${msg.user_id === currentUser.id ? 'text-end' : 'text-start'}" data-id="${msg.id}">
-                        <div class="d-inline-block ${msg.user_id === currentUser.id ? 'bg-primary text-white' : 'bg-light'}"
-                             style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px;' : 'border-bottom-left-radius: 4px;'}">
+                        <div class="d-inline-block ${msg.user_id === currentUser.id ? 'text-white' : 'bg-light'}"
+                             style="max-width: 70%; padding: 10px 15px; border-radius: 18px; ${msg.user_id === currentUser.id ? 'border-bottom-right-radius: 4px; background: linear-gradient(135deg, #0066B3, #009639);' : 'border-bottom-left-radius: 4px; background: #f8f9fa;'}">
                             <div class="message-text">${escapeHtml(msg.body)}</div>
                             <div class="message-meta" style="font-size: 11px; margin-top: 5px; ${msg.user_id === currentUser.id ? 'color: rgba(255,255,255,0.8)' : 'color: #999'}">
                                 <span>${formatTime(msg.created_at)}</span>
@@ -961,24 +975,6 @@ function loadMoreMessages() {
         const loadingDiv = document.getElementById('loadingMore');
         if (loadingDiv) loadingDiv.style.display = 'none';
     });
-}
-
-function getUserColor(role) {
-    const colors = {
-        'admin': 'danger',
-        'system_admin': 'dark',
-        'account_manager': 'info',
-        'finance': 'success',
-        'customer': 'primary',
-        'ict_engineer': 'warning',
-        'technician': 'secondary',
-        'surveyor': 'info'
-    };
-    return colors[role] || 'secondary';
-}
-
-function getRoleBadgeColor(role) {
-    return getUserColor(role);
 }
 
 function filterByRole(role) {
@@ -1020,12 +1016,12 @@ window.addEventListener('popstate', function() {
 }
 
 #searchResults .list-group-item:hover {
-    border-left-color: #0d6efd;
+    border-left-color: #0066B3;
     background-color: #f8f9fc;
 }
 
 #searchResults .list-group-item.active {
-    border-left-color: #0d6efd;
+    border-left-color: #0066B3;
     background-color: #e7f1ff;
 }
 
@@ -1062,7 +1058,7 @@ window.addEventListener('popstate', function() {
 #filePreviewArea .alert {
     border-radius: 8px;
     background-color: #e7f1ff;
-    border-color: #b6d4fe;
+    border-color: #0066B3;
 }
 </style>
 @endpush

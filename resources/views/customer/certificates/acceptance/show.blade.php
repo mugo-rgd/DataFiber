@@ -11,10 +11,10 @@
                         <a href="{{ route('customer.certificates.acceptance.index') }}" class="btn btn-sm btn-secondary">
                             <i class="fas fa-arrow-left"></i> Back to List
                         </a>
-                        <a href="{{ route('customer.certificates.acceptance.preview', $certificate->id) }}" class="btn btn-sm btn-primary" target="_blank">
+                        <a href="{{ route('customer.certificates.acceptance.preview', $certificate->id) }}" class="btn btn-sm btn-kp-primary" target="_blank">
                             <i class="fas fa-file-pdf"></i> Preview PDF
                         </a>
-                        <a href="{{ route('customer.certificates.acceptance.download', $certificate->id) }}" class="btn btn-sm btn-success">
+                        <a href="{{ route('customer.certificates.acceptance.download', $certificate->id) }}" class="btn btn-sm btn-kp-success">
                             <i class="fas fa-download"></i> Download Package
                         </a>
                     </div>
@@ -129,7 +129,7 @@
                                                         <tr>
                                                             <th>Signature:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->witness1_signature_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                <a href="{{ Storage::url($certificate->witness1_signature_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                                     <i class="fas fa-signature"></i> View
                                                                 </a>
                                                             </td>
@@ -160,7 +160,7 @@
                                                         <tr>
                                                             <th>Signature:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->witness2_signature_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                <a href="{{ Storage::url($certificate->witness2_signature_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                                     <i class="fas fa-signature"></i> View
                                                                 </a>
                                                             </td>
@@ -170,7 +170,7 @@
                                                         <tr>
                                                             <th>Stamp:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->witness2_stamp_path) }}" target="_blank" class="btn btn-sm btn-warning">
+                                                                <a href="{{ Storage::url($certificate->witness2_stamp_path) }}" target="_blank" class="btn btn-sm btn-kp-warning">
                                                                     <i class="fas fa-stamp"></i> View
                                                                 </a>
                                                             </td>
@@ -201,7 +201,7 @@
                                                         <tr>
                                                             <th>Signature:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->witness3_signature_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                <a href="{{ Storage::url($certificate->witness3_signature_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                                     <i class="fas fa-signature"></i> View
                                                                 </a>
                                                             </td>
@@ -211,7 +211,7 @@
                                                         <tr>
                                                             <th>Stamp:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->witness3_stamp_path) }}" target="_blank" class="btn btn-sm btn-warning">
+                                                                <a href="{{ Storage::url($certificate->witness3_stamp_path) }}" target="_blank" class="btn btn-sm btn-kp-warning">
                                                                     <i class="fas fa-stamp"></i> View
                                                                 </a>
                                                             </td>
@@ -239,7 +239,7 @@
                                         <!-- Lessee 1 -->
                                         <div class="col-md-6">
                                             <div class="card">
-                                                <div class="card-header bg-warning">
+                                                <div class="card-header bg-kp-yellow">
                                                     <h6 class="card-title">Lessee Representative 1</h6>
                                                 </div>
                                                 <div class="card-body">
@@ -256,7 +256,7 @@
                                                         <tr>
                                                             <th>Signature:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->lessee1_signature_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                <a href="{{ Storage::url($certificate->lessee1_signature_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                                     <i class="fas fa-signature"></i> View
                                                                 </a>
                                                             </td>
@@ -266,7 +266,7 @@
                                                         <tr>
                                                             <th>Stamp:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->lessee1_stamp_path) }}" target="_blank" class="btn btn-sm btn-warning">
+                                                                <a href="{{ Storage::url($certificate->lessee1_stamp_path) }}" target="_blank" class="btn btn-sm btn-kp-warning">
                                                                     <i class="fas fa-stamp"></i> View
                                                                 </a>
                                                             </td>
@@ -280,7 +280,7 @@
                                         <!-- Lessee 2 -->
                                         <div class="col-md-6">
                                             <div class="card">
-                                                <div class="card-header bg-warning">
+                                                <div class="card-header bg-kp-yellow">
                                                     <h6 class="card-title">Lessee Representative 2</h6>
                                                 </div>
                                                 <div class="card-body">
@@ -297,7 +297,7 @@
                                                         <tr>
                                                             <th>Signature:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->lessee2_signature_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                                <a href="{{ Storage::url($certificate->lessee2_signature_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                                     <i class="fas fa-signature"></i> View
                                                                 </a>
                                                             </td>
@@ -307,7 +307,7 @@
                                                         <tr>
                                                             <th>Stamp:</th>
                                                             <td>
-                                                                <a href="{{ Storage::url($certificate->lessee2_stamp_path) }}" target="_blank" class="btn btn-sm btn-warning">
+                                                                <a href="{{ Storage::url($certificate->lessee2_stamp_path) }}" target="_blank" class="btn btn-sm btn-kp-warning">
                                                                     <i class="fas fa-stamp"></i> View
                                                                 </a>
                                                             </td>
@@ -338,10 +338,10 @@
                                                 <div class="info-box-content">
                                                     <span class="info-box-text">Test Report</span>
                                                     <span class="info-box-number">
-                                                        <a href="{{ Storage::url($certificate->test_report_path) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                        <a href="{{ Storage::url($certificate->test_report_path) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                             <i class="fas fa-eye"></i> View
                                                         </a>
-                                                        <a href="{{ Storage::url($certificate->test_report_path) }}" download class="btn btn-sm btn-success">
+                                                        <a href="{{ Storage::url($certificate->test_report_path) }}" download class="btn btn-sm btn-kp-success">
                                                             <i class="fas fa-download"></i> Download
                                                         </a>
                                                     </span>
@@ -358,10 +358,10 @@
                                                     <div class="info-box-content">
                                                         <span class="info-box-text">Additional Document {{ $index + 1 }}</span>
                                                         <span class="info-box-number">
-                                                            <a href="{{ Storage::url($docPath) }}" target="_blank" class="btn btn-sm btn-primary">
+                                                            <a href="{{ Storage::url($docPath) }}" target="_blank" class="btn btn-sm btn-kp-primary">
                                                                 <i class="fas fa-eye"></i> View
                                                             </a>
-                                                            <a href="{{ Storage::url($docPath) }}" download class="btn btn-sm btn-success">
+                                                            <a href="{{ Storage::url($docPath) }}" download class="btn btn-sm btn-kp-success">
                                                                 <i class="fas fa-download"></i> Download
                                                             </a>
                                                         </span>
@@ -440,7 +440,7 @@
     .card-outline {
         box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
     }
-    .card-header.bg-info, .card-header.bg-warning {
+    .card-header.bg-info, .card-header.bg-kp-yellow {
         padding: 0.75rem 1.25rem;
     }
 </style>

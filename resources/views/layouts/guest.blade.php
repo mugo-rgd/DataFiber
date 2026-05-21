@@ -47,13 +47,13 @@
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
         }
 
-        .btn-primary {
+        .btn-kp-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             padding: 0.75rem;
         }
 
-        .btn-primary:hover {
+        .btn-kp-primary:hover {
             background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
             transform: translateY(-1px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -141,7 +141,7 @@
             <!-- Body -->
             <div class="login-body">
                 @if(session('status'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
                         {{ session('status') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>

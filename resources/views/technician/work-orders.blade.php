@@ -99,17 +99,17 @@
                                             <td>
                                                 <div class="btn-group btn-group-sm">
                                                     <a href="{{ route('technician.work-order.show', $workOrder->id) }}"
-                                                       class="btn btn-outline-primary" title="View Details">
+                                                       class="btn btn-outline-kp-primary" title="View Details">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     @if($workOrder->status === 'assigned')
-                                                        <button type="button" class="btn btn-outline-success"
+                                                        <button type="button" class="btn btn-outline-kp-success"
                                                                 onclick="updateStatus({{ $workOrder->id }}, 'in_progress')"
                                                                 title="Start Work">
                                                             <i class="fas fa-play"></i>
                                                         </button>
                                                     @elseif($workOrder->status === 'in_progress')
-                                                        <button type="button" class="btn btn-outline-success"
+                                                        <button type="button" class="btn btn-outline-kp-success"
                                                                 onclick="updateStatus({{ $workOrder->id }}, 'completed')"
                                                                 title="Mark Complete">
                                                             <i class="fas fa-check"></i>
@@ -134,7 +134,7 @@
                             <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
                             <h4>No Work Orders Found</h4>
                             <p class="text-muted">You don't have any work orders assigned to you at the moment.</p>
-                            <a href="{{ route('technician.dashboard') }}" class="btn btn-primary">
+                            <a href="{{ route('technician.dashboard') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
                             </a>
                         </div>
@@ -166,7 +166,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="submitStatusUpdate()">Update Status</button>
+                <button type="button" class="btn btn-kp-primary" onclick="submitStatusUpdate()">Update Status</button>
             </div>
         </div>
     </div>

@@ -8,10 +8,10 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Maintenance Management</h1>
         <div>
-            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-primary mr-2">
+            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-primary mr-2">
                 <i class="fas fa-plus-circle mr-2"></i> New Request
             </a>
-            <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-success">
+            <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-kp-success">
                 <i class="fas fa-clipboard-check mr-2"></i> Create Work Order
             </a>
         </div>
@@ -53,7 +53,7 @@
         <div class="col-lg-4">
             <!-- Quick Assignments -->
             <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
+                <div class="card-header bg-kp-yellow text-dark">
                     <h5 class="mb-0"><i class="fas fa-user-clock mr-2"></i> Pending Assignments</h5>
                 </div>
                 <div class="card-body">
@@ -64,7 +64,7 @@
                         <div class="d-flex justify-content-between">
                             <span class="badge bg-secondary">{{ $assignment->priority }}</span>
                             <a href="{{ route('maintenance.work-orders.create', ['request' => $assignment->id]) }}"
-                               class="btn btn-sm btn-outline-primary">Assign</a>
+                               class="btn btn-sm btn-outline-kp-primary">Assign</a>
                         </div>
                     </div>
                     @endforeach

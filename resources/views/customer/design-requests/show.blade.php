@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800 mb-1">
-                        <i class="fas fa-file-alt text-primary me-2"></i>Design Request Details
+                        <i class="fas fa-file-alt text-kp-blue me-2"></i>Design Request Details
                     </h1>
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0">
@@ -25,7 +25,7 @@
         <i class="fas fa-arrow-left me-1"></i> Back to Requests
     </a>
     {{-- Edit button disabled since route doesn't exist --}}
-    <button class="btn btn-outline-primary" disabled title="Edit functionality not available">
+    <button class="btn btn-outline-kp-primary" disabled title="Edit functionality not available">
         <i class="fas fa-edit me-1"></i> Edit Request
     </button>
 </div>
@@ -38,7 +38,7 @@
         <div class="col-lg-8">
             <!-- Request Overview Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>Request Overview
                     </h5>
@@ -79,7 +79,7 @@
                                 <label class="form-label text-muted small mb-1">Designer</label>
                                 <p class="mb-0">
                                     @if($designRequest->designer)
-                                        <i class="fas fa-user-check text-success me-1"></i>
+                                        <i class="fas fa-user-check text-kp-green me-1"></i>
                                         {{ $designRequest->designer->name }}
                                     @else
                                         <span class="text-muted">
@@ -104,7 +104,7 @@
             <!-- Colocation Sites Section -->
             @if($designRequest->colocationSites && $designRequest->colocationSites->count() > 0)
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-green text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
                         <i class="fas fa-data-center me-2"></i>Colocation Sites
                     </h5>
@@ -127,7 +127,7 @@
                                     <td class="text-muted">{{ $loop->iteration }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <i class="fas fa-location-dot text-primary me-2"></i>
+                                            <i class="fas fa-location-dot text-kp-blue me-2"></i>
                                             <strong>{{ $site->site_name }}</strong>
                                         </div>
                                     </td>
@@ -181,7 +181,7 @@
                             <div class="card border-0 bg-light h-100">
                                 <div class="card-body text-center p-3">
                                     <div class="fs-4 mb-1">📊</div>
-                                    <h4 class="text-primary mb-1">{{ $designRequest->colocationSites->count() }}</h4>
+                                    <h4 class="text-kp-blue mb-1">{{ $designRequest->colocationSites->count() }}</h4>
                                     <small class="text-muted">Total Sites</small>
                                 </div>
                             </div>
@@ -266,7 +266,7 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         @if($designRequest->status === 'pending')
-                        <button class="btn btn-outline-primary btn-sm" disabled title="Edit functionality not available">
+                        <button class="btn btn-outline-kp-primary btn-sm" disabled title="Edit functionality not available">
     <i class="fas fa-edit me-1"></i> Edit Request
 </button>
                         @endif
@@ -282,7 +282,7 @@
 
             <!-- Request Summary Card -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-chart-pie me-2"></i>Request Summary
                     </h5>
@@ -291,7 +291,7 @@
                     <!-- Colocation Sites Summary -->
                     @if($designRequest->colocationSites && $designRequest->colocationSites->count() > 0)
                     <div class="mb-4">
-                        <h6 class="text-primary mb-3">
+                        <h6 class="text-kp-blue mb-3">
                             <i class="fas fa-data-center me-1"></i>Colocation Sites
                         </h6>
                         <div class="mb-3">
@@ -319,9 +319,9 @@
                     <div class="mb-3">
                         <h6 class="text-muted small mb-2">REQUEST TYPE</h6>
                         <div>
-                            <span class="badge bg-primary me-1">Dark Fibre</span>
+                            <span class="badge bg-kp-blue me-1">Dark Fibre</span>
                             @if($designRequest->colocationSites && $designRequest->colocationSites->count() > 0)
-                            <span class="badge bg-success">+ Colocation</span>
+                            <span class="badge bg-kp-green">+ Colocation</span>
                             @endif
                         </div>
                     </div>
@@ -331,7 +331,7 @@
                         <h6 class="text-muted small mb-3">TIMELINE</h6>
                         <div class="timeline">
                             <div class="timeline-item">
-                                <div class="timeline-marker bg-success"></div>
+                                <div class="timeline-marker bg-kp-green"></div>
                                 <div class="timeline-content">
                                     <small class="text-muted">Requested</small>
                                     <div>{{ $designRequest->created_at->format('M j, Y') }}</div>
@@ -363,10 +363,10 @@
                         Need assistance with your design request? Our support team is here to help.
                     </p>
                     <div class="d-grid gap-2">
-                        <a href="mailto:support@company.com" class="btn btn-outline-primary btn-sm">
+                        <a href="mailto:support@company.com" class="btn btn-outline-kp-primary btn-sm">
                             <i class="fas fa-envelope me-1"></i> Email Support
                         </a>
-                        <a href="tel:+1234567890" class="btn btn-outline-success btn-sm">
+                        <a href="tel:+1234567890" class="btn btn-outline-kp-success btn-sm">
                             <i class="fas fa-phone me-1"></i> Call Support
                         </a>
                     </div>

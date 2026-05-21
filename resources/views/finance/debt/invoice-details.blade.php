@@ -18,7 +18,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Invoice Details</h4>
                 <div class="btn-group">
-                    <button class="btn btn-outline-primary" onclick="window.print()">
+                    <button class="btn btn-outline-kp-primary" onclick="window.print()">
                         <i class="fas fa-print me-2"></i>Print
                     </button>
                 </div>
@@ -80,7 +80,7 @@
                                 @if($balance > 0)
                                     <span class="text-danger">${{ number_format($balance, 2) }}</span>
                                 @else
-                                    <span class="text-success">$0.00</span>
+                                    <span class="text-kp-green">$0.00</span>
                                 @endif
                             </td>
                         </tr>
@@ -181,7 +181,7 @@
                                             @if($itemBalance > 0)
                                                 <span class="text-danger">${{ number_format($itemBalance, 2) }}</span>
                                             @else
-                                                <span class="text-success">$0.00</span>
+                                                <span class="text-kp-green">$0.00</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -201,7 +201,7 @@
                                         @php
                                             $totalBalance = $invoice->total_amount - ($invoice->paid_amount ?? 0);
                                         @endphp
-                                        <strong class="{{ $totalBalance > 0 ? 'text-danger' : 'text-success' }}">
+                                        <strong class="{{ $totalBalance > 0 ? 'text-danger' : 'text-kp-green' }}">
                                             ${{ number_format($totalBalance, 2) }}
                                         </strong>
                                     </td>
@@ -236,7 +236,7 @@
                                         <td>{{ ucfirst($payment->payment_method) }}</td>
                                         <td>{{ $payment->reference }}</td>
                                         <td>
-                                            <span class="badge bg-success">Paid</span>
+                                            <span class="badge bg-kp-green">Paid</span>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -257,7 +257,7 @@
                     <div class="d-flex justify-content-end gap-2">
                         <form action="{{ route('finance.debt.invoice.send-reminder', $invoice->id) }}" method="POST" class="d-inline">
                             @csrf
-                            <button type="submit" class="btn btn-warning" onclick="return confirm('Send reminder to customer?')">
+                            <button type="submit" class="btn btn-kp-warning" onclick="return confirm('Send reminder to customer?')">
                                 <i class="fas fa-envelope me-2"></i>Send Reminder
                             </button>
                         </form>

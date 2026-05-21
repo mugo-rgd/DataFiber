@@ -16,7 +16,7 @@ use App\Models\LeaseBilling;
                     <i class="fas fa-file-invoice-dollar me-2"></i>Manage Lease Billings
                 </h1>
                 <div class="btn-group">
-                    <a href="{{ route('finance.billing.create') }}" class="btn btn-primary">
+                    <a href="{{ route('finance.billing.create') }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus me-2"></i>Create Billing
                     </a>
                     <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#filterModal">
@@ -34,7 +34,7 @@ use App\Models\LeaseBilling;
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Billings</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $billings->total() }}</div>
                         </div>
@@ -51,7 +51,7 @@ use App\Models\LeaseBilling;
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Paid Billings</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ LeaseBilling::where('status', 'paid')->count() }}
@@ -70,7 +70,7 @@ use App\Models\LeaseBilling;
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Pending Billings</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ LeaseBilling::where('status', 'pending')->count() }}
@@ -174,21 +174,21 @@ use App\Models\LeaseBilling;
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="{{ route('finance.billing.show', $billing->id) }}"
-                                       class="btn btn-outline-primary" title="View">
+                                       class="btn btn-outline-kp-primary" title="View">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('finance.billing.download', $billing->id) }}"
                                        class="btn btn-outline-secondary" title="Download PDF">
                                         <i class="fas fa-download"></i>
                                     </a>
-                                    <button type="button" class="btn btn-outline-success dropdown-toggle"
+                                    <button type="button" class="btn btn-outline-kp-success dropdown-toggle"
                                             data-bs-toggle="dropdown" aria-expanded="false" title="More Actions">
                                         <i class="fas fa-cog"></i>
                                     </button>
                                     <ul class="dropdown-menu">
                                         @if($billing->status !== 'paid')
                                         <li>
-                                            <a class="dropdown-item text-success" href="#"
+                                            <a class="dropdown-item text-kp-green" href="#"
                                                onclick="markAsPaid({{ $billing->id }})">
                                                 <i class="fas fa-check me-2"></i>Mark as Paid
                                             </a>
@@ -208,7 +208,7 @@ use App\Models\LeaseBilling;
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item text-warning" href="#">
+                                            <a class="dropdown-item text-kp-yellow" href="#">
                                                 <i class="fas fa-copy me-2"></i>Duplicate
                                             </a>
                                         </li>
@@ -229,7 +229,7 @@ use App\Models\LeaseBilling;
                                 <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
                                 <h5 class="text-muted">No lease billings found</h5>
                                 <p class="text-muted">Get started by creating your first lease billing.</p>
-                                <a href="{{ route('finance.billing.create') }}" class="btn btn-primary">
+                                <a href="{{ route('finance.billing.create') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-plus me-2"></i>Create Billing
                                 </a>
                             </td>
@@ -292,7 +292,7 @@ use App\Models\LeaseBilling;
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+                <button type="button" class="btn btn-kp-primary" onclick="applyFilters()">Apply Filters</button>
             </div>
         </div>
     </div>

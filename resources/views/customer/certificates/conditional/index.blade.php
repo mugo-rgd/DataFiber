@@ -35,10 +35,10 @@
                                         <a href="{{ route('customer.certificates.conditional.show', $cert->id) }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye"></i> View
                                         </a>
-                                        <a href="{{ route('customer.certificates.conditional.preview', $cert->id) }}" class="btn btn-sm btn-primary" target="_blank">
+                                        <a href="{{ route('customer.certificates.conditional.preview', $cert->id) }}" class="btn btn-sm btn-kp-primary" target="_blank">
                                             <i class="fas fa-file-pdf"></i> Preview
                                         </a>
-                                        <a href="{{ route('customer.certificates.conditional.download', $cert->id) }}" class="btn btn-sm btn-success">
+                                        <a href="{{ route('customer.certificates.conditional.download', $cert->id) }}" class="btn btn-sm btn-kp-success">
                                             <i class="fas fa-download"></i> Download
                                         </a>
                                     </td>

@@ -16,7 +16,7 @@ use App\Models\Invoice;
                     <i class="fas fa-file-invoice-dollar me-2"></i>Invoice #{{ $invoice->invoice_number }}
                 </h1>
                 <div class="btn-group">
-                    <a href="{{ route('finance.invoices.download', $invoice->id) }}" class="btn btn-primary">
+                    <a href="{{ route('finance.invoices.download', $invoice->id) }}" class="btn btn-kp-primary">
                         <i class="fas fa-download me-2"></i>Download PDF
                     </a>
                     <a href="{{ route('finance.invoices') }}" class="btn btn-outline-secondary">
@@ -29,7 +29,7 @@ use App\Models\Invoice;
 
     <!-- Status Alert -->
     @if($invoice->status === 'paid')
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
         <i class="fas fa-check-circle me-2"></i>
         <strong>Payment Received!</strong> This invoice was paid on {{ $invoice->paid_date?->format('F j, Y') }}.
     </div>
@@ -39,7 +39,7 @@ use App\Models\Invoice;
         <strong>Overdue!</strong> This invoice was due on {{ $invoice->due_date->format('F j, Y') }}.
     </div>
     @elseif($invoice->isOverdue())
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <div class="alert alert-kp-warning alert-dismissible fade show" role="alert">
         <i class="fas fa-clock me-2"></i>
         <strong>Due Soon!</strong> This invoice is due on {{ $invoice->due_date->format('F j, Y') }}.
     </div>
@@ -49,7 +49,7 @@ use App\Models\Invoice;
         <!-- Main Invoice Details -->
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-receipt me-2"></i>Invoice Details
                     </h5>
@@ -167,7 +167,7 @@ use App\Models\Invoice;
         <!-- Payment Summary -->
         <div class="col-lg-4">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-money-bill-wave me-2"></i>Payment Summary
                     </h5>
@@ -189,7 +189,7 @@ use App\Models\Invoice;
                         @if($invoice->status === 'paid')
                         <tr class="border-top">
                             <th>Amount Paid:</th>
-                            <td class="text-end text-success">{{ $invoice->currency }} {{ number_format($invoice->total_amount, 2) }}</td>
+                            <td class="text-end text-kp-green">{{ $invoice->currency }} {{ number_format($invoice->total_amount, 2) }}</td>
                         </tr>
                         <tr>
                             <th>Balance:</th>
@@ -205,11 +205,11 @@ use App\Models\Invoice;
 
                     @if($invoice->status !== 'paid')
                     <div class="d-grid gap-2 mt-3">
-                        <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                        <button class="btn btn-kp-success btn-lg" data-bs-toggle="modal" data-bs-target="#paymentModal">
                             <i class="fas fa-credit-card me-2"></i>Mark as Paid
                         </button>
                         <a href="{{ route('finance.invoices.download', $invoice->id) }}"
-                           class="btn btn-outline-primary">
+                           class="btn btn-outline-kp-primary">
                             <i class="fas fa-download me-2"></i>Download Invoice
                         </a>
                     </div>
@@ -233,9 +233,9 @@ use App\Models\Invoice;
                             <small class="text-muted">{{ $payment->payment_date->format('M j, Y') }}</small>
                         </div>
                         <div class="text-end">
-                            <strong class="text-success">{{ $invoice->currency }} {{ number_format($payment->amount, 2) }}</strong>
+                            <strong class="text-kp-green">{{ $invoice->currency }} {{ number_format($payment->amount, 2) }}</strong>
                             <br>
-                            <small class="badge bg-success">{{ ucfirst($payment->status) }}</small>
+                            <small class="badge bg-kp-green">{{ ucfirst($payment->status) }}</small>
                         </div>
                     </div>
                     @endforeach
@@ -253,11 +253,11 @@ use App\Models\Invoice;
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         @if($invoice->status !== 'paid')
-                        <button class="btn btn-success" onclick="markAsPaid({{ $invoice->id }})">
+                        <button class="btn btn-kp-success" onclick="markAsPaid({{ $invoice->id }})">
                             <i class="fas fa-check me-2"></i>Mark as Paid
                         </button>
                         @endif
-                        <button class="btn btn-warning" onclick="sendReminder({{ $invoice->id }})">
+                        <button class="btn btn-kp-warning" onclick="sendReminder({{ $invoice->id }})">
                             <i class="fas fa-envelope me-2"></i>Send Reminder
                         </button>
                         <a href="{{ route('finance.invoices.edit', $invoice->id) }}" class="btn btn-info">
@@ -284,7 +284,7 @@ use App\Models\Invoice;
             </div>
             <div class="modal-body">
                 <p>Invoice #{{ $invoice->invoice_number }}</p>
-                <p class="h4 text-center text-success mb-4">
+                <p class="h4 text-center text-kp-green mb-4">
                     Total Amount: {{ $invoice->currency }} {{ number_format($invoice->total_amount, 2) }}
                 </p>
 
@@ -313,7 +313,7 @@ use App\Models\Invoice;
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" onclick="processPayment({{ $invoice->id }})">
+                <button type="button" class="btn btn-kp-success" onclick="processPayment({{ $invoice->id }})">
                     <i class="fas fa-check me-2"></i>Mark as Paid
                 </button>
             </div>
@@ -340,7 +340,7 @@ function processPayment(invoiceId) {
     }
 
     // Show loading state
-    const btn = document.querySelector('#paymentModal .btn-success');
+    const btn = document.querySelector('#paymentModal .btn-kp-success');
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
     btn.disabled = true;

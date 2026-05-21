@@ -59,7 +59,7 @@
 
                         <div class="d-flex justify-content-between">
                             <a href="{{ route('customer.documents.index') }}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-upload me-2"></i>Upload Document
                             </button>
                         </div>

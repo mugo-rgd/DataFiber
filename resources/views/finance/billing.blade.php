@@ -24,7 +24,7 @@
                         <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
                             <i class="fas fa-print me-1"></i>Print
                         </button>
-                        <a href="{{ route('finance.billing.create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('finance.billing.create') }}" class="btn btn-kp-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Create Invoice
                         </a>
                     </div>
@@ -33,7 +33,7 @@
                     <!-- Billing Statistics -->
                     <div class="row mb-4">
                         <div class="col-md-2">
-                            <div class="card bg-primary text-white">
+                            <div class="card bg-kp-blue text-white">
                                 <div class="card-body text-center p-3">
                                     <h6 class="card-title">Total Invoices</h6>
                                     <h3 class="mb-0">{{ $billingStats['total'] }}</h3>
@@ -41,7 +41,7 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="card bg-warning text-white">
+                            <div class="card bg-kp-yellow text-white">
                                 <div class="card-body text-center p-3">
                                     <h6 class="card-title">Pending</h6>
                                     <h3 class="mb-0">{{ $billingStats['pending'] }}</h3>
@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-kp-green text-white">
                                 <div class="card-body text-center p-3">
                                     <h6 class="card-title">Paid</h6>
                                     <h3 class="mb-0">{{ $billingStats['paid'] }}</h3>
@@ -197,9 +197,9 @@
                                                 <!-- ENHANCED STATUS DISPLAY WITH QUICK ACTIONS -->
                                                 <div class="dropdown">
                                                     <button class="btn btn-sm dropdown-toggle
-                                                        @if($billing->status == 'paid') btn-success
+                                                        @if($billing->status == 'paid') btn-kp-success
                                                         @elseif($billing->status == 'overdue') btn-danger
-                                                        @elseif($billing->status == 'pending') btn-warning
+                                                        @elseif($billing->status == 'pending') btn-kp-warning
                                                         @elseif($billing->status == 'draft') btn-secondary
                                                         @else btn-dark
                                                         @endif"
@@ -212,7 +212,7 @@
                                                             <form action="{{ route('finance.billing.mark-pending', $billing->id) }}" method="POST">
                                                                 @csrf
                                                                 <button type="submit" class="dropdown-item">
-                                                                    <i class="fas fa-clock text-warning"></i> Mark as Pending
+                                                                    <i class="fas fa-clock text-kp-yellow"></i> Mark as Pending
                                                                 </button>
                                                             </form>
                                                         </li>
@@ -223,7 +223,7 @@
                                                             <form action="{{ route('finance.billing.mark-paid', $billing->id) }}" method="POST">
                                                                 @csrf
                                                                 <button type="submit" class="dropdown-item">
-                                                                    <i class="fas fa-check text-success"></i> Mark as Paid
+                                                                    <i class="fas fa-check text-kp-green"></i> Mark as Paid
                                                                 </button>
                                                             </form>
                                                         </li>
@@ -278,7 +278,7 @@
                                             <td>
                                                 <div class="btn-group btn-group-sm">
                                                     <a href="{{ route('finance.billing.show', $billing->id) }}"
-                                                       class="btn btn-outline-primary" title="View">
+                                                       class="btn btn-outline-kp-primary" title="View">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     <a href="{{ route('finance.billing.edit', $billing->id) }}"
@@ -323,7 +323,7 @@
                                     No billing records have been created yet.
                                 @endif
                             </p>
-                            <a href="{{ route('finance.billing.create') }}" class="btn btn-primary">
+                            <a href="{{ route('finance.billing.create') }}" class="btn btn-kp-primary">
                                 <i class="fas fa-plus me-1"></i>Create First Invoice
                             </a>
                         </div>

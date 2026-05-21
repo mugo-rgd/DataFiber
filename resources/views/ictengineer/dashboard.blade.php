@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-wrap align-items-center gap-1 gap-sm-2 mt-2">
-                        <span class="badge bg-white text-primary responsive-badge">
+                        <span class="badge bg-white text-kp-blue responsive-badge">
                             <i class="fas fa-user me-1"></i> <span class="name-text">{{ Str::limit(Auth::user()->name, 15) }}</span>
                         </span>
                         @if(auth()->user()->county)
@@ -39,6 +39,12 @@
                     </div>
                 </div>
                 <div class="col-12 col-lg-4">
+
+<!-- ICT Engineer Dashboard Help Link -->
+<div class="card shadow-sm mb-3">
+
+    </div>
+            @include('partials.role-help-widget')
                     <div class="d-flex flex-wrap gap-1 gap-sm-2 justify-content-start justify-content-lg-end">
                         <form method="POST" action="{{ route('logout') }}" class="d-inline w-100 w-sm-auto">
                             @csrf
@@ -174,9 +180,9 @@
                     <div class="card-header bg-white border-0 py-2 py-sm-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 responsive-subheading">
-                                <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                                <i class="fas fa-bolt text-kp-yellow me-2"></i>Quick Actions
                             </h5>
-                            <span class="badge bg-warning d-none d-sm-inline responsive-badge">Quick Access</span>
+                            <span class="badge bg-kp-yellow d-none d-sm-inline responsive-badge">Quick Access</span>
                         </div>
                     </div>
                     <div class="card-body p-2 p-sm-3 p-md-4">
@@ -289,7 +295,7 @@
 
                                 <a href="{{ $link }}" class="action-card position-relative">
                                     @if($badgeCount > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning responsive-badge">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-kp-yellow responsive-badge">
                                         {{ $badgeCount }}
                                         <span class="visually-hidden">pending items</span>
                                     </span>
@@ -322,7 +328,7 @@
                     </h5>
                     <div class="d-flex align-items-center mt-1 mt-sm-0">
                         <span class="badge bg-light text-dark responsive-badge d-none d-sm-inline">{{ $recentRequests->count() }} requests</span>
-                        <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-sm btn-primary ms-1 ms-sm-2 responsive-btn">
+                        <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-sm btn-kp-primary ms-1 ms-sm-2 responsive-btn">
                             <span class="d-none d-sm-inline">View All</span>
                             <span class="d-inline d-sm-none">All</span>
                         </a>
@@ -350,7 +356,7 @@
                                 <td>
                                     <div class="d-flex align-items-center">
                                         <div class="customer-avatar me-2">
-                                            <i class="fas fa-user text-primary responsive-icon-sm"></i>
+                                            <i class="fas fa-user text-kp-blue responsive-icon-sm"></i>
                                         </div>
                                         <div class="responsive-text">{{ $request->customer->name ?? 'N/A' }}</div>
                                     </div>
@@ -383,7 +389,7 @@
                                 <td class="text-center">
                                     <div class="btn-group btn-group-sm responsive-btn-group" role="group">
                                         <a href="{{ route('ictengineer.requests.show', $request) }}"
-                                           class="btn btn-outline-primary"
+                                           class="btn btn-outline-kp-primary"
                                            data-bs-toggle="tooltip"
                                            title="View Details">
                                             <i class="fas fa-eye"></i>
@@ -400,7 +406,7 @@
 
                                         @if($request->status === 'review')
                                         <a href="{{ route('ictengineer.requests.show', $request) }}"
-                                           class="btn btn-outline-success d-none d-md-inline"
+                                           class="btn btn-outline-kp-success d-none d-md-inline"
                                            data-bs-toggle="tooltip"
                                            title="Approve Design">
                                             <i class="fas fa-check-circle"></i>
@@ -434,7 +440,7 @@
                         <i class="fas fa-drafting-compass text-gray-300 responsive-empty-icon mb-3"></i>
                         <h5 class="text-gray-600 responsive-subheading">No Design Requests Assigned</h5>
                         <p class="text-muted mb-3 mb-sm-4 responsive-text">No design requests have been assigned to you yet.</p>
-                        <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-primary responsive-btn">
+                        <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-kp-primary responsive-btn">
                             <i class="fas fa-list me-2"></i>View All Requests
                         </a>
                     </div>
@@ -451,7 +457,7 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-white border-0 py-2 py-sm-3">
                         <h5 class="mb-0 responsive-subheading">
-                            <i class="fas fa-chart-bar text-primary me-2"></i>Network Performance
+                            <i class="fas fa-chart-bar text-kp-blue me-2"></i>Network Performance
                         </h5>
                     </div>
                     <div class="card-body p-2 p-sm-3 p-md-4">
@@ -468,7 +474,7 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-header bg-white border-0 py-2 py-sm-3">
                         <h5 class="mb-0 responsive-subheading">
-                            <i class="fas fa-chart-pie text-success me-2"></i>Ticket Distribution
+                            <i class="fas fa-chart-pie text-kp-green me-2"></i>Ticket Distribution
                         </h5>
                     </div>
                     <div class="card-body p-2 p-sm-3 p-md-4">
@@ -490,9 +496,9 @@
                     <div class="card-header bg-white border-0 py-2 py-sm-3">
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 responsive-subheading">
-                                <i class="fas fa-bell text-warning me-2"></i>System Notifications
+                                <i class="fas fa-bell text-kp-yellow me-2"></i>System Notifications
                             </h5>
-                            <span class="badge bg-warning responsive-badge">{{ $notifications->count() ?? 0 }} New</span>
+                            <span class="badge bg-kp-yellow responsive-badge">{{ $notifications->count() ?? 0 }} New</span>
                         </div>
                     </div>
                     <div class="card-body p-0">
@@ -507,13 +513,13 @@
                                                 <i class="fas fa-shield-alt text-danger"></i>
                                                 @break
                                             @case('server')
-                                                <i class="fas fa-server text-warning"></i>
+                                                <i class="fas fa-server text-kp-yellow"></i>
                                                 @break
                                             @case('network')
                                                 <i class="fas fa-network-wired text-info"></i>
                                                 @break
                                             @default
-                                                <i class="fas fa-info-circle text-primary"></i>
+                                                <i class="fas fa-info-circle text-kp-blue"></i>
                                         @endswitch
                                     </div>
                                     <div class="flex-grow-1">
@@ -704,10 +710,10 @@
 }
 
 /* Color Classes */
-.bg-primary-light { background-color: rgba(78, 115, 223, 0.1); }
-.bg-success-light { background-color: rgba(28, 200, 138, 0.1); }
+.bg-kp-blue-light { background-color: rgba(78, 115, 223, 0.1); }
+.bg-kp-green-light { background-color: rgba(28, 200, 138, 0.1); }
 .bg-info-light { background-color: rgba(54, 185, 204, 0.1); }
-.bg-warning-light { background-color: rgba(246, 194, 62, 0.1); }
+.bg-kp-yellow-light { background-color: rgba(246, 194, 62, 0.1); }
 .bg-danger-light { background-color: rgba(231, 74, 59, 0.1); }
 .bg-purple-light { background-color: rgba(111, 66, 193, 0.1); }
 .bg-white-20 { background-color: rgba(255, 255, 255, 0.2); }

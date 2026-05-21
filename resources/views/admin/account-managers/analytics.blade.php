@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Managers</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $summary['total_managers'] }}</div>
                         </div>
@@ -37,7 +37,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Active Managers</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $summary['active_managers'] }}</div>
                         </div>
@@ -71,7 +71,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Avg Customers/Manager</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $summary['avg_customers_per_manager'] }}</div>
                         </div>
@@ -87,7 +87,7 @@
     <!-- Managers Performance Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Account Manager Performance</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Account Manager Performance</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -109,7 +109,7 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-circle bg-primary text-white me-2"
+                                    <div class="avatar-circle bg-kp-blue text-white me-2"
                                          style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 14px;">
                                         {{ strtoupper(substr($manager['name'], 0, 1)) }}
                                     </div>
@@ -121,7 +121,7 @@
                             <td>{{ $manager['email'] }}</td>
                             <td>
                                 @if($manager['status'] === 'active')
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-kp-green">Active</span>
                                 @else
                                     <span class="badge bg-secondary">Inactive</span>
                                 @endif

@@ -37,7 +37,7 @@
     <div class="container-fluid px-3 px-sm-4 px-md-5 py-3">
         <div class="row g-2 g-sm-3 mb-3">
             <div class="col-6 col-md-4 col-lg-2">
-                <div class="card border-0 bg-primary bg-opacity-10">
+                <div class="card border-0 bg-kp-blue bg-opacity-10">
                     <div class="card-body p-2 p-sm-3">
                         <div class="text-muted small mb-1">Total Contracts</div>
                         <div class="h4 mb-0">{{ $totals['total_contracts'] }}</div>
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-                <div class="card border-0 bg-success bg-opacity-10">
+                <div class="card border-0 bg-kp-green bg-opacity-10">
                     <div class="card-body p-2 p-sm-3">
                         <div class="text-muted small mb-1">Monthly Value (USD)</div>
                         <div class="h4 mb-0">${{ number_format($totals['total_monthly_value_usd'], 0) }}</div>
@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-                <div class="card border-0 bg-warning bg-opacity-10">
+                <div class="card border-0 bg-kp-yellow bg-opacity-10">
                     <div class="card-body p-2 p-sm-3">
                         <div class="text-muted small mb-1">Monthly Value (KES)</div>
                         <div class="h4 mb-0">KSh{{ number_format($totals['total_monthly_value_kes'], 0) }}</div>
@@ -90,7 +90,7 @@
     <!-- Main Content -->
     <div class="container-fluid px-3 px-sm-4 px-md-5 py-3">
         <div class="card border-0 shadow-sm">
-          <button type="button" class="btn btn-primary" onclick="window.location.href='{{ route('conversion-data.summary-view') }}'">
+          <button type="button" class="btn btn-kp-primary" onclick="window.location.href='{{ route('conversion-data.summary-view') }}'">
     <i class="fas fa-plus me-1"></i> Summarised Data
 </button>
             <div class="card-header bg-white border-0 py-3">
@@ -171,7 +171,7 @@
                                        value="{{ request('min_distance') }}" placeholder="0">
                             </div>
                             <div class="col-md-1 d-flex align-items-end">
-                                <button type="submit" class="btn btn-sm btn-primary w-100">Apply</button>
+                                <button type="submit" class="btn btn-sm btn-kp-primary w-100">Apply</button>
                             </div>
                         </div>
                     </form>
@@ -247,7 +247,7 @@
 </td>
                                     <td>
                                         @if($item->cores_leased)
-                                            <span class="badge bg-primary">{{ $item->cores_leased }}</span>
+                                            <span class="badge bg-kp-blue">{{ $item->cores_leased }}</span>
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
@@ -321,7 +321,7 @@
                                     <td colspan="13" class="text-center py-4">
                                         <i class="fas fa-database fa-2x text-muted mb-3"></i>
                                         <p class="text-muted">No fibre links found</p>
-                                        <a href="{{ route('conversion-data.create') }}" class="btn btn-primary">
+                                        <a href="{{ route('conversion-data.create') }}" class="btn btn-kp-primary">
                                             <i class="fas fa-plus me-1"></i> Add First Link
                                         </a>
                                     </td>
@@ -363,7 +363,7 @@
         <a href="{{ route('conversion-data.export.excel') }}"
            class="list-group-item list-group-item-action"
            onclick="applyExportFilters(this)">
-            <i class="fas fa-file-excel text-success me-2"></i> Export as Excel
+            <i class="fas fa-file-excel text-kp-green me-2"></i> Export as Excel
         </a>
 
         <a href="{{ route('conversion-data.export.csv') }}"
@@ -381,7 +381,7 @@
         <!-- Option 2: Using single route with format parameter -->
         <a href="{{ route('conversion-data.export', ['format' => 'excel']) }}"
            class="list-group-item list-group-item-action d-none">
-            <i class="fas fa-file-excel text-success me-2"></i> Export as Excel
+            <i class="fas fa-file-excel text-kp-green me-2"></i> Export as Excel
         </a>
     </div>
 </div>

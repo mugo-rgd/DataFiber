@@ -6,12 +6,12 @@
     <div class="header-actions">
         <div>
             <h1 class="h3 text-gray-800 mb-2">
-                <i class="fas fa-users text-primary me-2"></i> Customers Management
+                <i class="fas fa-users text-kp-blue me-2"></i> Customers Management
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}" class="text-decoration-none"><i class="fas fa-home me-1"></i>Dashboard</a></li>
-                    <li class="breadcrumb-item active text-primary"><i class="fas fa-users me-1"></i>Customers</li>
+                    <li class="breadcrumb-item active text-kp-blue"><i class="fas fa-users me-1"></i>Customers</li>
                 </ol>
             </nav>
         </div>
@@ -29,7 +29,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Customers</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['totalCustomers'] }}</div>
                         </div>
@@ -46,7 +46,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 With Account Manager</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['customersWithManager'] }}</div>
                         </div>
@@ -63,7 +63,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Without Account Manager</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['customersWithoutManager'] }}</div>
                         </div>
@@ -133,7 +133,7 @@
     <div class="card shadow">
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="fas fa-list me-2"></i> Customers List</h5>
-            <span class="badge bg-primary">{{ $customers->count() }} customers</span>
+            <span class="badge bg-kp-blue">{{ $customers->count() }} customers</span>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -158,7 +158,7 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-3">
-                                        <div class="avatar-title bg-primary text-white rounded-circle">
+                                        <div class="avatar-title bg-kp-blue text-white rounded-circle">
                                             {{ substr($customer->name, 0, 1) }}
                                         </div>
                                     </div>
@@ -183,7 +183,7 @@
                                 @if($customer->accountManager)
                                     <div class="d-flex align-items-center">
                                         <div class="avatar-sm me-2">
-                                            <div class="avatar-title bg-success text-white rounded-circle">
+                                            <div class="avatar-title bg-kp-green text-white rounded-circle">
                                                 {{ substr($customer->accountManager->name, 0, 1) }}
                                             </div>
                                         </div>
@@ -194,12 +194,12 @@
                                         </div>
                                     </div>
                                 @else
-                                    <span class="badge bg-warning">Not Assigned</span>
+                                    <span class="badge bg-kp-yellow">Not Assigned</span>
                                 @endif
                             </td>
                             <td>
                                 @if($customer->status ==='active')
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-kp-green">Active</span>
                                 @else
                                     <span class="badge bg-secondary">Inactive</span>
                                 @endif
@@ -220,7 +220,7 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                    <button type="button" class="btn btn-sm btn-outline-kp-primary dropdown-toggle" data-bs-toggle="dropdown">
                                         <i class="fas fa-cog"></i>
                                     </button>
                                     <ul class="dropdown-menu">
@@ -259,12 +259,12 @@
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             @if($customer->is_active)
-                                                <a class="dropdown-item text-warning" href="#"
+                                                <a class="dropdown-item text-kp-yellow" href="#"
                                                    onclick="toggleStatus({{ $customer->id }}, 0)">
                                                     <i class="fas fa-ban me-2"></i>Deactivate
                                                 </a>
                                             @else
-                                                <a class="dropdown-item text-success" href="#"
+                                                <a class="dropdown-item text-kp-green" href="#"
                                                    onclick="toggleStatus({{ $customer->id }}, 1)">
                                                     <i class="fas fa-check me-2"></i>Activate
                                                 </a>
@@ -347,7 +347,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Assign Manager</button>
+                    <button type="submit" class="btn btn-kp-primary">Assign Manager</button>
                 </div>
             </form>
         </div>
@@ -498,7 +498,7 @@ function viewProfile(customerId) {
     // Show loading state
     profileContent.innerHTML = `
         <div class="text-center py-5">
-            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <div class="spinner-border text-kp-blue" role="status" style="width: 3rem; height: 3rem;">
                 <span class="visually-hidden">Loading...</span>
             </div>
             <p class="mt-3 text-muted">Loading customer profile...</p>
@@ -535,7 +535,7 @@ function viewProfile(customerId) {
                     <!-- Profile Header -->
                     <div class="text-center mb-4">
                         <div class="avatar-xl mx-auto mb-3">
-                            <div class="avatar-title bg-primary text-white rounded-circle">
+                            <div class="avatar-title bg-kp-blue text-white rounded-circle">
                                 ${customer.name ? customer.name.charAt(0).toUpperCase() : '?'}
                             </div>
                         </div>
@@ -553,7 +553,7 @@ function viewProfile(customerId) {
                     <!-- Contact Information -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-header bg-transparent border-0">
-                            <h6 class="mb-0"><i class="fas fa-address-card text-primary me-2"></i>Contact Information</h6>
+                            <h6 class="mb-0"><i class="fas fa-address-card text-kp-blue me-2"></i>Contact Information</h6>
                         </div>
                         <div class="card-body pt-0">
                             <table class="table table-sm table-borderless">
@@ -580,13 +580,13 @@ function viewProfile(customerId) {
                     <!-- Account Manager -->
                     <div class="card mb-3 border-0 shadow-sm">
                         <div class="card-header bg-transparent border-0">
-                            <h6 class="mb-0"><i class="fas fa-user-tie text-primary me-2"></i>Account Manager</h6>
+                            <h6 class="mb-0"><i class="fas fa-user-tie text-kp-blue me-2"></i>Account Manager</h6>
                         </div>
                         <div class="card-body pt-0">
                             ${accountManager ? `
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-3">
-                                        <div class="avatar-title bg-success text-white rounded-circle">
+                                        <div class="avatar-title bg-kp-green text-white rounded-circle">
                                             ${accountManager.name ? accountManager.name.charAt(0).toUpperCase() : '?'}
                                         </div>
                                     </div>
@@ -607,7 +607,7 @@ function viewProfile(customerId) {
                     <!-- Billing Information -->
                     <div class="card border-0 shadow-sm">
                         <div class="card-header bg-transparent border-0">
-                            <h6 class="mb-0"><i class="fas fa-chart-bar text-primary me-2"></i>Billing Information</h6>
+                            <h6 class="mb-0"><i class="fas fa-chart-bar text-kp-blue me-2"></i>Billing Information</h6>
                         </div>
                         <div class="card-body pt-0">
                             <table class="table table-sm table-borderless">
@@ -639,7 +639,7 @@ function viewProfile(customerId) {
             profileContent.innerHTML = data.html;
         } else if (data.debug && !data.customer_found) {
             profileContent.innerHTML = `
-                <div class="alert alert-warning m-3">
+                <div class="alert alert-kp-warning m-3">
                     <h5>Customer Not Found</h5>
                     <p>${data.message || 'Customer ID: ' + customerId}</p>
                     <p>Available customer IDs: ${data.all_customer_ids ? data.all_customer_ids.join(', ') : 'None'}</p>

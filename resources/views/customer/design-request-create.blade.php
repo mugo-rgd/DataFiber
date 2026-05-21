@@ -192,7 +192,7 @@
         <div class="header-actions">
             <div>
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-drafting-compass text-primary"></i> New Fibre Route Design Request
+                    <i class="fas fa-drafting-compass text-kp-blue"></i> New Fibre Route Design Request
                 </h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
@@ -212,14 +212,14 @@
             <div class="col-lg-10">
                 <div class="card shadow">
                     <div class="card-header bg-white py-3">
-                        <h5 class="mb-0"><i class="fas fa-plus-circle text-success"></i> Create New Fibre Route Design Request</h5>
+                        <h5 class="mb-0"><i class="fas fa-plus-circle text-kp-green"></i> Create New Fibre Route Design Request</h5>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('customer.design-requests.store') }}" method="POST" id="design-request-form">
                             @csrf
 
                             <div class="instructions">
-                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                <i class="fas fa-info-circle text-kp-blue me-2"></i>
                                 <strong>Instructions:</strong> Define your route either by clicking on the map OR by entering route details manually below. Substations with available dark fibre connections are shown in red.
                             </div>
 
@@ -294,7 +294,7 @@
                             <!-- Map Section -->
                             <div class="mb-4">
                                 <label class="form-label">Define Fibre Route on Map (Optional)</label>
-                                <div class="alert alert-warning validation-alert" id="route-validation-alert">
+                                <div class="alert alert-kp-warning validation-alert" id="route-validation-alert">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     Please either define your route on the map OR enter route details manually above.
                                 </div>
@@ -302,14 +302,14 @@
                                     <div id="google-map"></div>
                                     <div class="loading-overlay" id="loading-overlay">
                                         <div class="text-center">
-                                            <div class="spinner-border text-primary mb-2" role="status"></div>
+                                            <div class="spinner-border text-kp-blue mb-2" role="status"></div>
                                             <p>Loading Google Maps and Substation Data...</p>
                                         </div>
                                     </div>
                                     <div class="map-overlay">
                                         <div class="distance-display" id="total-distance">0 km</div>
                                         <div class="btn-group-vertical">
-                                            <button type="button" class="btn btn-sm btn-outline-primary btn-map-control" id="add-point-mode">
+                                            <button type="button" class="btn btn-sm btn-outline-kp-primary btn-map-control" id="add-point-mode">
                                                 <i class="fas fa-map-marker-alt me-1"></i>Add Points Mode
                                             </button>
                                             <button type="button" class="btn btn-sm btn-outline-danger btn-map-control" id="clear-route">
@@ -391,7 +391,7 @@
                             </div>
 
                             <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary" id="submit-btn">
+                                <button type="submit" class="btn btn-kp-primary" id="submit-btn">
                                     <i class="fas fa-paper-plane me-2"></i>Submit Request444
                                 </button>
                                 <a href="{{ route('customer.design-requests') }}" class="btn btn-secondary">
@@ -470,7 +470,7 @@
                 this.innerHTML = addPointMode ?
                     '<i class="fas fa-map-marker-alt me-1"></i>Add Points Mode' :
                     '<i class="fas fa-hand-paper me-1"></i>Navigation Mode';
-                this.classList.toggle('btn-outline-primary');
+                this.classList.toggle('btn-outline-kp-primary');
                 this.classList.toggle('btn-outline-secondary');
             });
 
@@ -582,10 +582,10 @@
                 const infoWindow = new google.maps.InfoWindow({
                     content: `
                         <div class="substation-info">
-                            <h6 class="mb-1"><i class="fas fa-bolt text-warning"></i> ${substation.name}</h6>
+                            <h6 class="mb-1"><i class="fas fa-bolt text-kp-yellow"></i> ${substation.name}</h6>
                             <div class="mb-2">
-                                <span class="badge bg-success">${substation.fibreStatus}</span>
-                                <span class="badge bg-primary capacity-badge">${substation.capacity}</span>
+                                <span class="badge bg-kp-green">${substation.fibreStatus}</span>
+                                <span class="badge bg-kp-blue capacity-badge">${substation.capacity}</span>
                             </div>
                             <table class="table table-sm table-borderless mb-2">
                                 <tr>
@@ -611,7 +611,7 @@
                             </table>
                             <p class="text-muted mb-1"><small>Lat: ${parseFloat(substation.lat).toFixed(6)}</small></p>
                             <p class="text-muted mb-0"><small>Lng: ${parseFloat(substation.lng).toFixed(6)}</small></p>
-                            <button class="btn btn-sm btn-primary mt-2 w-100" onclick="selectSubstation(${parseFloat(substation.lat)}, ${parseFloat(substation.lng)})">
+                            <button class="btn btn-sm btn-kp-primary mt-2 w-100" onclick="selectSubstation(${parseFloat(substation.lat)}, ${parseFloat(substation.lng)})">
                                 <i class="fas fa-plug me-1"></i>Use This Substation
                             </button>
                         </div>
@@ -632,7 +632,7 @@
 
             // Add "All" filter
             const allBadge = document.createElement('span');
-            allBadge.className = 'badge bg-primary filter-badge';
+            allBadge.className = 'badge bg-kp-blue filter-badge';
             allBadge.textContent = 'All';
             allBadge.onclick = () => filterByOwner('all');
             ownerFilters.appendChild(allBadge);
@@ -658,9 +658,9 @@
             document.querySelectorAll('#owner-filters .badge').forEach(badge => {
                 if (badge.textContent === owner || (owner === 'all' && badge.textContent === 'All')) {
                     badge.classList.remove('bg-secondary');
-                    badge.classList.add('bg-primary');
+                    badge.classList.add('bg-kp-blue');
                 } else {
-                    badge.classList.remove('bg-primary');
+                    badge.classList.remove('bg-kp-blue');
                     badge.classList.add('bg-secondary');
                 }
             });

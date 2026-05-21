@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800">Payment Followups</h1>
-                <a href="{{ route('account-manager.payments.create') }}" class="btn btn-primary">
+                <a href="{{ route('account-manager.payments.create') }}" class="btn btn-kp-primary">
                     <i class="fas fa-plus"></i> Create New Payment
                 </a>
             </div>
@@ -78,13 +78,13 @@
                                         <br>
                                         <small class="text-muted">{{ $payment->customer->email }}</small>
                                     </td>
-                                    <td class="font-weight-bold text-primary">${{ number_format($payment->amount, 2) }}</td>
+                                    <td class="font-weight-bold text-kp-blue">${{ number_format($payment->amount, 2) }}</td>
                                     <td>
                                         <div class="{{ $payment->isOverdue() ? 'text-danger font-weight-bold' : '' }}">
                                             {{ $payment->due_date->format('M d, Y') }}
                                         </div>
                                         @if($payment->isDueSoon() && !$payment->isOverdue())
-                                        <small class="text-warning"><i class="fas fa-clock"></i> Due soon</small>
+                                        <small class="text-kp-yellow"><i class="fas fa-clock"></i> Due soon</small>
                                         @endif
                                     </td>
                                     <td>
@@ -102,14 +102,14 @@
                                         @if($payment->status === 'pending')
                                         <form action="{{ route('account-manager.payments.remind', $payment) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-warning" title="Mark as Reminded">
+                                            <button type="submit" class="btn btn-sm btn-kp-warning" title="Mark as Reminded">
                                                 <i class="fas fa-bell"></i>
                                             </button>
                                         </form>
                                         @endif
                                         <form action="{{ route('account-manager.payments.paid', $payment) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-sm btn-success" title="Mark as Paid">
+                                            <button type="submit" class="btn btn-sm btn-kp-success" title="Mark as Paid">
                                                 <i class="fas fa-check"></i>
                                             </button>
                                         </form>
@@ -130,7 +130,7 @@
                         <i class="fas fa-money-bill-wave fa-3x text-gray-300 mb-3"></i>
                         <h4 class="text-gray-500">No Payment Followups Found</h4>
                         <p class="text-gray-500">You don't have any payment followups matching your criteria.</p>
-                        <a href="{{ route('account-manager.payments.create') }}" class="btn btn-primary">Create Your First Payment</a>
+                        <a href="{{ route('account-manager.payments.create') }}" class="btn btn-kp-primary">Create Your First Payment</a>
                     </div>
                     @endif
                 </div>
@@ -145,7 +145,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Pending Amount</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 ${{ number_format($followups->whereIn('status', ['pending', 'reminded'])->sum('amount'), 2) }}
@@ -183,7 +183,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Total Paid</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 ${{ number_format($followups->where('status', 'paid')->sum('amount'), 2) }}
@@ -202,7 +202,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Due Soon</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ $followups->where('status', 'pending')->filter(function($payment) {

@@ -16,7 +16,7 @@
                     <!-- Quick Stats -->
                     <div class="row mb-4">
                         <div class="col-md-3">
-                            <div class="card bg-primary text-white">
+                            <div class="card bg-kp-blue text-white">
                                 <div class="card-body text-center">
                                     <h6 class="card-title">Total Revenue</h6>
                                     <h4 class="mb-0">
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-kp-green text-white">
                                 <div class="card-body text-center">
                                     <h6 class="card-title">This Month</h6>
                                     <h4 class="mb-0">
@@ -44,7 +44,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-warning text-white">
+                            <div class="card bg-kp-yellow text-white">
                                 <div class="card-body text-center">
                                     <h6 class="card-title">Pending Invoices</h6>
                                     <h4 class="mb-0">
@@ -77,7 +77,7 @@
                     <div class="row">
                         <div class="col-md-4 mb-4">
                             <div class="card h-100">
-                                <div class="card-header bg-primary text-white">
+                                <div class="card-header bg-kp-blue text-white">
                                     <h6 class="card-title mb-0">
                                         <i class="fas fa-file-invoice-dollar me-2"></i>Billing Reports
                                     </h6>
@@ -85,13 +85,13 @@
                                 <div class="card-body">
                                     <p>Comprehensive billing and invoice reports with detailed analytics.</p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fas fa-check text-success me-2"></i>Revenue by service type</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Customer billing history</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Tax collection reports</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Payment method analysis</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Revenue by service type</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Customer billing history</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Tax collection reports</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Payment method analysis</li>
                                     </ul>
                                     <a href="{{ route('finance.reports', ['report_type' => 'financial_summary']) }}"
-                                       class="btn btn-primary w-100">
+                                       class="btn btn-kp-primary w-100">
                                         View Billing Reports
                                     </a>
                                 </div>
@@ -100,7 +100,7 @@
 
                         <div class="col-md-4 mb-4">
                             <div class="card h-100">
-                                <div class="card-header bg-success text-white">
+                                <div class="card-header bg-kp-green text-white">
                                     <h6 class="card-title mb-0">
                                         <i class="fas fa-exchange-alt me-2"></i>Transaction Reports
                                     </h6>
@@ -108,12 +108,12 @@
                                 <div class="card-body">
                                     <p>Detailed transaction analysis and financial movement tracking.</p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fas fa-check text-success me-2"></i>Income vs expense analysis</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Cash flow reports</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Transaction categorization</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Payment method breakdown</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Income vs expense analysis</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Cash flow reports</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Transaction categorization</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Payment method breakdown</li>
                                     </ul>
-                                    <a href="{{ route('finance.transactions.index') }}" class="btn btn-success w-100">
+                                    <a href="{{ route('finance.transactions.index') }}" class="btn btn-kp-success w-100">
                                         View Transaction Reports
                                     </a>
                                 </div>
@@ -130,10 +130,10 @@
                                 <div class="card-body">
                                     <p>Advanced financial analytics and business intelligence.</p>
                                     <ul class="list-unstyled">
-                                        <li><i class="fas fa-check text-success me-2"></i>Revenue trend analysis</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Customer profitability</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Service performance</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>Financial forecasting</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Revenue trend analysis</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Customer profitability</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Service performance</li>
+                                        <li><i class="fas fa-check text-kp-green me-2"></i>Financial forecasting</li>
                                     </ul>
                                     <a href="{{ route('finance.reports', ['report_type' => 'revenue_analysis']) }}"
                                        class="btn btn-info w-100">
@@ -155,13 +155,13 @@
                                     <div class="row">
                                         <div class="col-md-3 mb-3">
                                             <a href="{{ route('finance.reports', ['report_type' => 'financial_summary', 'period' => 'this_month']) }}"
-                                               class="btn btn-outline-primary w-100">
+                                               class="btn btn-outline-kp-primary w-100">
                                                 <i class="fas fa-chart-bar me-2"></i>Monthly Summary
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
                                             <a href="{{ route('finance.reports', ['report_type' => 'revenue_analysis', 'period' => 'this_quarter']) }}"
-                                               class="btn btn-outline-success w-100">
+                                               class="btn btn-outline-kp-success w-100">
                                                 <i class="fas fa-chart-line me-2"></i>Revenue Analysis
                                             </a>
                                         </div>
@@ -196,7 +196,7 @@
                                             </a>
                                         </div>
                                         <div class="col-md-3 mb-3">
-                                            <button class="btn btn-outline-primary w-100" onclick="window.print()">
+                                            <button class="btn btn-outline-kp-primary w-100" onclick="window.print()">
                                                 <i class="fas fa-print me-2"></i>Print Reports
                                             </button>
                                         </div>
@@ -268,7 +268,7 @@
                                 @endif
                             </div>
                             <div class="text-end">
-                                <div class="h6 mb-1 {{ $transaction->direction === 'out' ? 'text-danger' : 'text-success' }}">
+                                <div class="h6 mb-1 {{ $transaction->direction === 'out' ? 'text-danger' : 'text-kp-green' }}">
                                     @if($transaction->currency === 'USD')
                                         ${{ number_format($transaction->amount, 2) }}
                                     @else
@@ -284,7 +284,7 @@
                 @endforeach
             </div>
             <div class="mt-3 text-center">
-                <a href="{{ route('finance.transactions.index') }}" class="btn btn-sm btn-outline-primary">
+                <a href="{{ route('finance.transactions.index') }}" class="btn btn-sm btn-outline-kp-primary">
                     <i class="fas fa-list me-1"></i> View All Transactions
                 </a>
             </div>
@@ -292,7 +292,7 @@
             <div class="text-center py-4">
                 <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
                 <p class="text-muted">No recent transactions found.</p>
-                <a href="{{ route('finance.transactions.create') }}" class="btn btn-sm btn-primary">
+                <a href="{{ route('finance.transactions.create') }}" class="btn btn-sm btn-kp-primary">
                     <i class="fas fa-plus me-1"></i> Add Transaction
                 </a>
             </div>

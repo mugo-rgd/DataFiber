@@ -15,7 +15,7 @@
             </nav>
 
             <div class="card">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <div class="d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0">
                             <i class="fas fa-user me-2"></i>Customer Details
@@ -99,19 +99,19 @@
                                     <div class="row text-center">
                                         <div class="col-6 mb-3">
                                             <div class="border rounded p-3">
-                                                <h4 class="text-primary mb-1">{{ $customer->leaseBillings->count() }}</h4>
+                                                <h4 class="text-kp-blue mb-1">{{ $customer->leaseBillings->count() }}</h4>
                                                 <small class="text-muted">Total Billings</small>
                                             </div>
                                         </div>
                                         <div class="col-6 mb-3">
                                             <div class="border rounded p-3">
-                                                <h4 class="text-warning mb-1">{{ $customer->leaseBillings->where('status', 'pending')->count() }}</h4>
+                                                <h4 class="text-kp-yellow mb-1">{{ $customer->leaseBillings->where('status', 'pending')->count() }}</h4>
                                                 <small class="text-muted">Pending</small>
                                             </div>
                                         </div>
                                         <div class="col-6">
                                             <div class="border rounded p-3">
-                                                <h4 class="text-success mb-1">{{ $customer->leaseBillings->where('status', 'paid')->count() }}</h4>
+                                                <h4 class="text-kp-green mb-1">{{ $customer->leaseBillings->where('status', 'paid')->count() }}</h4>
                                                 <small class="text-muted">Paid</small>
                                             </div>
                                         </div>
@@ -172,7 +172,7 @@
                                                         </td>
                                                         <td>
                                                             <a href="{{ route('finance.billing.show', $billing->id) }}"
-                                                               class="btn btn-sm btn-outline-primary">
+                                                               class="btn btn-sm btn-outline-kp-primary">
                                                                 <i class="fas fa-eye"></i> View
                                                             </a>
                                                         </td>
@@ -194,7 +194,7 @@
                                             <i class="fas fa-file-invoice-dollar fa-3x text-muted mb-3"></i>
                                             <p class="text-muted mb-0">No billing records found for this customer.</p>
                                             <a href="{{ route('finance.billing.create', ['customer_id' => $customer->id]) }}"
-                                               class="btn btn-primary mt-2">
+                                               class="btn btn-kp-primary mt-2">
                                                 <i class="fas fa-plus me-2"></i>Create First Bill
                                             </a>
                                         </div>
@@ -212,10 +212,10 @@
                                     <i class="fas fa-arrow-left me-2"></i>Back to Customers
                                 </a>
                                 <a href="{{ route('finance.billing.create', ['customer_id' => $customer->id]) }}"
-                                   class="btn btn-primary">
+                                   class="btn btn-kp-primary">
                                     <i class="fas fa-file-invoice me-2"></i>Create New Bill
                                 </a>
-                                <a href="{{ url('/customers/' . $customer->id . '/edit') }}" class="btn btn-warning">
+                                <a href="{{ url('/customers/' . $customer->id . '/edit') }}" class="btn btn-kp-warning">
                                     <i class="fas fa-edit me-2"></i>Edit Customer
                                 </a>
                                 <button type="button" class="btn btn-info" onclick="toggleAutoBilling({{ $customer->id }})">

@@ -13,10 +13,10 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center py-3">
         <h1 class="h3 mb-0 text-gray-800">
-            <i class="fas fa-chart-line text-primary me-2"></i>Financial Trend Analysis
+            <i class="fas fa-chart-line text-kp-blue me-2"></i>Financial Trend Analysis
         </h1>
         <div>
-            <button class="btn btn-outline-primary" id="exportData">
+            <button class="btn btn-outline-kp-primary" id="exportData">
                 <i class="fas fa-download me-1"></i>Export
             </button>
         </div>
@@ -78,7 +78,7 @@
                     <input type="date" class="form-control" id="endDate" value="{{ date('Y-m-d') }}">
                 </div>
                 <div class="col-md-3 align-self-end">
-                    <button class="btn btn-primary" id="applyCustomRange">Apply Range</button>
+                    <button class="btn btn-kp-primary" id="applyCustomRange">Apply Range</button>
                 </div>
             </div>
         </div>
@@ -91,11 +91,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-blue text-uppercase mb-1">
                                 Current Value</div>
                             <div class="h5 mb-0 fw-bold text-gray-800" id="currentValue">$0</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
-                                <span id="valueChange" class="text-success">
+                                <span id="valueChange" class="text-kp-green">
                                     <i class="fas fa-arrow-up"></i> 0%
                                 </span> vs previous
                             </div>
@@ -113,7 +113,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-green text-uppercase mb-1">
                                 Average</div>
                             <div class="h5 mb-0 fw-bold text-gray-800" id="averageValue">$0</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
@@ -153,7 +153,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-yellow text-uppercase mb-1">
                                 Forecast</div>
                             <div class="h5 mb-0 fw-bold text-gray-800" id="forecastValue">$0</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
@@ -174,15 +174,15 @@
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 fw-bold text-primary" id="chartTitle">Revenue Trend Analysis</h6>
+                    <h6 class="m-0 fw-bold text-kp-blue" id="chartTitle">Revenue Trend Analysis</h6>
                     <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-outline-primary active" data-chart-type="line">
+                        <button type="button" class="btn btn-sm btn-outline-kp-primary active" data-chart-type="line">
                             <i class="fas fa-chart-line"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" data-chart-type="bar">
+                        <button type="button" class="btn btn-sm btn-outline-kp-primary" data-chart-type="bar">
                             <i class="fas fa-chart-bar"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" data-chart-type="area">
+                        <button type="button" class="btn btn-sm btn-outline-kp-primary" data-chart-type="area">
                             <i class="fas fa-chart-area"></i>
                         </button>
                     </div>
@@ -199,7 +199,7 @@
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">Trend Statistics</h6>
+                    <h6 class="m-0 fw-bold text-kp-blue">Trend Statistics</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -212,12 +212,12 @@
                                 </tr>
                                 <tr>
                                     <td><strong>R²</strong></td>
-                                    <td><span class="badge bg-success" id="statRSquared">0.00</span></td>
+                                    <td><span class="badge bg-kp-green" id="statRSquared">0.00</span></td>
                                     <td class="text-end">Goodness of fit</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Volatility</strong></td>
-                                    <td><span class="badge bg-warning" id="statVolatility">0%</span></td>
+                                    <td><span class="badge bg-kp-yellow" id="statVolatility">0%</span></td>
                                     <td class="text-end">Std deviation</td>
                                 </tr>
                                 <tr>
@@ -227,7 +227,7 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Trough</strong></td>
-                                    <td><span class="badge bg-primary" id="statTrough">$0</span></td>
+                                    <td><span class="badge bg-kp-blue" id="statTrough">$0</span></td>
                                     <td class="text-end">Minimum value</td>
                                 </tr>
                                 <tr>
@@ -241,7 +241,7 @@
 
                     <!-- Trend Indicators -->
                     <div class="mt-4">
-                        <h6 class="fw-bold text-primary mb-3">Trend Indicators</h6>
+                        <h6 class="fw-bold text-kp-blue mb-3">Trend Indicators</h6>
                         <div class="row text-center">
                             <div class="col-4">
                                 <div class="p-2 border rounded">
@@ -274,7 +274,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 fw-bold text-primary">30-Day Forecast</h6>
+                    <h6 class="m-0 fw-bold text-kp-blue">30-Day Forecast</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -282,8 +282,8 @@
                     </div>
                     <div class="mt-3 text-center">
                         <span class="badge bg-info me-2">Historical</span>
-                        <span class="badge bg-success me-2">Forecast</span>
-                        <span class="badge bg-warning">Confidence Interval</span>
+                        <span class="badge bg-kp-green me-2">Forecast</span>
+                        <span class="badge bg-kp-yellow">Confidence Interval</span>
                     </div>
                 </div>
             </div>
@@ -293,7 +293,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 fw-bold text-primary">Trend Breakdown</h6>
+                    <h6 class="m-0 fw-bold text-kp-blue">Trend Breakdown</h6>
                     <select class="form-select form-select-sm w-auto" id="breakdownBy">
                         <option value="category">By Category</option>
                         <option value="region">By Region</option>
@@ -313,7 +313,7 @@
     <!-- Data Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 fw-bold text-primary">Trend Data Table</h6>
+            <h6 class="m-0 fw-bold text-kp-blue">Trend Data Table</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -344,10 +344,10 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center py-5">
-                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                <div class="spinner-border text-kp-blue mb-3" role="status" style="width: 3rem; height: 3rem;">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <h5 class="text-primary">Analyzing Trends...</h5>
+                <h5 class="text-kp-blue">Analyzing Trends...</h5>
                 <p class="text-muted">Processing financial data and generating insights</p>
             </div>
         </div>
@@ -626,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Update change indicator
         const changeElement = document.getElementById('valueChange');
-        changeElement.className = data.change >= 0 ? 'text-success' : 'text-danger';
+        changeElement.className = data.change >= 0 ? 'text-kp-green' : 'text-danger';
         changeElement.innerHTML = `<i class="fas fa-arrow-${data.change >= 0 ? 'up' : 'down'}"></i> ${Math.abs(data.changePercent)}%`;
 
         // Update trend direction
@@ -634,11 +634,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const trendStrength = document.getElementById('trendStrength');
         if (data.changePercent > 5) {
             trendDir.textContent = 'Strong Up';
-            trendDir.className = 'h5 mb-0 fw-bold text-success';
+            trendDir.className = 'h5 mb-0 fw-bold text-kp-green';
             trendStrength.textContent = `Strength: ${Math.abs(data.changePercent).toFixed(1)}`;
         } else if (data.changePercent > 1) {
             trendDir.textContent = 'Up';
-            trendDir.className = 'h5 mb-0 fw-bold text-success';
+            trendDir.className = 'h5 mb-0 fw-bold text-kp-green';
             trendStrength.textContent = `Strength: ${Math.abs(data.changePercent).toFixed(1)}`;
         } else if (data.changePercent < -5) {
             trendDir.textContent = 'Strong Down';
@@ -957,11 +957,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td><strong>${data.dates[i]}</strong></td>
                 <td>${data.metric === 'margin' || data.metric === 'growth' ?
                     `${value.toFixed(1)}%` : `$${formatNumber(value)}`}</td>
-                <td class="${change >= 0 ? 'text-success' : 'text-danger'}">
+                <td class="${change >= 0 ? 'text-kp-green' : 'text-danger'}">
                     ${change >= 0 ? '+' : ''}${data.metric === 'margin' || data.metric === 'growth' ?
                     `${change.toFixed(1)}%` : `$${formatNumber(change)}`}
                 </td>
-                <td class="${changePercent >= 0 ? 'text-success' : 'text-danger'}">
+                <td class="${changePercent >= 0 ? 'text-kp-green' : 'text-danger'}">
                     ${changePercent >= 0 ? '+' : ''}${changePercent}%
                 </td>
                 <td>${data.metric === 'margin' || data.metric === 'growth' ?
@@ -979,7 +979,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); showTrendDetails(${i})">
+                    <button class="btn btn-sm btn-outline-kp-primary" onclick="event.stopPropagation(); showTrendDetails(${i})">
                         <i class="fas fa-search"></i>
                     </button>
                 </td>

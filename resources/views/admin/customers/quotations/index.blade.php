@@ -48,7 +48,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <strong class="text-success">{{ $quotation->formatted_total_amount ?? '$0.00' }}</strong>
+                                            <strong class="text-kp-green">{{ $quotation->formatted_total_amount ?? '$0.00' }}</strong>
                                         </td>
                                         <td>{{ $quotation->timeline_days ?? 0 }} days</td>
                                         <td>
@@ -58,7 +58,7 @@
                                         </td>
                                         <td>
                                             @if($quotation->status === 'approved')
-                                                <span class="badge bg-success">
+                                                <span class="badge bg-kp-green">
                                                     <i class="fas fa-check me-1"></i>Approved
                                                 </span>
                                             @elseif($quotation->status === 'rejected')
@@ -66,7 +66,7 @@
                                                     <i class="fas fa-times me-1"></i>Rejected
                                                 </span>
                                             @elseif($quotation->status === 'sent')
-                                                <span class="badge bg-warning text-dark">
+                                                <span class="badge bg-kp-yellow text-dark">
                                                     <i class="fas fa-clock me-1"></i>Pending Review
                                                 </span>
                                             @else
@@ -79,7 +79,7 @@
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <a href="{{ route('customer.quotations.show', $quotation) }}"
-                                                   class="btn btn-outline-primary"
+                                                   class="btn btn-outline-kp-primary"
                                                    title="View Quotation Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
@@ -87,7 +87,7 @@
                                                 {{-- Approve Button - Only show for sent quotations --}}
                                                 @if($quotation->status === 'sent')
                                                     <button type="button"
-                                                            class="btn btn-outline-success"
+                                                            class="btn btn-outline-kp-success"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#approveModal{{ $quotation->id }}"
                                                             title="Approve Quotation">
@@ -114,7 +114,7 @@
                                     <div class="modal fade" id="approveModal{{ $quotation->id }}" tabindex="-1" aria-labelledby="approveModalLabel{{ $quotation->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <div class="modal-header bg-success text-white">
+                                                <div class="modal-header bg-kp-green text-white">
                                                     <h5 class="modal-title" id="approveModalLabel{{ $quotation->id }}">
                                                         <i class="fas fa-check-circle me-2"></i>Approve Quotation
                                                     </h5>
@@ -135,7 +135,7 @@
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                                     <form action="{{ route('customer.quotations.approve', $quotation) }}" method="POST">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-success">
+                                                        <button type="submit" class="btn btn-kp-success">
                                                             <i class="fas fa-check me-1"></i>Confirm Approval
                                                         </button>
                                                     </form>
@@ -201,7 +201,7 @@
 @if($quotations->where('status', 'sent')->count() > 0)
 <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
     <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header bg-primary text-white">
+        <div class="toast-header bg-kp-blue text-white">
             <strong class="me-auto">
                 <i class="fas fa-bell me-2"></i>Action Required
             </strong>

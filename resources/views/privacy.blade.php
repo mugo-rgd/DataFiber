@@ -32,7 +32,7 @@
                 <div class="text-center">
                     <div class="privacy-visualization position-relative d-inline-block">
                         <div class="shield-icon">
-                            <i class="fas fa-shield-alt fa-5x text-primary"></i>
+                            <i class="fas fa-shield-alt fa-5x text-kp-blue"></i>
                         </div>
                         <div class="encryption-ring encryption-ring-1"></div>
                         <div class="encryption-ring encryption-ring-2"></div>
@@ -51,7 +51,7 @@
             <div class="card-body p-4">
                 <div class="row align-items-center">
                     <div class="col-lg-3 mb-3 mb-lg-0">
-                        <h5 class="mb-0 text-primary"><i class="fas fa-stream me-2"></i> Quick Navigation</h5>
+                        <h5 class="mb-0 text-kp-blue"><i class="fas fa-stream me-2"></i> Quick Navigation</h5>
                     </div>
                     <div class="col-lg-9">
                         <div class="privacy-nav">
@@ -89,7 +89,7 @@
                             <p class="lead">Welcome to Dark Fibre CRM. We are committed to protecting your privacy and ensuring the security of your personal information.</p>
                             <p>This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our fibre infrastructure management platform and services (collectively, the "Service").</p>
                             <p>Please read this Privacy Policy carefully. By using our Service, you agree to the collection and use of information in accordance with this policy. If you do not agree with the terms of this Privacy Policy, please do not access the Service.</p>
-                            <div class="alert alert-primary mt-4">
+                            <div class="alert alert-kp-primary mt-4">
                                 <i class="fas fa-info-circle me-2"></i>
                                 <strong>Note:</strong> This policy applies to all users of our Service, including visitors, customers, and partners.
                             </div>
@@ -110,17 +110,17 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
                                     <div class="d-flex align-items-center mb-3">
-                                        <div class="data-icon bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-3">
+                                        <div class="data-icon bg-kp-blue bg-opacity-10 text-kp-blue rounded-circle p-3 me-3">
                                             <i class="fas fa-user fa-2x"></i>
                                         </div>
                                         <h4 class="h5 mb-0">Personal Information</h4>
                                     </div>
                                     <p>We collect personal information that you voluntarily provide when you:</p>
                                     <ul class="list-unstyled small">
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Create an account</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Contact our support</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Subscribe to newsletters</li>
-                                        <li><i class="fas fa-check-circle text-success me-2"></i> Participate in surveys</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Create an account</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Contact our support</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Subscribe to newsletters</li>
+                                        <li><i class="fas fa-check-circle text-kp-green me-2"></i> Participate in surveys</li>
                                     </ul>
                                 </div>
                             </div>
@@ -130,17 +130,17 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
                                     <div class="d-flex align-items-center mb-3">
-                                        <div class="data-icon bg-success bg-opacity-10 text-success rounded-circle p-3 me-3">
+                                        <div class="data-icon bg-kp-green bg-opacity-10 text-kp-green rounded-circle p-3 me-3">
                                             <i class="fas fa-network-wired fa-2x"></i>
                                         </div>
                                         <h4 class="h5 mb-0">Network Data</h4>
                                     </div>
                                     <p>As a fibre management platform, we collect:</p>
                                     <ul class="list-unstyled small">
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Fibre route information</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Network performance metrics</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Equipment inventory data</li>
-                                        <li><i class="fas fa-check-circle text-success me-2"></i> Customer infrastructure details</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Fibre route information</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Network performance metrics</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Equipment inventory data</li>
+                                        <li><i class="fas fa-check-circle text-kp-green me-2"></i> Customer infrastructure details</li>
                                     </ul>
                                 </div>
                             </div>
@@ -159,10 +159,10 @@
                                     </div>
                                     <p>We automatically collect usage information:</p>
                                     <ul class="list-unstyled small">
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> IP addresses and browser types</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Pages visited and features used</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Time stamps and session durations</li>
-                                        <li><i class="fas fa-check-circle text-success me-2"></i> Device information and operating systems</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> IP addresses and browser types</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Pages visited and features used</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Time stamps and session durations</li>
+                                        <li><i class="fas fa-check-circle text-kp-green me-2"></i> Device information and operating systems</li>
                                     </ul>
                                 </div>
                             </div>
@@ -172,17 +172,17 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4">
                                     <div class="d-flex align-items-center mb-3">
-                                        <div class="data-icon bg-warning bg-opacity-10 text-warning rounded-circle p-3 me-3">
+                                        <div class="data-icon bg-kp-yellow bg-opacity-10 text-kp-yellow rounded-circle p-3 me-3">
                                             <i class="fas fa-cookie-bite fa-2x"></i>
                                         </div>
                                         <h4 class="h5 mb-0">Cookies & Tracking</h4>
                                     </div>
                                     <p>We use cookies and similar technologies:</p>
                                     <ul class="list-unstyled small">
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Session cookies for authentication</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Analytics cookies for improvement</li>
-                                        <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Preference cookies for settings</li>
-                                        <li><i class="fas fa-check-circle text-success me-2"></i> Security cookies for protection</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Session cookies for authentication</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Analytics cookies for improvement</li>
+                                        <li class="mb-2"><i class="fas fa-check-circle text-kp-green me-2"></i> Preference cookies for settings</li>
+                                        <li><i class="fas fa-check-circle text-kp-green me-2"></i> Security cookies for protection</li>
                                     </ul>
                                 </div>
                             </div>
@@ -206,7 +206,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="d-flex">
                                         <div class="use-icon me-3">
-                                            <i class="fas fa-cogs fa-2x text-primary"></i>
+                                            <i class="fas fa-cogs fa-2x text-kp-blue"></i>
                                         </div>
                                         <div>
                                             <h5 class="h6 mb-2">Service Delivery</h5>
@@ -218,7 +218,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="d-flex">
                                         <div class="use-icon me-3">
-                                            <i class="fas fa-headset fa-2x text-success"></i>
+                                            <i class="fas fa-headset fa-2x text-kp-green"></i>
                                         </div>
                                         <div>
                                             <h5 class="h6 mb-2">Customer Support</h5>
@@ -242,7 +242,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="d-flex">
                                         <div class="use-icon me-3">
-                                            <i class="fas fa-bell fa-2x text-warning"></i>
+                                            <i class="fas fa-bell fa-2x text-kp-yellow"></i>
                                         </div>
                                         <div>
                                             <h5 class="h6 mb-2">Communication</h5>
@@ -294,7 +294,7 @@
                             <div class="sharing-table mt-4">
                                 <div class="sharing-row">
                                     <div class="sharing-party">
-                                        <i class="fas fa-user-tie text-primary me-2"></i>
+                                        <i class="fas fa-user-tie text-kp-blue me-2"></i>
                                         <strong>Service Providers</strong>
                                     </div>
                                     <div class="sharing-purpose">
@@ -304,7 +304,7 @@
 
                                 <div class="sharing-row">
                                     <div class="sharing-party">
-                                        <i class="fas fa-handshake text-success me-2"></i>
+                                        <i class="fas fa-handshake text-kp-green me-2"></i>
                                         <strong>Business Partners</strong>
                                     </div>
                                     <div class="sharing-purpose">
@@ -314,7 +314,7 @@
 
                                 <div class="sharing-row">
                                     <div class="sharing-party">
-                                        <i class="fas fa-gavel text-warning me-2"></i>
+                                        <i class="fas fa-gavel text-kp-yellow me-2"></i>
                                         <strong>Legal Requirements</strong>
                                     </div>
                                     <div class="sharing-purpose">
@@ -343,7 +343,7 @@
                                 </div>
                             </div>
 
-                            <div class="alert alert-warning mt-4">
+                            <div class="alert alert-kp-warning mt-4">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
                                 <strong>Important:</strong> We do not sell, rent, or trade your personal information to third parties for their marketing purposes.
                             </div>
@@ -364,7 +364,7 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4 text-center">
                                     <div class="rights-icon mb-4 mx-auto">
-                                        <i class="fas fa-eye fa-3x text-primary"></i>
+                                        <i class="fas fa-eye fa-3x text-kp-blue"></i>
                                     </div>
                                     <h5 class="h5 mb-3">Right to Access</h5>
                                     <p class="mb-0">You have the right to request copies of your personal data.</p>
@@ -376,7 +376,7 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4 text-center">
                                     <div class="rights-icon mb-4 mx-auto">
-                                        <i class="fas fa-edit fa-3x text-success"></i>
+                                        <i class="fas fa-edit fa-3x text-kp-green"></i>
                                     </div>
                                     <h5 class="h5 mb-3">Right to Rectification</h5>
                                     <p class="mb-0">You have the right to request correction of inaccurate information.</p>
@@ -400,7 +400,7 @@
                             <div class="card h-100 border-0 shadow-sm">
                                 <div class="card-body p-4 text-center">
                                     <div class="rights-icon mb-4 mx-auto">
-                                        <i class="fas fa-ban fa-3x text-warning"></i>
+                                        <i class="fas fa-ban fa-3x text-kp-yellow"></i>
                                     </div>
                                     <h5 class="h5 mb-3">Right to Restrict Processing</h5>
                                     <p class="mb-0">You have the right to request restriction of processing your data.</p>
@@ -458,7 +458,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="security-feature">
                                         <div class="security-icon">
-                                            <i class="fas fa-lock fa-2x text-primary"></i>
+                                            <i class="fas fa-lock fa-2x text-kp-blue"></i>
                                         </div>
                                         <div class="security-content">
                                             <h5 class="h6 mb-2">Encryption</h5>
@@ -470,7 +470,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="security-feature">
                                         <div class="security-icon">
-                                            <i class="fas fa-shield-alt fa-2x text-success"></i>
+                                            <i class="fas fa-shield-alt fa-2x text-kp-green"></i>
                                         </div>
                                         <div class="security-content">
                                             <h5 class="h6 mb-2">Access Controls</h5>
@@ -494,7 +494,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="security-feature">
                                         <div class="security-icon">
-                                            <i class="fas fa-user-shield fa-2x text-warning"></i>
+                                            <i class="fas fa-user-shield fa-2x text-kp-yellow"></i>
                                         </div>
                                         <div class="security-content">
                                             <h5 class="h6 mb-2">Employee Training</h5>
@@ -529,7 +529,7 @@
 
                                 <div class="cookie-type">
                                     <div class="cookie-header">
-                                        <span class="cookie-badge bg-primary">Essential</span>
+                                        <span class="cookie-badge bg-kp-blue">Essential</span>
                                         <strong>Necessary Cookies</strong>
                                     </div>
                                     <p class="mb-2">Required for the operation of our Service. They enable basic functions like page navigation and access to secure areas.</p>
@@ -538,7 +538,7 @@
 
                                 <div class="cookie-type">
                                     <div class="cookie-header">
-                                        <span class="cookie-badge bg-success">Performance</span>
+                                        <span class="cookie-badge bg-kp-green">Performance</span>
                                         <strong>Analytics Cookies</strong>
                                     </div>
                                     <p class="mb-2">Allow us to recognize and count visitors and see how visitors move around our Service. This helps us improve how our Service works.</p>
@@ -547,7 +547,7 @@
 
                                 <div class="cookie-type">
                                     <div class="cookie-header">
-                                        <span class="cookie-badge bg-warning">Functional</span>
+                                        <span class="cookie-badge bg-kp-yellow">Functional</span>
                                         <strong>Functionality Cookies</strong>
                                     </div>
                                     <p class="mb-2">Used to recognize you when you return to our Service. They enable us to personalize our content and remember your preferences.</p>
@@ -571,7 +571,7 @@
                                 <div class="row mt-3">
                                     <div class="col-md-6 mb-3">
                                         <div class="d-flex align-items-center">
-                                            <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                            <i class="fas fa-check-circle text-kp-green me-3 fa-lg"></i>
                                             <div>
                                                 <h6 class="h6 mb-1">Browser Settings</h6>
                                                 <p class="small mb-0">Most browsers allow you to refuse cookies or delete them.</p>
@@ -581,7 +581,7 @@
 
                                     <div class="col-md-6 mb-3">
                                         <div class="d-flex align-items-center">
-                                            <i class="fas fa-check-circle text-success me-3 fa-lg"></i>
+                                            <i class="fas fa-check-circle text-kp-green me-3 fa-lg"></i>
                                             <div>
                                                 <h6 class="h6 mb-1">Cookie Consent Tool</h6>
                                                 <p class="small mb-0">Use our cookie consent tool to manage preferences.</p>
@@ -592,7 +592,7 @@
                             </div>
 
                             <div class="text-center mt-4">
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cookiePreferences">
+                                <button class="btn btn-kp-primary" data-bs-toggle="modal" data-bs-target="#cookiePreferences">
                                     <i class="fas fa-cookie-bite me-2"></i> Manage Cookie Preferences
                                 </button>
                             </div>
@@ -616,7 +616,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="contact-method">
                                         <div class="contact-icon">
-                                            <i class="fas fa-envelope fa-2x text-primary"></i>
+                                            <i class="fas fa-envelope fa-2x text-kp-blue"></i>
                                         </div>
                                         <div class="contact-details">
                                             <h5 class="h6 mb-2">Email</h5>
@@ -631,7 +631,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="contact-method">
                                         <div class="contact-icon">
-                                            <i class="fas fa-phone fa-2x text-success"></i>
+                                            <i class="fas fa-phone fa-2x text-kp-green"></i>
                                         </div>
                                         <div class="contact-details">
                                             <h5 class="h6 mb-2">Phone</h5>
@@ -663,7 +663,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="contact-method">
                                         <div class="contact-icon">
-                                            <i class="fas fa-clock fa-2x text-warning"></i>
+                                            <i class="fas fa-clock fa-2x text-kp-yellow"></i>
                                         </div>
                                         <div class="contact-details">
                                             <h5 class="h6 mb-2">Response Time</h5>
@@ -685,10 +685,10 @@
                 <!-- Summary Card -->
                 <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
                     <div class="card-body p-4">
-                        <h5 class="h5 mb-4"><i class="fas fa-file-alt me-2 text-primary"></i> Policy Summary</h5>
+                        <h5 class="h5 mb-4"><i class="fas fa-file-alt me-2 text-kp-blue"></i> Policy Summary</h5>
 
                         <div class="summary-item mb-4">
-                            <h6 class="h6 mb-2"><i class="fas fa-calendar me-2 text-success"></i> Effective Date</h6>
+                            <h6 class="h6 mb-2"><i class="fas fa-calendar me-2 text-kp-green"></i> Effective Date</h6>
                             <p class="mb-0 small">{{ date('F j, Y') }}</p>
                         </div>
 
@@ -698,14 +698,14 @@
                         </div>
 
                         <div class="summary-item mb-4">
-                            <h6 class="h6 mb-2"><i class="fas fa-language me-2 text-warning"></i> Available Languages</h6>
+                            <h6 class="h6 mb-2"><i class="fas fa-language me-2 text-kp-yellow"></i> Available Languages</h6>
                             <p class="mb-0 small">English (primary), Swahili (coming soon)</p>
                         </div>
 
                         <div class="summary-item mb-4">
                             <h6 class="h6 mb-2"><i class="fas fa-download me-2 text-danger"></i> Download Policy</h6>
                             <div class="d-grid gap-2">
-                                <a href="#" class="btn btn-outline-primary btn-sm">
+                                <a href="#" class="btn btn-outline-kp-primary btn-sm">
                                     <i class="fas fa-file-pdf me-2"></i> PDF Version
                                 </a>
                             </div>
@@ -733,11 +733,11 @@
                         <h5 class="h5 mb-4">Compliance Standards</h5>
                         <div class="compliance-badges">
                             <div class="compliance-badge">
-                                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                                <i class="fas fa-shield-alt fa-3x text-kp-blue mb-3"></i>
                                 <div class="badge-label">GDPR</div>
                             </div>
                             <div class="compliance-badge">
-                                <i class="fas fa-lock fa-3x text-success mb-3"></i>
+                                <i class="fas fa-lock fa-3x text-kp-green mb-3"></i>
                                 <div class="badge-label">ISO 27001</div>
                             </div>
                         </div>
@@ -749,10 +749,10 @@
                     <div class="card-body p-4">
                         <h5 class="h5 mb-4">Quick Actions</h5>
                         <div class="d-grid gap-2">
-                            <a href="{{ route('contact') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('contact') }}" class="btn btn-outline-kp-primary">
                                 <i class="fas fa-question-circle me-2"></i> Ask a Question
                             </a>
-                            <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#dataRequest">
+                            <button class="btn btn-outline-kp-success" data-bs-toggle="modal" data-bs-target="#dataRequest">
                                 <i class="fas fa-database me-2"></i> Submit Data Request
                             </button>
                             <button class="btn btn-outline-danger" id="exportDataBtn">
@@ -770,7 +770,7 @@
 <div class="modal fade" id="cookiePreferences" tabindex="-1" aria-labelledby="cookiePreferencesLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title" id="cookiePreferencesLabel"><i class="fas fa-cookie-bite me-2"></i> Cookie Preferences</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -832,7 +832,7 @@
                 </div>
 
                 <div class="d-grid gap-2 d-md-flex mt-4">
-                    <button class="btn btn-primary" id="saveCookiePreferences">
+                    <button class="btn btn-kp-primary" id="saveCookiePreferences">
                         <i class="fas fa-save me-2"></i> Save Preferences
                     </button>
                     <button class="btn btn-outline-secondary" id="acceptAllCookies">
@@ -851,7 +851,7 @@
 <div class="modal fade" id="dataRequest" tabindex="-1" aria-labelledby="dataRequestLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title" id="dataRequestLabel"><i class="fas fa-database me-2"></i> Data Request Form</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -883,7 +883,7 @@
                     </div>
 
                     <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-kp-primary">
                             <i class="fas fa-paper-plane me-2"></i> Submit Request
                         </button>
                     </div>

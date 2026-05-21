@@ -10,10 +10,10 @@
             <i class="fas fa-file-alt me-2"></i>Marketing Reports
         </h1>
         <div class="btn-group">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
+            <button class="btn btn-kp-primary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
                 <i class="fas fa-plus me-2"></i>Generate Report
             </button>
-            <button class="btn btn-outline-primary">
+            <button class="btn btn-outline-kp-primary">
                 <i class="fas fa-download me-2"></i>Export
             </button>
         </div>
@@ -24,7 +24,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Report Filters</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Report Filters</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -58,7 +58,7 @@
                             </select>
                         </div>
                         <div class="col-md-3 mb-3 d-flex align-items-end">
-                            <button class="btn btn-primary w-100">
+                            <button class="btn btn-kp-primary w-100">
                                 <i class="fas fa-filter me-2"></i>Apply Filters
                             </button>
                         </div>
@@ -75,7 +75,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Quarterly Performance
                             </div>
                             <div class="h6 mb-0 text-gray-800">Q3 2024 Marketing Report</div>
@@ -86,10 +86,10 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button class="btn btn-sm btn-outline-primary me-1">
+                        <button class="btn btn-sm btn-outline-kp-primary me-1">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        <button class="btn btn-sm btn-outline-success me-1">
+                        <button class="btn btn-sm btn-outline-kp-success me-1">
                             <i class="fas fa-download"></i> Download
                         </button>
                         <button class="btn btn-sm btn-outline-info">
@@ -105,7 +105,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Campaign Analysis
                             </div>
                             <div class="h6 mb-0 text-gray-800">Summer Promotion 2024</div>
@@ -116,10 +116,10 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button class="btn btn-sm btn-outline-primary me-1">
+                        <button class="btn btn-sm btn-outline-kp-primary me-1">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        <button class="btn btn-sm btn-outline-success me-1">
+                        <button class="btn btn-sm btn-outline-kp-success me-1">
                             <i class="fas fa-download"></i> Download
                         </button>
                         <button class="btn btn-sm btn-outline-info">
@@ -146,10 +146,10 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button class="btn btn-sm btn-outline-primary me-1">
+                        <button class="btn btn-sm btn-outline-kp-primary me-1">
                             <i class="fas fa-eye"></i> View
                         </button>
-                        <button class="btn btn-sm btn-outline-success me-1">
+                        <button class="btn btn-sm btn-outline-kp-success me-1">
                             <i class="fas fa-download"></i> Download
                         </button>
                         <button class="btn btn-sm btn-outline-info">
@@ -166,27 +166,27 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Report Templates</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Report Templates</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4 mb-4">
                             <div class="card h-100">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                                    <i class="fas fa-chart-line fa-3x text-kp-blue mb-3"></i>
                                     <h5 class="card-title">Performance Dashboard</h5>
                                     <p class="card-text text-muted">Comprehensive overview of marketing performance metrics and KPIs.</p>
-                                    <button class="btn btn-primary">Use Template</button>
+                                    <button class="btn btn-kp-primary">Use Template</button>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4 mb-4">
                             <div class="card h-100">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-bullhorn fa-3x text-success mb-3"></i>
+                                    <i class="fas fa-bullhorn fa-3x text-kp-green mb-3"></i>
                                     <h5 class="card-title">Campaign Analysis</h5>
                                     <p class="card-text text-muted">Detailed analysis of campaign performance and ROI.</p>
-                                    <button class="btn btn-success">Use Template</button>
+                                    <button class="btn btn-kp-success">Use Template</button>
                                 </div>
                             </div>
                         </div>
@@ -211,8 +211,8 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Reports</h6>
-                    <button class="btn btn-sm btn-outline-primary">View All</button>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Recent Reports</h6>
+                    <button class="btn btn-sm btn-outline-kp-primary">View All</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -235,13 +235,13 @@
                                     <td>System</td>
                                     <td>Oct 15, 2024</td>
                                     <td>2.4 MB</td>
-                                    <td><span class="badge bg-success">Completed</span></td>
+                                    <td><span class="badge bg-kp-green">Completed</span></td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-outline-success" title="Download">
+                                            <button class="btn btn-outline-kp-success" title="Download">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                             <button class="btn btn-outline-info" title="Share">
@@ -256,13 +256,13 @@
                                     <td>John Smith</td>
                                     <td>Oct 10, 2024</td>
                                     <td>1.8 MB</td>
-                                    <td><span class="badge bg-success">Completed</span></td>
+                                    <td><span class="badge bg-kp-green">Completed</span></td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-outline-success" title="Download">
+                                            <button class="btn btn-outline-kp-success" title="Download">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                             <button class="btn btn-outline-info" title="Share">
@@ -277,13 +277,13 @@
                                     <td>System</td>
                                     <td>Oct 5, 2024</td>
                                     <td>3.1 MB</td>
-                                    <td><span class="badge bg-success">Completed</span></td>
+                                    <td><span class="badge bg-kp-green">Completed</span></td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-outline-success" title="Download">
+                                            <button class="btn btn-outline-kp-success" title="Download">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                             <button class="btn btn-outline-info" title="Share">
@@ -298,13 +298,13 @@
                                     <td>System</td>
                                     <td>Oct 1, 2024</td>
                                     <td>1.5 MB</td>
-                                    <td><span class="badge bg-success">Completed</span></td>
+                                    <td><span class="badge bg-kp-green">Completed</span></td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
-                                            <button class="btn btn-outline-success" title="Download">
+                                            <button class="btn btn-outline-kp-success" title="Download">
                                                 <i class="fas fa-download"></i>
                                             </button>
                                             <button class="btn btn-outline-info" title="Share">
@@ -343,10 +343,10 @@
                             <div class="card-body">
                                 <h6>Planned Features:</h6>
                                 <ul class="list-unstyled">
-                                    <li><i class="fas fa-check text-success me-2"></i>Custom date ranges</li>
-                                    <li><i class="fas fa-check text-success me-2"></i>Multiple export formats</li>
-                                    <li><i class="fas fa-check text-success me-2"></i>Automated scheduling</li>
-                                    <li><i class="fas fa-check text-success me-2"></i>Custom metrics selection</li>
+                                    <li><i class="fas fa-check text-kp-green me-2"></i>Custom date ranges</li>
+                                    <li><i class="fas fa-check text-kp-green me-2"></i>Multiple export formats</li>
+                                    <li><i class="fas fa-check text-kp-green me-2"></i>Automated scheduling</li>
+                                    <li><i class="fas fa-check text-kp-green me-2"></i>Custom metrics selection</li>
                                 </ul>
                             </div>
                         </div>
@@ -356,10 +356,10 @@
                             <div class="card-body">
                                 <h6>Available Soon:</h6>
                                 <ul class="list-unstyled">
-                                    <li><i class="fas fa-clock text-warning me-2"></i>Real-time data</li>
-                                    <li><i class="fas fa-clock text-warning me-2"></i>Advanced filters</li>
-                                    <li><i class="fas fa-clock text-warning me-2"></i>Team sharing</li>
-                                    <li><i class="fas fa-clock text-warning me-2"></i>API integration</li>
+                                    <li><i class="fas fa-clock text-kp-yellow me-2"></i>Real-time data</li>
+                                    <li><i class="fas fa-clock text-kp-yellow me-2"></i>Advanced filters</li>
+                                    <li><i class="fas fa-clock text-kp-yellow me-2"></i>Team sharing</li>
+                                    <li><i class="fas fa-clock text-kp-yellow me-2"></i>API integration</li>
                                 </ul>
                             </div>
                         </div>
@@ -368,7 +368,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" disabled>Generate Report</button>
+                <button type="button" class="btn btn-kp-primary" disabled>Generate Report</button>
             </div>
         </div>
     </div>

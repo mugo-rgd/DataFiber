@@ -10,7 +10,7 @@
             <i class="fas fa-user-tie me-2"></i>Account Managers
         </h1>
         <div>
-            <a href="{{ route('admin.account-managers.create') }}" class="btn btn-primary">
+            <a href="{{ route('admin.account-managers.create') }}" class="btn btn-kp-primary">
                 <i class="fas fa-plus-circle me-2"></i>Add New Manager
             </a>
             <a href="{{ route('admin.account-managers.analytics') }}" class="btn btn-info">
@@ -26,7 +26,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Managers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_managers'] }}</div>
@@ -44,7 +44,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Active Managers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['active_managers'] }}</div>
@@ -62,7 +62,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Total Customers Managed
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['total_customers_managed'] }}</div>
@@ -112,7 +112,7 @@
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">
+                    <button type="submit" class="btn btn-kp-primary me-2">
                         <i class="fas fa-filter me-2"></i>Apply Filters
                     </button>
                     <a href="{{ route('admin.account-managers.index') }}" class="btn btn-secondary">
@@ -126,7 +126,7 @@
     <!-- Account Managers Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Account Managers List</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Account Managers List</h6>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -150,7 +150,7 @@
                             <td>{{ $manager->id }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-circle bg-primary text-white me-2"
+                                    <div class="avatar-circle bg-kp-blue text-white me-2"
                                          style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
                                         {{ strtoupper(substr($manager->name, 0, 1)) }}
                                     </div>
@@ -171,7 +171,7 @@
                             </td>
                             <td>
                                 @if($manager->status === 'active')
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-kp-green">Active</span>
                                 @else
                                     <span class="badge bg-secondary">Inactive</span>
                                 @endif
@@ -184,11 +184,11 @@
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('admin.account-managers.edit', $manager->id) }}"
-                                       class="btn btn-sm btn-primary" title="Edit">
+                                       class="btn btn-sm btn-kp-primary" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <button type="button"
-                                            class="btn btn-sm {{ $manager->status === 'active' ? 'btn-warning' : 'btn-success' }}"
+                                            class="btn btn-sm {{ $manager->status === 'active' ? 'btn-kp-warning' : 'btn-kp-success' }}"
                                             onclick="toggleStatus({{ $manager->id }}, '{{ addslashes($manager->name) }}')"
                                             title="{{ $manager->status === 'active' ? 'Deactivate' : 'Activate' }}">
                                         <i class="fas {{ $manager->status === 'active' ? 'fa-ban' : 'fa-check' }}"></i>
@@ -201,7 +201,7 @@
                             <td colspan="9" class="text-center py-4">
                                 <i class="fas fa-user-tie fa-3x text-muted mb-3"></i>
                                 <h5 class="text-muted">No account managers found</h5>
-                                <a href="{{ route('admin.account-managers.create') }}" class="btn btn-primary mt-2">
+                                <a href="{{ route('admin.account-managers.create') }}" class="btn btn-kp-primary mt-2">
                                     <i class="fas fa-plus-circle me-2"></i>Add Your First Manager
                                 </a>
                             </td>
@@ -231,7 +231,7 @@
 <div class="modal fade" id="customerListModal" tabindex="-1" aria-labelledby="customerListModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white py-2">
+            <div class="modal-header bg-kp-blue text-white py-2">
                 <h6 class="modal-title" id="customerListModalLabel">
                     <i class="fas fa-users me-2"></i>
                     Customers for <span id="managerName" class="fw-bold"></span>
@@ -245,7 +245,7 @@
                 <button type="button" class="btn btn-secondary btn-sm" onclick="closeCustomerModal()">
                     <i class="fas fa-times me-2"></i>Close
                 </button>
-                <a href="#" id="assignCustomersBtn" class="btn btn-primary btn-sm d-none">
+                <a href="#" id="assignCustomersBtn" class="btn btn-kp-primary btn-sm d-none">
                     <i class="fas fa-user-plus me-2"></i>Assign More Customers
                 </a>
             </div>
@@ -342,7 +342,7 @@ function showCustomerList(managerId, managerName) {
     if (contentDiv) {
         contentDiv.innerHTML = `
             <div class="text-center py-5">
-                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <div class="spinner-border text-kp-blue" style="width: 3rem; height: 3rem;" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
                 <p class="mt-3 text-muted">Loading customers for ${managerName}...</p>
@@ -384,7 +384,7 @@ function showCustomerList(managerId, managerName) {
                     <i class="fas fa-users-slash fa-4x text-muted mb-3"></i>
                     <h5 class="text-muted">No Customers Found</h5>
                     <p class="text-muted">This manager has no customers assigned.</p>
-                    <a href="/admin/customers/assign?manager=${managerId}" class="btn btn-primary mt-3">
+                    <a href="/admin/customers/assign?manager=${managerId}" class="btn btn-kp-primary mt-3">
                         <i class="fas fa-user-plus me-2"></i>Assign Customers
                     </a>
                 </div>

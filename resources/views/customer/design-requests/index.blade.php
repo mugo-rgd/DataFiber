@@ -9,12 +9,12 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-drafting-compass text-primary"></i> My Design Requests
+                    <i class="fas fa-drafting-compass text-kp-blue"></i> My Design Requests
                 </h1>
                 <div>
 
                     <!-- New Request Button -->
-                    <a href="{{ route('customer.design-requests.create') }}" class="btn btn-primary">
+                    <a href="{{ route('customer.design-requests.create') }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus me-1"></i> New Request
                     </a>
                 </div>
@@ -59,7 +59,7 @@
                                             <td>{{ $designRequest->created_at->format('M j, Y H:i') }}</td>
                                             <td>
                                                 <a href="{{ route('customer.design-requests.show', $designRequest) }}"
-                                                   class="btn btn-sm btn-outline-primary">
+                                                   class="btn btn-sm btn-outline-kp-primary">
                                                     <i class="fas fa-eye"></i> View
                                                 </a>
                                             </td>
@@ -76,7 +76,7 @@
                                 <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-tachometer-alt me-1"></i> Return to Dashboard
                                 </a>
-                                <a href="{{ route('customer.design-requests.create') }}" class="btn btn-primary">
+                                <a href="{{ route('customer.design-requests.create') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-plus me-1"></i> Create Your First Request
                                 </a>
                             </div>

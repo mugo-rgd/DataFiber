@@ -13,7 +13,7 @@
                         <i class="fas fa-tools me-2"></i>Maintenance Requests
                     </h5>
                     @can('create-maintenance-request')
-                        <a href="{{ route('maintenance.requests.create') }}" class="btn btn-primary">
+                        <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-primary">
                             <i class="fas fa-plus-circle me-1"></i> New Request
                         </a>
                     @endcan
@@ -146,7 +146,7 @@
                                             <td>
                                                 <div class="btn-group btn-group-sm">
                                                     <a href="{{ route('maintenance.requests.show', $request->id) }}"
-                                                       class="btn btn-outline-primary" title="View Details">
+                                                       class="btn btn-outline-kp-primary" title="View Details">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     @can('edit-maintenance-request')
@@ -156,7 +156,7 @@
                                                         </a>
                                                     @endcan
                                                     @if($request->status === 'open' && Auth::user()->role === 'admin')
-                                                        <button type="button" class="btn btn-outline-success"
+                                                        <button type="button" class="btn btn-outline-kp-success"
                                                                 onclick="assignRequest({{ $request->id }})" title="Assign">
                                                             <i class="fas fa-user-check"></i>
                                                         </button>
@@ -181,7 +181,7 @@
                             <h4>No Maintenance Requests Found</h4>
                             <p class="text-muted">There are no maintenance requests matching your criteria.</p>
                             @can('create-maintenance-request')
-                                <a href="{{ route('maintenance.requests.create') }}" class="btn btn-primary">
+                                <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-plus-circle me-1"></i>Create First Request
                                 </a>
                             @endcan
@@ -220,7 +220,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="submitAssignment()">Assign Request</button>
+                <button type="button" class="btn btn-kp-primary" onclick="submitAssignment()">Assign Request</button>
             </div>
         </div>
     </div>

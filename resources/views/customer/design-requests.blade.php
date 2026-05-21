@@ -9,18 +9,18 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex gap-2">
                     <!-- New Request Button - On the LEFT -->
-                    <a href="{{ route('customer.design-requests.create') }}" class="btn btn-primary">
+                    <a href="{{ route('customer.design-requests.create') }}" class="btn btn-kp-primary">
                         <i class="fas fa-plus me-1"></i> New Request
                     </a>
                 </div>
 
                 <h1 class="h3 text-gray-800 position-absolute start-50 translate-middle-x">
-                    <i class="fas fa-drafting-compass text-primary"></i> My Design Requests
+                    <i class="fas fa-drafting-compass text-kp-blue"></i> My Design Requests
                 </h1>
 
                 <div class="d-flex gap-2">
                     <!-- Return to Dashboard Button - On the RIGHT -->
-                    <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-warning shadow-sm">
+                    <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-kp-warning shadow-sm">
                         <i class="fas fa-arrow-left me-2"></i>
                         <strong>BACK TO DASHBOARD</strong>
                     </a>
@@ -66,7 +66,7 @@
                                             <td>{{ $designRequest->created_at->format('M j, Y H:i') }}</td>
                                             <td>
                                                 <a href="{{ route('customer.design-requests.show', $designRequest) }}"
-                                                   class="btn btn-sm btn-outline-primary">
+                                                   class="btn btn-sm btn-outline-kp-primary">
                                                     <i class="fas fa-eye"></i> View
                                                 </a>
                                             </td>
@@ -80,10 +80,10 @@
                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                             <p class="text-muted">You haven't created any design requests yet.</p>
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ route('customer.design-requests.create') }}" class="btn btn-primary">
+                                <a href="{{ route('customer.design-requests.create') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-plus me-1"></i> Create Your First Request
                                 </a>
-                                <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-warning">
+                                <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-kp-warning">
                                     <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                                 </a>
                             </div>

@@ -1,5 +1,5 @@
 <div class="document-details">
-    <h5 class="mb-4"><i class="fas fa-file-contract text-primary mr-2"></i>Lease Details</h5>
+    <h5 class="mb-4"><i class="fas fa-file-contract text-kp-blue mr-2"></i>Lease Details</h5>
 
     <div class="row">
         <div class="col-md-6">
@@ -33,7 +33,7 @@
                             <th>Design Request:</th>
                             <td>
                                 @if($document->designRequest)
-                                    <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-primary">
+                                    <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-kp-blue">
                                         {{ $document->designRequest->request_number }}
                                     </a>
                                 @else
@@ -131,7 +131,7 @@
                         </tr>
                         <tr>
                             <th>Total Contract Value:</th>
-                            <td class="text-success">
+                            <td class="text-kp-green">
                                 <strong>{{ number_format($document->total_contract_value, 2) }} {{ $document->currency }}</strong>
                             </td>
                         </tr>
@@ -230,7 +230,7 @@
                         <div class="col-md-6">
                             <p class="mb-1"><strong>Test Report:</strong></p>
                             <a href="{{ Storage::url($document->test_report_path) }}"
-                               target="_blank" class="btn btn-sm btn-outline-primary">
+                               target="_blank" class="btn btn-sm btn-outline-kp-primary">
                                 <i class="fas fa-file-pdf mr-1"></i> View Report
                             </a>
                             @if($document->test_date)
@@ -242,7 +242,7 @@
                         <div class="col-md-6">
                             <p class="mb-1"><strong>Acceptance Certificate:</strong></p>
                             <a href="{{ Storage::url($document->acceptance_certificate_path) }}"
-                               target="_blank" class="btn btn-sm btn-outline-success">
+                               target="_blank" class="btn btn-sm btn-outline-kp-success">
                                 <i class="fas fa-file-certificate mr-1"></i> View Certificate
                             </a>
                             @if($document->acceptance_certificate_generated_at)
@@ -283,13 +283,13 @@
 
         @if(auth()->user()->can('view', $document))
             <a href="{{ route('leases.show', $document->id) }}"
-               class="btn btn-primary btn-sm">
+               class="btn btn-kp-primary btn-sm">
                 <i class="fas fa-external-link-alt mr-1"></i> Open Full Details
             </a>
 
             @if(in_array($document->status, ['active', 'accepted']))
                 <a href="{{ route('leases.download', $document->id) }}"
-                   class="btn btn-success btn-sm">
+                   class="btn btn-kp-success btn-sm">
                     <i class="fas fa-download mr-1"></i> Download PDF
                 </a>
             @endif

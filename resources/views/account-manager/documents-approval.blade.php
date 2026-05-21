@@ -35,7 +35,7 @@
             @if($documents->flatten()->where('status', 'pending_review')->count() > 0)
                 <form action="{{ route('account-manager.documents.bulk-approve', $user) }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" class="btn btn-success" onclick="return confirm('Approve all pending documents for this customer?')">
+                    <button type="submit" class="btn btn-kp-success" onclick="return confirm('Approve all pending documents for this customer?')">
                         <i class="fas fa-check-double me-2"></i>Approve All
                     </button>
                 </form>
@@ -46,7 +46,7 @@
     <!-- Stats -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-kp-blue text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-dark">
+            <div class="card bg-kp-yellow text-dark">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -76,7 +76,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-kp-green text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -150,7 +150,7 @@
                                             $fileIcon = 'file-archive';
                                         }
                                     @endphp
-                                    <i class="fas fa-{{ $fileIcon }} text-primary me-2"></i>
+                                    <i class="fas fa-{{ $fileIcon }} text-kp-blue me-2"></i>
                                     <div>
                                         <div class="fw-bold">{{ $document->file_name }}</div>
                                         @if($document->rejection_reason)
@@ -163,7 +163,7 @@
                             <td>{{ round($document->file_size / 1024, 1) }} KB</td>
                             <td>
                                 @if($document->status === 'approved')
-                                    <span class="badge bg-success">Approved</span>
+                                    <span class="badge bg-kp-green">Approved</span>
                                     <br>
                                     <small class="text-muted">
                                         by {{ $document->approver->name ?? 'N/A' }}
@@ -173,23 +173,23 @@
                                 @elseif($document->status === 'rejected')
                                     <span class="badge bg-danger">Rejected</span>
                                 @else
-                                    <span class="badge bg-warning">Pending</span>
+                                    <span class="badge bg-kp-yellow">Pending</span>
                                 @endif
                             </td>
                            <td>
     <div class="btn-group btn-group-sm">
         <!-- These should now work with the correct route names -->
-        <a href="{{ route('account-manager.documents.view', $document) }}" class="btn btn-outline-primary" target="_blank" title="View">
+        <a href="{{ route('account-manager.documents.view', $document) }}" class="btn btn-outline-kp-primary" target="_blank" title="View">
             <i class="fas fa-eye"></i>
         </a>
-        <a href="{{ route('account-manager.documents.download', $document) }}" class="btn btn-outline-success" title="Download">
+        <a href="{{ route('account-manager.documents.download', $document) }}" class="btn btn-outline-kp-success" title="Download">
             <i class="fas fa-download"></i>
         </a>
 
         @if($document->status === 'pending_review')
             <form action="{{ route('account-manager.documents.approve-single', $document) }}" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-outline-success" title="Approve" onclick="return confirm('Approve this document?')">
+                <button type="submit" class="btn btn-outline-kp-success" title="Approve" onclick="return confirm('Approve this document?')">
                     <i class="fas fa-check"></i>
                 </button>
             </form>

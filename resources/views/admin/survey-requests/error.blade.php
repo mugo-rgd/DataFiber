@@ -31,7 +31,7 @@
                         <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary me-3">
                             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                         </a>
-                        <a href="{{ route('admin.survey-requests') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.survey-requests') }}" class="btn btn-kp-primary">
                             <i class="fas fa-redo me-2"></i>Try Again
                         </a>
                     </div>

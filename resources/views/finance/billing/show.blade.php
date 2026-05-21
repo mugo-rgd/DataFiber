@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-file-invoice text-primary me-2"></i>
+                <i class="fas fa-file-invoice text-kp-blue me-2"></i>
                 Invoice Details
             </h1>
             <nav aria-label="breadcrumb">
@@ -24,7 +24,7 @@
         <i class="fas fa-arrow-left me-2"></i>Back to Billings
     </a>
     <a href="{{ route('finance.billing.download', $billing->id) }}"
-       class="btn btn-outline-primary ms-2">
+       class="btn btn-outline-kp-primary ms-2">
         <i class="fas fa-download me-2"></i>Download PDF
     </a>
     <a href="{{ route('finance.billing.preview', $billing->id) }}"
@@ -42,7 +42,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h5 class="text-primary">Kenya Power & Lighting Co. Ltd</h5>
+                    <h5 class="text-kp-blue">Kenya Power & Lighting Co. Ltd</h5>
                     <p class="mb-1">Dark Fibre Services Division</p>
                     <p class="mb-1">P.O. Box 30099 - 00100</p>
                     <p class="mb-1">Nairobi, Kenya</p>
@@ -50,7 +50,7 @@
                     <p class="mb-0">Email: darkfibre@kplc.co.ke</p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <h2 class="text-primary">INVOICE</h2>
+                    <h2 class="text-kp-blue">INVOICE</h2>
                     <h4 class="mb-0">{{ $billing->billing_number }}</h4>
                     <p class="text-muted mb-1">Consolidated Billing</p>
 
@@ -191,7 +191,7 @@
                         <tr class="table-active">
                             <td colspan="5" class="text-end"><h5 class="mb-0">Total Amount Due:</h5></td>
                             <td class="text-end">
-                                <h5 class="mb-0 text-primary">
+                                <h5 class="mb-0 text-kp-blue">
                                     {{ $billing->currency }} {{ number_format($billing->total_amount * 1.16, 2) }}
                                 </h5>
                             </td>
@@ -256,7 +256,7 @@
 
                     @if($billing->status !== 'paid')
                         <div class="text-center mt-3">
-                            <button class="btn btn-success btn-lg"
+                            <button class="btn btn-kp-success btn-lg"
                                     data-bs-toggle="modal"
                                     data-bs-target="#paymentModal">
                                 <i class="fas fa-credit-card me-2"></i>
@@ -264,7 +264,7 @@
                             </button>
                         </div>
                     @else
-                        <div class="alert alert-success text-center">
+                        <div class="alert alert-kp-success text-center">
                             <i class="fas fa-check-circle me-2"></i>
                             This invoice was paid on {{ $billing->updated_at->format('M d, Y') }}
                         </div>

@@ -19,7 +19,7 @@
                             <label>Password</label>
                             <input type="password" name="password" class="form-control" required>
                         </div>
-                        <button class="btn btn-primary w-100">Login</button>
+                        <button class="btn btn-kp-primary w-100">Login</button>
                     </form>
                 </div>
             </div>

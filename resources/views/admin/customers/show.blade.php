@@ -28,7 +28,7 @@
         <div class="col-xl-4 col-md-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
-                    <div class="avatar-circle bg-primary text-white mx-auto mb-3"
+                    <div class="avatar-circle bg-kp-blue text-white mx-auto mb-3"
                          style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 48px;">
                         {{ strtoupper(substr($customer->name, 0, 1)) }}
                     </div>
@@ -36,7 +36,7 @@
                     <p class="text-muted mb-2">{{ $customer->email }}</p>
                     <div class="mb-3">
                         @if($customer->status === 'active')
-                            <span class="badge bg-success px-3 py-2">Active</span>
+                            <span class="badge bg-kp-green px-3 py-2">Active</span>
                         @else
                             <span class="badge bg-secondary px-3 py-2">Inactive</span>
                         @endif
@@ -61,7 +61,7 @@
         <div class="col-xl-8 col-md-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-building me-2"></i>Company Information
                     </h6>
                 </div>
@@ -118,7 +118,7 @@
         <div class="col-md-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-credit-card me-2"></i>Billing Information
                     </h6>
                 </div>
@@ -140,7 +140,7 @@
                             <th>Auto Billing:</th>
                             <td>
                                 @if($customer->auto_billing_enabled)
-                                    <span class="badge bg-success">Enabled</span>
+                                    <span class="badge bg-kp-green">Enabled</span>
                                 @else
                                     <span class="badge bg-secondary">Disabled</span>
                                 @endif
@@ -161,7 +161,7 @@
         <div class="col-md-6 mb-4">
             <div class="card shadow h-100">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-cog me-2"></i>Account Information
                     </h6>
                 </div>
@@ -177,7 +177,7 @@
                                 @if($customer->email_verified_at)
                                     {{ $customer->email_verified_at->format('M d, Y') }}
                                 @else
-                                    <span class="badge bg-warning">Not Verified</span>
+                                    <span class="badge bg-kp-yellow">Not Verified</span>
                                 @endif
                             </td>
                         </tr>
@@ -191,7 +191,7 @@
                                 @if($customer->profile_completed_at)
                                     {{ $customer->profile_completed_at->format('M d, Y') }}
                                 @else
-                                    <span class="badge bg-warning">Incomplete</span>
+                                    <span class="badge bg-kp-yellow">Incomplete</span>
                                 @endif
                             </td>
                         </tr>
@@ -218,18 +218,18 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-bolt me-2"></i>Quick Actions
                     </h6>
                 </div>
                 <div class="card-body">
-                    <a href="{{ url('admin/customers/' . $customer->id . '/edit') }}" class="btn btn-warning me-2">
+                    <a href="{{ url('admin/customers/' . $customer->id . '/edit') }}" class="btn btn-kp-warning me-2">
                         <i class="fas fa-edit me-2"></i>Edit Customer
                     </a>
                     <a href="{{ url('admin/customers/' . $customer->id . '/quotations') }}" class="btn btn-info me-2">
                         <i class="fas fa-file-invoice me-2"></i>View Quotations
                     </a>
-                    <a href="{{ url('admin/customers/' . $customer->id . '/requests') }}" class="btn btn-primary me-2">
+                    <a href="{{ url('admin/customers/' . $customer->id . '/requests') }}" class="btn btn-kp-primary me-2">
                         <i class="fas fa-drafting-compass me-2"></i>Design Requests
                     </a>
                     @if($customer->account_manager_id)

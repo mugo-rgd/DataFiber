@@ -34,11 +34,11 @@
                                     </td>
                                     <td>{{ $contract->created_at->format('M d, Y') }}</td>
                                     <td>
-                                        <a href="{{ route('admin.contracts.show', $contract) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('admin.contracts.show', $contract) }}" class="btn btn-sm btn-kp-primary">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         @if($contract->status === 'draft')
-                                        <a href="{{ route('admin.contracts.edit', $contract) }}" class="btn btn-sm btn-warning">
+                                        <a href="{{ route('admin.contracts.edit', $contract) }}" class="btn btn-sm btn-kp-warning">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         @endif

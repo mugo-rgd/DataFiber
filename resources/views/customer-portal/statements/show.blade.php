@@ -32,7 +32,7 @@
 
     // Format amount with appropriate class
     function getAmountClass($amount) {
-        return $amount >= 0 ? 'text-success' : 'text-danger';
+        return $amount >= 0 ? 'text-kp-green' : 'text-danger';
     }
 @endphp
 
@@ -41,13 +41,13 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="fas fa-file-invoice me-2"></i>Statement Details
                     </h4>
                     <div>
                         @if(count($currencies) > 1)
-                            <span class="badge bg-warning text-dark me-2">Multi-Currency</span>
+                            <span class="badge bg-kp-yellow text-dark me-2">Multi-Currency</span>
                         @endif
                         <a href="{{ route('statements.download', $statement->id) }}" class="btn btn-light btn-sm me-2">
                             <i class="fas fa-download me-1"></i>Download PDF
@@ -83,9 +83,9 @@
                                         @elseif($statement->status == 'generated')
                                             <span class="badge bg-info">Generated</span>
                                         @elseif($statement->status == 'sent')
-                                            <span class="badge bg-success">Sent</span>
+                                            <span class="badge bg-kp-green">Sent</span>
                                         @elseif($statement->status == 'viewed')
-                                            <span class="badge bg-primary">Viewed</span>
+                                            <span class="badge bg-kp-blue">Viewed</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -114,7 +114,7 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Total Credits:</strong></td>
-                                    <td class="text-success">
+                                    <td class="text-kp-green">
                                         {{ formatCurrency($statement->total_credits, $primaryCurrency) }}
                                     </td>
                                 </tr>
@@ -162,14 +162,14 @@
                                         <td>{{ $transaction->description }}</td>
                                         <td>{{ $transaction->reference ?? '-' }}</td>
                                         <td>
-                                            <span class="badge {{ $txCurrency === 'USD' ? 'bg-primary' : 'bg-warning text-dark' }}">
+                                            <span class="badge {{ $txCurrency === 'USD' ? 'bg-kp-blue' : 'bg-kp-yellow text-dark' }}">
                                                 {{ $txCurrency }}
                                             </span>
                                         </td>
                                         <td class="text-end text-danger">
                                             {{ $transaction->direction == 'out' ? formatCurrency($transaction->amount, $txCurrency) : '-' }}
                                         </td>
-                                        <td class="text-end text-success">
+                                        <td class="text-end text-kp-green">
                                             {{ $transaction->direction == 'in' ? formatCurrency($transaction->amount, $txCurrency) : '-' }}
                                         </td>
                                         <td class="text-end">
@@ -228,7 +228,7 @@
                     <div class="mt-4 p-3 bg-light rounded">
                         <div class="row">
                             <div class="col-md-8">
-                                <i class="fas fa-info-circle me-1 text-primary"></i>
+                                <i class="fas fa-info-circle me-1 text-kp-blue"></i>
                                 <span class="text-muted small">
                                     This statement was generated on {{ $statement->generated_at ? $statement->generated_at->format('F d, Y H:i:s') : 'N/A' }}.
                                     @if($statement->sent_at)
@@ -246,9 +246,9 @@
 
                     <!-- Payment Information -->
                     @if($statement->closing_balance > 0)
-                        <div class="mt-3 p-3 bg-warning bg-opacity-10 border border-warning rounded">
+                        <div class="mt-3 p-3 bg-kp-yellow bg-opacity-10 border border-kp-yellow rounded">
                             <div class="d-flex align-items-center">
-                                <i class="fas fa-exclamation-triangle text-warning me-3 fa-2x"></i>
+                                <i class="fas fa-exclamation-triangle text-kp-yellow me-3 fa-2x"></i>
                                 <div>
                                     <strong>Payment Required:</strong><br>
                                     Please pay the outstanding balance of
@@ -258,13 +258,13 @@
                             </div>
                         </div>
                     @elseif($statement->closing_balance < 0)
-                        <div class="mt-3 p-3 bg-success bg-opacity-10 border border-success rounded">
+                        <div class="mt-3 p-3 bg-kp-green bg-opacity-10 border border-kp-green rounded">
                             <div class="d-flex align-items-center">
-                                <i class="fas fa-check-circle text-success me-3 fa-2x"></i>
+                                <i class="fas fa-check-circle text-kp-green me-3 fa-2x"></i>
                                 <div>
                                     <strong>Credit Balance:</strong><br>
                                     Your account has a credit balance of
-                                    <strong class="text-success">{{ formatCurrency(abs($statement->closing_balance), $primaryCurrency) }}</strong>
+                                    <strong class="text-kp-green">{{ formatCurrency(abs($statement->closing_balance), $primaryCurrency) }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -289,7 +289,7 @@
         background-color: #f8f9fa;
         font-weight: 600;
     }
-    .text-success {
+    .text-kp-green {
         color: #28a745 !important;
         font-weight: 500;
     }
@@ -297,17 +297,17 @@
         color: #dc3545 !important;
         font-weight: 500;
     }
-    .bg-primary {
+    .bg-kp-blue {
         background-color: #007bff !important;
     }
-    .bg-warning {
+    .bg-kp-yellow {
         background-color: #ffc107 !important;
         color: #212529 !important;
     }
-    .border-warning {
+    .border-kp-yellow {
         border-color: #ffc107 !important;
     }
-    .border-success {
+    .border-kp-green {
         border-color: #28a745 !important;
     }
 </style>

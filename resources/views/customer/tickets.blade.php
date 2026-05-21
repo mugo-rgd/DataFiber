@@ -7,7 +7,7 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">My Support Tickets</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-kp-primary shadow-sm">
             <i class="fas fa-plus fa-sm text-white-50"></i> New Ticket
         </a>
     </div>
@@ -17,11 +17,11 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Support Tickets</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Support Tickets</h6>
                 </div>
                 <div class="card-body">
                     @if(session('success'))
-                        <div class="alert alert-success">
+                        <div class="alert alert-kp-success">
                             {{ session('success') }}
                         </div>
                     @endif
@@ -56,7 +56,7 @@
                                     <td>2024-01-15</td>
                                     <td>2024-01-16</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-primary">View</a>
+                                        <a href="#" class="btn btn-sm btn-kp-primary">View</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -67,7 +67,7 @@
                                     <td>2024-01-10</td>
                                     <td>2024-01-12</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-primary">View</a>
+                                        <a href="#" class="btn btn-sm btn-kp-primary">View</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -79,7 +79,7 @@
                         <i class="fas fa-ticket-alt fa-3x text-gray-300 mb-3"></i>
                         <h4 class="text-gray-500">No Support Tickets</h4>
                         <p class="text-gray-500">You haven't created any support tickets yet.</p>
-                        <a href="#" class="btn btn-primary">
+                        <a href="#" class="btn btn-kp-primary">
                             <i class="fas fa-plus me-2"></i>Create Your First Ticket
                         </a>
                     </div>

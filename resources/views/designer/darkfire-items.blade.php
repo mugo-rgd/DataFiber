@@ -51,7 +51,7 @@
                             {{ $table === 'commercial_routes' ? 'Commercial Routes' : 'Colocation List' }}
                         </h5>
                         <a href="{{ route('designer.darkfire-items.create', $table) }}"
-                           class="btn btn-success">
+                           class="btn btn-kp-success">
                             <i class="fas fa-plus me-2"></i> Add New
                         </a>
                     </div>
@@ -66,7 +66,7 @@
             <div class="card shadow">
                 <div class="card-body">
                     @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
@@ -106,7 +106,7 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <a href="{{ route('designer.darkfire-items.edit', [$table, $item->id ?? $item->service_id]) }}"
-                                                       class="btn btn-sm btn-warning" title="Edit">
+                                                       class="btn btn-sm btn-kp-warning" title="Edit">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     @if($table === 'commercial_routes')

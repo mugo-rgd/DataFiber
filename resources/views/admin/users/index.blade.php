@@ -9,11 +9,11 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-users text-primary"></i> User Management
+                        <i class="fas fa-users text-kp-blue"></i> User Management
                     </h1>
                     <p class="text-muted">Manage system users and their roles</p>
                 </div>
-                <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                <a href="{{ route('admin.users.create') }}" class="btn btn-kp-primary">
                     <i class="fas fa-user-plus me-2"></i>Add New User
                 </a>
             </div>
@@ -27,7 +27,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Users
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $users->total() }}</div>
@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Active Users
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -85,7 +85,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Team Members
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -106,7 +106,7 @@
         <div class="card-header bg-white py-3">
             <div class="row align-items-center">
                 <div class="col">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-list me-2"></i>All Users
                     </h6>
                 </div>
@@ -140,7 +140,7 @@
                                 <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-primary rounded-circle text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                        <div class="avatar-sm bg-kp-blue rounded-circle text-white d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
                                             {{ substr($user->name, 0, 1) }}
                                         </div>
                                         <div>
@@ -185,7 +185,7 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('admin.users.show', $user) }}" class="btn btn-outline-primary" title="View">
+                                        <a href="{{ route('admin.users.show', $user) }}" class="btn btn-outline-kp-primary" title="View">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-outline-secondary" title="Edit">
@@ -206,7 +206,7 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="hidden" name="role" value="admin">
-                                                    <button type="submit" class="btn btn-xs btn-success" title="Make Admin">
+                                                    <button type="submit" class="btn btn-xs btn-kp-success" title="Make Admin">
                                                         <i class="fas fa-shield-alt"></i> Admin
                                                     </button>
                                                 </form>
@@ -217,7 +217,7 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <input type="hidden" name="role" value="customer">
-                                                    <button type="submit" class="btn btn-xs btn-warning" title="Remove Admin">
+                                                    <button type="submit" class="btn btn-xs btn-kp-warning" title="Remove Admin">
                                                         <i class="fas fa-user"></i> Customer
                                                     </button>
                                                 </form>
@@ -259,7 +259,7 @@
                                         <i class="fas fa-users fa-4x mb-3"></i>
                                         <h5>No users found</h5>
                                         <p>Get started by creating your first user.</p>
-                                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                                        <a href="{{ route('admin.users.create') }}" class="btn btn-kp-primary">
                                             <i class="fas fa-user-plus me-2"></i>Add New User
                                         </a>
                                     </div>

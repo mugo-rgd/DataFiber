@@ -9,13 +9,13 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Technician Dashboard</h1>
         <div class="d-flex">
-            <span class="badge bg-success mr-3 align-self-center">
+            <span class="badge bg-kp-green mr-3 align-self-center">
                 <i class="fas fa-id-badge mr-1"></i> {{ auth()->user()->employee_id }}
             </span>
-            <a href="{{ route('technician.profile') }}" class="btn btn-outline-primary mr-2">
+            <a href="{{ route('technician.profile') }}" class="btn btn-outline-kp-primary mr-2">
                 <i class="fas fa-user mr-2"></i> My Profile
             </a>
-            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-primary">
+            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-primary">
                 <i class="fas fa-plus-circle mr-2"></i> New Maintenance Request
             </a>
         </div>
@@ -28,7 +28,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Assigned Work Orders</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['assigned_work_orders'] }}</div>
                         </div>
@@ -45,7 +45,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Completed This Week</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['completed_this_week'] }}</div>
                         </div>
@@ -62,7 +62,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Critical Priority</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $stats['critical_priority'] }}</div>
                         </div>
@@ -96,7 +96,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-tasks mr-2"></i> My Assigned Work Orders
                     </h5>
@@ -141,14 +141,14 @@
                                         </td>
                                         <td>
                                             <a href="{{ route('technician.work-orders.show', $workOrder->id) }}"
-                                               class="btn btn-sm btn-outline-primary">
+                                               class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                             @if($workOrder->status === 'assigned')
                                             <form action="{{ route('technician.work-orders.start', $workOrder->id) }}"
                                                   method="POST" class="d-inline">
                                                 @csrf
-                                                <button type="submit" class="btn btn-sm btn-success">
+                                                <button type="submit" class="btn btn-sm btn-kp-success">
                                                     <i class="fas fa-play"></i> Start
                                                 </button>
                                             </form>
@@ -183,7 +183,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 mb-3">
-                           <a href="{{ route('technician.work-orders.index') }}" class="btn btn-primary btn-block">
+                           <a href="{{ route('technician.work-orders.index') }}" class="btn btn-kp-primary btn-block">
                                 <i class="fas fa-list mr-2"></i> All Work Orders
                             </a>
                         </div>
@@ -193,12 +193,12 @@
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-warning btn-block">
+                            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-warning btn-block">
                                 <i class="fas fa-plus-circle mr-2"></i> New Request
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <a href="{{ route('technician.profile') }}" class="btn btn-success btn-block">
+                            <a href="{{ route('technician.profile') }}" class="btn btn-kp-success btn-block">
                                 <i class="fas fa-user mr-2"></i> My Profile
                             </a>
                         </div>

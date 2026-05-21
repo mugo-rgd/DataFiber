@@ -49,7 +49,7 @@
                                 </td>
                                 <td>
                                     <a href="{{ route('surveyor.assignments.show', $designRequest->id) }}"
-                                       class="btn btn-sm btn-outline-primary">
+                                       class="btn btn-sm btn-outline-kp-primary">
                                         <i class="fas fa-eye"></i> View
                                     </a>
                                 </td>

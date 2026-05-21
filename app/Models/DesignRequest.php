@@ -991,6 +991,11 @@ public function scopeWithAllDocuments($query)
         'quotation.contract'
     ]);
 }
+
+public function customRoutes()
+{
+    return $this->hasMany(CustomRoute::class);
+}
 ////
 // In DesignRequest model - ensure these relationships exist
 // For account managers

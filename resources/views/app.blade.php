@@ -249,12 +249,12 @@
             justify-content: center;
         }
 
-        .btn-primary {
+        .btn-kp-primary {
             background: var(--kp-yellow);
             color: var(--kp-dark);
         }
 
-        .btn-primary:hover {
+        .btn-kp-primary:hover {
             background: #e6c300;
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
@@ -464,7 +464,7 @@
     <a href="#" class="form-link" id="forgot-password-link">Forgot Password?</a>
 </div>
 
-    <button type="submit" class="btn btn-primary">Login</button>
+    <button type="submit" class="btn btn-kp-primary">Login</button>
 </form>
 <form class="auth-form" id="password-reset-form" method="POST" action="{{ route('password.email') }}">
     @csrf
@@ -476,7 +476,7 @@
         <input type="email" name="email" class="form-input" placeholder="Enter your email" required>
     </div>
 
-    <button type="submit" class="btn btn-primary">Send Reset Link</button>
+    <button type="submit" class="btn btn-kp-primary">Send Reset Link</button>
 
     <div style="text-align: center; margin-top: 1rem;">
         <a href="#" class="form-link" id="show-login-from-reset">Back to Login</a>

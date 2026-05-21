@@ -63,7 +63,7 @@
                                     {{ $leases->count() }} lease(s) available for this customer
                                 </small>
                             @else
-                                <div class="alert alert-warning mb-0">
+                                <div class="alert alert-kp-warning mb-0">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     No leases found for this customer.
                                     <a href="{{ route('account-manager.leases.create', ['customer_id' => $customer->id]) }}"
@@ -119,7 +119,7 @@
                                    value="1"
                                    {{ old('auto_approve') ? 'checked' : '' }}>
                             <label class="form-check-label" for="auto_approve">
-                                <i class="fas fa-check-circle me-1 text-success"></i>
+                                <i class="fas fa-check-circle me-1 text-kp-green"></i>
                                 Auto-approve this document (for signed documents)
                             </label>
                             <small class="form-text text-muted d-block mt-1">
@@ -133,7 +133,7 @@
                                class="btn btn-secondary">
                                 <i class="fas fa-arrow-left me-1"></i> Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-upload me-1"></i> Upload Document
                             </button>
                         </div>
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
     }
 
-    .alert-warning {
+    .alert-kp-warning {
         background-color: #fff3cd;
         border-color: #ffeeba;
         color: #856404;
@@ -217,13 +217,13 @@ document.addEventListener('DOMContentLoaded', function() {
         border-radius: 5px;
     }
 
-    .alert-warning a {
+    .alert-kp-warning a {
         color: #533f03;
         font-weight: 600;
         text-decoration: underline;
     }
 
-    .alert-warning a:hover {
+    .alert-kp-warning a:hover {
         color: #856404;
     }
 
@@ -238,12 +238,12 @@ document.addEventListener('DOMContentLoaded', function() {
         font-weight: 500;
     }
 
-    .btn-primary {
+    .btn-kp-primary {
         background-color: #007bff;
         border-color: #007bff;
     }
 
-    .btn-primary:hover {
+    .btn-kp-primary:hover {
         background-color: #0069d9;
         border-color: #0062cc;
     }

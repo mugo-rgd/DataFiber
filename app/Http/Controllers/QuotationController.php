@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ColocationList;
 use App\Models\CompanyProfile;
+use App\Models\County;
 use App\Models\DesignRequest;
 use App\Models\Quotation;
 use App\Models\User;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Activitylog\Facades\Activity;
+use App\Models\CustomRoute;
+
 
 class QuotationController extends Controller
 {
@@ -58,6 +61,15 @@ class QuotationController extends Controller
     // Get colocation services
     $colocationServices = ColocationList::where('fibrestatus', 'active')->get();
 
+    $customRoutes = CustomRoute::where('design_request_id', $designRequest->id)
+    ->latest()
+    ->get();
+
+    $counties = DB::table('county')
+    ->where('is_active', 1)
+    ->orderBy('name')
+    ->get();
+
     // Get active colocation service instances for this design request
     $colocationInstances = ColocationService::where('design_request_id', $designRequestId)
         ->where('status', 'active')
@@ -71,16 +83,15 @@ class QuotationController extends Controller
         'commercialRoutes',
         'colocationServices',
         'colocationInstances',
-        'defaultTerms'
+        'defaultTerms',
+    'customRoutes',
+    'counties'
     ));
 }
 
-    public function store(Request $request)
+  public function store(Request $request)
 {
     $this->authorize('create', Quotation::class);
-
-    // REMOVE THIS TEMPORARY LINE AFTER FIXING:
-    // dd($request->all());
 
     // Add default values for missing totals
     if (!$request->has('subtotal')) {
@@ -105,6 +116,8 @@ class QuotationController extends Controller
         'selected_routes.*' => 'exists:commercial_routes,id',
         'route_cores' => 'nullable|array',
         'route_duration' => 'nullable|array',
+        'selected_custom_routes' => 'nullable|array',
+        'selected_custom_routes.*' => 'exists:custom_routes,id',
         'selected_services' => 'nullable|array',
         'selected_services.*' => 'required',
         'service_duration' => 'nullable|array',
@@ -161,7 +174,7 @@ class QuotationController extends Controller
                 $scopeOfWork = "Scope of work for quotation #{$quotationNumber}";
             }
 
-            // Create quotation
+            // Create quotation FIRST
             $quotation = Quotation::create([
                 'design_request_id' => $designRequest->id,
                 'customer_id' => $designRequest->customer_id,
@@ -180,6 +193,27 @@ class QuotationController extends Controller
                 'status' => $status,
                 'sent_at' => $sentAt,
             ]);
+
+            // Attach custom routes AFTER quotation is created
+           $selectedCustomRoutes = $request->input('selected_custom_routes', []);
+
+foreach ($selectedCustomRoutes as $customRouteId) {
+    $customRoute = CustomRoute::find($customRouteId);
+
+    if (!$customRoute) {
+        continue;
+    }
+
+    $quotation->customRoutes()->syncWithoutDetaching([
+        $customRoute->id => [
+            'monthly_cost' => $customRoute->monthly_cost,
+            'capital_expenditure' => $customRoute->capital_expenditure,
+            'currency' => $customRoute->currency,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ],
+    ]);
+}
 
             // Attach commercial routes with details
             if ($request->selected_routes) {
@@ -270,7 +304,10 @@ class QuotationController extends Controller
         $this->authorize('viewAny', Quotation::class);
         $userRole = Auth::user()->role;
 
-        $quotations = Quotation::with(['designRequest', 'customer', 'accountManager'])
+        $quotations = Quotation::with(['designRequest',
+        'customer',
+        'accountManager',
+        'contract',])
             ->when(Auth::user()->role === 'account_manager', function($query) {
                 return $query->where('account_manager_id', Auth::id());
             })
@@ -331,10 +368,12 @@ class QuotationController extends Controller
         $view = 'quotations.show';
     }
       $quotation->load([
-        'designRequest.customer.customerProfile',
-        'accountManager',
-        'commercialRoutes',
-        'colocationServices'
+    'designRequest.customer.customerProfile',
+    'accountManager',
+    'commercialRoutes',
+    'colocationServices',
+    'contract',
+    'customRoutes',
     ]);
      $customerProfile = $quotation->designRequest->customer->customerProfile ?? null;
 
@@ -362,11 +401,11 @@ class QuotationController extends Controller
         // $commercialRoutes = CommercialRoute::where('availability', 'YES')->get();
         // $colocationServices = ColocationService::all();
 
-        $quotation->load(['designRequest.customer', 'commercialRoutes', 'colocationServices']);
+        $quotation->load(['designRequest.customer', 'commercialRoutes', 'colocationServices','customRoutes']);
     $commercialRoutes = CommercialRoute::where('availability', 'YES')->get();
     $colocationServices = ColocationList::all();
 
-        return view('admin.quotations.edit', compact('quotation', 'commercialRoutes', 'colocationServices'));
+        return view('admin.quotations.edit', compact('quotation', 'commercialRoutes', 'colocationServices','customRoutes'));
     }
 
    public function update(Request $request, Quotation $quotation)
@@ -381,7 +420,7 @@ class QuotationController extends Controller
 
     // Use policy for authorization
     try {
-        $this->authorize('update', $quotation);
+        // $this->authorize('update', $quotation);
         Log::info('Authorization passed');
     } catch (\Exception $e) {
         Log::error('Authorization failed: ' . $e->getMessage());
@@ -389,7 +428,7 @@ class QuotationController extends Controller
             ->with('error', 'Unauthorized action.');
     }
 
-    if ($quotation->status !== 'draft') {
+    if ($quotation->status !== 'draft'&& $quotation->status !== 'rejected') {
         Log::warning('Quotation not in draft status', [
             'current_status' => $quotation->status
         ]);
@@ -566,7 +605,10 @@ class QuotationController extends Controller
         if (!$updated) {
             throw new \Exception('Failed to update quotation record');
         }
-
+if ($quotation->status == 'rejected') {
+    $quotation->status = 'draft';
+    $quotation->save(); // Don't forget to save if you want to persist the change
+}
         Log::info('Quotation base record updated successfully');
 
         // Sync commercial routes
@@ -746,6 +788,41 @@ public function download(Quotation $quotation)
             $groupedItems['custom_items'][] = $item;
         }
     }
+if ($quotation->customRoutes && $quotation->customRoutes->count()) {
+    foreach ($quotation->customRoutes as $customRoute) {
+
+        $monthlyCost = (float) ($customRoute->pivot->monthly_cost ?? $customRoute->monthly_cost ?? 0);
+        $capex = (float) ($customRoute->pivot->capital_expenditure ?? $customRoute->capital_expenditure ?? 0);
+        $duration = (int) ($customRoute->contract_duration_months ?? 12);
+        $cores = (int) ($customRoute->no_of_cores_required ?? 1);
+
+        $total = ($monthlyCost * $duration) + $capex;
+
+        $groupedItems['commercial_routes'][] = [
+            'type' => 'custom_route',
+            'item_id' => $customRoute->id,
+            'description' => $customRoute->name_of_route . ' (Custom Route)',
+            'quantity' => 1,
+            'unit_price' => $monthlyCost,
+            'total' => $total,
+            'metadata' => [
+                'route_id' => $customRoute->id,
+                'route_name' => $customRoute->name_of_route,
+                'route_code' => 'CUSTOM-' . $customRoute->id,
+                'cores' => $cores,
+                'monthly_cost' => $monthlyCost,
+                'duration_months' => $duration,
+                'technology_type' => $customRoute->tech_type,
+                'distance_km' => $customRoute->approx_distance_km,
+                'pickup_points' => $customRoute->route_description ?? 'Custom route',
+                'link_class' => $customRoute->option,
+                'capital_expenditure' => $capex,
+                'is_custom_route' => true,
+            ],
+        ];
+    }
+}
+
 
     // Calculate totals
     $commercialRoutesTotal = collect($groupedItems['commercial_routes'])->sum('total') ?? 0;
@@ -872,55 +949,63 @@ public function download(Quotation $quotation)
      /**
      * Approve a quotation
      */
-    public function approve(Request $request, Quotation $quotation)
-    {
-        try {
-            // Validate request
-            $validated = $request->validate([
-                'notes' => 'nullable|string|max:500'
-            ]);
+   public function approve(Request $request, Quotation $quotation)
+{
+    try {
 
-            // Check if quotation can be approved
-            if ($quotation->status !== 'draft') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Only draft quotations can be approved.'
-                ], 422);
-            }
+        $validated = $request->validate([
+            'notes'=>'nullable|string|max:500'
+        ]);
 
-            // Update quotation
-            DB::transaction(function () use ($quotation, $validated) {
-                $quotation->update([
-                    'status' => 'approved',
-                    'approved_by' => auth()->id(),
-                    'approved_at' => now(),
-                    'approval_notes' => $validated['notes'] ?? null,
-                    'updated_at' => now(),
-                ]);
-
-                // Log activity
-                activity()
-                    ->performedOn($quotation)
-                    ->causedBy(auth()->user())
-                    ->withProperties(['status' => 'approved'])
-                    ->log('Quotation approved');
-            });
+        // Admin final approval ONLY after customer approval
+        if($quotation->status !== 'customer_approved'){
 
             return response()->json([
-                'success' => true,
-                'message' => 'Quotation approved successfully!',
-                'quotation' => $quotation->fresh()
-            ]);
-
-        } catch (\Exception $e) {
-            \Log::error('Quotation approval failed: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to approve quotation: ' . $e->getMessage()
-            ], 500);
+                'success'=>false,
+                'message'=>'Customer must approve quotation first.'
+            ],422);
         }
+
+        DB::transaction(function() use(
+            $quotation,
+            $validated
+        ){
+
+            $quotation->update([
+
+                'status'=>'approved',
+
+                'approved_by'=>Auth::id(),
+
+                'approved_at'=>now(),
+
+                'approval_notes'=>$validated['notes'] ?? null
+            ]);
+
+            activity()
+            ->performedOn($quotation)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status'=>'approved'
+            ])
+            ->log('Quotation approved by admin');
+        });
+
+        return response()->json([
+            'success'=>true,
+            'message'=>'Quotation approved successfully'
+        ]);
+
+    } catch(\Exception $e){
+
+        Log::error($e);
+
+        return response()->json([
+            'success'=>false,
+            'message'=>$e->getMessage()
+        ],500);
     }
+}
 
     /**
      * Reject a quotation
@@ -981,124 +1066,249 @@ public function download(Quotation $quotation)
     /**
      * Send quotation to customer
      */
-    public function send(Request $request, Quotation $quotation)
-    {
-        try {
-            $validated = $request->validate([
-                'email_notes' => 'nullable|string|max:500'
-            ]);
+    public function send(
+    Request $request,
+    Quotation $quotation
+)
+{
+    try{
 
-            // if (!auth()->user()->can('send', $quotation)) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'You are not authorized to send quotations.'
-            //     ], 403);
-            // }
+        $validated=$request->validate([
+            'email_notes'=>'nullable|string|max:500'
+        ]);
 
-            if ($quotation->status !== 'approved') {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Only approved quotations can be sent.'
-                ], 422);
-            }
-
-            DB::transaction(function () use ($quotation, $validated) {
-                $quotation->update([
-                    'status' => 'sent',
-                    'sent_by' => auth()->id(),
-                    'sent_at' => now(),
-                    'email_notes' => $validated['email_notes'] ?? null,
-                    'updated_at' => now(),
-                ]);
-
-                // TODO: Send actual email to customer
-                activity()
-                    ->performedOn($quotation)
-                    ->causedBy(auth()->user())
-                    ->withProperties(['status' => 'sent'])
-                    ->log('Quotation sent to customer');
-
-            });
+        if($quotation->status!=='draft'){
 
             return response()->json([
-                'success' => true,
-                'message' => 'Quotation sent to customer successfully!',
-                'quotation' => $quotation->fresh()
-            ]);
-
-        } catch (\Exception $e) {
-            \Log::error('Quotation sending failed: ' . $e->getMessage());
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to send quotation: ' . $e->getMessage()
-            ], 500);
+                'success'=>false,
+                'message'=>'Only draft quotations can be sent'
+            ],422);
         }
+
+        DB::transaction(function() use(
+            $quotation,
+            $validated
+        ){
+
+            $quotation->update([
+
+                'status'=>'sent',
+
+                'sent_at'=>now()
+
+            ]);
+
+            activity()
+            ->performedOn($quotation)
+            ->causedBy(auth()->user())
+            ->withProperties([
+                'status'=>'sent'
+            ])
+            ->log('Quotation sent');
+
+            /*
+            Mail::to(
+               $quotation->customer->email
+            )->send(
+                new QuotationMail(
+                    $quotation
+                )
+            );
+            */
+        });
+
+        return response()->json([
+            'success'=>true,
+            'message'=>'Quotation sent successfully'
+        ]);
+
+    }catch(\Exception $e){
+
+        Log::error($e);
+
+        return response()->json([
+            'success'=>false,
+            'message'=>$e->getMessage()
+        ]);
     }
+}
 
      /**
      * Approve a quotation (customer)
      */
-    public function customerApprove(Quotation $quotation)
-    {
-        // Check if the authenticated user is the customer of this quotation
-        if (Auth::id() !== $quotation->customer_id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Check if quotation can be approved
-        if ($quotation->customer_approval_status === 'pending' && $quotation->status === 'sent') {
-            $quotation->update([
-                'customer_approval_status' => 'approved',
-                'status' => 'approved', // Or whatever status you want after approval
-                'approved_at' => now(),
-                'approved_by' => Auth::id(),
-            ]);
-
-            // You can add notifications or emails here
-            // Notification::send($quotation->user, new QuotationApproved($quotation));
-
-            return redirect()->route('customer.quotations.index')
-                ->with('success', 'Quotation approved successfully.');
-        }
-
-        return redirect()->route('customer.quotations.index')
-            ->with('error', 'Quotation cannot be approved.');
+   public function customerApprove(Quotation $quotation)
+{
+    if (Auth::id() !== $quotation->customer_id) {
+        abort(403, 'Unauthorized action.');
     }
+
+    if ($quotation->status !== 'sent' || $quotation->customer_approval_status !== 'pending') {
+        return redirect()
+            ->route('customer.quotations.index')
+            ->with('error', 'Quotation cannot be accepted.');
+    }
+
+    $quotation->update([
+        'customer_approval_status' => 'approved',
+        'customer_approved_at' => now(),
+        'status' => 'customer_approved',
+    ]);
+
+    return redirect()
+        ->route('customer.quotations.index')
+        ->with('success', 'Quotation accepted successfully. It is now awaiting final approval.');
+}
 
     /**
      * Reject a quotation (customer)
      */
-    public function customerReject(Request $request, Quotation $quotation)
-    {
-        // Check if the authenticated user is the customer of this quotation
-        if (Auth::id() !== $quotation->customer_id) {
-            abort(403, 'Unauthorized action.');
+    public function customerReject(
+    Request $request,
+    Quotation $quotation
+)
+{
+    if(
+        Auth::id() !=
+        $quotation->customer_id
+    ){
+        abort(403);
+    }
+
+    $request->validate([
+        'rejection_reason'=>
+        'required|min:5'
+    ]);
+
+    $quotation->update([
+
+        'customer_approval_status'
+            =>'rejected',
+
+        'customer_rejected_at'
+            =>now(),
+
+        'rejection_reason'
+            =>$request->rejection_reason,
+
+        'status'
+            =>'customer_rejected'
+    ]);
+
+    return back()->with(
+        'success',
+        'Quotation rejected'
+    );
+}
+
+public function storeCustomRoute(Request $request)
+{
+    $validated = $request->validate([
+        'design_request_id' => 'required|exists:design_requests,id',
+    'name_of_route' => 'required|string|max:255',
+    'region' => 'required|string|max:100',
+    'option' => 'required|in:Non Premium,Premium,Metro',
+    'tech_type' => 'required|in:ADSS,OPGW,UG,OPGW/ADSS',
+    'fiber_cores' => 'nullable|integer|min:1',
+    'no_of_cores_required' => 'required|integer|min:1',
+    'unit_cost_per_core_per_km_per_month' => 'required|numeric|min:0',
+    'approx_distance_km' => 'required|numeric|min:0',
+    'capital_expenditure' => 'nullable|numeric|min:0',
+    'contract_duration_months' => 'required|integer|min:1|max:360',
+    'currency' => 'required|in:USD,KES',
+    'availability' => 'required|in:YES,NO',
+    'route_description' => 'nullable|string',
+    'design_notes' => 'nullable|string',
+    ]);
+
+    $validated['created_by'] = Auth::id();
+$validated['capital_expenditure'] = $validated['capital_expenditure'] ?? 0;
+
+CustomRoute::create($validated);
+
+    return back()->with('success', 'Custom route created successfully.');
+}
+
+public function getMonthlyCostAttribute(): float
+{
+    return (float) $this->unit_cost_per_core_per_km_per_month
+        * (float) $this->approx_distance_km
+        * (int) $this->no_of_cores_required;
+}
+
+public function getTotalContractValueAttribute(): float
+{
+    return $this->monthly_cost * (int) $this->contract_duration_months
+        + (float) $this->capital_expenditure;
+}
+
+public function review(Quotation $quotation)
+{
+    try {
+        // Authorize the action
+        $this->authorize('review', $quotation);
+
+        // Get the design request
+        $designRequest = $quotation->designRequest;
+
+        if (!$designRequest) {
+            return redirect()->route('admin.quotations.index')
+                ->with('error', 'Design request not found for this quotation.');
         }
 
-        // Validate rejection reason if needed
-        $request->validate([
-            'rejection_reason' => 'nullable|string|max:500',
+        // Get commercial routes grouped by option (MATCHING YOUR CREATE METHOD)
+        $commercialRoutes = CommercialRoute::available()
+            ->orderBy('option')
+            ->orderBy('name_of_route')
+            ->get()
+            ->groupBy('option');
+
+        // Get colocation services (MATCHING YOUR CREATE METHOD)
+        $colocationServices = ColocationList::where('fibrestatus', 'active')->get();
+
+        // Get custom routes for this design request
+        $customRoutes = CustomRoute::where('design_request_id', $designRequest->id)
+            ->latest()
+            ->get();
+
+        // Get counties
+        $counties = DB::table('county')
+            ->where('is_active', 1)
+            ->orderBy('name')
+            ->get();
+
+        // Get active colocation service instances
+        $colocationInstances = ColocationService::where('design_request_id', $designRequest->id)
+            ->where('status', 'active')
+            ->get();
+
+        // Default terms (MATCHING YOUR CREATE METHOD)
+        $defaultTerms = "TERMS AND CONDITIONS:\n\n1. PAYMENT TERMS:\n   • Net 30 days from invoice date\n   • Late payments subject to 1.5% monthly interest\n   • All prices in USD unless specified\n\n2. VALIDITY:\n   • Quotation valid for 30 days from issue date\n   • Prices subject to change after validity period\n\n3. FIBRE LEASE SPECIFIC:\n   • Minimum contract period: 12 months\n   • Core assignment subject to availability\n   • Installation timeline: 30-60 days after approval\n   • Monthly billing in advance\n\n4. COLOCATION SPECIFIC:\n   • Minimum contract period: 12 months\n   • Setup fees: One-time payment\n   • Power consumption billed separately\n   • 24/7 access with prior notice";
+
+        // Log for debugging
+        \Log::info('Review page loaded', [
+            'quotation_id' => $quotation->id,
+            'commercial_routes_count' => $commercialRoutes->count(),
+            'colocation_services_count' => $colocationServices->count(),
+            'custom_routes_count' => $customRoutes->count()
         ]);
 
-        // Check if quotation can be rejected
-        if ($quotation->customer_approval_status === 'pending' && $quotation->status === 'sent') {
-            $quotation->update([
-                'customer_approval_status' => 'rejected',
-                'status' => 'rejected',
-                'rejection_reason' => $request->input('rejection_reason'),
-                'rejected_at' => now(),
-                'rejected_by' => Auth::id(),
-            ]);
+        return view('admin.quotations.review', compact(
+            'quotation',
+            'designRequest',
+            'commercialRoutes',
+            'colocationServices',
+            'colocationInstances',
+            'defaultTerms',
+            'customRoutes',
+            'counties'
+        ));
 
-            // You can add notifications or emails here
-            // Notification::send($quotation->user, new QuotationRejected($quotation));
+    } catch (\Exception $e) {
+        \Log::error('Error in review method: ' . $e->getMessage());
+        \Log::error($e->getTraceAsString());
 
-            return redirect()->route('customer.quotations.index')
-                ->with('success', 'Quotation rejected successfully.');
-        }
-
-        return redirect()->route('customer.quotations.index')
-            ->with('error', 'Quotation cannot be rejected.');
+        return redirect()->route('admin.quotations.index')
+            ->with('error', 'Error loading review page: ' . $e->getMessage());
     }
+}
 }

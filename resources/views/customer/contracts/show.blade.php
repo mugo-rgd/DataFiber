@@ -1,289 +1,242 @@
-{{-- resources/views/customer/contracts/show.blade.php --}}
 @extends('layouts.app')
 
-@section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Contract: {{ $contract->contract_number }}</h2>
-                <div>
-                    <a href="{{ route('customer.contracts.download', $contract) }}"
-                       class="btn btn-outline-primary me-2">
-                        <i class="fas fa-download me-1"></i>Download PDF
-                    </a>
-                    <a href="{{ route('customer.contracts.index') }}" class="btn btn-outline-secondary me-2">
-                        <i class="fas fa-arrow-left me-1"></i>Back to Contracts
-                    </a>
-                    <a href="{{ route('customer.quotations.index') }}" class="btn btn-outline-info">
-                        <i class="fas fa-file-invoice me-1"></i>View Quotations
-                    </a>
-                </div>
-            </div>
+@section('title', 'Contract Details')
 
-            <!-- Contract Status Card -->
+@section('content')
+<div class="container-fluid px-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Contract Details</h1>
+            <p class="text-muted mb-0">{{ $contract->contract_number }}</p>
+        </div>
+
+        <a href="{{ route('customer.contracts.index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to Contracts
+        </a>
+    </div>
+
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
+            <strong>{{ $contract->contract_number }}</strong>
+
+            <span class="badge bg-{{ $contract->getStatusBadgeColor() }}">
+                {{ $contract->getStatusDisplayText() }}
+            </span>
+        </div>
+
+        <div class="card-body">
+
             <div class="row mb-4">
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <h5 class="card-title mb-0">Contract Details</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Contract Number:</strong> {{ $contract->contract_number }}</p>
-                                    <p><strong>Quotation:</strong> {{ $contract->quotation->quotation_number }}</p>
-                                    <p><strong>Project:</strong> {{ $contract->quotation->designRequest->title ?? 'N/A' }}</p>
-                                    <p><strong>Amount:</strong> {{ $contract->quotation->formatted_total_amount }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Generated:</strong> {{ $contract->created_at->format('M j, Y g:i A') }}</p>
-                                    <p><strong>Customer Approved:</strong>
-                                        @if($contract->customer_approved_at)
-                                            <span class="text-success">{{ $contract->customer_approved_at->format('M j, Y g:i A') }}</span>
-                                        @else
-                                            <span class="text-warning">Pending</span>
-                                        @endif
-                                    </p>
-                                    <p><strong>Admin Approved:</strong>
-                                        @if($contract->admin_approved_at)
-                                            <span class="text-success">{{ $contract->admin_approved_at->format('M j, Y g:i A') }}</span>
-                                        @else
-                                            <span class="text-warning">Pending</span>
-                                        @endif
-                                    </p>
-                                    <p><strong>Design Completed:</strong>
-                                        @if($contract->design_completed_at)
-                                            <span class="text-success">{{ $contract->design_completed_at->format('M j, Y g:i A') }}</span>
-                                        @else
-                                            <span class="text-warning">Pending</span>
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Quotation</small>
+                    <div class="fw-bold">
+                        {{ $contract->quotation->quotation_number ?? 'N/A' }}
                     </div>
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header bg-light">
-                            <h5 class="card-title mb-0">Workflow Status</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="progress mb-3" style="height: 25px;">
-                                @php
-                                    $progress = 0;
-                                    if($contract->status == 'approved') $progress = 100;
-                                    elseif($contract->admin_approved_at) $progress = 75;
-                                    elseif($contract->customer_approved_at) $progress = 50;
-                                    else $progress = 25;
-                                @endphp
-                                <div class="progress-bar bg-success" style="width: {{ $progress }}%">
-                                    {{ $progress }}%
-                                </div>
-                            </div>
+                    <small class="text-muted">Account Manager</small>
+                    <div class="fw-bold">
+                        {{ $contract->accountManager->name ?? 'N/A' }}
+                    </div>
+                </div>
 
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center {{ $contract->quotation->status == 'approved' ? 'list-group-item-success' : '' }}">
-                                    Quotation Approved
-                                    @if($contract->quotation->status == 'approved')
-                                    <i class="fas fa-check text-success"></i>
-                                    @endif
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center {{ $contract->customer_approved_at ? 'list-group-item-success' : '' }}">
-                                    Customer Approved Contract
-                                    @if($contract->customer_approved_at)
-                                    <i class="fas fa-check text-success"></i>
-                                    @elseif($contract->canBeApprovedByCustomer())
-                                    <button type="button"
-                                            class="btn btn-sm btn-success"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#approveContractModal">
-                                        Approve
-                                    </button>
-                                    @endif
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center {{ $contract->admin_approved_at ? 'list-group-item-success' : '' }}">
-                                    Admin Approved
-                                    @if($contract->admin_approved_at)
-                                    <i class="fas fa-check text-success"></i>
-                                    @else
-                                    <i class="fas fa-clock text-warning"></i>
-                                    @endif
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center {{ $contract->design_completed_at ? 'list-group-item-success' : '' }}">
-                                    Design Completed
-                                    @if($contract->design_completed_at)
-                                    <i class="fas fa-check text-success"></i>
-                                    @else
-                                    <i class="fas fa-clock text-warning"></i>
-                                    @endif
-                                </li>
-                            </ul>
-                        </div>
+                <div class="col-md-4">
+                    <small class="text-muted">Customer Approval</small>
+                    <div>
+                        @if($contract->customer_approval_status === 'approved')
+                            <span class="badge bg-success">Accepted</span>
+                        @elseif($contract->customer_approval_status === 'rejected')
+                            <span class="badge bg-danger">Rejected</span>
+                        @else
+                            <span class="badge bg-secondary">Pending</span>
+                        @endif
                     </div>
                 </div>
             </div>
 
-            <!-- Contract Content -->
-            <div class="card mb-4">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Contract Document</h5>
-                    <span class="badge bg-{{ $contract->getStatusBadgeColor() }}">
-                        {{ $contract->getStatusDisplayText() }}
-                    </span>
-                </div>
-                <div class="card-body">
-                    <div class="contract-content">
-                        {!! $contract->contract_content !!}
-                    </div>
-                </div>
-            </div>
+            <hr>
 
-            <!-- Approval History -->
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="card-title mb-0">Approval History</h5>
-                </div>
-                <div class="card-body">
-                    @if($contract->approvals->isEmpty())
-                        <p class="text-muted">No approval history yet.</p>
-                    @else
-                        <div class="timeline">
-                            @foreach($contract->approvals as $approval)
-                            <div class="timeline-item mb-3">
-                                <div class="d-flex">
-                                    <div class="timeline-marker bg-{{ $approval->approved_by == 'customer' ? 'info' : ($approval->approved_by == 'admin' ? 'success' : 'secondary') }} rounded-circle me-3" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
-                                        <i class="fas fa-{{ $approval->approved_by == 'customer' ? 'user' : ($approval->approved_by == 'admin' ? 'user-tie' : 'robot') }} text-white"></i>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1 text-capitalize">{{ $approval->approved_by }} Approval</h6>
-                                        <p class="mb-1">{{ $approval->notes }}</p>
-                                        <small class="text-muted">{{ $approval->created_at->format('M j, Y g:i A') }}</small>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
-            </div>
+            <h5 class="mb-3">Contract Content</h5>
 
-            <!-- Action Buttons -->
-            @if($contract->canBeApprovedByCustomer())
-            <div class="card mt-4 border-warning">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="card-title mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Action Required</h5>
-                </div>
-                <div class="card-body">
-                    <p>Please review the contract above and approve it to proceed with the project.</p>
-                    <button type="button" class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#approveContractModal">
-                        <i class="fas fa-check me-2"></i>Approve Contract
-                    </button>
-                </div>
-            </div>
-            @endif
-
-            @if($contract->status == 'approved')
-            <div class="alert alert-success mt-4">
-                <h5><i class="fas fa-check-circle me-2"></i>Contract Fully Approved</h5>
-                <p class="mb-0">The contract has been approved by all parties. Design request is completed and work execution can now start.</p>
-            </div>
-            @endif
-        </div>
-    </div>
+           <div class="contract-preview">
+    {!! html_entity_decode($contract->contract_content) !!}
 </div>
 
-<!-- Approve Contract Modal -->
-@if($contract->canBeApprovedByCustomer())
-<div class="modal fade" id="approveContractModal" tabindex="-1" aria-labelledby="approveContractModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="approveContractModalLabel">
-                    <i class="fas fa-check-circle me-2"></i>Approve Contract
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to approve this contract?</p>
-                <div class="alert alert-info">
-                    <strong>Contract #:</strong> {{ $contract->contract_number }}<br>
-                    <strong>Quotation #:</strong> {{ $contract->quotation->quotation_number }}<br>
-                    <strong>Amount:</strong> {{ $contract->quotation->formatted_total_amount }}
+            @if($contract->rejection_reason)
+                <div class="alert alert-danger mt-4">
+                    <strong>Rejection Reason:</strong><br>
+                    {{ $contract->rejection_reason }}
                 </div>
-
-                <div class="alert alert-warning">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Important:</strong> By approving this contract, you are agreeing to all terms and conditions. The contract will be sent to admin for final approval.
-                </div>
-
-                <p class="text-muted">Please ensure you have reviewed the entire contract before approving.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{{ route('customer.contracts.approve', $contract) }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-check me-1"></i>Confirm Contract Approval
-                    </button>
-                </form>
-            </div>
+            @endif
         </div>
-    </div>
-</div>
+
+        @if($contract->pdf_path)
+    <a href="{{ asset('storage/' . $contract->pdf_path) }}"
+       target="_blank"
+       class="btn btn-outline-dark">
+        <i class="fas fa-print me-1"></i>Print / Download PDF
+    </a>
 @endif
 
+        @if($contract->canBeApprovedByCustomer())
+            <div class="card-footer">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Please review this contract carefully before accepting or rejecting it.
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <form action="{{ route('customer.contracts.approve', $contract) }}"
+                          method="POST"
+                          class="contract-action-form">
+                        @csrf
+                        @method('PATCH')
+
+                        <button type="submit"
+                                class="btn btn-success action-submit-btn"
+                                onclick="return confirm('Are you sure you want to accept this contract?')">
+                            <i class="fas fa-check me-1"></i>Accept Contract
+                        </button>
+                    </form>
+
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#rejectContractModal">
+                        <i class="fas fa-times me-1"></i>Reject Contract
+                    </button>
+                </div>
+            </div>
+        @endif
+    </div>
+</div>
+
+@if($contract->canBeRejectedByCustomer())
+    <div class="modal fade" id="rejectContractModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Reject Contract</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form action="{{ route('customer.contracts.reject', $contract) }}"
+                      method="POST"
+                      class="contract-action-form">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="modal-body">
+                        <label class="form-label">Rejection Reason</label>
+                        <textarea name="rejection_reason"
+                                  rows="4"
+                                  class="form-control"
+                                  required
+                                  placeholder="Please explain why you are rejecting this contract..."></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-danger action-submit-btn">
+                            Submit Rejection
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+@endif
+@endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const rejectModal = document.getElementById('rejectContractModal');
+
+    if (rejectModal) {
+        rejectModal.addEventListener('shown.bs.modal', function () {
+            const textarea = rejectModal.querySelector('textarea[name="rejection_reason"]');
+
+            if (textarea) {
+                textarea.focus();
+            }
+        });
+    }
+
+    document.querySelectorAll('.contract-action-form').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            const textarea = form.querySelector('textarea[name="rejection_reason"]');
+
+            if (textarea && !textarea.value.trim()) {
+                event.preventDefault();
+                alert('Please provide a rejection reason.');
+                return false;
+            }
+
+            const button = form.querySelector('.action-submit-btn');
+
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Processing...';
+            }
+        });
+    });
+});
+</script>
+@endpush
+
+@push('styles')
 <style>
-.contract-content {
-    line-height: 1.8;
-    font-size: 14px;
-    font-family: 'Times New Roman', serif;
+.contract-preview {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    max-height: 850px;
+    overflow-y: auto;
+    font-size: 0.85rem;
 }
 
-.contract-content h4 {
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 5px;
-    margin-top: 20px;
-}
-
-.contract-content h5 {
-    color: #34495e;
-    margin-top: 15px;
-}
-
-.timeline-marker {
-    flex-shrink: 0;
-}
-
-.progress {
-    background-color: #e9ecef;
-}
-
-.list-group-item {
-    border: none;
-    padding: 0.75rem 0;
-}
-
-.contract-content table {
+.contract-preview table {
     width: 100%;
     border-collapse: collapse;
-    margin: 15px 0;
 }
 
-.contract-content table, .contract-content th, .contract-content td {
-    border: 1px solid #ddd;
+.contract-preview table,
+.contract-preview th,
+.contract-preview td {
+    border: 1px solid #333;
 }
 
-.contract-content th, .contract-content td {
-    padding: 8px;
-    text-align: left;
+.contract-preview th,
+.contract-preview td {
+    padding: 4px;
 }
 
-.contract-content th {
-    background-color: #f8f9fa;
+.contract-preview img {
+    max-height: 60px;
 }
 </style>
-@endsection
+@endpush

@@ -16,6 +16,7 @@ use App\Http\Controllers\CustomerSapController;
 use App\Http\Controllers\DarkfireController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\FinancialSyncController;
+use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ICTEngineerCertificateController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\NfpComplianceController;
@@ -227,11 +228,12 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 
     // Registration routes group
+    if (app()->environment('local')) {
     Route::prefix('register')->name('register.')->group(function () {
         Route::get('/admin', [App\Http\Controllers\Auth\RegisterController::class, 'showAdminRegistrationForm'])->name('admin.index');
         Route::post('/admin', [App\Http\Controllers\Auth\RegisterController::class, 'registerAdmin'])->name('admin.store');
     });
-
+    }
     // Notifications
     Route::get('/notifications/unread-count', function() {
         return response()->json([
@@ -453,6 +455,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/', [QuotationController::class, 'store'])->name('store');
             Route::get('/{quotation}', [QuotationController::class, 'show'])->name('show');
             Route::get('/{quotation}/edit', [QuotationController::class, 'edit'])->name('edit');
+            Route::get('/{quotation}/review', [QuotationController::class, 'review'])->name('review')->middleware(['auth', 'verified']);
             Route::put('/{quotation}', [QuotationController::class, 'update'])->name('update');
             Route::delete('/{quotation}', [QuotationController::class, 'destroy'])->name('destroy');
             Route::post('/{quotation}/approve', [QuotationController::class, 'approve'])->name('approve');
@@ -505,7 +508,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('leases', LeaseController::class)->except(['create', 'store']);
         Route::get('/leases/create', [LeaseController::class, 'create'])->name('leases.create');
         Route::post('/leases', [LeaseController::class, 'store'])->name('leases.store');
-
+        Route::patch('/leases/{lease}/reject', [LeaseController::class, 'reject'])->name('leases.reject');
+        Route::patch('/leases/{lease}/approve', [LeaseController::class, 'approve'])->name('leases.approve');
         // Invoice Management
         Route::prefix('invoices')->name('invoices.')->group(function () {
             Route::get('/{invoice}', [AdminController::class, 'showInvoice'])->name('show');
@@ -676,13 +680,13 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/{designRequest}', 'show')->name('show');
             });
 
-            // Contracts Routes
-            Route::prefix('contracts')->name('contracts.')->controller(CustomerContractController::class)->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::get('/{contract}', 'show')->name('show');
-                Route::post('/{contract}/approve', 'approve')->name('approve');
-                Route::get('/{contract}/download', 'downloadPdf')->name('download');
-            });
+            // Contracts Routes for now
+            // Route::prefix('contracts')->name('contracts.')->controller(CustomerContractController::class)->group(function () {
+            //     Route::get('/', 'index')->name('index');
+            //     Route::get('/{contract}', 'show')->name('show');
+            //     Route::post('/{contract}/approve', 'approve')->name('approve');
+            //     Route::get('/{contract}/download', 'downloadPdf')->name('download');
+            // });
 
             // Payments Routes
             Route::prefix('payments')->name('payments.')->controller(PaymentController::class)->group(function () {
@@ -1140,7 +1144,7 @@ Route::prefix('finance/ai-analytics')->name('finance.ai.')->middleware(['auth'])
         });
 
         // Leases
-        Route::patch('/{lease}/approve', [LeaseController::class, 'approve'])->name('leases.approve');
+        // Route::patch('/{lease}/approve', [LeaseController::class, 'approve'])->name('leases.approve');
         Route::get('/leases', [LeaseController::class, 'indexForAccountManager'])->name('leases.index');
         Route::get('/leases/create', [LeaseController::class, 'createForAccountManager'])->name('leases.create');
         Route::post('/leases', [LeaseController::class, 'storeForAccountManager'])->name('leases.store');
@@ -1411,6 +1415,139 @@ Route::get('/map-picker', function (Request $request) {
         'lng' => $request->get('lng', 36.817223),
     ]);
 })->name('map-picker');
+
+// Role-Specific Help Routes
+use App\Http\Controllers\ProfileHelpController;
+
+// ==================== HELP CENTER ROUTES ====================
+Route::middleware(['auth'])->prefix('help')->name('help.')->group(function () {
+
+    // Main Help Routes
+    Route::get('/', [HelpController::class, 'index'])->name('index');
+    Route::get('/getting-started', [HelpController::class, 'gettingStarted'])->name('getting-started');
+    Route::post('/feedback', [HelpController::class, 'storeFeedback'])->name('feedback');
+    Route::get('/faq', [HelpController::class, 'faq'])->name('faq');
+    Route::get('/contact', [HelpController::class, 'contact'])->name('contact');
+    Route::get('/video-tutorials', [HelpController::class, 'videoTutorials'])->name('video-tutorials');
+
+    // Module Guides
+    Route::get('/asp-guide', [HelpController::class, 'aspGuide'])->name('asp');
+    Route::get('/csp-guide', [HelpController::class, 'cspGuide'])->name('csp');
+    Route::get('/nfp-guide', [HelpController::class, 'nfpGuide'])->name('nfp');
+    Route::get('/export-guide', [HelpController::class, 'exportGuide'])->name('export');
+
+    // Profile Help Routes
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [HelpController::class, 'profileIndex'])->name('index');
+        Route::get('/info', [HelpController::class, 'profileInfo'])->name('info');
+        Route::get('/security', [HelpController::class, 'profileSecurity'])->name('security');
+        Route::get('/notifications', [HelpController::class, 'profileNotifications'])->name('notifications');
+        Route::get('/activity', [HelpController::class, 'profileActivity'])->name('activity');
+    });
+
+    // ==================== ROLE-BASED HELP ROUTES ====================
+    Route::prefix('role')->name('role.')->group(function () {
+
+        // Core role routes
+        Route::get('/dashboard', [HelpController::class, 'roleDashboard'])->name('dashboard');
+        Route::get('/getting-started', [HelpController::class, 'roleGettingStarted'])->name('getting-started');
+
+        // Finance Role Routes
+        Route::get('/finance', [HelpController::class, 'roleFinance'])->name('finance');
+        Route::get('/billing', [HelpController::class, 'roleBilling'])->name('billing');
+        Route::get('/payments', [HelpController::class, 'rolePayments'])->name('payments');
+
+        // Designer Role Routes
+        Route::get('/designer', [HelpController::class, 'roleDesigner'])->name('designer');
+        Route::get('/quotations', [HelpController::class, 'roleQuotations'])->name('quotations');
+        Route::get('/fibre-dashboard', [HelpController::class, 'roleFibreDashboard'])->name('fibre-dashboard');
+
+        // Debt Manager Routes
+        Route::get('/debt-manager', [HelpController::class, 'roleDebtManager'])->name('debt-manager');
+        Route::get('/aging-report', [HelpController::class, 'roleAgingReport'])->name('aging-report');
+        Route::get('/collection', [HelpController::class, 'roleCollection'])->name('collection');
+
+        // Customer Routes
+        Route::get('/customer', [HelpController::class, 'roleCustomer'])->name('customer');
+        Route::get('/customer-profile', [HelpController::class, 'roleCustomerProfile'])->name('customer-profile');
+        Route::get('/customer-invoices', [HelpController::class, 'roleCustomerInvoices'])->name('customer-invoices');
+        Route::get('/customer-tickets', [HelpController::class, 'roleCustomerTickets'])->name('customer-tickets');
+        Route::get('/customer-leases', [HelpController::class, 'roleCustomerLeases'])->name('role.customer-leases');
+        Route::get('/customer-documents', [HelpController::class, 'roleCustomerDocuments'])->name('role.customer-documents');
+
+        // ICT Engineer Routes
+        Route::get('/ict-engineer', [HelpController::class, 'roleIctEngineer'])->name('ict-engineer');
+        Route::get('/tickets-ict', [HelpController::class, 'roleTicketsIct'])->name('tickets-ict');
+        Route::get('/monitoring', [HelpController::class, 'roleMonitoring'])->name('monitoring');
+
+        // Account Manager Routes
+        Route::get('/account-manager', [HelpController::class, 'roleAccountManager'])->name('account-manager');
+        Route::get('/customer-care', [HelpController::class, 'roleCustomerCare'])->name('customer-care');
+        Route::get('/renewals', [HelpController::class, 'roleRenewals'])->name('renewals');
+
+        // Compliance Officer Routes
+        Route::get('/compliance-officer', [HelpController::class, 'roleComplianceOfficer'])->name('compliance-officer');
+
+        // Surveyor Routes
+        Route::get('/surveyor', [HelpController::class, 'roleSurveyor'])->name('surveyor');
+        Route::get('/field-data', [HelpController::class, 'roleFieldData'])->name('field-data');
+
+        // Technician Routes
+        Route::get('/technician', [HelpController::class, 'roleTechnician'])->name('technician');
+        Route::get('/equipment', [HelpController::class, 'roleEquipment'])->name('equipment');
+
+        // Technical Admin Routes
+        Route::get('/technical-admin', [HelpController::class, 'roleTechnicalAdmin'])->name('technical-admin');
+        Route::get('/leases', [HelpController::class, 'roleLeases'])->name('leases');
+        Route::get('/maintenance', [HelpController::class, 'roleMaintenance'])->name('maintenance');
+
+        // Admin Routes
+        Route::get('/admin', [HelpController::class, 'roleAdmin'])->name('admin');
+        Route::get('/user-management', [HelpController::class, 'roleUserManagement'])->name('user-management');
+        Route::get('/backup', [HelpController::class, 'roleBackup'])->name('backup');
+
+        // Account Manager Admin Routes
+        Route::get('/accountmanager-admin', [HelpController::class, 'roleAccountmanagerAdmin'])->name('accountmanager-admin');
+
+        // Regional Manager Routes
+        Route::get('/regional-manager', [HelpController::class, 'roleRegionalManager'])->name('regional-manager');
+
+        // County ICT Engineer Routes
+        Route::get('/county-ict-engineer', [HelpController::class, 'roleCountyIctEngineer'])->name('county-ict-engineer');
+
+        // Viewer Routes
+        Route::get('/viewer', [HelpController::class, 'roleViewer'])->name('viewer');
+    });
+});
+Route::get('/help/content/{page}', [HelpController::class, 'getContent'])->name('help.content');
+Route::get('/help/cak-compliance-guide', [HelpController::class, 'cakComplianceGuide'])->name('help.cak-compliance-guide');
+Route::get('/help/account-manager-customers', [HelpController::class, 'accountManagerCustomers'])->name('help.account-manager-customers');
+
+// Staff/Admin/Account Manager contract routes
+Route::prefix('contracts')->name('contracts.')->controller(ContractController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/quotation/{quotation}/create', 'createFromQuotation')->name('create.from.quotation');
+        Route::get('/{contract}', 'show')->name('show');
+        Route::get('/{contract}/edit', 'edit')->name('edit');
+        Route::patch('/{contract}', 'update')->name('update');
+        Route::patch('/{contract}/send', 'send')->name('send');
+        Route::patch('/{contract}/approve', 'approve')->name('approve');
+        Route::patch('/{contract}/activate', 'activate')->name('activate');
+    });
+
+// Customer contract routes
+Route::prefix('customer/contracts')->name('customer.contracts.')->controller(ContractController::class)->group(function () {
+        Route::get('/', 'customerIndex')->name('index');
+        Route::get('/{contract}', 'customerShow')->name('show');
+        Route::patch('/{contract}/approve', 'customerApprove')->name('approve');
+        Route::patch('/{contract}/reject', 'customerReject')->name('reject');
+    });
+Route::post('/designer/custom-routes', [QuotationController::class, 'storeCustomRoute'])->name('designer.custom-routes.store');
+
+// Simple export route
+Route::get('/export', function () {
+    return view('export.index');
+})->name('export.index');
 
 // Include API routes
 require __DIR__.'/api.php';

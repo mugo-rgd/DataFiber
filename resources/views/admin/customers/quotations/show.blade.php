@@ -9,7 +9,7 @@
     <form action="{{ route('customer.quotations.approve', $quotation) }}"
           method="POST" class="d-inline">
         @csrf
-        <button type="submit" class="btn btn-success btn-lg"
+        <button type="submit" class="btn btn-kp-success btn-lg"
                 onclick="return confirm('Are you sure you want to approve this quotation? This action cannot be undone.')">
             <i class="fas fa-check-circle me-2"></i> Approve Quotation
         </button>
@@ -45,7 +45,7 @@
     </div>
 </div>
 @elseif($quotation->isApprovedByCustomer())
-<div class="alert alert-success mt-3">
+<div class="alert alert-kp-success mt-3">
     <div class="d-flex align-items-center">
         <i class="fas fa-check-circle fa-2x me-3"></i>
         <div>

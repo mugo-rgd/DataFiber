@@ -29,7 +29,7 @@
                         </div>
                     </div>
                     <div class="d-flex flex-wrap align-items-center gap-1 gap-sm-2 mt-2">
-                        <span class="badge bg-white text-primary responsive-badge">
+                        <span class="badge bg-white text-kp-blue responsive-badge">
                             <i class="fas fa-calendar-day me-1"></i>
                             <span class="date-text">{{ now()->format('F j, Y') }}</span>
                         </span>
@@ -37,19 +37,18 @@
                             <i class="fas fa-clock me-1"></i>
                             {{ now()->format('g:i A') }}
                         </span>
-                        <span class="badge bg-success responsive-badge">
+                        <span class="badge bg-kp-green responsive-badge">
                             <i class="fas fa-circle me-1"></i> Online
                         </span>
                     </div>
                 </div>
                 <div class="col-12 col-lg-4">
                     <div class="d-flex flex-wrap gap-1 gap-sm-2 justify-content-start justify-content-lg-end">
-                       <a href="{{ route('kpi.dashboard', ['account_manager_id' => auth()->user()->id]) }}" class="btn btn-light responsive-btn">
+                        @include('partials.role-help-widget')
+                        <a href="{{ route('kpi.dashboard', ['account_manager_id' => auth()->user()->id]) }}" class="btn btn-light responsive-btn">
                             <i class="fas fa-chart-line me-1 me-sm-2"></i>
                             <span class="btn-text">My KPIs</span>
                         </a>
-
-
                         <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-light responsive-btn">
                             <i class="fas fa-plus-circle me-1 me-sm-2"></i>
                             <span class="btn-text">New Ticket</span>
@@ -67,7 +66,7 @@
     <!-- Alert Section - Auto Adjusting -->
     @if(($stats['high_priority_tickets'] ?? 0) > 0 || ($stats['overdue_payments'] ?? 0) > 0)
     <div class="container-fluid px-3 px-sm-4 px-md-5 py-2 py-sm-3">
-        <div class="alert alert-warning alert-dismissible fade show rounded-lg border-0 shadow-sm m-0" role="alert">
+        <div class="alert alert-kp-warning alert-dismissible fade show rounded-lg border-0 shadow-sm m-0" role="alert">
             <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center">
                 <div class="alert-icon me-0 me-sm-2 me-md-3 mb-2 mb-sm-0">
                     <i class="fas fa-exclamation-triangle responsive-alert-icon"></i>
@@ -190,233 +189,225 @@
             @endforeach
         </div>
 
-<!-- Quick Actions - Dynamic Grid -->
-<div class="row mb-3 mb-sm-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm mb-2 mb-sm-3 mb-md-4">
-            @php
-    $actions = [
-        [
-            'title' => 'New Ticket',
-            'icon' => 'headset',
-            'color' => 'info',
-            'link' => route('account-manager.tickets.create'),
-            'desc' => 'Register customer support issues'
-        ],
-        [
-            'title' => 'Track Payment',
-            'icon' => 'money-bill-wave',
-            'color' => 'success',
-            'link' => route('account-manager.payments.create'),
-            'desc' => 'Track payments and debts'
-        ],
-        [
-            'title' => 'Customers',
-            'icon' => 'users',
-            'color' => 'primary',
-            'link' => route('account-manager.customers.index'),
-            'desc' => 'Review customer information'
-        ],
-        [
-            'title' => 'Requests',
-            'icon' => 'drafting-compass',
-            'color' => 'warning',
-            'link' => route('admin.design-requests.index'),
-            'desc' => 'Allocate design requests'
-        ],
-        [
-            'title' => 'Link Inventory',
-            'icon' => 'tachometer-alt',
-            'color' => 'danger',
-            'desc' => 'Fibre link management',
-            'links' => [
-                [
-                    'label' => 'View All',
-                    'route' => route('conversion-data.index'),
-                    'icon' => 'list'
-                ],
-                [
-                    'label' => 'Summary',
-                    'route' => route('conversion-data.summary-report'),
-                    'icon' => 'chart-bar'
-                ],
-                [
-                    'label' => 'Add New',
-                    'route' => route('conversion-data.create'),
-                    'icon' => 'plus'
-                ]
-            ]
-        ],
-        [
-            'title' => 'Leases',
-            'icon' => 'network-wired',
-            'color' => 'dark',
-            'link' => function() {
-                if(in_array(auth()->user()->role, ['admin', 'technical_admin', 'system_admin'])) {
-                    return route('admin.leases.index');
-                } elseif(auth()->user()->role === 'account_manager') {
-                    return route('account-manager.leases.index');
-                }
-                return '#';
-            },
-            'desc' => 'Manage network leases',
-            'disabled' => !in_array(auth()->user()->role, ['admin', 'technical_admin', 'system_admin', 'account_manager'])
-        ],
-        [
-            'title' => 'Reports',
-            'icon' => 'chart-bar',
-            'color' => 'secondary',
-            'link' => route('account-manager.reports.performance'),
-            'desc' => 'Analytics & performance'
-        ],
-        [
-            'title' => 'Contracts',
-            'icon' => 'file-contract',
-            'color' => 'purple',
-            'link' => route('admin.contracts.index'),
-            'desc' => 'Manage agreements'
-        ],
-        [
-            'title' => 'Quotations',
-            'icon' => 'file-invoice-dollar',
-            'color' => 'danger',
-            'link' => route('admin.quotations.index'),
-            'desc' => 'Create and view quotations',
-            'permission' => 'isAccountManager'
-        ],
-        [
-            'title' => 'System Documents',
-            'icon' => 'folder',
-            'color' => 'danger',
-            'link' => route('documents.index'),
-            'desc' => 'View System Generated Documents',
-            'permission' => 'view-system-documents'  // Changed from Closure to string
-        ]
-    ];
+        <!-- Quick Actions - Dynamic Grid -->
+        <div class="row mb-3 mb-sm-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm mb-2 mb-sm-3 mb-md-4">
+                    @php
+                        $actions = [
+                            [
+                                'title' => 'New Ticket',
+                                'icon' => 'headset',
+                                'color' => 'info',
+                                'link' => route('account-manager.tickets.create'),
+                                'desc' => 'Register customer support issues'
+                            ],
+                            [
+                                'title' => 'Track Payment',
+                                'icon' => 'money-bill-wave',
+                                'color' => 'success',
+                                'link' => route('account-manager.payments.create'),
+                                'desc' => 'Track payments and debts'
+                            ],
+                            [
+                                'title' => 'Customers',
+                                'icon' => 'users',
+                                'color' => 'primary',
+                                'link' => route('account-manager.customers.index'),
+                                'desc' => 'Review customer information'
+                            ],
+                            [
+                                'title' => 'Requests',
+                                'icon' => 'drafting-compass',
+                                'color' => 'warning',
+                                'link' => route('admin.design-requests.index'),
+                                'desc' => 'Allocate design requests'
+                            ],
+                            [
+                                'title' => 'Link Inventory',
+                                'icon' => 'tachometer-alt',
+                                'color' => 'danger',
+                                'desc' => 'Fibre link management',
+                                'links' => [
+                                    [
+                                        'label' => 'View All',
+                                        'route' => route('conversion-data.index'),
+                                        'icon' => 'list'
+                                    ],
+                                    [
+                                        'label' => 'Summary',
+                                        'route' => route('conversion-data.summary-report'),
+                                        'icon' => 'chart-bar'
+                                    ],
+                                    [
+                                        'label' => 'Add New',
+                                        'route' => route('conversion-data.create'),
+                                        'icon' => 'plus'
+                                    ]
+                                ]
+                            ],
+                            [
+                                'title' => 'Leases',
+                                'icon' => 'network-wired',
+                                'color' => 'dark',
+                                'link' => function() {
+                                    if(in_array(auth()->user()->role, ['admin', 'technical_admin', 'system_admin'])) {
+                                        return route('admin.leases.index');
+                                    } elseif(auth()->user()->role === 'account_manager') {
+                                        return route('account-manager.leases.index');
+                                    }
+                                    return '#';
+                                },
+                                'desc' => 'Manage network leases',
+                                'disabled' => !in_array(auth()->user()->role, ['admin', 'technical_admin', 'system_admin', 'account_manager'])
+                            ],
+                            [
+                                'title' => 'Reports',
+                                'icon' => 'chart-bar',
+                                'color' => 'secondary',
+                                'link' => route('account-manager.reports.performance'),
+                                'desc' => 'Analytics & performance'
+                            ],
+                            [
+                                'title' => 'Contracts',
+                                'icon' => 'file-contract',
+                                'color' => 'purple',
+                                'link' => route('admin.contracts.index'),
+                                'desc' => 'Manage agreements'
+                            ],
+                            [
+                                'title' => 'Quotations',
+                                'icon' => 'file-invoice-dollar',
+                                'color' => 'danger',
+                                'link' => route('admin.quotations.index'),
+                                'desc' => 'Create and view quotations',
+                                'permission' => 'isAccountManager'
+                            ],
+                            [
+                                'title' => 'System Documents',
+                                'icon' => 'folder',
+                                'color' => 'danger',
+                                'link' => route('documents.index'),
+                                'desc' => 'View System Generated Documents',
+                                'permission' => 'view-system-documents'
+                            ]
+                        ];
 
-    // Calculate visible actions count (excluding those without permission)
-    $visibleActionsCount = 0;
-    foreach ($actions as $action) {
-        $hasPermission = true;
-
-        if (isset($action['permission'])) {
-            if (is_string($action['permission'])) {
-                $hasPermission = \Illuminate\Support\Facades\Gate::allows($action['permission']);
-            } elseif ($action['permission'] instanceof \Closure) {
-                // Handle Closure-based permissions (if you still want to support them)
-                $hasPermission = $action['permission'](auth()->user());
-            }
-        }
-
-        // Check if action is disabled
-        if (isset($action['disabled']) && $action['disabled']) {
-            $hasPermission = false;
-        }
-
-        if ($hasPermission) {
-            $visibleActionsCount++;
-        }
-    }
-@endphp
-
-            <div class="card-header bg-white border-0 py-2 py-sm-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 responsive-subheading">
-                        <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
-                    </h5>
-                    <span class="badge bg-warning d-none d-sm-inline responsive-badge">{{ $visibleActionsCount }} Actions</span>
-                </div>
-            </div>
-            <div class="card-body p-2 p-sm-3 p-md-4">
-                <div class="row g-2 g-sm-3 g-md-4">
-                    @foreach($actions as $action)
-                    <div class="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-2 col-xxl-2">
-                        @php
-                            // Handle both single link and multiple links actions
-                            $hasMultipleLinks = isset($action['links']);
-                            $hasSingleLink = isset($action['link']);
-                            $disabled = $action['disabled'] ?? false;
-
-                            if ($hasSingleLink) {
-                                $link = is_callable($action['link']) ? $action['link']() : $action['link'];
-                            } else {
-                                $link = '#';
-                            }
-
-                            // Check permission using Laravel's Gate facade
+                        $visibleActionsCount = 0;
+                        foreach ($actions as $action) {
                             $hasPermission = true;
+
                             if (isset($action['permission'])) {
-                                $hasPermission = \Illuminate\Support\Facades\Gate::allows($action['permission']);
+                                if (is_string($action['permission'])) {
+                                    $hasPermission = \Illuminate\Support\Facades\Gate::allows($action['permission']);
+                                } elseif ($action['permission'] instanceof \Closure) {
+                                    $hasPermission = $action['permission'](auth()->user());
+                                }
                             }
-                        @endphp
 
-                        @if(isset($action['permission']) && !$hasPermission)
-                            @continue
-                        @endif
+                            if (isset($action['disabled']) && $action['disabled']) {
+                                $hasPermission = false;
+                            }
 
-                        @if($hasMultipleLinks)
-                            <!-- Dropdown menu for multiple links -->
-                            <div class="dropdown position-relative">
-                                <div class="action-card dropdown-toggle {{ $disabled ? 'disabled' : '' }}"
-                                     @if(!$disabled) data-bs-toggle="dropdown" aria-expanded="false" @endif
-                                     style="cursor: pointer;">
-                                    <div class="action-icon bg-{{ $action['color'] }}">
-                                        <i class="fas fa-{{ $action['icon'] }}"></i>
+                            if ($hasPermission) {
+                                $visibleActionsCount++;
+                            }
+                        }
+                    @endphp
+
+                    <div class="card-header bg-white border-0 py-2 py-sm-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0 responsive-subheading">
+                                <i class="fas fa-bolt text-kp-yellow me-2"></i>Quick Actions
+                            </h5>
+                            <span class="badge bg-kp-yellow d-none d-sm-inline responsive-badge">{{ $visibleActionsCount }} Actions</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-2 p-sm-3 p-md-4">
+                        <div class="row g-2 g-sm-3 g-md-4">
+                            @foreach($actions as $action)
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-2 col-xxl-2">
+                                @php
+                                    $hasMultipleLinks = isset($action['links']);
+                                    $hasSingleLink = isset($action['link']);
+                                    $disabled = $action['disabled'] ?? false;
+
+                                    if ($hasSingleLink) {
+                                        $link = is_callable($action['link']) ? $action['link']() : $action['link'];
+                                    } else {
+                                        $link = '#';
+                                    }
+
+                                    $hasPermission = true;
+                                    if (isset($action['permission'])) {
+                                        $hasPermission = \Illuminate\Support\Facades\Gate::allows($action['permission']);
+                                    }
+                                @endphp
+
+                                @if(isset($action['permission']) && !$hasPermission)
+                                    @continue
+                                @endif
+
+                                @if($hasMultipleLinks)
+                                    <div class="dropdown position-relative">
+                                        <div class="action-card dropdown-toggle {{ $disabled ? 'disabled' : '' }}"
+                                             @if(!$disabled) data-bs-toggle="dropdown" aria-expanded="false" @endif
+                                             style="cursor: pointer;">
+                                            <div class="action-icon bg-{{ $action['color'] }}">
+                                                <i class="fas fa-{{ $action['icon'] }}"></i>
+                                            </div>
+                                            <div class="action-content">
+                                                <h6 class="responsive-text">{{ $action['title'] }}</h6>
+                                                <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
+                                                <span class="dropdown-toggle-indicator">
+                                                    <i class="fas fa-chevron-down small text-muted"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        @if(!$disabled)
+                                        <ul class="dropdown-menu dropdown-menu-end p-2 border-0 shadow-lg rounded-lg"
+                                            style="min-width: 200px;">
+                                            @foreach($action['links'] as $subLink)
+                                            <li>
+                                                <a href="{{ $subLink['route'] }}"
+                                                   class="dropdown-item d-flex align-items-center py-2 px-3 rounded"
+                                                   onclick="event.stopPropagation();">
+                                                    <i class="fas fa-{{ $subLink['icon'] }} text-{{ $action['color'] }} me-2"></i>
+                                                    <span>{{ $subLink['label'] }}</span>
+                                                </a>
+                                            </li>
+                                            @endforeach
+                                        </ul>
+                                        @endif
                                     </div>
-                                    <div class="action-content">
-                                        <h6 class="responsive-text">{{ $action['title'] }}</h6>
-                                        <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
-                                        <span class="dropdown-toggle-indicator">
-                                            <i class="fas fa-chevron-down small text-muted"></i>
-                                        </span>
+                                @elseif($disabled)
+                                    <div class="action-card disabled">
+                                        <div class="action-icon bg-{{ $action['color'] }}">
+                                            <i class="fas fa-{{ $action['icon'] }}"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h6 class="responsive-text">{{ $action['title'] }}</h6>
+                                            <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                @if(!$disabled)
-                                <ul class="dropdown-menu dropdown-menu-end p-2 border-0 shadow-lg rounded-lg"
-                                    style="min-width: 200px;">
-                                    @foreach($action['links'] as $subLink)
-                                    <li>
-                                        <a href="{{ $subLink['route'] }}"
-                                           class="dropdown-item d-flex align-items-center py-2 px-3 rounded"
-                                           onclick="event.stopPropagation();">
-                                            <i class="fas fa-{{ $subLink['icon'] }} text-{{ $action['color'] }} me-2"></i>
-                                            <span>{{ $subLink['label'] }}</span>
-                                        </a>
-                                    </li>
-                                    @endforeach
-                                </ul>
+                                @else
+                                    <a href="{{ $link }}" class="action-card">
+                                        <div class="action-icon bg-{{ $action['color'] }}">
+                                            <i class="fas fa-{{ $action['icon'] }}"></i>
+                                        </div>
+                                        <div class="action-content">
+                                            <h6 class="responsive-text">{{ $action['title'] }}</h6>
+                                            <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
+                                        </div>
+                                    </a>
                                 @endif
                             </div>
-                        @elseif($disabled)
-                            <!-- Disabled action -->
-                            <div class="action-card disabled">
-                                <div class="action-icon bg-{{ $action['color'] }}">
-                                    <i class="fas fa-{{ $action['icon'] }}"></i>
-                                </div>
-                                <div class="action-content">
-                                    <h6 class="responsive-text">{{ $action['title'] }}</h6>
-                                    <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
-                                </div>
-                            </div>
-                        @else
-                            <!-- Single link action -->
-                            <a href="{{ $link }}" class="action-card">
-                                <div class="action-icon bg-{{ $action['color'] }}">
-                                    <i class="fas fa-{{ $action['icon'] }}"></i>
-                                </div>
-                                <div class="action-content">
-                                    <h6 class="responsive-text">{{ $action['title'] }}</h6>
-                                    <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
-                                </div>
-                            </a>
-                        @endif
+                            @endforeach
+                        </div>
                     </div>
-                    @endforeach
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
         <!-- Recent Activity Section - Dynamic Layout -->
         <div class="row g-2 g-sm-3 g-md-4">
@@ -426,11 +417,11 @@
                     <div class="card-header bg-white border-0 py-2 py-sm-3">
                         <div class="d-flex justify-content-between align-items-center flex-wrap">
                             <h5 class="mb-0 responsive-subheading">
-                                <i class="fas fa-headset text-primary me-2"></i>Recent Support
+                                <i class="fas fa-headset text-kp-blue me-2"></i>Recent Support
                             </h5>
                             <div class="d-flex align-items-center mt-1 mt-sm-0">
                                 <span class="badge bg-light text-dark responsive-badge d-none d-sm-inline">{{ $stats['open_tickets'] ?? 0 }} active</span>
-                                <a href="{{ route('account-manager.tickets.index') }}" class="btn btn-sm btn-primary ms-1 ms-sm-2 responsive-btn">
+                                <a href="{{ route('account-manager.tickets.index') }}" class="btn btn-sm btn-kp-primary ms-1 ms-sm-2 responsive-btn">
                                     <span class="d-none d-sm-inline">View All</span>
                                     <span class="d-inline d-sm-none">All</span>
                                 </a>
@@ -470,7 +461,7 @@
                                         </div>
                                     </div>
                                     <a href="{{ route('account-manager.tickets.show', $ticket) }}"
-                                       class="btn btn-sm btn-outline-primary w-100 w-sm-auto mt-2 responsive-btn">
+                                       class="btn btn-sm btn-outline-kp-primary w-100 w-sm-auto mt-2 responsive-btn">
                                         <i class="fas fa-eye me-1"></i>View Details
                                     </a>
                                 </div>
@@ -482,7 +473,7 @@
                                 <i class="fas fa-headset text-gray-300 responsive-empty-icon mb-3"></i>
                                 <h5 class="text-gray-600 responsive-subheading">No Active Support Requests</h5>
                                 <p class="text-muted mb-3 mb-sm-4 responsive-text">All customers are supported!</p>
-                                <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-primary responsive-btn">
+                                <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-kp-primary responsive-btn">
                                     <i class="fas fa-plus-circle me-2"></i>Create Ticket
                                 </a>
                             </div>
@@ -498,11 +489,11 @@
                     <div class="card-header bg-white border-0 py-2 py-sm-3">
                         <div class="d-flex justify-content-between align-items-center flex-wrap">
                             <h5 class="mb-0 responsive-subheading">
-                                <i class="fas fa-money-bill-wave text-primary me-2"></i>Payment Follow-ups
+                                <i class="fas fa-money-bill-wave text-kp-blue me-2"></i>Payment Follow-ups
                             </h5>
                             <div class="d-flex align-items-center mt-1 mt-sm-0">
                                 <span class="badge bg-light text-dark responsive-badge d-none d-sm-inline">{{ $upcomingPayments->count() }} pending</span>
-                                <a href="{{ route('account-manager.payments.index') }}" class="btn btn-sm btn-primary ms-1 ms-sm-2 responsive-btn">
+                                <a href="{{ route('account-manager.payments.index') }}" class="btn btn-sm btn-kp-primary ms-1 ms-sm-2 responsive-btn">
                                     <span class="d-none d-sm-inline">View All</span>
                                     <span class="d-inline d-sm-none">All</span>
                                 </a>
@@ -521,7 +512,7 @@
                                 <div class="flex-grow-1">
                                     <div class="d-flex justify-content-between align-items-start mb-1 mb-sm-2">
                                         <h6 class="fw-bold mb-0 text-dark responsive-text">{{ Str::limit($payment->customer->name ?? 'Unknown', 30) }}</h6>
-                                        <span class="h6 mb-0 fw-bold text-primary responsive-text">
+                                        <span class="h6 mb-0 fw-bold text-kp-blue responsive-text">
                                             ${{ number_format($payment->amount, 2) }}
                                         </span>
                                     </div>
@@ -548,7 +539,7 @@
                                             @endif
                                             <form action="{{ route('account-manager.payments.paid', $payment) }}" method="POST" class="d-inline">
                                                 @csrf
-                                                <button type="submit" class="btn btn-sm btn-outline-success responsive-btn-sm">
+                                                <button type="submit" class="btn btn-sm btn-outline-kp-success responsive-btn-sm">
                                                     <i class="fas fa-check"></i>
                                                     <span class="d-none d-sm-inline">Paid</span>
                                                 </button>
@@ -564,7 +555,7 @@
                                 <i class="fas fa-money-bill-wave text-gray-300 responsive-empty-icon mb-3"></i>
                                 <h5 class="text-gray-600 responsive-subheading">No Payment Follow-ups</h5>
                                 <p class="text-muted mb-3 mb-sm-4 responsive-text">All payments are up to date!</p>
-                                <a href="{{ route('account-manager.payments.create') }}" class="btn btn-primary responsive-btn">
+                                <a href="{{ route('account-manager.payments.create') }}" class="btn btn-kp-primary responsive-btn">
                                     <i class="fas fa-plus-circle me-2"></i>Track Payment
                                 </a>
                             </div>
@@ -626,11 +617,20 @@
 <style>
 /* CSS Custom Properties for dynamic scaling */
 :root {
+    --kp-blue: #0066B3;
+    --kp-green: #009639;
+    --kp-yellow: #FFD700;
+    --kp-dark: #003f20;
     --scale-factor: 1;
     --min-scale: 0.8;
     --max-scale: 1.2;
     --base-font-size: 16px;
     --spacing-unit: 0.25rem;
+}
+
+/* Kenya Power Gradient Header */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%) !important;
 }
 
 /* Fluid Typography */
@@ -650,13 +650,6 @@
 
 .responsive-text-sm {
     font-size: clamp(0.75rem, 1.5vw, 0.875rem);
-}
-
-/* Fluid Spacing */
-.dashboard-header {
-    padding-top: clamp(1rem, 3vw, 1.5rem);
-    padding-bottom: clamp(1rem, 3vw, 1.5rem);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* Fluid Icons */
@@ -742,7 +735,7 @@
 .action-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-color: #4e73df;
+    border-color: var(--kp-blue);
 }
 
 .action-card.disabled {
@@ -763,6 +756,14 @@
     font-size: clamp(1rem, 2.5vw, 1.25rem);
 }
 
+/* Kenya Power Colors for Action Icons */
+.bg-kp-blue { background-color: var(--kp-blue) !important; }
+.bg-kp-green { background-color: var(--kp-green) !important; }
+.bg-kp-yellow { background-color: var(--kp-yellow) !important; color: var(--kp-dark) !important; }
+.text-kp-blue { color: var(--kp-blue) !important; }
+.text-kp-green { color: var(--kp-green) !important; }
+.text-kp-yellow { color: var(--kp-yellow) !important; }
+
 /* Avatar Circles */
 .avatar-circle {
     width: clamp(2.25rem, 5vw, 3rem);
@@ -774,6 +775,17 @@
     font-size: clamp(0.875rem, 2vw, 1.125rem);
 }
 
+/* Color Light Classes */
+.bg-kp-blue-light { background-color: rgba(0, 102, 179, 0.1); }
+.bg-kp-green-light { background-color: rgba(0, 150, 57, 0.1); }
+.bg-info-light { background-color: rgba(54, 185, 204, 0.1); }
+.bg-kp-yellow-light { background-color: rgba(255, 215, 0, 0.1); }
+.bg-danger-light { background-color: rgba(231, 74, 59, 0.1); }
+.bg-purple-light { background-color: rgba(111, 66, 193, 0.1); }
+.bg-white-20 { background-color: rgba(255, 255, 255, 0.2); }
+
+.bg-purple { background-color: #6f42c1 !important; }
+
 /* Dropdown styling for multi-link actions */
 .dropdown-toggle-indicator {
     position: absolute;
@@ -782,44 +794,31 @@
     opacity: 0.6;
 }
 
-.action-card.dropdown {
+.action-card.dropdown-toggle {
     cursor: pointer;
 }
 
-.action-card.dropdown:hover {
+.action-card.dropdown-toggle:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-color: #4e73df;
+    border-color: var(--kp-blue);
 }
 
-.action-card.dropdown .dropdown-menu {
-    transform: translateY(10px);
-    opacity: 0;
-    display: block;
-    visibility: hidden;
-    transition: all 0.2s ease;
-}
+/* Show dropdown menu on hover for better UX */
+@media (min-width: 768px) {
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0;
+    }
 
-.action-card.dropdown.show .dropdown-menu {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
+    .dropdown .dropdown-menu {
+        display: none;
+    }
 }
 
 .dropdown-item:hover {
     background-color: #f8f9fa;
 }
-
-/* Color Classes */
-.bg-primary-light { background-color: rgba(78, 115, 223, 0.1); }
-.bg-success-light { background-color: rgba(28, 200, 138, 0.1); }
-.bg-info-light { background-color: rgba(54, 185, 204, 0.1); }
-.bg-warning-light { background-color: rgba(246, 194, 62, 0.1); }
-.bg-danger-light { background-color: rgba(231, 74, 59, 0.1); }
-.bg-purple-light { background-color: rgba(111, 66, 193, 0.1); }
-.bg-white-20 { background-color: rgba(255, 255, 255, 0.2); }
-
-.bg-purple { background-color: #6f42c1 !important; }
 
 /* Touch Device Optimization */
 @media (hover: none) and (pointer: coarse) {
@@ -836,7 +835,6 @@
         min-height: 36px;
     }
 
-    /* Increase tap target sizes */
     .responsive-badge,
     .responsive-link {
         padding: 0.5em 0.75em;
@@ -856,31 +854,6 @@
 
     .stat-card {
         margin-bottom: 0.5rem;
-    }
-}
-
-/* High DPI Screens */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .stat-card,
-    .action-card,
-    .card {
-        border-width: 0.5px;
-    }
-}
-
-/* Print Styles */
-@media print {
-    .dashboard-header,
-    .alert,
-    .action-card,
-    .btn {
-        display: none !important;
-    }
-
-    .stat-card,
-    .card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
     }
 }
 
@@ -922,17 +895,6 @@
     }
 }
 
-/* Accessibility */
-@media (prefers-contrast: high) {
-    .text-muted {
-        color: #666 !important;
-    }
-
-    .bg-white-20 {
-        background-color: rgba(255, 255, 255, 0.3) !important;
-    }
-}
-
 /* Custom Scrollbar for Desktop */
 @media (min-width: 768px) {
     ::-webkit-scrollbar {
@@ -952,53 +914,6 @@
     ::-webkit-scrollbar-thumb:hover {
         background: #a8a8a8;
     }
-
-    /* Dropdown styling for multi-link actions */
-.dropdown-toggle-indicator {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    opacity: 0.6;
-}
-
-/* Fix for dropdown positioning */
-.dropdown {
-    position: relative;
-}
-
-/* Ensure dropdown menu appears above other content */
-.dropdown-menu {
-    z-index: 1050;
-    margin-top: 0.125rem;
-}
-
-/* Style for dropdown toggle */
-.action-card.dropdown-toggle {
-    cursor: pointer;
-}
-
-/* Remove the hover transform for dropdown toggles to prevent conflicts */
-.action-card.dropdown-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-color: #4e73df;
-}
-
-/* Show dropdown menu on hover for better UX */
-@media (min-width: 768px) {
-    .dropdown:hover .dropdown-menu {
-        display: block;
-        margin-top: 0;
-    }
-
-    .dropdown .dropdown-menu {
-        display: none;
-    }
-}
-
-.dropdown-item:hover {
-    background-color: #f8f9fa;
-}
 }
 </style>
 
@@ -1011,7 +926,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize dropdowns
     const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
     const dropdownList = [...dropdownElementList].map(dropdownToggleEl => {
-        // Only initialize if not disabled
         if (!dropdownToggleEl.classList.contains('disabled')) {
             return new bootstrap.Dropdown(dropdownToggleEl);
         }
@@ -1029,11 +943,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Dynamic scaling based on viewport
     function updateScaleFactor() {
         const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
         const isMobile = viewportWidth < 768;
         const isTablet = viewportWidth >= 768 && viewportWidth < 1024;
 
-        // Calculate scale factor based on viewport size
         let scaleFactor;
         if (isMobile) {
             scaleFactor = Math.max(0.8, Math.min(1.2, viewportWidth / 375));
@@ -1043,10 +955,8 @@ document.addEventListener('DOMContentLoaded', function() {
             scaleFactor = 1;
         }
 
-        // Apply scale factor to root
         document.documentElement.style.setProperty('--scale-factor', scaleFactor);
 
-        // Adjust grid layout for very small screens
         const metricsGrid = document.querySelector('.row.g-2.g-sm-3.g-md-4');
         if (metricsGrid && viewportWidth < 400) {
             metricsGrid.style.gap = '0.5rem';
@@ -1077,11 +987,9 @@ document.addEventListener('DOMContentLoaded', function() {
         btnTexts.forEach(el => {
             const text = el.textContent;
             if (isMobile) {
-                // Shorten button text on mobile
                 if (text === 'New Ticket') el.textContent = 'Ticket';
                 if (text === 'Track Payment') el.textContent = 'Payment';
             } else {
-                // Restore full text on larger screens
                 if (text === 'Ticket') el.textContent = 'New Ticket';
                 if (text === 'Payment') el.textContent = 'Track Payment';
             }
@@ -1092,7 +1000,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
         document.body.classList.add('touch-device');
 
-        // Increase touch targets
         document.querySelectorAll('.btn, .action-card, .responsive-link').forEach(el => {
             el.style.minHeight = '44px';
             el.style.padding = '12px 16px';
@@ -1108,7 +1015,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDateDisplay();
     updateButtonText();
 
-    // Debounced resize handler
     let resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
@@ -1119,7 +1025,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     });
 
-    // Handle orientation changes
     window.addEventListener('orientationchange', function() {
         setTimeout(function() {
             updateScaleFactor();
@@ -1138,7 +1043,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, { threshold: 0.1 });
 
-    // Observe cards for lazy animation
     document.querySelectorAll('.stat-card, .action-card').forEach(card => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';

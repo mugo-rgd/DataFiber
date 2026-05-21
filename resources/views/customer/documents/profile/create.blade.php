@@ -20,7 +20,7 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -148,7 +148,7 @@
                             <a href="{{ route('customer.profile.edit') }}" class="btn btn-light">
                                 <i class="fas fa-arrow-left me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-upload me-2"></i>Upload Document
                             </button>
                         </div>
@@ -175,7 +175,7 @@
 
                         <div class="list-group-item d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-weight text-warning"></i>
+                                <i class="fas fa-weight text-kp-yellow"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-0">File Size</h6>
@@ -185,7 +185,7 @@
 
                         <div class="list-group-item d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-eye text-success"></i>
+                                <i class="fas fa-eye text-kp-green"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-0">Document Quality</h6>
@@ -230,7 +230,7 @@
                         </ul>
                     </div>
 
-                    <div class="alert alert-warning mt-4">
+                    <div class="alert alert-kp-warning mt-4">
                         <h6 class="alert-heading">
                             <i class="fas fa-exclamation-triangle me-2"></i>Important
                         </h6>

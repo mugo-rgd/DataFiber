@@ -39,12 +39,12 @@
                             <label class="form-label">Reminder Type</label>
                             <div class="btn-group w-100" role="group">
                                 <input type="radio" class="btn-check" name="reminder_type" id="email_reminder" value="email" checked>
-                                <label class="btn btn-outline-primary" for="email_reminder">
+                                <label class="btn btn-outline-kp-primary" for="email_reminder">
                                     <i class="fas fa-envelope me-2"></i>Email
                                 </label>
 
                                 <input type="radio" class="btn-check" name="reminder_type" id="sms_reminder" value="sms">
-                                <label class="btn btn-outline-success" for="sms_reminder">
+                                <label class="btn btn-outline-kp-success" for="sms_reminder">
                                     <i class="fas fa-sms me-2"></i>SMS
                                 </label>
 
@@ -180,7 +180,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i>Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-kp-primary">
                         <i class="fas fa-paper-plane me-2"></i>Send Reminder
                     </button>
                 </div>

@@ -214,7 +214,7 @@
                             <a href="{{ route('finance.transactions.show', $transaction->id) }}" class="btn btn-secondary me-md-2">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-save me-2"></i>Update Transaction
                             </button>
                         </div>
@@ -240,11 +240,11 @@ document.getElementById('amount').addEventListener('input', function(e) {
 // Real-time type updating
 document.getElementById('type').addEventListener('change', function(e) {
     const type = e.target.value;
-    const typeSpan = document.querySelector('.alert .text-success, .alert .text-danger');
+    const typeSpan = document.querySelector('.alert .text-kp-green, .alert .text-danger');
     const typeText = document.querySelector('.alert strong:nth-child(2)');
 
     if (typeSpan && typeText) {
-        typeSpan.className = type === 'income' ? 'text-success' : 'text-danger';
+        typeSpan.className = type === 'income' ? 'text-kp-green' : 'text-danger';
         typeSpan.textContent = type;
         typeText.textContent = type;
     }

@@ -9,7 +9,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-file-contract text-warning me-2"></i>Conditional Certificate
+                    <i class="fas fa-file-contract text-kp-yellow me-2"></i>Conditional Certificate
                 </h1>
                 <p class="text-muted mb-0">ICT Engineer - View Certificate Details</p>
             </div>
@@ -19,7 +19,7 @@
     <i class="fas fa-arrow-left me-2"></i>Back
 </a>
                 <a href="{{ route('ictengineer.certificates.conditional.download', $certificate) }}"
-                   class="btn btn-warning">
+                   class="btn btn-kp-warning">
                     <i class="fas fa-download me-2"></i>Download Certificate
                 </a>
             </div>
@@ -30,13 +30,13 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow mb-4">
-                <div class="card-header bg-warning text-white py-3">
+                <div class="card-header bg-kp-yellow text-white py-3">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">
                             <i class="fas fa-file-contract me-2"></i>
                             Conditional Certificate Details
                         </h5>
-                        <span class="badge bg-white text-warning fs-6">
+                        <span class="badge bg-white text-kp-yellow fs-6">
                             {{ $certificate->status ?? 'Issued' }}
                         </span>
                     </div>
@@ -44,7 +44,7 @@
                 <div class="card-body">
                     <!-- Certificate Header -->
                     <div class="text-center mb-4">
-                        <h4 class="fw-bold text-primary">Conditional Certificate of Inspection</h4>
+                        <h4 class="fw-bold text-kp-blue">Conditional Certificate of Inspection</h4>
                         <p class="text-muted">THE KENYA POWER & LIGHTING COMPANY PLC</p>
                     </div>
 
@@ -52,7 +52,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="info-card border rounded p-3 mb-3">
-                                <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Certificate Information</h6>
+                                <h6 class="text-kp-blue mb-3"><i class="fas fa-info-circle me-2"></i>Certificate Information</h6>
                                 <table class="table table-sm table-borderless mb-0">
                                     <tr>
                                         <td width="40%"><strong>Certificate No:</strong></td>
@@ -83,7 +83,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="info-card border rounded p-3 mb-3">
-                                <h6 class="text-primary mb-3"><i class="fas fa-building me-2"></i>Parties Information</h6>
+                                <h6 class="text-kp-blue mb-3"><i class="fas fa-building me-2"></i>Parties Information</h6>
                                 <table class="table table-sm table-borderless mb-0">
                                     <tr>
                                         <td width="40%"><strong>Lessor:</strong></td>
@@ -209,7 +209,7 @@
                                                 <h6 class="mb-1">Inspection Report</h6>
                                                 <p class="text-muted mb-0 small">Uploaded on {{ \Carbon\Carbon::parse($certificate->created_at)->format('M d, Y') }}</p>
                                                 <a href="{{ Storage::url($certificate->inspection_report_path) }}"
-                                                   target="_blank" class="btn btn-sm btn-outline-primary mt-2">
+                                                   target="_blank" class="btn btn-sm btn-outline-kp-primary mt-2">
                                                     <i class="fas fa-eye me-1"></i>View Report
                                                 </a>
                                             </div>
@@ -233,13 +233,13 @@
         <div class="col-md-6 mb-3">
             <div class="attachment-card border rounded p-3">
                 <div class="d-flex align-items-center">
-                    <i class="fas fa-signature fa-2x text-primary me-3"></i>
+                    <i class="fas fa-signature fa-2x text-kp-blue me-3"></i>
                     <div>
                         <h6 class="mb-1">Engineer Signature</h6>
                         <p class="text-muted mb-0 small">Digital signature</p>
                         <a href="{{ $fileUrl }}"
                            target="_blank"
-                           class="btn btn-sm btn-outline-primary mt-2">
+                           class="btn btn-sm btn-outline-kp-primary mt-2">
                             <i class="fas fa-eye me-1"></i>View Signature
                         </a>
                         <a href="{{ $fileUrl }}"
@@ -253,7 +253,7 @@
         </div>
     @else
         <div class="col-md-6 mb-3">
-            <div class="alert alert-warning">
+            <div class="alert alert-kp-warning">
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 Signature file not found at: {{ $certificate->engineer_signature_path }}
             </div>
@@ -267,7 +267,7 @@
                 <div>
                     <h6 class="mb-1">Engineer Signature</h6>
                     <p class="text-muted mb-0 small">No signature uploaded</p>
-                    <span class="badge bg-warning mt-2">Pending</span>
+                    <span class="badge bg-kp-yellow mt-2">Pending</span>
                 </div>
             </div>
         </div>
@@ -284,7 +284,7 @@
         <div class="col-lg-4">
             <!-- Request Information -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white py-3">
+                <div class="card-header bg-kp-blue text-white py-3">
                     <h6 class="mb-0">
                         <i class="fas fa-file-alt me-2"></i>Design Request Information
                     </h6>
@@ -319,11 +319,11 @@
                     </table>
 
                     <a href="{{ route('ictengineer.requests.show', $certificate->designRequest) }}"
-                       class="btn btn-outline-primary btn-sm w-100 mt-2">
+                       class="btn btn-outline-kp-primary btn-sm w-100 mt-2">
                         <i class="fas fa-external-link-alt me-2"></i>View Request Details
                     </a>
                     @else
-                    <div class="alert alert-warning">
+                    <div class="alert alert-kp-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Design request information not available
                     </div>
@@ -333,7 +333,7 @@
 
             <!-- Certificate Actions -->
             <div class="card shadow mb-4">
-                <div class="card-header bg-success text-white py-3">
+                <div class="card-header bg-kp-green text-white py-3">
                     <h6 class="mb-0">
                         <i class="fas fa-download me-2"></i>Certificate Actions
                     </h6>
@@ -341,12 +341,12 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ route('ictengineer.certificates.conditional.download', $certificate) }}"
-                           class="btn btn-warning">
+                           class="btn btn-kp-warning">
                             <i class="fas fa-file-archive me-2"></i>Download ZIP Package
                         </a>
 
                         <a href="{{ route('ictengineer.certificates.conditional.preview', $certificate) }}"
-                           target="_blank" class="btn btn-outline-primary">
+                           target="_blank" class="btn btn-outline-kp-primary">
                             <i class="fas fa-eye me-2"></i>Preview PDF
                         </a>
 
@@ -367,7 +367,7 @@
                 <div class="card-body">
                     <div class="timeline">
                         <div class="timeline-item mb-3">
-                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-marker bg-kp-green"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-1">Certificate Created</h6>
                                 <p class="text-muted mb-0 small">
@@ -377,7 +377,7 @@
                         </div>
 
                         <div class="timeline-item mb-3">
-                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-marker bg-kp-blue"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-1">Valid Until</h6>
                                 <p class="text-muted mb-0 small">
@@ -388,7 +388,7 @@
 
                         @if($certificate->updated_at != $certificate->created_at)
                         <div class="timeline-item">
-                            <div class="timeline-marker bg-warning"></div>
+                            <div class="timeline-marker bg-kp-yellow"></div>
                             <div class="timeline-content">
                                 <h6 class="mb-1">Last Updated</h6>
                                 <p class="text-muted mb-0 small">

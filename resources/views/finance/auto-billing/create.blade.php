@@ -294,7 +294,7 @@
                             <a href="{{ route('finance.billing.index') }}" class="btn btn-secondary me-md-2">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-kp-primary">
                                 <i class="fas fa-save me-2"></i>Create Billing
                             </button>
                         </div>

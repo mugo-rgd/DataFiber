@@ -48,7 +48,7 @@
                                 @if($contract->status === 'draft')
                                     <form action="{{ route('admin.contracts.send-to-customer', $contract) }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-success btn-sm">
+                                        <button type="submit" class="btn btn-kp-success btn-sm">
                                             <i class="fas fa-paper-plane"></i> Send to Customer
                                         </button>
                                     </form>
@@ -63,7 +63,7 @@
                                             <textarea name="notes" id="approval_notes" class="form-control form-control-sm" rows="2"
                                                       placeholder="Add approval notes...">{{ old('notes') }}</textarea>
                                         </div>
-                                        <button type="submit" class="btn btn-success btn-sm"
+                                        <button type="submit" class="btn btn-kp-success btn-sm"
                                                 onclick="return confirm('Are you sure you want to approve this contract?')">
                                             <i class="fas fa-check"></i> Approve Contract
                                         </button>
@@ -76,7 +76,7 @@
 
                                 <!-- Show approved status when contract is already approved -->
                                 @if($contract->admin_approved_at)
-                                    <div class="alert alert-success p-2 mb-2">
+                                    <div class="alert alert-kp-success p-2 mb-2">
                                         <small>
                                             <i class="fas fa-check-circle"></i>
                                             <strong>Contract Approved</strong> on {{ $contract->admin_approved_at->format('M d, Y H:i') }}
@@ -89,7 +89,7 @@
 
                                 <!-- Edit - Only for draft and pending contracts that haven't been admin approved -->
                                 @if(in_array($contract->status, ['draft', 'pending_approval', 'sent_to_customer', 'sent']) && !$contract->admin_approved_at)
-                                    <a href="{{ route('admin.contracts.edit', $contract) }}" class="btn btn-warning btn-sm">
+                                    <a href="{{ route('admin.contracts.edit', $contract) }}" class="btn btn-kp-warning btn-sm">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>
                                 @endif
@@ -103,7 +103,7 @@
                             <!-- Status Information -->
                             @if($contract->status === 'approved' && $contract->admin_approved_at)
                                 <div class="mt-2">
-                                    <small class="text-success">
+                                    <small class="text-kp-green">
                                         <i class="fas fa-check-circle"></i>
                                         Approved by admin on: {{ $contract->admin_approved_at->format('M d, Y H:i') }}
                                         @if($contract->approvals->count() > 0)
@@ -123,7 +123,7 @@
                                 </div>
                             @elseif(in_array($contract->status, ['pending_approval', 'sent_to_customer', 'sent']))
                                 <div class="mt-2">
-                                    <small class="text-warning">
+                                    <small class="text-kp-yellow">
                                         <i class="fas fa-clock"></i>
                                         Waiting for admin approval
                                     </small>

@@ -1,5 +1,5 @@
 <div class="document-details">
-    <h5 class="mb-4"><i class="fas fa-file-certificate text-warning mr-2"></i>Conditional Certificate Details</h5>
+    <h5 class="mb-4"><i class="fas fa-file-certificate text-kp-yellow mr-2"></i>Conditional Certificate Details</h5>
 
     <div class="row">
         <div class="col-md-6">
@@ -24,7 +24,7 @@
                         <tr>
                             <th>Design Request:</th>
                             <td>
-                                <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-primary">
+                                <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-kp-blue">
                                     {{ $document->designRequest->request_number ?? 'N/A' }}
                                 </a>
                             </td>
@@ -210,7 +210,7 @@
                         <div class="col-md-6">
                             <p class="mb-1"><strong>Inspection Report:</strong></p>
                             <a href="{{ Storage::url($document->inspection_report_path) }}"
-                               target="_blank" class="btn btn-sm btn-outline-primary">
+                               target="_blank" class="btn btn-sm btn-outline-kp-primary">
                                 <i class="fas fa-file-pdf mr-1"></i> View Report
                             </a>
                         </div>
@@ -240,7 +240,7 @@
         @if(auth()->user()->can('view', $document))
             @if($document->inspection_report_path)
                 <a href="{{ route('certificates.download', ['type' => 'conditional', 'id' => $document->id]) }}"
-                   class="btn btn-success btn-sm">
+                   class="btn btn-kp-success btn-sm">
                     <i class="fas fa-download mr-1"></i> Download Certificate
                 </a>
             @endif

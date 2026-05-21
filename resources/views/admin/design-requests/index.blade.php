@@ -16,7 +16,7 @@
 
     <!-- Pending Requests Section -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-warning">
+        <div class="card-header py-3 bg-kp-yellow">
             <h6 class="m-0 font-weight-bold text-white">
                 <i class="fas fa-clock me-1"></i> Pending Requests
                 <span class="badge bg-light text-dark ms-2">{{ $pendingRequests->count() }}</span>
@@ -45,7 +45,7 @@
                             <td>
                                 <strong>{{ $request->request_number }}</strong>
                                 @if($request->relationLoaded('quotations') && $request->quotations->count() > 0)
-                                    <span class="badge bg-success ms-1" title="Quotation exists">
+                                    <span class="badge bg-kp-green ms-1" title="Quotation exists">
                                         <i class="fas fa-file-invoice-dollar me-1"></i>{{ $request->quotations->count() }}
                                     </span>
                                 @endif
@@ -67,14 +67,14 @@
                                     </a>
                                     <!-- Edit Button -->
                                     <a href="{{ route('admin.design-requests.edit', $request->request_number) }}"
-                                       class="btn btn-warning" title="Edit">
+                                       class="btn btn-kp-warning" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
                                     @if($request->quotations->isEmpty())
                                         <!-- Generate Quote Button - Only show if no quotations exist -->
                                         {{-- <a href="{{ route('account-manager.quotations.create', ['design_request_id' => $request->request_number]) }}"
-                                           class="btn btn-success" title="Generate Quote">
+                                           class="btn btn-kp-success" title="Generate Quote">
                                             <i class="fas fa-file-invoice-dollar"></i>
                                         </a> --}}
 
@@ -89,7 +89,7 @@
     ])
 
                                         <!-- Assign Designer Button - Only show if no quotations exist -->
-                                        <button type="button" class="btn btn-primary assign-designer-btn"
+                                        <button type="button" class="btn btn-kp-primary assign-designer-btn"
                                                 data-request-number="{{ $request->request_number }}" title="Assign Designer">
                                             <i class="fas fa-user-tie"></i>
                                         </button>
@@ -112,10 +112,10 @@
     'customer_id' =>  $request->customer_id,
     'design_request_id' => $request->request_number,
     'design_request_title' => $request->title
-]) }}" class="btn btn-primary">
+]) }}" class="btn btn-kp-primary">
     Create Lease
 </a>
-                                        <span class="btn btn-outline-success" title="Quotation already generated">
+                                        <span class="btn btn-outline-kp-success" title="Quotation already generated">
                                             <i class="fas fa-check"></i>
                                         </span>
                                     @endif
@@ -128,7 +128,7 @@
             </div>
             @else
             <div class="text-center py-4">
-                <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                <i class="fas fa-check-circle fa-3x text-kp-green mb-3"></i>
                 <h5>No Pending Requests</h5>
                 <p class="text-muted">All design requests have been processed.</p>
             </div>
@@ -165,7 +165,7 @@
                             <td>
                                 <strong>{{ $request->request_number }}</strong>
                                 @if($request->relationLoaded('quotations') && $request->quotations->count() > 0)
-                                    <span class="badge bg-success ms-1" title="Quotation exists">
+                                    <span class="badge bg-kp-green ms-1" title="Quotation exists">
                                         <i class="fas fa-file-invoice-dollar me-1"></i>{{ $request->quotations->count() }}
                                     </span>
                                 @endif
@@ -200,14 +200,14 @@
                                     </a>
                                     <!-- Edit Button -->
                                     <a href="{{ route('account-manager.design-requests.edit', $request->request_number) }}"
-                                       class="btn btn-warning" title="Edit">
+                                       class="btn btn-kp-warning" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
                                     @if($request->relationLoaded('quotations') && $request->quotations->count() == 0)
                                         <!-- Generate Quote Button - Only show if no quotations exist -->
                                         {{-- <a href="{{ route('account-manager.quotations.create', ['design_request_id' => $request->request_number]) }}"
-                                           class="btn btn-success" title="Generate Quote">
+                                           class="btn btn-kp-success" title="Generate Quote">
                                             <i class="fas fa-file-invoice-dollar"></i>
                                         </a> --}}
                                         @php
@@ -224,7 +224,7 @@
                                            class="btn btn-info" title="View Quotations">
                                             <i class="fas fa-list"></i>
                                         </a>
-                                        <span class="btn btn-outline-success" title="Quotation already generated">
+                                        <span class="btn btn-outline-kp-success" title="Quotation already generated">
                                             <i class="fas fa-check"></i>
                                         </span>
                                     @endif
@@ -276,7 +276,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Assign Designer</button>
+                    <button type="submit" class="btn btn-kp-primary">Assign Designer</button>
                 </div>
             </form>
         </div>
@@ -307,7 +307,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Assign Surveyor</button>
+                    <button type="submit" class="btn btn-kp-primary">Assign Surveyor</button>
                 </div>
             </form>
         </div>
@@ -340,7 +340,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Status</button>
+                    <button type="submit" class="btn btn-kp-primary">Update Status</button>
                 </div>
             </form>
         </div>

@@ -1,5 +1,5 @@
 <div class="document-details">
-    <h5 class="mb-4"><i class="fas fa-file-contract text-success mr-2"></i>Acceptance Certificate Details</h5>
+    <h5 class="mb-4"><i class="fas fa-file-contract text-kp-green mr-2"></i>Acceptance Certificate Details</h5>
 
     <div class="row">
         <div class="col-md-6">
@@ -28,7 +28,7 @@
                         <tr>
                             <th>Design Request:</th>
                             <td>
-                                <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-primary">
+                                <a href="{{ route('design-requests.show', $document->designRequest->id) }}" class="text-kp-blue">
                                     {{ $document->designRequest->request_number ?? 'N/A' }}
                                 </a>
                             </td>
@@ -134,7 +134,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-primary">Witnesses</h6>
+                            <h6 class="text-kp-blue">Witnesses</h6>
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <th width="40%">Witness 1:</th>
@@ -166,7 +166,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <h6 class="text-primary">Lessee Signatories</h6>
+                            <h6 class="text-kp-blue">Lessee Signatories</h6>
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <th width="40%">Lessee 1:</th>
@@ -201,7 +201,7 @@
                 @if($document->test_report_path)
                     <p class="mb-1"><strong>Test Report:</strong></p>
                     <a href="{{ Storage::url($document->test_report_path) }}"
-                       target="_blank" class="btn btn-sm btn-outline-primary mb-2">
+                       target="_blank" class="btn btn-sm btn-outline-kp-primary mb-2">
                         <i class="fas fa-file-pdf mr-1"></i> View Test Report
                     </a>
                 @endif
@@ -230,7 +230,7 @@
         @if(auth()->user()->can('view', $document))
             @if($document->test_report_path)
                 <a href="{{ route('certificates.download', ['type' => 'acceptance', 'id' => $document->id]) }}"
-                   class="btn btn-success btn-sm">
+                   class="btn btn-kp-success btn-sm">
                     <i class="fas fa-download mr-1"></i> Download Certificate
                 </a>
             @endif

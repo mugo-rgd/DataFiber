@@ -561,27 +561,15 @@ public function colocationServices()
         return $this->hasOne(Lease::class, 'quotation_id');
     }
 
-    /**
-     * Get the contract associated with the quotation
-     */
-    // public function contract(): HasOne
-    // {
-    //     return $this->hasOne(Contract::class, 'quotation_id');
-    // }
+    public function customRoutes()
+{
+    return $this->belongsToMany(CustomRoute::class, 'custom_route_quotation')
+        ->withPivot([
+            'monthly_cost',
+            'capital_expenditure',
+            'currency',
+        ])
+        ->withTimestamps();
+}
 
-    /**
-     * Get the customer that owns the quotation
-     */
-    // public function customer(): BelongsTo
-    // {
-    //     return $this->belongsTo(User::class, 'customer_id');
-    // }
-
-    /**
-     * Get the account manager for this quotation
-     */
-    // public function accountManager(): BelongsTo
-    // {
-    //     return $this->belongsTo(User::class, 'account_manager_id');
-    // }
 }

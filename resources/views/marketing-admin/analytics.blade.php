@@ -10,9 +10,9 @@
             <i class="fas fa-chart-line me-2"></i>Performance Analytics
         </h1>
         <div class="btn-group">
-            <button class="btn btn-outline-primary btn-sm">Last 7 Days</button>
-            <button class="btn btn-outline-primary btn-sm">Last 30 Days</button>
-            <button class="btn btn-primary btn-sm">Last 90 Days</button>
+            <button class="btn btn-outline-kp-primary btn-sm">Last 7 Days</button>
+            <button class="btn btn-outline-kp-primary btn-sm">Last 30 Days</button>
+            <button class="btn btn-kp-primary btn-sm">Last 90 Days</button>
         </div>
     </div>
 
@@ -23,11 +23,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Conversion Rate
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">24.7%</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs text-kp-green">
                                 <i class="fas fa-arrow-up me-1"></i>2.3% from last period
                             </div>
                         </div>
@@ -44,11 +44,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Customer Acquisition
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">156</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs text-kp-green">
                                 <i class="fas fa-arrow-up me-1"></i>18% from last period
                             </div>
                         </div>
@@ -86,11 +86,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Customer Satisfaction
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">4.7/5</div>
-                            <div class="text-xs text-success">
+                            <div class="text-xs text-kp-green">
                                 <i class="fas fa-arrow-up me-1"></i>0.2 from last period
                             </div>
                         </div>
@@ -108,7 +108,7 @@
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Lead Conversion Trends</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Lead Conversion Trends</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container" style="position: relative; height: 300px;">
@@ -121,7 +121,7 @@
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Lead Sources</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Lead Sources</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container" style="position: relative; height: 300px;">
@@ -137,7 +137,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Team Performance Metrics</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Team Performance Metrics</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">

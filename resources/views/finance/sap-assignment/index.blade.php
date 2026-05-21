@@ -15,7 +15,7 @@
                 <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Dashboard
                 </a>
-                <button class="btn btn-success" disabled>
+                <button class="btn btn-kp-success" disabled>
                     <i class="fas fa-layer-group"></i> Bulk Assignment (Disabled)
                 </button>
             </div>
@@ -33,7 +33,7 @@
                         <input type="text" name="search" class="form-control me-2"
                                placeholder="Search by name, email, or company..."
                                value="{{ request('search') }}">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-kp-primary">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
@@ -88,15 +88,15 @@
                             </td>
                             <td>
                                 @if($customer->companyProfile && $customer->companyProfile->sap_account)
-                                <span class="badge bg-success">{{ $customer->companyProfile->sap_account }}</span>
+                                <span class="badge bg-kp-green">{{ $customer->companyProfile->sap_account }}</span>
                                 @else
-                                <span class="badge bg-warning">Pending</span>
+                                <span class="badge bg-kp-yellow">Pending</span>
                                 @endif
                             </td>
                             <td>
                                 @if(empty($customer->companyProfile?->sap_account))
                                 <a href="{{ route('finance.sap-assignment.edit', $customer->id) }}"
-                                   class="btn btn-sm btn-primary">
+                                   class="btn btn-sm btn-kp-primary">
                                     <i class="fas fa-key"></i> Assign SAP
                                 </a>
                                 @else

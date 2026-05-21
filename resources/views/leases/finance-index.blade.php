@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0"><i class="fas fa-file-contract"></i> Leases Management - Finance View</h4>
                     <div>
 
@@ -81,7 +81,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <button type="submit" class="btn btn-primary w-100">
+                                        <button type="submit" class="btn btn-kp-primary w-100">
                                             <i class="fas fa-search"></i> Search
                                         </button>
                                     </div>
@@ -149,22 +149,22 @@
                                     <h6 class="text-muted mb-1">Total Contract Value</h6>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <div>
-                                            <span class="badge bg-primary">USD</span>
-                                            <h4 class="text-primary mb-0">${{ number_format($filteredValueUSD, 2) }}</h4>
+                                            <span class="badge bg-kp-blue">USD</span>
+                                            <h4 class="text-kp-blue mb-0">${{ number_format($filteredValueUSD, 2) }}</h4>
                                             <small class="text-muted">Filtered</small>
                                         </div>
                                         <div>
-                                            <span class="badge bg-warning text-dark">KSH</span>
-                                            <h4 class="text-warning mb-0">{{ number_format($filteredValueKSH, 0) }}</h4>
+                                            <span class="badge bg-kp-yellow text-dark">KSH</span>
+                                            <h4 class="text-kp-yellow mb-0">{{ number_format($filteredValueKSH, 0) }}</h4>
                                             <small class="text-muted">Filtered</small>
                                         </div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="text-muted small">
                                         <i class="fas fa-database me-1"></i> Overall:
-                                        <span class="text-primary">${{ number_format($overallValueUSD, 2) }}</span>
+                                        <span class="text-kp-blue">${{ number_format($overallValueUSD, 2) }}</span>
                                         <span class="mx-1">|</span>
-                                        <span class="text-warning">{{ number_format($overallValueKSH, 0) }} KSH</span>
+                                        <span class="text-kp-yellow">{{ number_format($overallValueKSH, 0) }} KSH</span>
                                     </div>
                                 </div>
                             </div>
@@ -178,21 +178,21 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <small class="text-muted">USD</small>
-                                            <h5 class="text-success mb-0">${{ number_format($filteredMonthlyUSD, 2) }}</h5>
+                                            <h5 class="text-kp-green mb-0">${{ number_format($filteredMonthlyUSD, 2) }}</h5>
                                             <small class="text-muted">Filtered</small>
                                         </div>
                                         <div>
                                             <small class="text-muted">KSH</small>
-                                            <h5 class="text-success mb-0">{{ number_format($filteredMonthlyKSH, 0) }}</h5>
+                                            <h5 class="text-kp-green mb-0">{{ number_format($filteredMonthlyKSH, 0) }}</h5>
                                             <small class="text-muted">Filtered</small>
                                         </div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="text-muted small">
                                         <i class="fas fa-database me-1"></i> Overall:
-                                        <span class="text-success">${{ number_format($overallMonthlyUSD, 2) }}</span>
+                                        <span class="text-kp-green">${{ number_format($overallMonthlyUSD, 2) }}</span>
                                         <span class="mx-1">|</span>
-                                        <span class="text-success">{{ number_format($overallMonthlyKSH, 0) }} KSH</span>
+                                        <span class="text-kp-green">{{ number_format($overallMonthlyKSH, 0) }} KSH</span>
                                     </div>
                                 </div>
                             </div>
@@ -205,22 +205,22 @@
                                     <h6 class="text-muted mb-1">Active Leases</h6>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <span class="badge bg-primary">{{ $filteredActiveUSD }}</span>
+                                            <span class="badge bg-kp-blue">{{ $filteredActiveUSD }}</span>
                                             <small class="text-muted">USD</small>
                                         </div>
                                         <div>
-                                            <span class="badge bg-warning text-dark">{{ $filteredActiveKSH }}</span>
+                                            <span class="badge bg-kp-yellow text-dark">{{ $filteredActiveKSH }}</span>
                                             <small class="text-muted">KSH</small>
                                         </div>
                                     </div>
-                                    <h4 class="text-success mb-0 mt-2">{{ $filteredActiveUSD + $filteredActiveKSH }}</h4>
+                                    <h4 class="text-kp-green mb-0 mt-2">{{ $filteredActiveUSD + $filteredActiveKSH }}</h4>
                                     <small class="text-muted">Filtered Active Leases</small>
                                     <hr class="my-2">
                                     <div class="text-muted small">
                                         <i class="fas fa-database me-1"></i> Overall:
-                                        <span class="text-primary">{{ $overallActiveUSD }} USD</span>
+                                        <span class="text-kp-blue">{{ $overallActiveUSD }} USD</span>
                                         <span class="mx-1">|</span>
-                                        <span class="text-warning">{{ $overallActiveKSH }} KSH</span>
+                                        <span class="text-kp-yellow">{{ $overallActiveKSH }} KSH</span>
                                         <span class="ms-1">({{ $overallActiveUSD + $overallActiveKSH }} total)</span>
                                     </div>
                                 </div>
@@ -280,7 +280,7 @@
                                                 $totalFiltered = $filteredLeasesUSD + $filteredLeasesKSH;
                                                 $usdWidth = $totalFiltered > 0 ? ($filteredLeasesUSD/$totalFiltered)*100 : 0;
                                             @endphp
-                                            <div class="progress-bar bg-primary" style="width: {{ $usdWidth }}%"></div>
+                                            <div class="progress-bar bg-kp-blue" style="width: {{ $usdWidth }}%"></div>
                                         </div>
                                     </div>
                                     <div>
@@ -292,15 +292,15 @@
                                             @php
                                                 $kshWidth = $totalFiltered > 0 ? ($filteredLeasesKSH/$totalFiltered)*100 : 0;
                                             @endphp
-                                            <div class="progress-bar bg-warning" style="width: {{ $kshWidth }}%"></div>
+                                            <div class="progress-bar bg-kp-yellow" style="width: {{ $kshWidth }}%"></div>
                                         </div>
                                     </div>
                                     <hr class="my-2">
                                     <div class="text-muted small">
                                         <i class="fas fa-database me-1"></i> Overall:
-                                        <span class="text-primary">{{ $overallLeasesUSD }} USD</span>
+                                        <span class="text-kp-blue">{{ $overallLeasesUSD }} USD</span>
                                         <span class="mx-1">|</span>
-                                        <span class="text-warning">{{ $overallLeasesKSH }} KSH</span>
+                                        <span class="text-kp-yellow">{{ $overallLeasesKSH }} KSH</span>
                                     </div>
                                 </div>
                             </div>
@@ -314,11 +314,11 @@
                                     <div class="row">
                                         <div class="col-6">
                                             <div class="d-flex justify-content-between mb-1">
-                                                <span class="badge bg-success">Active</span>
+                                                <span class="badge bg-kp-green">Active</span>
                                                 <span class="fw-bold">{{ $overallActiveUSD + $overallActiveKSH }}</span>
                                             </div>
                                             <div class="d-flex justify-content-between mb-1">
-                                                <span class="badge bg-warning">Pending</span>
+                                                <span class="badge bg-kp-yellow">Pending</span>
                                                 <span class="fw-bold">{{
                                                     ($overallTotals['pending_leases_usd'] ?? 0) +
                                                     ($overallTotals['pending_leases_ksh'] ?? 0)
@@ -372,11 +372,11 @@
                                 <div class="card-body p-3">
                                     <h6 class="text-muted mb-1">Quick Stats</h6>
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span><i class="fas fa-file-contract text-primary"></i> Total Leases:</span>
+                                        <span><i class="fas fa-file-contract text-kp-blue"></i> Total Leases:</span>
                                         <span class="fw-bold">{{ $overallLeasesUSD + $overallLeasesKSH }}</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
-                                        <span><i class="fas fa-check-circle text-success"></i> Active:</span>
+                                        <span><i class="fas fa-check-circle text-kp-green"></i> Active:</span>
                                         <span class="fw-bold">{{ $overallActiveUSD + $overallActiveKSH }} ({{ round(($overallActiveUSD + $overallActiveKSH) / max(($overallLeasesUSD + $overallLeasesKSH), 1) * 100) }}%)</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-2">
@@ -403,12 +403,12 @@
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="usd-tab" data-bs-toggle="tab" data-bs-target="#usd" type="button" role="tab">
-                                <i class="fas fa-dollar-sign"></i> USD <span class="badge bg-primary ms-1">{{ $filteredLeasesUSD }}</span>
+                                <i class="fas fa-dollar-sign"></i> USD <span class="badge bg-kp-blue ms-1">{{ $filteredLeasesUSD }}</span>
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="ksh-tab" data-bs-toggle="tab" data-bs-target="#ksh" type="button" role="tab">
-                                <i class="fas fa-shilling-sign"></i> KSH <span class="badge bg-warning text-dark ms-1">{{ $filteredLeasesKSH }}</span>
+                                <i class="fas fa-shilling-sign"></i> KSH <span class="badge bg-kp-yellow text-dark ms-1">{{ $filteredLeasesKSH }}</span>
                             </button>
                         </li>
 
@@ -421,9 +421,9 @@
                                         <i class="fas fa-search me-1"></i>FILTERED TOTAL
                                     </small>
                                     <div>
-                                        <span class="fw-bold text-primary">${{ number_format($filteredValueUSD, 2) }}</span>
+                                        <span class="fw-bold text-kp-blue">${{ number_format($filteredValueUSD, 2) }}</span>
                                         <span class="mx-1 text-muted">|</span>
-                                        <span class="fw-bold text-warning">{{ number_format($filteredValueKSH, 0) }} KSH</span>
+                                        <span class="fw-bold text-kp-yellow">{{ number_format($filteredValueKSH, 0) }} KSH</span>
                                     </div>
                                     <small class="text-muted">{{ $leases->total() }} leases</small>
                                 </div>
@@ -437,9 +437,9 @@
                                         <i class="fas fa-database me-1"></i>OVERALL TOTAL
                                     </small>
                                     <div>
-                                        <span class="fw-bold text-primary">${{ number_format($overallValueUSD, 2) }}</span>
+                                        <span class="fw-bold text-kp-blue">${{ number_format($overallValueUSD, 2) }}</span>
                                         <span class="mx-1 text-muted">|</span>
-                                        <span class="fw-bold text-warning">{{ number_format($overallValueKSH, 0) }} KSH</span>
+                                        <span class="fw-bold text-kp-yellow">{{ number_format($overallValueKSH, 0) }} KSH</span>
                                     </div>
                                     <small class="text-muted">{{ $overallLeasesUSD + $overallLeasesKSH }} total leases</small>
                                 </div>
@@ -475,9 +475,9 @@
                                                 $endDate = $lease->end_date ? \Carbon\Carbon::parse($lease->end_date) : null;
                                                 $nextBillingDate = $lease->next_billing_date ? \Carbon\Carbon::parse($lease->next_billing_date) : null;
                                                 $isOverdue = $nextBillingDate && $nextBillingDate < now();
-                                                $currencyClass = $lease->currency == 'USD' ? 'text-primary fw-bold' : 'text-warning fw-bold';
+                                                $currencyClass = $lease->currency == 'USD' ? 'text-kp-blue fw-bold' : 'text-kp-yellow fw-bold';
                                                 $currencySymbol = $lease->currency == 'USD' ? '$' : '';
-                                                $currencyBadge = $lease->currency == 'USD' ? 'bg-primary' : 'bg-warning text-dark';
+                                                $currencyBadge = $lease->currency == 'USD' ? 'bg-kp-blue' : 'bg-kp-yellow text-dark';
                                             @endphp
                                             <tr class="{{ $isOverdue ? 'table-danger' : '' }}">
                                                 <td>
@@ -523,7 +523,7 @@
                                                 </td>
                                                 <td>
                                                     @if($nextBillingDate)
-                                                        <span class="{{ $isOverdue ? 'text-danger fw-bold' : ($nextBillingDate < now()->addDays(7) ? 'text-warning' : '') }}">
+                                                        <span class="{{ $isOverdue ? 'text-danger fw-bold' : ($nextBillingDate < now()->addDays(7) ? 'text-kp-yellow' : '') }}">
                                                             {{ $nextBillingDate->format('Y-m-d') }}
                                                         </span>
                                                         @if($isOverdue)
@@ -542,14 +542,14 @@
                                                     <div class="btn-group btn-group-sm">
                                                         @if(\Illuminate\Support\Facades\Route::has('leases.finance.show'))
                                                             <a href="{{ route('leases.finance.show', $lease->id) }}"
-                                                               class="btn btn-outline-primary" title="View Details">
+                                                               class="btn btn-outline-kp-primary" title="View Details">
                                                                 <i class="fas fa-eye"></i>
                                                             </a>
                                                         @endif
 
                                                         @if(\Illuminate\Support\Facades\Route::has('invoices.create'))
                                                             <a href="{{ route('invoices.create', ['lease_id' => $lease->id]) }}"
-                                                               class="btn btn-outline-success" title="Create Invoice">
+                                                               class="btn btn-outline-kp-success" title="Create Invoice">
                                                                 <i class="fas fa-file-invoice-dollar"></i>
                                                             </a>
                                                         @endif
@@ -615,8 +615,8 @@
                                                 <td>{{ $lease->lease_number }}</td>
                                                 <td>{{ Str::limit($lease->title, 40) }}</td>
                                                 <td>{{ $lease->customer->name ?? 'N/A' }}</td>
-                                                <td class="text-primary fw-bold">${{ number_format($lease->monthly_cost, 2) }}</td>
-                                                <td class="text-end text-primary fw-bold">${{ number_format($lease->total_contract_value, 2) }}</td>
+                                                <td class="text-kp-blue fw-bold">${{ number_format($lease->monthly_cost, 2) }}</td>
+                                                <td class="text-end text-kp-blue fw-bold">${{ number_format($lease->total_contract_value, 2) }}</td>
                                                 <td>
                                                     <span class="badge bg-{{ $statusColors[$lease->status] ?? 'secondary' }}">
                                                         {{ ucfirst($lease->status) }}
@@ -625,7 +625,7 @@
                                                 <td>
                                                     @if(\Illuminate\Support\Facades\Route::has('leases.finance.show'))
                                                         <a href="{{ route('leases.finance.show', $lease->id) }}"
-                                                           class="btn btn-sm btn-outline-primary">
+                                                           class="btn btn-sm btn-outline-kp-primary">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
                                                     @endif
@@ -636,8 +636,8 @@
                                         <tfoot>
                                             <tr class="table-light">
                                                 <td colspan="3" class="text-end"><strong>USD Totals (Filtered):</strong></td>
-                                                <td class="text-primary fw-bold">${{ number_format($usdLeases->sum('monthly_cost'), 2) }}</td>
-                                                <td class="text-end text-primary fw-bold">${{ number_format($usdLeases->sum('total_contract_value'), 2) }}</td>
+                                                <td class="text-kp-blue fw-bold">${{ number_format($usdLeases->sum('monthly_cost'), 2) }}</td>
+                                                <td class="text-end text-kp-blue fw-bold">${{ number_format($usdLeases->sum('total_contract_value'), 2) }}</td>
                                                 <td colspan="2">
                                                     <small class="text-muted">
                                                         Overall: ${{ number_format($overallValueUSD, 2) }} | Active: {{ $overallActiveUSD }} | Inactive: {{ $overallInactiveUSD }}
@@ -680,8 +680,8 @@
                                                 <td>{{ $lease->lease_number }}</td>
                                                 <td>{{ Str::limit($lease->title, 40) }}</td>
                                                 <td>{{ $lease->customer->name ?? 'N/A' }}</td>
-                                                <td class="text-warning fw-bold">{{ number_format($lease->monthly_cost, 0) }}</td>
-                                                <td class="text-end text-warning fw-bold">{{ number_format($lease->total_contract_value, 0) }}</td>
+                                                <td class="text-kp-yellow fw-bold">{{ number_format($lease->monthly_cost, 0) }}</td>
+                                                <td class="text-end text-kp-yellow fw-bold">{{ number_format($lease->total_contract_value, 0) }}</td>
                                                 <td>
                                                     <span class="badge bg-{{ $statusColors[$lease->status] ?? 'secondary' }}">
                                                         {{ ucfirst($lease->status) }}
@@ -701,8 +701,8 @@
                                         <tfoot>
                                             <tr class="table-light">
                                                 <td colspan="3" class="text-end"><strong>KSH Totals (Filtered):</strong></td>
-                                                <td class="text-warning fw-bold">{{ number_format($kshLeases->sum('monthly_cost'), 0) }}</td>
-                                                <td class="text-end text-warning fw-bold">{{ number_format($kshLeases->sum('total_contract_value'), 0) }}</td>
+                                                <td class="text-kp-yellow fw-bold">{{ number_format($kshLeases->sum('monthly_cost'), 0) }}</td>
+                                                <td class="text-end text-kp-yellow fw-bold">{{ number_format($kshLeases->sum('total_contract_value'), 0) }}</td>
                                                 <td colspan="2">
                                                     <small class="text-muted">
                                                         Overall: {{ number_format($overallValueKSH, 0) }} KSH | Active: {{ $overallActiveKSH }} | Inactive: {{ $overallInactiveKSH }}
@@ -729,7 +729,7 @@
                                     <div class="text-muted">
                                         Showing {{ $leases->firstItem() }} to {{ $leases->lastItem() }} of {{ $leases->total() }} entries
                                         <span class="mx-2">|</span>
-                                        <span class="text-primary">
+                                        <span class="text-kp-blue">
                                             <i class="fas fa-database"></i> Overall: {{ $overallLeasesUSD + $overallLeasesKSH }} total leases
                                             ({{ $overallActiveUSD + $overallActiveKSH }} active, {{ $overallInactiveUSD + $overallInactiveKSH }} inactive)
                                         </span>
@@ -786,7 +786,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Export</button>
+                    <button type="submit" class="btn btn-kp-primary">Export</button>
                 </div>
             </form>
         </div>

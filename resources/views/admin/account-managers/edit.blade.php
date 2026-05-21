@@ -20,7 +20,7 @@
 
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Edit Account Manager Information</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Edit Account Manager Information</h6>
         </div>
         <div class="card-body">
             <form action="{{ route('admin.account-managers.update', $manager->id) }}" method="POST">
@@ -101,7 +101,7 @@
                 <hr>
 
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-kp-primary">
                         <i class="fas fa-save me-2"></i>Update Account Manager
                     </button>
                 </div>
@@ -112,7 +112,7 @@
     <!-- Customer Assignment Summary -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Assigned Customers</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Assigned Customers</h6>
         </div>
         <div class="card-body">
             @php
@@ -126,7 +126,7 @@
                     <a href="{{ route('admin.account-managers.show', $manager->id) }}" class="alert-link">View all customers</a>
                 </div>
             @else
-                <div class="alert alert-warning">
+                <div class="alert alert-kp-warning">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     No customers are currently assigned to this account manager.
                 </div>

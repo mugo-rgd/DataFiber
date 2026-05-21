@@ -6,7 +6,7 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2 text-primary">
+            <h1 class="h2 text-kp-blue">
                 <i class="fas fa-user-edit me-2"></i>Edit User: {{ $user->name }}
             </h1>
             <p class="text-muted mb-0">Update user information and settings</p>
@@ -25,7 +25,7 @@
                 <div class="row">
                     <!-- Basic Information -->
                     <div class="col-md-6">
-                        <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
+                        <h6 class="text-kp-blue mb-3"><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
 
                         <div class="form-group mb-3">
                             <label for="name" class="required">Full Name</label>
@@ -62,7 +62,7 @@
 
                     <!-- Account Settings -->
                     <div class="col-md-6">
-                        <h6 class="text-primary mb-3"><i class="fas fa-cog me-2"></i>Account Settings</h6>
+                        <h6 class="text-kp-blue mb-3"><i class="fas fa-cog me-2"></i>Account Settings</h6>
 
                         <div class="form-group mb-3">
                             <label for="role" class="required">Role</label>
@@ -159,7 +159,7 @@
                 <!-- Customer Specific Fields -->
                 <div id="customerFields" style="display: {{ $user->role == 'customer' ? 'block' : 'none' }};">
                     <hr>
-                    <h6 class="text-primary mb-3"><i class="fas fa-file-contract me-2"></i>Customer Information</h6>
+                    <h6 class="text-kp-blue mb-3"><i class="fas fa-file-contract me-2"></i>Customer Information</h6>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group mb-3">
@@ -222,7 +222,7 @@
                 @endif
 
                 <div class="mt-4">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-kp-primary">
                         <i class="fas fa-save me-1"></i>Update User
                     </button>
                     <a href="{{ route('admin.users') }}" class="btn btn-secondary">Cancel</a>

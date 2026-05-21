@@ -104,7 +104,7 @@
         >
     </div>
 
-    <button type="submit" class="btn btn-primary w-100" id="submitBtn">Create Account</button>
+    <button type="submit" class="btn btn-kp-primary w-100" id="submitBtn">Create Account</button>
 </form>
 
 <script>

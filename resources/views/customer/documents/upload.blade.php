@@ -13,7 +13,7 @@
                     <h1 class="h3">Document Management</h1>
                     <p class="text-muted">Upload and manage your required documents</p>
                 </div>
-                <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-outline-primary">
+                <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-outline-kp-primary">
                     <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                 </a>
             </div>
@@ -27,7 +27,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Pending Review
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -47,7 +47,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Approved
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -67,7 +67,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Rejected
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -107,7 +107,7 @@
         <!-- Upload Form -->
         <div class="col-md-5">
             <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-upload me-2"></i>Upload Document
                     </h5>
@@ -137,14 +137,14 @@
         <textarea name="notes" id="notes" class="form-control" rows="3">{{ old('notes') }}</textarea>
     </div>
 
-    <button type="submit" class="btn btn-primary">Upload Document</button>
+    <button type="submit" class="btn btn-kp-primary">Upload Document</button>
 </form>
                     @else
                         <div class="text-center py-4">
-                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <i class="fas fa-check-circle fa-3x text-kp-green mb-3"></i>
                             <h5>All Required Documents Uploaded</h5>
                             <p class="text-muted">You have uploaded all required documents. You can still upload additional documents if needed.</p>
-                            <button class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#additionalUpload">
+                            <button class="btn btn-outline-kp-primary" data-bs-toggle="collapse" data-bs-target="#additionalUpload">
                                 <i class="fas fa-plus me-2"></i>Upload Additional Document
                             </button>
                         </div>
@@ -171,7 +171,7 @@
                                     </div>
 
                                     <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                        <button type="submit" class="btn btn-kp-primary">Upload</button>
                                     </div>
                                 </form>
                             </div>
@@ -208,7 +208,7 @@
                                             <td>
                                                 <strong>{{ $document->name }}</strong>
                                                 @if($document->is_required)
-                                                    <span class="badge bg-primary ms-1">Required</span>
+                                                    <span class="badge bg-kp-blue ms-1">Required</span>
                                                 @endif
                                                 <br>
                                                 <small class="text-muted">{{ $document->file_size_human }}</small>
@@ -240,7 +240,7 @@
                                             <td>
                                                 <div class="btn-group btn-group-sm">
                                                     <a href="{{ route('customer.documents.view', $document->id) }}"
-                                                       class="btn btn-outline-primary" target="_blank"
+                                                       class="btn btn-outline-kp-primary" target="_blank"
                                                        title="View Document">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
@@ -308,7 +308,7 @@
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                    <button type="submit" class="btn btn-primary">Update Document</button>
+                                                                    <button type="submit" class="btn btn-kp-primary">Update Document</button>
                                                                 </div>
                                                             </form>
                                                         </div>

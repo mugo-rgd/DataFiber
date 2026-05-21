@@ -10,20 +10,20 @@
             <!-- Header Section -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h1 class="h2 text-primary mb-1">
+                    <h1 class="h2 text-kp-blue mb-1">
                         <i class="fas fa-building me-2"></i>Edit Company Profile
                     </h1>
                     <p class="text-muted mb-0">Manage your company information and documents</p>
                 </div>
 
-                <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-outline-primary">
+                <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-outline-kp-primary">
                     <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                 </a>
             </div>
 
             <!-- Success/Error Messages -->
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+                <div class="alert alert-kp-success alert-dismissible fade show d-flex align-items-center" role="alert">
                     <i class="fas fa-check-circle me-2"></i>
                     <div class="flex-grow-1">{{ session('success') }}</div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -53,7 +53,7 @@
 
             <!-- Company Profile Edit Form -->
             <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-primary text-white py-3">
+                <div class="card-header bg-kp-blue text-white py-3">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-building me-2"></i>Company Information
                     </h5>
@@ -66,7 +66,7 @@
                         <!-- Basic Information Section -->
                         <div class="row">
                             <div class="col-12 mb-4">
-                                <h6 class="text-primary border-bottom pb-2">
+                                <h6 class="text-kp-blue border-bottom pb-2">
                                     <i class="fas fa-info-circle me-2"></i>Basic Information
                                 </h6>
                             </div>
@@ -174,7 +174,7 @@
                         <!-- Contact Persons Section -->
                         <div class="row mt-3">
                             <div class="col-12 mb-4">
-                                <h6 class="text-primary border-bottom pb-2">
+                                <h6 class="text-kp-blue border-bottom pb-2">
                                     <i class="fas fa-users me-2"></i>Contact Persons
                                 </h6>
                             </div>
@@ -239,7 +239,7 @@
                         <!-- Address Information Section -->
                         <div class="row mt-3">
                             <div class="col-12 mb-4">
-                                <h6 class="text-primary border-bottom pb-2">
+                                <h6 class="text-kp-blue border-bottom pb-2">
                                     <i class="fas fa-map-marker-alt me-2"></i>Address Information
                                 </h6>
                             </div>
@@ -318,7 +318,7 @@
                         <!-- Additional Information Section -->
                         <div class="row mt-3">
                             <div class="col-12 mb-4">
-                                <h6 class="text-primary border-bottom pb-2">
+                                <h6 class="text-kp-blue border-bottom pb-2">
                                     <i class="fas fa-file-alt me-2"></i>Additional Information
                                 </h6>
                             </div>
@@ -358,7 +358,7 @@
                             <button type="reset" class="btn btn-outline-secondary me-2">
                                 <i class="fas fa-undo me-1"></i>Reset
                             </button>
-                            <button type="submit" class="btn btn-primary px-4">
+                            <button type="submit" class="btn btn-kp-primary px-4">
                                 <i class="fas fa-save me-1"></i>Update Profile
                             </button>
                         </div>
@@ -368,7 +368,7 @@
 
             <!-- Upload New Documents Section -->
             <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-success text-white py-3">
+                <div class="card-header bg-kp-green text-white py-3">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-upload me-2"></i>Upload New Documents
                     </h5>
@@ -430,7 +430,7 @@
                         </div>
 
                         <div class="text-end">
-                            <button type="submit" class="btn btn-success px-4">
+                            <button type="submit" class="btn btn-kp-success px-4">
                                 <i class="fas fa-upload me-1"></i>Upload Document
                             </button>
                         </div>
@@ -450,11 +450,11 @@
                         @foreach($documents as $documentType => $docs)
                             <div class="document-type-section">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h6 class="text-primary mb-0">
+                                    <h6 class="text-kp-blue mb-0">
                                         <i class="fas fa-folder-open me-2"></i>
                                         {{ ucwords(str_replace('_', ' ', $documentType)) }}
                                     </h6>
-                                    <span class="badge bg-primary rounded-pill">{{ count($docs) }}</span>
+                                    <span class="badge bg-kp-blue rounded-pill">{{ count($docs) }}</span>
                                 </div>
 
                                 <div class="row g-3">
@@ -488,7 +488,7 @@
                                                                     {{ round($document->file_size / 1024, 1) }} KB
                                                                 </small>
                                                                 @if($document->status)
-                                                                    <span class="badge bg-success">{{ ucfirst($document->status) }}</span>
+                                                                    <span class="badge bg-kp-green">{{ ucfirst($document->status) }}</span>
                                                                 @endif
                                                             </div>
                                                         </div>

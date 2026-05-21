@@ -16,11 +16,11 @@
                             $unreadCount = auth()->user()->unreadNotifications->count();
                         @endphp
                         @if($unreadCount > 0)
-                            <button class="btn btn-sm btn-success me-2" onclick="markAllAsRead()">
+                            <button class="btn btn-sm btn-kp-success me-2" onclick="markAllAsRead()">
                                 <i class="fas fa-check-double"></i> Mark All as Read ({{ $unreadCount }})
                             </button>
                         @endif
-                        <a href="{{ route('chat.index') }}" class="btn btn-sm btn-primary">
+                        <a href="{{ route('chat.index') }}" class="btn btn-sm btn-kp-primary">
                             <i class="fas fa-comments"></i> Go to Chat
                         </a>
                     </div>
@@ -49,7 +49,7 @@
                                                     {{ $data['sender_name'] ?? 'Someone' }}
                                                 </h6>
                                                 @if($isUnread)
-                                                    <span class="badge bg-primary ms-2">New</span>
+                                                    <span class="badge bg-kp-blue ms-2">New</span>
                                                 @endif
                                                 <small class="text-muted ms-2">
                                                     {{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}
@@ -60,12 +60,12 @@
                                             </p>
                                             <div class="d-flex gap-3">
                                                 <a href="#" onclick="openChat({{ $data['conversation_id'] ?? 0 }})"
-                                                   class="small text-primary text-decoration-none">
+                                                   class="small text-kp-blue text-decoration-none">
                                                     <i class="fas fa-comment"></i> Open Chat
                                                 </a>
                                                 @if($isUnread)
                                                     <a href="#" onclick="markAsRead('{{ $notification->id }}')"
-                                                       class="small text-success text-decoration-none">
+                                                       class="small text-kp-green text-decoration-none">
                                                         <i class="fas fa-check-circle"></i> Mark as Read
                                                     </a>
                                                 @else
@@ -77,7 +77,7 @@
                                         </div>
                                     </div>
                                     @if($isUnread)
-                                        <span class="badge bg-primary rounded-pill">New</span>
+                                        <span class="badge bg-kp-blue rounded-pill">New</span>
                                     @endif
                                 </div>
                             </div>
@@ -86,7 +86,7 @@
                                 <i class="fas fa-bell-slash fa-4x text-muted mb-3"></i>
                                 <h5 class="text-muted">No notifications</h5>
                                 <p class="text-muted mb-3">You're all caught up!</p>
-                                <a href="{{ route('chat.index') }}" class="btn btn-primary">
+                                <a href="{{ route('chat.index') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-comments"></i> Start Chatting
                                 </a>
                             </div>

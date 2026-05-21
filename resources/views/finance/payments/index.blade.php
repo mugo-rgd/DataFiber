@@ -40,12 +40,12 @@
         <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h1 class="h2 text-primary">
+                <h1 class="h2 text-kp-blue">
                     <i class="fas fa-credit-card me-2"></i>Payments Management
                 </h1>
                 <p class="text-muted mb-0">Manage and track all payment transactions</p>
             </div>
-            <a href="{{ route('finance.dashboard') }}" class="btn btn-outline-primary">
+            <a href="{{ route('finance.dashboard') }}" class="btn btn-outline-kp-primary">
                 <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
             </a>
         </div>
@@ -58,10 +58,10 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="card-title text-muted">Total Collected</h6>
-                                <h3 class="text-success">KSh {{ number_format($paymentStats['total_collected'] ?? 0, 2) }}</h3>
+                                <h3 class="text-kp-green">KSh {{ number_format($paymentStats['total_collected'] ?? 0, 2) }}</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-money-bill-wave fa-2x text-success"></i>
+                                <i class="fas fa-money-bill-wave fa-2x text-kp-green"></i>
                             </div>
                         </div>
                     </div>
@@ -73,10 +73,10 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <h6 class="card-title text-muted">Pending Payments</h6>
-                                <h3 class="text-warning">{{ $paymentStats['pending_payments'] ?? 0 }}</h3>
+                                <h3 class="text-kp-yellow">{{ $paymentStats['pending_payments'] ?? 0 }}</h3>
                             </div>
                             <div class="align-self-center">
-                                <i class="fas fa-clock fa-2x text-warning"></i>
+                                <i class="fas fa-clock fa-2x text-kp-yellow"></i>
                             </div>
                         </div>
                     </div>
@@ -131,7 +131,7 @@
                         <div class="col-md-3">
                             <label class="form-label">&nbsp;</label>
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-kp-primary">
                                     <i class="fas fa-search me-2"></i>Filter
                                 </button>
                             </div>
@@ -192,13 +192,13 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <button class="btn btn-outline-primary"
+                                                <button class="btn btn-outline-kp-primary"
                                                         data-bs-toggle="tooltip"
                                                         title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                                 @if($payment->status === 'pending')
-                                                    <button class="btn btn-outline-success"
+                                                    <button class="btn btn-outline-kp-success"
                                                             data-bs-toggle="tooltip"
                                                             title="Mark as Completed">
                                                         <i class="fas fa-check"></i>
@@ -233,7 +233,7 @@
                         </div>
                         <h4 class="text-muted">No Payments Found</h4>
                         <p class="text-muted">No payment records match your current filters.</p>
-                        <a href="{{ route('finance.payments') }}" class="btn btn-primary">
+                        <a href="{{ route('finance.payments') }}" class="btn btn-kp-primary">
                             <i class="fas fa-refresh me-2"></i>Clear Filters
                         </a>
                     </div>

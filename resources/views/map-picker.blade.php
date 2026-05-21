@@ -36,7 +36,7 @@
         Click on map or drag marker to set location
     </div>
     <div class="controls">
-        <button onclick="selectLocation()" class="btn btn-success">
+        <button onclick="selectLocation()" class="btn btn-kp-success">
             ✓ Select This Location
         </button>
         <button onclick="closeWindow()" class="btn btn-secondary">

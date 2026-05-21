@@ -8,15 +8,15 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-lg border-0">
-                <div class="card-header bg-warning text-white">
+                <div class="card-header bg-kp-yellow text-white">
                     <h4 class="mb-0">
                         <i class="fas fa-tools me-2"></i>Database Setup Required
                     </h4>
                 </div>
                 <div class="card-body text-center py-5">
                     <div class="mb-4">
-                        <i class="fas fa-database fa-5x text-warning mb-4"></i>
-                        <h3 class="text-warning">Survey System Not Configured</h3>
+                        <i class="fas fa-database fa-5x text-kp-yellow mb-4"></i>
+                        <h3 class="text-kp-yellow">Survey System Not Configured</h3>
                         <p class="lead text-muted">
                             The survey management system requires additional database tables and columns to be set up.
                         </p>
@@ -48,7 +48,7 @@
                         <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary me-3">
                             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                         </a>
-                        <a href="{{ route('admin.survey-requests') }}" class="btn btn-primary">
+                        <a href="{{ route('admin.survey-requests') }}" class="btn btn-kp-primary">
                             <i class="fas fa-redo me-2"></i>Retry After Setup
                         </a>
                     </div>

@@ -68,6 +68,10 @@ dd($profileData);
     {
         $user = Auth::user();
 
+        $user = Auth::user()->load('accountManager');
+
+    $accountManager = $user->accountManager;
+
         // Verify profile is complete before showing dashboard
         $profileData = $this->calculateProfileCompletion($user->id);
         $allDocumentsUploaded = $profileData['uploaded_document_types'] >= $profileData['total_required_document_types'];
@@ -87,9 +91,8 @@ dd($profileData);
 
         $recentActivities = $this->getRecentActivities($user);
 
-        return view('customer-dashboard', compact('user', 'stats', 'recentActivities'));
+        return view('customer-dashboard', compact('user', 'stats','accountManager', 'recentActivities'));
     }
-
     /**
      * Calculate profile completion percentage
      */

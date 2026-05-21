@@ -167,7 +167,7 @@
             </div>
         </div>
         <div class="header-section">
-            <h1 class="display-5 fw-bold text-primary">Certificate of Acceptance</h1>
+            <h1 class="display-5 fw-bold text-kp-blue">Certificate of Acceptance</h1>
             <p class="lead text-muted">Generate Kenya Power & Lighting Company PLC Acceptance Certificate</p>
         </div>
 
@@ -254,7 +254,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="card">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header bg-kp-blue text-white">
                                 <h5 class="mb-0">LESSOR</h5>
                             </div>
                             <div class="card-body">
@@ -270,7 +270,7 @@
 
                     <div class="col-md-6 mb-3">
                         <div class="card">
-                            <div class="card-header bg-success text-white">
+                            <div class="card-header bg-kp-green text-white">
                                 <h5 class="mb-0">LESSEE</h5>
                             </div>
                             <div class="card-body">

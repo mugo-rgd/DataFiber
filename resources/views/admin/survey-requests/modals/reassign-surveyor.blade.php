@@ -71,7 +71,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-kp-warning">
                         <i class="fas fa-sync-alt me-1"></i> Reassign Surveyor
                     </button>
                 </div>

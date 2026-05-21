@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-kp-blue text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">
                         <i class="fas fa-exchange-alt me-2"></i>Transaction Details
                     </h4>
@@ -53,9 +53,9 @@
                                             <th>Status:</th>
                                             <td>
                                                 @if($transaction->status == 'completed')
-                                                    <span class="badge bg-success">Completed</span>
+                                                    <span class="badge bg-kp-green">Completed</span>
                                                 @elseif($transaction->status == 'pending')
-                                                    <span class="badge bg-warning">Pending</span>
+                                                    <span class="badge bg-kp-yellow">Pending</span>
                                                 @elseif($transaction->status == 'failed')
                                                     <span class="badge bg-danger">Failed</span>
                                                 @else
@@ -90,7 +90,7 @@
                                             <th>Direction:</th>
                                             <td>
                                                 @if($transaction->direction == 'in')
-                                                    <span class="text-success">
+                                                    <span class="text-kp-green">
                                                         <i class="fas fa-arrow-down me-1"></i>Incoming
                                                     </span>
                                                 @else
@@ -237,7 +237,7 @@
                                 <form action="{{ route('finance.transactions.complete', $transaction->id) }}" method="POST" class="me-2">
                                     @csrf
                                     @method('PATCH')
-                                    <button type="submit" class="btn btn-success" onclick="return confirm('Mark this transaction as completed?')">
+                                    <button type="submit" class="btn btn-kp-success" onclick="return confirm('Mark this transaction as completed?')">
                                         <i class="fas fa-check-circle me-1"></i>Mark as Completed
                                     </button>
                                 </form>

@@ -3,7 +3,7 @@
 @section('title', 'ASP Compliance Return')
 @section('page-title', 'Application Service Provider (ASP) Compliance Return')
 <button type="button"
-        class="btn btn-warning btn-lg autofill-asp-btn"
+        class="btn btn-kp-warning btn-lg autofill-asp-btn"
         data-url="{{ route('asp.autofill-record-2') }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
@@ -1166,16 +1166,16 @@
         <p class="mt-3"><strong>A COMPLIANCE CERTIFICATE WILL NOT BE ISSUED IF THE COMPLIANCE RETURNS ARE SUBMITTED LATE OR REJECTED BY THE AUTHORITY</strong></p>
 
         <div class="submit-buttons">
-            <button type="submit" name="submit" value="submit" class="btn btn-primary btn-lg">Submit</button>
+            <button type="submit" name="submit" value="submit" class="btn btn-kp-primary btn-lg">Submit</button>
 
 {{-- <button type="button"
-        class="btn btn-warning btn-lg"
+        class="btn btn-kp-warning btn-lg"
         id="autofillAspBtn"
         data-url="{{ route('asp.autofill-record-2') }}">
     Auto Fill
 </button> --}}
 <button type="button"
-        class="btn btn-warning btn-lg autofill-asp-btn"
+        class="btn btn-kp-warning btn-lg autofill-asp-btn"
         data-url="{{ route('asp.autofill-record-2') }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"

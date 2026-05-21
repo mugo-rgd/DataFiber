@@ -11,7 +11,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
 <div class="row mb-4">
     <div class="col-12">
         <h1 class="h3 text-gray-800 mb-2">
-            <i class="fas fa-file-contract text-primary me-2"></i> My Lease Details
+            <i class="fas fa-file-contract text-kp-blue me-2"></i> My Lease Details
         </h1>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -31,7 +31,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
 
         <!-- Right-justified Back Buttons -->
         <div class="mt-3 text-end">
-            <a href="{{ route('customer.leases.index') }}" class="btn btn-outline-primary btn-sm">
+            <a href="{{ route('customer.leases.index') }}" class="btn btn-outline-kp-primary btn-sm">
                 <i class="fas fa-arrow-left me-2"></i> Back to My Leases
             </a>
             <a href="{{ route('customer.customer-dashboard') }}" class="btn btn-outline-secondary btn-sm ms-2">
@@ -86,7 +86,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                     <div class="col-lg-8">
                         <!-- Lease Information Card -->
                         <div class="card shadow mb-4">
-                            <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                            <div class="card-header bg-kp-blue text-white py-3 d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
                                     <i class="fas fa-info-circle me-2"></i>
                                     Lease Information
@@ -103,7 +103,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <h6 class="text-primary mb-3"><i class="fas fa-cogs me-2"></i>Lease Details</h6>
+                                        <h6 class="text-kp-blue mb-3"><i class="fas fa-cogs me-2"></i>Lease Details</h6>
                                         <div class="table-responsive">
                                             <table class="table table-sm table-borderless">
                                                 <tr>
@@ -136,7 +136,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                     </div>
 
                                     <div class="col-md-6">
-                                        <h6 class="text-primary mb-3"><i class="fas fa-route me-2"></i>Service Route</h6>
+                                        <h6 class="text-kp-blue mb-3"><i class="fas fa-route me-2"></i>Service Route</h6>
                                         <div class="table-responsive">
                                             <table class="table table-sm table-borderless">
                                                 <tr>
@@ -169,7 +169,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                         <!-- Test Report Card -->
                         @if($lease->test_report_path)
                         <div class="card shadow mb-4">
-                            <div class="card-header bg-success text-white py-3">
+                            <div class="card-header bg-kp-green text-white py-3">
                                 <h5 class="mb-0">
                                     <i class="fas fa-file-alt me-2"></i>
                                     Test Report
@@ -193,12 +193,12 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                                     <td>
                                                         <a href="{{ Storage::url($lease->test_report_path) }}"
                                                            target="_blank"
-                                                           class="btn btn-sm btn-outline-primary action-btn">
+                                                           class="btn btn-sm btn-outline-kp-primary action-btn">
                                                             <i class="fas fa-eye me-1"></i>View Report
                                                         </a>
                                                         <a href="{{ Storage::url($lease->test_report_path) }}"
                                                            download
-                                                           class="btn btn-sm btn-outline-success action-btn">
+                                                           class="btn btn-sm btn-outline-kp-success action-btn">
                                                             <i class="fas fa-download me-1"></i>Download
                                                         </a>
                                                     </td>
@@ -211,7 +211,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                 @if($lease->test_report_description)
                                 <div class="row mt-3">
                                     <div class="col-12">
-                                        <h6 class="text-primary"><i class="fas fa-align-left me-2"></i>Test Description</h6>
+                                        <h6 class="text-kp-blue"><i class="fas fa-align-left me-2"></i>Test Description</h6>
                                         <div class="border rounded p-3 bg-light">
                                             {{ $lease->test_report_description }}
                                         </div>
@@ -241,7 +241,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                         <!-- Acceptance Certificate Card -->
                         @if($lease->acceptance_certificate_path)
                         <div class="card shadow mb-4">
-                            <div class="card-header bg-primary text-white py-3">
+                            <div class="card-header bg-kp-blue text-white py-3">
                                 <h5 class="mb-0">
                                     <i class="fas fa-file-certificate me-2"></i>
                                     Acceptance Certificate
@@ -261,12 +261,12 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                                     <td>
                                                         <a href="{{ Storage::url($lease->acceptance_certificate_path) }}"
                                                            target="_blank"
-                                                           class="btn btn-sm btn-outline-primary action-btn">
+                                                           class="btn btn-sm btn-outline-kp-primary action-btn">
                                                             <i class="fas fa-eye me-1"></i>View Certificate
                                                         </a>
                                                         <a href="{{ Storage::url($lease->acceptance_certificate_path) }}"
                                                            download
-                                                           class="btn btn-sm btn-outline-success action-btn">
+                                                           class="btn btn-sm btn-outline-kp-success action-btn">
                                                             <i class="fas fa-download me-1"></i>Download
                                                         </a>
                                                     </td>
@@ -274,7 +274,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                                 <tr>
                                                     <td><strong>Status:</strong></td>
                                                     <td>
-                                                        <span class="badge bg-success status-badge">
+                                                        <span class="badge bg-kp-green status-badge">
                                                             <i class="fas fa-check-circle me-1"></i>Generated
                                                         </span>
                                                     </td>
@@ -340,7 +340,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                             <td><strong>Remaining:</strong></td>
                                             <td>
                                                 @if($remaining > 0)
-                                                    <span class="badge bg-success status-badge">{{ $remaining }} days</span>
+                                                    <span class="badge bg-kp-green status-badge">{{ $remaining }} days</span>
                                                 @else
                                                     <span class="badge bg-danger status-badge">Expired</span>
                                                 @endif
@@ -364,7 +364,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
 
                         <!-- Billing Information Card -->
                         <div class="card shadow mb-4">
-                            <div class="card-header bg-warning text-dark py-3">
+                            <div class="card-header bg-kp-yellow text-dark py-3">
                                 <h5 class="mb-0">
                                     <i class="fas fa-money-bill me-2"></i>
                                     Billing Information
@@ -392,10 +392,10 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                     </table>
                                 </div>
                                 <div class="d-grid gap-2 mt-3">
-                                    <a href="{{ route('customer.invoices.index', ['lease' => $lease->id]) }}" class="btn btn-outline-primary btn-sm action-btn">
+                                    <a href="{{ route('customer.invoices.index', ['lease' => $lease->id]) }}" class="btn btn-outline-kp-primary btn-sm action-btn">
                                         <i class="fas fa-file-invoice-dollar me-1"></i>View Invoices
                                     </a>
-                                    <a href="{{ route('customer.payments.create', ['lease' => $lease->id]) }}" class="btn btn-outline-success btn-sm action-btn">
+                                    <a href="{{ route('customer.payments.create', ['lease' => $lease->id]) }}" class="btn btn-outline-kp-success btn-sm action-btn">
                                         <i class="fas fa-credit-card me-1"></i>Make Payment
                                     </a>
                                 </div>
@@ -413,10 +413,10 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                             <div class="card-body">
                                 <p class="mb-3">For technical support or questions about your lease:</p>
                                 <ul class="list-unstyled">
-                                    <li class="mb-2"><i class="fas fa-phone text-primary me-2"></i> Support: +254-700-123-456</li>
-                                    <li class="mb-2"><i class="fas fa-envelope text-primary me-2"></i> Email: support@darkfibre.com</li>
-                                    <li class="mb-2"><i class="fas fa-clock text-primary me-2"></i> Hours: 24/7</li>
-                                    <li><i class="fas fa-ticket-alt text-primary me-2"></i> <a href="{{ route('customer.support.create') }}" class="text-decoration-none">Open Support Ticket</a></li>
+                                    <li class="mb-2"><i class="fas fa-phone text-kp-blue me-2"></i> Support: +254-700-123-456</li>
+                                    <li class="mb-2"><i class="fas fa-envelope text-kp-blue me-2"></i> Email: support@darkfibre.com</li>
+                                    <li class="mb-2"><i class="fas fa-clock text-kp-blue me-2"></i> Hours: 24/7</li>
+                                    <li><i class="fas fa-ticket-alt text-kp-blue me-2"></i> <a href="{{ route('customer.support.create') }}" class="text-decoration-none">Open Support Ticket</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -429,7 +429,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                 <div class="row">
                     <div class="col-12">
                         <div class="card shadow">
-                            <div class="card-header bg-primary text-white py-3">
+                            <div class="card-header bg-kp-blue text-white py-3">
                                 <h5 class="mb-0">
                                     <i class="fas fa-folder me-2"></i>
                                     Lease Documents
@@ -442,7 +442,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
     <div class="col-md-3">
         <div class="card bg-light border-0">
             <div class="card-body text-center py-3">
-                <h4 class="text-primary mb-1">{{ $documents->where('status', 'approved')->count() }}</h4>
+                <h4 class="text-kp-blue mb-1">{{ $documents->where('status', 'approved')->count() }}</h4>
                 <small class="text-muted">Approved</small>
             </div>
         </div>
@@ -450,7 +450,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
     <div class="col-md-3">
         <div class="card bg-light border-0">
             <div class="card-body text-center py-3">
-                <h4 class="text-warning mb-1">{{ $documents->where('status', 'pending_review')->count() }}</h4>
+                <h4 class="text-kp-yellow mb-1">{{ $documents->where('status', 'pending_review')->count() }}</h4>
                 <small class="text-muted">Pending Review</small>
             </div>
         </div>
@@ -489,7 +489,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                            @forelse($documents as $document)
 <tr>
     <td>
-        <i class="fas {{ $document->document_type === 'contract' ? 'fa-file-contract text-primary' : ($document->document_type === 'certificate' ? 'fa-file-certificate text-info' : 'fa-file-alt text-success') }} me-2"></i>
+        <i class="fas {{ $document->document_type === 'contract' ? 'fa-file-contract text-kp-blue' : ($document->document_type === 'certificate' ? 'fa-file-certificate text-info' : 'fa-file-alt text-kp-green') }} me-2"></i>
         {{ $document->name }}
     </td>
     <td>
@@ -507,18 +507,18 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
         <div class="btn-group btn-group-sm">
             <a href="{{ route('customer.documents.lease.show', $document->id) }}"
                target="_blank"
-               class="btn btn-outline-primary action-btn"
+               class="btn btn-outline-kp-primary action-btn"
                title="View Document">
                 <i class="fas fa-eye"></i>
             </a>
             <a href="{{ route('customer.documents.download', $document->id) }}"
-               class="btn btn-outline-success action-btn"
+               class="btn btn-outline-kp-success action-btn"
                title="Download Document">
                 <i class="fas fa-download"></i>
             </a>
             @if($document->status === 'pending_review')
             <button type="button"
-                    class="btn btn-outline-success action-btn approve-document"
+                    class="btn btn-outline-kp-success action-btn approve-document"
                     data-document-id="{{ $document->id }}"
                     data-document-name="{{ $document->name }}"
                     title="Approve Document">
@@ -550,7 +550,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                 <!-- Document Upload Section -->
                                 <!-- Document Upload Section -->
 <div class="mt-4">
-    <h6 class="text-primary mb-3"><i class="fas fa-upload me-2"></i>Upload New Document</h6>
+    <h6 class="text-kp-blue mb-3"><i class="fas fa-upload me-2"></i>Upload New Document</h6>
     <form action="{{ route('customer.documents.create', $lease->id) }}" method="POST" enctype="multipart/form-data" class="row g-3">
         @csrf
         <div class="col-md-4">
@@ -569,7 +569,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
             <input type="file" name="document" class="form-control form-control-sm" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
         </div>
         <div class="col-md-2">
-            <button type="submit" class="btn btn-primary btn-sm w-100">
+            <button type="submit" class="btn btn-kp-primary btn-sm w-100">
                 <i class="fas fa-upload me-1"></i>Upload
             </button>
         </div>
@@ -586,7 +586,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                 <div class="row">
                     <div class="col-12">
                         <div class="card shadow">
-                            <div class="card-header bg-warning text-dark py-3">
+                            <div class="card-header bg-kp-yellow text-dark py-3">
                                 <h5 class="mb-0">
                                     <i class="fas fa-money-bill-wave me-2"></i>
                                     Billing History
@@ -619,10 +619,10 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('customer.invoices.show', $payment->id) }}" class="btn btn-sm btn-outline-primary action-btn">
+                                                    <a href="{{ route('customer.invoices.show', $payment->id) }}" class="btn btn-sm btn-outline-kp-primary action-btn">
                                                         <i class="fas fa-eye me-1"></i>View
                                                     </a>
-                                                    <a href="{{ route('customer.invoices.download', $payment->id) }}" class="btn btn-sm btn-outline-success action-btn">
+                                                    <a href="{{ route('customer.invoices.download', $payment->id) }}" class="btn btn-sm btn-outline-kp-success action-btn">
                                                         <i class="fas fa-download me-1"></i>Download
                                                     </a>
                                                 </td>
@@ -680,7 +680,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
                                         <label for="attachment" class="form-label">Attachment (Optional)</label>
                                         <input class="form-control" type="file" id="attachment" name="attachment">
                                     </div>
-                                    <button type="submit" class="btn btn-primary action-btn">
+                                    <button type="submit" class="btn btn-kp-primary action-btn">
                                         <i class="fas fa-paper-plane me-1"></i> Submit Ticket
                                     </button>
                                 </form>
@@ -724,7 +724,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
 </div>
 
 <!-- Toast for notifications -->
-<div class="toast align-items-center text-white bg-success border-0 position-fixed top-0 end-0 m-3" id="successToast" role="alert">
+<div class="toast align-items-center text-white bg-kp-green border-0 position-fixed top-0 end-0 m-3" id="successToast" role="alert">
     <div class="d-flex">
         <div class="toast-body" id="toastMessage">
             Lease ID copied to clipboard!
@@ -754,7 +754,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-success" id="confirmApprove">Approve Document</button>
+                <button type="button" class="btn btn-kp-success" id="confirmApprove">Approve Document</button>
             </div>
         </div>
     </div>
@@ -812,7 +812,7 @@ I'll add Approve and Reject actions to the Documents tab and make all actions fu
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Generate Share Link</button>
+                <button type="button" class="btn btn-kp-primary">Generate Share Link</button>
             </div>
         </div>
     </div>

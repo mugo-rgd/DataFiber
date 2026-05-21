@@ -10,7 +10,7 @@
             <i class="fas fa-file-invoice-dollar me-2"></i>My Billings
         </h1>
         <div>
-            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
+            <button type="button" class="btn btn-sm btn-outline-kp-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
                 <i class="fas fa-download me-2"></i>Export
             </button>
         </div>
@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Billings</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalBillings }}</div>
                         </div>
@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Pending Billings</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingBillings }}</div>
                         </div>
@@ -74,7 +74,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Total Amount Due</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                @php
@@ -95,7 +95,7 @@
     <!-- Billings Table -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Billing History</h6>
+            <h6 class="m-0 font-weight-bold text-kp-blue">Billing History</h6>
         </div>
         <div class="card-body">
             @if(count($billings) > 0)
@@ -152,7 +152,7 @@
                                     </td>
                                     <td>
                                         @if($billing->tevin_control_code)
-                                            <span class="badge bg-success" title="Control Code: {{ $billing->tevin_control_code }}">
+                                            <span class="badge bg-kp-green" title="Control Code: {{ $billing->tevin_control_code }}">
                                                 <i class="fas fa-check-circle"></i> Validated
                                             </span>
                                         @else
@@ -168,7 +168,7 @@
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('customer.billing.download', $billing->id) }}"
-                                               class="btn btn-sm btn-primary" title="Download PDF">
+                                               class="btn btn-sm btn-kp-primary" title="Download PDF">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                             <a href="{{ route('customer.billing.preview', $billing->id) }}"
@@ -177,7 +177,7 @@
                                             </a>
                                             @if($billing->status === 'pending' || $billing->status === 'sent')
                                                 <a href="{{ route('customer.payments.create', $billing->id) }}"
-                                                   class="btn btn-sm btn-success" title="Make Payment">
+                                                   class="btn btn-sm btn-kp-success" title="Make Payment">
                                                     <i class="fas fa-credit-card"></i>
                                                 </a>
                                             @endif
@@ -247,7 +247,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Export</button>
+                    <button type="submit" class="btn btn-kp-primary">Export</button>
                 </div>
             </form>
         </div>
@@ -272,13 +272,13 @@
     .btn-group .btn {
         margin: 0 2px;
     }
-    .bg-primary {
+    .bg-kp-blue {
         background-color: #4e73df !important;
     }
-    .bg-success {
+    .bg-kp-green {
         background-color: #1cc88a !important;
     }
-    .bg-warning {
+    .bg-kp-yellow {
         background-color: #f6c23e !important;
     }
     .text-white-50 {

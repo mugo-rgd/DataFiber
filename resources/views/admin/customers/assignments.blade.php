@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-user-friends text-primary"></i> Customer Assignments
+                <i class="fas fa-user-friends text-kp-blue"></i> Customer Assignments
             </h1>
             <p class="text-muted">View all customer to account manager assignments</p>
         </div>
@@ -48,7 +48,7 @@
                                 <td colspan="5" class="text-center py-4">
                                     <i class="fas fa-user-friends fa-3x text-muted mb-3"></i>
                                     <p class="text-muted">No customer assignments found.</p>
-                                    <a href="{{ route('admin.customers.assign') }}" class="btn btn-primary">
+                                    <a href="{{ route('admin.customers.assign') }}" class="btn btn-kp-primary">
                                         <i class="fas fa-user-plus me-2"></i>Assign Customers
                                     </a>
                                 </td>

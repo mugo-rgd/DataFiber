@@ -7,14 +7,14 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-user-friends text-primary"></i> Assign Customers
+                <i class="fas fa-user-friends text-kp-blue"></i> Assign Customers
             </h1>
             <p class="text-muted">Assign customers to account managers for better relationship management</p>
         </div>
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -34,7 +34,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Customers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -54,7 +54,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Assigned Customers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -74,7 +74,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Unassigned Customers
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -93,7 +93,7 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-user-plus me-2"></i>Assign Customers
                     </h6>
@@ -139,7 +139,7 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     <label class="form-label">&nbsp;</label>
-                                    <button type="submit" class="btn btn-primary btn-block">
+                                    <button type="submit" class="btn btn-kp-primary btn-block">
                                         <i class="fas fa-user-plus me-1"></i> Assign
                                     </button>
                                 </div>
@@ -181,13 +181,13 @@
             </div>
 
             <div class="card shadow mt-4">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-list me-2"></i>Quick Actions
                     </h6>
                 </div>
                 <div class="card-body">
-                    <a href="{{ route('admin.customers.assignments') }}" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                    <a href="{{ route('admin.customers.assignments') }}" class="btn btn-outline-kp-primary btn-sm w-100 mb-2">
                         <i class="fas fa-eye me-1"></i> View All Assignments
                     </a>
                     <a href="{{ route('admin.users') }}" class="btn btn-outline-secondary btn-sm w-100">

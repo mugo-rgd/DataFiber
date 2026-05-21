@@ -27,10 +27,10 @@
             border-radius: 50%;
             background-color: #dee2e6;
         }
-        .timeline-marker.bg-primary,
+        .timeline-marker.bg-kp-blue,
         .timeline-marker.bg-info,
-        .timeline-marker.bg-warning,
-        .timeline-marker.bg-success {
+        .timeline-marker.bg-kp-yellow,
+        .timeline-marker.bg-kp-green {
             background-color: var(--bs-primary) !important;
         }
         .timeline-item.active .timeline-marker {
@@ -142,7 +142,7 @@
                 <a href="{{ route('surveyor.assignments.index') }}" class="btn btn-secondary me-2">
                     <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Assignments
                 </a>
-                <a href="{{ route('surveyor.dashboard') }}" class="btn btn-primary">
+                <a href="{{ route('surveyor.dashboard') }}" class="btn btn-kp-primary">
                     <i class="fas fa-tachometer-alt fa-sm text-white-50"></i> Dashboard
                 </a>
             </div>
@@ -153,7 +153,7 @@
             <div class="col-lg-8">
                 <!-- Design Request Card -->
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-kp-blue text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-file-alt me-2"></i>
                             Design Request #{{ $designRequest->request_number }}
@@ -162,14 +162,14 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold text-primary">Basic Information</h6>
+                                <h6 class="font-weight-bold text-kp-blue">Basic Information</h6>
                                 <p><strong>Request Number:</strong> {{ $designRequest->request_number }}</p>
                                 <p><strong>Title:</strong> {{ $designRequest->title }}</p>
                                 <p><strong>Description:</strong> {{ $designRequest->description }}</p>
                                 <p><strong>Customer:</strong> {{ $designRequest->customer->name ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold text-primary">Status & Priority</h6>
+                                <h6 class="font-weight-bold text-kp-blue">Status & Priority</h6>
                                 <p><strong>Status:</strong>
                                     <span class="badge bg-{{ $designRequest->status === 'completed' ? 'success' : ($designRequest->status === 'in_progress' ? 'primary' : 'warning') }}">
                                         {{ ucfirst($designRequest->status) }}
@@ -221,7 +221,7 @@
 
                         @if($designRequest->technical_requirements)
                         <div class="mt-3">
-                            <h6 class="font-weight-bold text-primary">Technical Requirements</h6>
+                            <h6 class="font-weight-bold text-kp-blue">Technical Requirements</h6>
                             <p class="border p-3 rounded bg-light">{{ $designRequest->technical_requirements }}</p>
                         </div>
                         @endif
@@ -230,7 +230,7 @@
 
                 <!-- Enhanced Survey Details for Dark Fibre -->
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-kp-green text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-map-marked-alt me-2"></i>
                             Dark Fibre Survey Details
@@ -239,7 +239,7 @@
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold text-primary mb-3">Infrastructure Assessment</h6>
+                                <h6 class="font-weight-bold text-kp-blue mb-3">Infrastructure Assessment</h6>
 
                                 <div class="mb-3">
                                     <div class="d-flex align-items-center mb-2">
@@ -274,7 +274,7 @@
                                     <div class="mb-2">
                                         <label class="form-label">Route Complexity</label>
                                         <div class="progress mb-2">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-kp-green" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                         <small class="text-muted">Medium complexity - Mixed underground/aerial route</small>
                                     </div>
@@ -282,14 +282,14 @@
                             </div>
 
                             <div class="col-md-6">
-                                <h6 class="font-weight-bold text-primary mb-3">Hazard Identification</h6>
+                                <h6 class="font-weight-bold text-kp-blue mb-3">Hazard Identification</h6>
 
                                 <div class="mb-3">
                                     <div class="d-flex align-items-center mb-2">
                                         <i class="fas fa-exclamation-triangle infrastructure-icon"></i>
                                         <span class="fw-bold">Identified Hazards</span>
                                     </div>
-                                    <div class="alert alert-warning py-2">
+                                    <div class="alert alert-kp-warning py-2">
                                         <span class="hazard-indicator hazard-medium"></span>
                                         <strong>Railway crossing</strong> - Requires specialized boring
                                     </div>
@@ -297,7 +297,7 @@
                                         <span class="hazard-indicator hazard-high"></span>
                                         <strong>High-voltage power lines</strong> - Parallel for 350m
                                     </div>
-                                    <div class="alert alert-success py-2">
+                                    <div class="alert alert-kp-success py-2">
                                         <span class="hazard-indicator hazard-low"></span>
                                         <strong>Historic district</strong> - Special permits required
                                     </div>
@@ -307,7 +307,7 @@
 
                         <div class="row">
                             <div class="col-12">
-                                <h6 class="font-weight-bold text-primary mb-3">Route Visualization</h6>
+                                <h6 class="font-weight-bold text-kp-blue mb-3">Route Visualization</h6>
                                 <div class="segment-visualization mb-3">
                                     <!-- This would be a dynamic visualization in a real application -->
                                     <div class="segment-node" style="top: 50%; left: 10%;" title="Data Center A"></div>
@@ -333,7 +333,7 @@
             <div class="col-lg-4">
                 <!-- Survey Information -->
                 <div class="card shadow mb-4">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header bg-kp-green text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-map-marked-alt me-2"></i>
                             Survey Information
@@ -361,7 +361,7 @@
 
                         @if($designRequest->survey_requirements)
                         <div class="mt-3">
-                            <h6 class="font-weight-bold text-primary">Survey Requirements</h6>
+                            <h6 class="font-weight-bold text-kp-blue">Survey Requirements</h6>
                             <p class="border p-3 rounded bg-light small">{{ $designRequest->survey_requirements }}</p>
                         </div>
                         @endif
@@ -370,7 +370,7 @@
 
                 <!-- Quick Actions -->
                 <div class="card shadow">
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card-header bg-kp-yellow text-dark">
                         <h5 class="mb-0">
                             <i class="fas fa-bolt me-2"></i>
                             Quick Actions
@@ -386,21 +386,21 @@
                             <!-- Route Management Button -->
                             @if($designRequest->surveyRoute)
                                 <a href="{{ route('surveyor.routes.show', $designRequest->surveyRoute->id) }}"
-                                   class="btn btn-success btn-block">
+                                   class="btn btn-kp-success btn-block">
                                     <i class="fas fa-route me-2"></i> Manage Route
                                 </a>
                                 <a href="{{ route('surveyor.route-segments.create', $designRequest->surveyRoute->id) }}"
-                                   class="btn btn-primary btn-block">
+                                   class="btn btn-kp-primary btn-block">
                                     <i class="fas fa-plus-circle me-2"></i> Add Segment
                                 </a>
                             @else
-                                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#createRouteModal">
+                                <button type="button" class="btn btn-kp-success btn-block" data-bs-toggle="modal" data-bs-target="#createRouteModal">
                                     <i class="fas fa-route me-2"></i> Create Route
                                 </button>
                             @endif
 
                             <!-- Submit Survey Report -->
-                            <button type="button" class="btn btn-warning btn-block" data-bs-toggle="modal" data-bs-target="#submitReportModal">
+                            <button type="button" class="btn btn-kp-warning btn-block" data-bs-toggle="modal" data-bs-target="#submitReportModal">
                                 <i class="fas fa-file-alt me-2"></i> Submit Report
                             </button>
 
@@ -408,7 +408,7 @@
                             @if($designRequest->survey_status !== 'completed')
                             <form action="{{ route('surveyor.assignments.complete', $designRequest->id) }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-primary btn-block"
+                                <button type="submit" class="btn btn-kp-primary btn-block"
                                         onclick="return confirm('Mark this survey as completed?')">
                                     <i class="fas fa-check-circle me-2"></i> Mark Complete
                                 </button>
@@ -432,10 +432,10 @@
                         <p><strong>Phone:</strong> {{ $designRequest->customer->phone ?? 'N/A' }}</p>
 
                         <div class="mt-3">
-                            <button type="button" class="btn btn-outline-primary btn-sm">
+                            <button type="button" class="btn btn-outline-kp-primary btn-sm">
                                 <i class="fas fa-envelope me-1"></i> Email Customer
                             </button>
-                            <button type="button" class="btn btn-outline-success btn-sm ms-1">
+                            <button type="button" class="btn btn-outline-kp-success btn-sm ms-1">
                                 <i class="fas fa-phone me-1"></i> Call Customer
                             </button>
                         </div>
@@ -509,9 +509,9 @@
                             </div>
                             <div class="progress" style="height: 20px;">
                                 <div class="progress-bar
-                                    @if($designRequest->survey_status == 'completed') bg-success
+                                    @if($designRequest->survey_status == 'completed') bg-kp-green
                                     @elseif($designRequest->survey_status == 'in_progress') bg-info
-                                    @else bg-warning @endif"
+                                    @else bg-kp-yellow @endif"
                                     role="progressbar"
                                     style="width: {{ $progress }}%;"
                                     aria-valuenow="{{ $progress }}"
@@ -522,7 +522,7 @@
                         </div>
 
                         <!-- Survey Checklist -->
-                        <h6 class="font-weight-bold text-primary mb-3">Survey Checklist</h6>
+                        <h6 class="font-weight-bold text-kp-blue mb-3">Survey Checklist</h6>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="survey-checklist-item completed">
@@ -601,7 +601,7 @@
                             <!-- Existing Route Details -->
                             <div class="row mb-4">
                                 <div class="col-md-6">
-                                    <h6 class="font-weight-bold text-primary">Route Information</h6>
+                                    <h6 class="font-weight-bold text-kp-blue">Route Information</h6>
                                     <p><strong>Route Name:</strong> {{ $surveyRoute->route_name }}</p>
                                     <p><strong>Total Distance:</strong> {{ $surveyRoute->total_distance ?? '0' }} km</p>
                                     <p><strong>Estimated Cost:</strong> ${{ number_format($surveyRoute->estimated_cost ?? 0, 2) }}</p>
@@ -612,7 +612,7 @@
                                     </p>
                                 </div>
                                 <div class="col-md-6">
-                                    <h6 class="font-weight-bold text-primary">Route Segments</h6>
+                                    <h6 class="font-weight-bold text-kp-blue">Route Segments</h6>
                                     <p><strong>Total Segments:</strong> {{ $surveyRoute->routeSegments ? $surveyRoute->routeSegments->count() : 0 }}</p>
                                     <p><strong>Last Updated:</strong> {{ $surveyRoute->updated_at->format('M d, Y H:i') }}</p>
 
@@ -623,7 +623,7 @@
                                             <i class="fas fa-eye me-1"></i> View Route Details
                                         </a>
                                         <a href="{{ route('surveyor.route-segments.create', $surveyRoute->id) }}"
-                                           class="btn btn-success btn-sm">
+                                           class="btn btn-kp-success btn-sm">
                                             <i class="fas fa-plus me-1"></i> Add Segment
                                         </a>
                                     </div>
@@ -632,7 +632,7 @@
 
                             <!-- Recent Segments Table -->
                             @if($surveyRoute->routeSegments && $surveyRoute->routeSegments->count() > 0)
-                                <h6 class="font-weight-bold text-primary mb-3">Recent Route Segments</h6>
+                                <h6 class="font-weight-bold text-kp-blue mb-3">Recent Route Segments</h6>
                                 <div class="table-responsive">
                                     <table class="table table-sm table-bordered table-hover">
                                         <thead class="thead-light">
@@ -664,7 +664,7 @@
                                                 </td>
                                                 <td>{{ $segment->cost_multiplier }}x</td>
                                                 <td>
-                                                    <a href="#" class="btn btn-outline-primary btn-sm">
+                                                    <a href="#" class="btn btn-outline-kp-primary btn-sm">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                 </td>
@@ -675,7 +675,7 @@
                                 </div>
                                 @if($surveyRoute->routeSegments->count() > 3)
                                     <div class="text-center mt-2">
-                                        <a href="{{ route('surveyor.routes.show', $surveyRoute->id) }}" class="btn btn-outline-primary btn-sm">
+                                        <a href="{{ route('surveyor.routes.show', $surveyRoute->id) }}" class="btn btn-outline-kp-primary btn-sm">
                                             View All {{ $surveyRoute->routeSegments->count() }} Segments
                                         </a>
                                     </div>
@@ -686,7 +686,7 @@
                                     <h5 class="text-gray-500">No Route Segments Created</h5>
                                     <p class="text-gray-400">Start by creating your first route segment.</p>
                                     <a href="{{ route('surveyor.route-segments.create', $surveyRoute->id) }}"
-                                       class="btn btn-primary">
+                                       class="btn btn-kp-primary">
                                         <i class="fas fa-plus me-2"></i> Create First Segment
                                     </a>
                                 </div>
@@ -700,7 +700,7 @@
                                 <p class="text-gray-400 mb-4">Create a route to start documenting your survey segments and infrastructure details.</p>
 
                                 <!-- Create Route Button -->
-                                <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#createRouteModal">
+                                <button type="button" class="btn btn-kp-primary btn-lg" data-bs-toggle="modal" data-bs-target="#createRouteModal">
                                     <i class="fas fa-plus-circle me-2"></i> Create Survey Route
                                 </button>
 
@@ -908,7 +908,7 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             <i class="fas fa-times me-2"></i> Cancel
                         </button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-kp-primary">
                             <i class="fas fa-route me-2"></i> Create Dark Fibre Route
                         </button>
                     </div>
@@ -943,7 +943,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Status</button>
+                        <button type="submit" class="btn btn-kp-primary">Update Status</button>
                     </div>
                 </form>
             </div>
@@ -978,7 +978,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-success">Submit Report</button>
+                        <button type="submit" class="btn btn-kp-success">Submit Report</button>
                     </div>
                 </form>
             </div>

@@ -16,7 +16,7 @@
                         <tr>
                             <th>Related Quotation:</th>
                             <td>
-                                <a href="{{ route('quotations.show', $document->quotation->id) }}" class="text-primary">
+                                <a href="{{ route('quotations.show', $document->quotation->id) }}" class="text-kp-blue">
                                     {{ $document->quotation->quotation_number }}
                                 </a>
                             </td>
@@ -24,7 +24,7 @@
                         <tr>
                             <th>Design Request:</th>
                             <td>
-                                <a href="{{ route('design-requests.show', $document->quotation->designRequest->id) }}" class="text-primary">
+                                <a href="{{ route('design-requests.show', $document->quotation->designRequest->id) }}" class="text-kp-blue">
                                     {{ $document->quotation->designRequest->request_number ?? 'N/A' }}
                                 </a>
                             </td>
@@ -135,13 +135,13 @@
 
         @if(auth()->user()->can('view', $document))
             <a href="{{ route('contracts.show', $document->id) }}"
-               class="btn btn-primary btn-sm">
+               class="btn btn-kp-primary btn-sm">
                 <i class="fas fa-external-link-alt mr-1"></i> Open Full Details
             </a>
 
             @if(in_array($document->status, ['approved', 'sent_to_customer']))
                 <a href="{{ route('contracts.download', $document->id) }}"
-                   class="btn btn-success btn-sm">
+                   class="btn btn-kp-success btn-sm">
                     <i class="fas fa-download mr-1"></i> Download PDF
                 </a>
             @endif

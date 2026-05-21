@@ -10,7 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-file-invoice-dollar text-success"></i>
+                        <i class="fas fa-file-invoice-dollar text-kp-green"></i>
                         Quotation: {{ $quotation->quotation_number }}
                     </h1>
                     <p class="text-muted mb-0">Created for {{ $quotation->designRequest->customer->name }}</p>
@@ -26,7 +26,7 @@
                         {{ ucfirst($quotation->status) }}
                     </span>
                     @if($quotation->isExpired())
-                        <span class="badge bg-warning fs-6">Expired</span>
+                        <span class="badge bg-kp-yellow fs-6">Expired</span>
                     @endif
                 </div>
             </div>
@@ -37,7 +37,7 @@
         <!-- Quotation Details -->
         <div class="col-lg-8">
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-receipt me-2"></i>Quotation Details
                     </h6>
@@ -46,13 +46,13 @@
                     <!-- Customer Information -->
                     <div class="row mb-4">
                         <div class="col-md-6">
-                            <h6 class="text-primary">Bill To:</h6>
+                            <h6 class="text-kp-blue">Bill To:</h6>
                             <p class="mb-1"><strong>{{ $quotation->designRequest->customer->name }}</strong></p>
                             <p class="mb-1 text-muted">{{ $quotation->designRequest->customer->email }}</p>
                             <p class="mb-0 text-muted">{{ $quotation->designRequest->customer->phone ?? 'N/A' }}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-primary">Quotation Info:</h6>
+                            <h6 class="text-kp-blue">Quotation Info:</h6>
                             <p class="mb-1"><strong>Quotation #:</strong> {{ $quotation->quotation_number }}</p>
                             <p class="mb-1"><strong>Design Request:</strong> {{ $quotation->designRequest->request_number }}</p>
                             <p class="mb-1"><strong>Valid Until:</strong> {{ $quotation->valid_until->format('F d, Y') }}</p>
@@ -61,7 +61,7 @@
                     </div>
 
                     <!-- Line Items -->
-                    <h6 class="text-primary mb-3">Items</h6>
+                    <h6 class="text-kp-blue mb-3">Items</h6>
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead class="bg-light">
@@ -129,7 +129,7 @@
                     <!-- Scope of Work -->
                     @if($quotation->scope_of_work)
                         <div class="mt-4">
-                            <h6 class="text-primary">Scope of Work</h6>
+                            <h6 class="text-kp-blue">Scope of Work</h6>
                             <p class="text-muted">{{ $quotation->scope_of_work }}</p>
                         </div>
                     @endif
@@ -137,7 +137,7 @@
                     <!-- Terms and Conditions -->
                     @if($quotation->terms_and_conditions)
                         <div class="mt-4">
-                            <h6 class="text-primary">Terms & Conditions</h6>
+                            <h6 class="text-kp-blue">Terms & Conditions</h6>
                             <p class="text-muted">{{ $quotation->terms_and_conditions }}</p>
                         </div>
                     @endif
@@ -150,7 +150,7 @@
             <!-- Status Card -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-info-circle me-2"></i>Quotation Status
                     </h6>
                 </div>
@@ -191,7 +191,7 @@
 
                     <div class="mb-3">
                         <strong>Valid Until:</strong>
-                        <span class="float-end {{ $quotation->isExpired() ? 'text-danger' : 'text-success' }}">
+                        <span class="float-end {{ $quotation->isExpired() ? 'text-danger' : 'text-kp-green' }}">
                             {{ $quotation->valid_until->format('M d, Y') }}
                         </span>
                     </div>
@@ -201,7 +201,7 @@
             <!-- Actions Card -->
             <div class="card shadow">
                 <div class="card-header bg-light">
-                    <h6 class="m-0 font-weight-bold text-primary">
+                    <h6 class="m-0 font-weight-bold text-kp-blue">
                         <i class="fas fa-cogs me-2"></i>Actions
                     </h6>
                 </div>
@@ -212,12 +212,12 @@
                         </a>
 
                         @if($quotation->status === 'draft')
-                            <button class="btn btn-success">
+                            <button class="btn btn-kp-success">
                                 <i class="fas fa-paper-plane me-2"></i>Send to Customer
                             </button>
                         @endif
 
-                        <button class="btn btn-outline-primary">
+                        <button class="btn btn-outline-kp-primary">
                             <i class="fas fa-print me-2"></i>Print Quotation
                         </button>
 

@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Content Service Provider (CSP) Compliance Returns</h2>
     <div>
-        <a href="{{ route('csp.create') }}" class="btn btn-primary">
+        <a href="{{ route('csp.create') }}" class="btn btn-kp-primary">
             <i class="bi bi-plus-circle"></i> New CSP Return
         </a>
     </div>
@@ -57,7 +57,7 @@
                                 <i class="bi bi-eye"></i> View
                             </a>
                             @if($return->status === 'draft')
-                                <a href="{{ route('csp.edit', $return->id) }}" class="btn btn-sm btn-warning">
+                                <a href="{{ route('csp.edit', $return->id) }}" class="btn btn-sm btn-kp-warning">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
                                 <button class="btn btn-sm btn-danger" onclick="deleteReturn({{ $return->id }})">

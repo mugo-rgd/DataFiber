@@ -1,6 +1,6 @@
 {{-- resources/views/admin/survey-requests/index.blade.php --}}
 @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
         <i class="fas fa-check-circle me-1"></i>
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -30,7 +30,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-map-marked-alt text-primary"></i> Manage Survey Requests
+                    <i class="fas fa-map-marked-alt text-kp-blue"></i> Manage Survey Requests
                 </h1>
                 <div>
                     <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
@@ -62,7 +62,7 @@
                     @endif
                 </p>
                 @if(request('filter') || request('search'))
-                    <a href="{{ route('admin.survey-requests') }}" class="btn btn-primary">
+                    <a href="{{ route('admin.survey-requests') }}" class="btn btn-kp-primary">
                         Clear Filters
                     </a>
                 @endif
@@ -90,7 +90,7 @@
                            value="{{ request('search') }}" placeholder="Search by request number, title, or customer...">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">
+                    <button type="submit" class="btn btn-kp-primary w-100">
                         <i class="fas fa-filter me-2"></i>Filter
                     </button>
                 </div>
@@ -105,7 +105,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Need Assignment</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ \App\Models\DesignRequest::where('survey_status', 'not_required')->whereNull('surveyor_id')->count() }}
@@ -124,7 +124,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Assigned</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ \App\Models\DesignRequest::where('survey_status', 'assigned')->count() }}
@@ -162,7 +162,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Available Surveyors</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 {{ \App\Models\User::where('role', 'surveyor')->where('status', 'active')->count() }}
@@ -233,7 +233,7 @@
                                     @endphp
                                     @if($surveyor)
                                         <div class="d-flex align-items-center">
-                                            <div class="avatar bg-primary text-white rounded-circle me-2"
+                                            <div class="avatar bg-kp-blue text-white rounded-circle me-2"
                                                  style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 12px;">
                                                 {{ substr($surveyor->name, 0, 1) }}
                                             </div>
@@ -251,13 +251,13 @@
                                 <div class="btn-group btn-group-sm">
                                     <!-- View Details -->
                                     <a href="{{ route('admin.design-requests.show', $designRequest) }}"
-                                       class="btn btn-outline-primary" title="View Details">
+                                       class="btn btn-outline-kp-primary" title="View Details">
                                         <i class="fas fa-eye"></i>
                                     </a>
 
                                     <!-- Assign/Reassign Surveyor Button -->
                                     @if(!$designRequest->surveyor_id || $designRequest->survey_status == 'not_required')
-                                        <button type="button" class="btn btn-outline-success"
+                                        <button type="button" class="btn btn-outline-kp-success"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#surveyorModal{{ $designRequest->id }}"
                                                 title="Assign Surveyor">
@@ -383,7 +383,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-kp-primary">
                             <i class="fas fa-user-check me-1"></i>
                             {{ $designRequest->surveyor_id ? 'Reassign' : 'Assign' }} Surveyor
                         </button>

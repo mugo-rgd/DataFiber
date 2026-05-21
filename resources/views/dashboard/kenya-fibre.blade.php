@@ -158,7 +158,7 @@
     <div class="container-fluid">
         <!-- Loading Spinner -->
         <div id="loadingSpinner" class="text-center py-5">
-            <div class="spinner-border text-primary" role="status">
+            <div class="spinner-border text-kp-blue" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
             <p class="mt-2">Loading dashboard data...</p>
@@ -180,7 +180,7 @@
                         <div class="card-body">
                             <div class="row align-items-center">
                                 <div class="col-md-6">
-                                    <button id="refreshBtn" class="btn btn-primary">
+                                    <button id="refreshBtn" class="btn btn-kp-primary">
                                         <i class="fas fa-sync-alt me-2"></i>Refresh Data
                                     </button>
                                     <button class="btn btn-outline-secondary ms-2">
@@ -334,7 +334,7 @@
                     <!-- This will be populated by JavaScript -->
                     <tr id="topCustomersLoading">
                         <td colspan="4" class="text-center">
-                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <div class="spinner-border spinner-border-sm text-kp-blue" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                             <small class="ms-2">Loading customer data...</small>
@@ -710,9 +710,9 @@ console.log('Caching DOM elements...');
     getStatusBadge(status) {
         const badges = {
             'draft': 'badge bg-secondary',
-            'pending': 'badge bg-warning',
+            'pending': 'badge bg-kp-yellow',
             'sent': 'badge bg-info',
-            'paid': 'badge bg-success',
+            'paid': 'badge bg-kp-green',
             'overdue': 'badge bg-danger',
             'cancelled': 'badge bg-dark'
         };
@@ -937,7 +937,7 @@ console.log('Caching DOM elements...');
             <div class="mb-3">
                 <div class="d-flex justify-content-between">
                     <small>Total (12 months):</small>
-                    <strong class="text-primary">USD ${totalRevenue.toFixed(2)}M</strong>
+                    <strong class="text-kp-blue">USD ${totalRevenue.toFixed(2)}M</strong>
                 </div>
             </div>
             <div class="mb-3">
@@ -949,13 +949,13 @@ console.log('Caching DOM elements...');
             <div class="mb-3">
                 <div class="d-flex justify-content-between">
                     <small>Highest Month:</small>
-                    <strong class="text-success">USD ${maxRevenue.toFixed(2)}M</strong>
+                    <strong class="text-kp-green">USD ${maxRevenue.toFixed(2)}M</strong>
                 </div>
             </div>
             <div class="mb-3">
                 <div class="d-flex justify-content-between">
                     <small>Lowest Month:</small>
-                    <strong class="text-warning">USD ${minRevenue.toFixed(2)}M</strong>
+                    <strong class="text-kp-yellow">USD ${minRevenue.toFixed(2)}M</strong>
                 </div>
             </div>
         `;
@@ -1037,7 +1037,7 @@ console.log('Caching DOM elements...');
 
         if (rank === 1) {
             rowClass = 'table-warning';
-            rankBadge = 'badge bg-warning text-dark';
+            rankBadge = 'badge bg-kp-yellow text-dark';
         } else if (rank === 2) {
             rowClass = 'table-light';
             rankBadge = 'badge bg-light text-dark border';
@@ -1058,12 +1058,12 @@ console.log('Caching DOM elements...');
                     </div>
                 </td>
                 <td class="align-middle text-end">
-                    <div class="fw-bold text-primary">$${revenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                    <div class="fw-bold text-kp-blue">$${revenue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
                     <div class="small text-muted">${percentage.toFixed(1)}% of total</div>
                 </td>
                 <td class="align-middle" width="150">
                     <div class="progress" style="height: 8px;">
-                        <div class="progress-bar bg-success"
+                        <div class="progress-bar bg-kp-green"
                              style="width: ${Math.min(percentage, 100)}%"
                              role="progressbar">
                         </div>

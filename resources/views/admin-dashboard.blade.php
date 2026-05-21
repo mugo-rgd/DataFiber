@@ -138,12 +138,12 @@
             font-size: 0.95rem;
         }
 
-        .btn-primary {
+        .btn-kp-primary {
             background: var(--kp-yellow);
             color: var(--kp-dark);
         }
 
-        .btn-primary:hover {
+        .btn-kp-primary:hover {
             background: #e6c300;
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
@@ -604,7 +604,7 @@
                     <p class="page-subtitle">Monitor and manage Kenya Power's dark fibre network</p>
                 </div>
                 <div>
-                    <a href="#" class="btn btn-primary"><i class="fas fa-plus"></i> New Lease</a>
+                    <a href="#" class="btn btn-kp-primary"><i class="fas fa-plus"></i> New Lease</a>
                     <a href="#" class="btn btn-outline" style="color: var(--kp-blue); border-color: var(--kp-blue);">
                         <i class="fas fa-chart-bar"></i> Reports
                     </a>

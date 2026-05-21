@@ -11,7 +11,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h4 class="page-title mb-0">
-                            <i class="fas fa-user-circle text-primary me-2"></i>Customer Intelligence
+                            <i class="fas fa-user-circle text-kp-blue me-2"></i>Customer Intelligence
                         </h4>
                         <p class="text-muted mb-0">Detailed analysis and insights for {{ $customer->name ?? 'Unknown Customer' }}</p>
                     </div>
@@ -19,7 +19,7 @@
                         <a href="{{ route('finance.ai.dashboard') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                         </a>
-                        <button onclick="window.print()" class="btn btn-outline-primary">
+                        <button onclick="window.print()" class="btn btn-outline-kp-primary">
                             <i class="fas fa-print me-1"></i> Print Report
                         </button>
                     </div>
@@ -34,7 +34,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <div class="avatar-lg mx-auto mb-3">
-                        <div class="avatar-title bg-primary rounded-circle text-white display-4">
+                        <div class="avatar-title bg-kp-blue rounded-circle text-white display-4">
                             {{ substr($customer->name ?? 'U', 0, 1) }}
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                             <small class="text-muted">Overdue Invoices</small>
                         </div>
                         <div>
-                            <h5 class="mb-0 text-primary">{{ number_format(($outstandingUsd ?? 0) + ($outstandingKsh ?? 0) / 130, 0) }}</h5>
+                            <h5 class="mb-0 text-kp-blue">{{ number_format(($outstandingUsd ?? 0) + ($outstandingKsh ?? 0) / 130, 0) }}</h5>
                             <small class="text-muted">Risk Score</small>
                         </div>
                     </div>
@@ -71,21 +71,21 @@
                         <div class="col-md-6 mb-3">
                             <div class="border rounded p-3">
                                 <small class="text-muted d-block">Outstanding (USD)</small>
-                                <h3 class="mb-0 text-primary">${{ number_format($outstandingUsd ?? 0, 2) }}</h3>
+                                <h3 class="mb-0 text-kp-blue">${{ number_format($outstandingUsd ?? 0, 2) }}</h3>
                                 <small class="text-muted">Total unpaid amount in USD</small>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <div class="border rounded p-3">
                                 <small class="text-muted d-block">Outstanding (KSH)</small>
-                                <h3 class="mb-0 text-success">KSH {{ number_format($outstandingKsh ?? 0, 2) }}</h3>
+                                <h3 class="mb-0 text-kp-green">KSH {{ number_format($outstandingKsh ?? 0, 2) }}</h3>
                                 <small class="text-muted">Total unpaid amount in KSH</small>
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
                             <div class="border rounded p-3">
                                 <small class="text-muted d-block">Total Paid (All Time)</small>
-                                <h3 class="mb-0 text-success">${{ number_format($customer->total_paid_usd ?? 0, 2) }}</h3>
+                                <h3 class="mb-0 text-kp-green">${{ number_format($customer->total_paid_usd ?? 0, 2) }}</h3>
                                 <small class="text-muted">Lifetime payments in USD</small>
                             </div>
                         </div>
@@ -110,7 +110,7 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="fas fa-file-invoice text-warning me-2"></i>Outstanding Invoices
+                        <i class="fas fa-file-invoice text-kp-yellow me-2"></i>Outstanding Invoices
                     </h5>
                 </div>
                 <div class="card-body">
@@ -139,7 +139,7 @@
                                     @endphp
                                     <tr>
                                         <td>
-                                            <a href="{{ route('finance.billing.show', $invoice->id) }}" class="text-primary">
+                                            <a href="{{ route('finance.billing.show', $invoice->id) }}" class="text-kp-blue">
                                                 {{ $invoice->billing_number }}
                                             </a>
                                         </td>
@@ -170,7 +170,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary" onclick="sendReminder({{ $invoice->id }})">
+                                            <button class="btn btn-sm btn-outline-kp-primary" onclick="sendReminder({{ $invoice->id }})">
                                                 <i class="fas fa-bell"></i> Remind
                                             </button>
                                         </td>
@@ -218,7 +218,7 @@
                                     <tr>
                                         <td>{{ \Carbon\Carbon::parse($payment->transaction_date)->format('M d, Y') }}</td>
                                         <td>{{ $payment->billing_number ?? 'N/A' }}</td>
-                                        <td class="fw-bold text-success">
+                                        <td class="fw-bold text-kp-green">
                                             @if($payment->currency == 'USD')
                                                 ${{ number_format($payment->amount, 2) }}
                                             @else
@@ -254,14 +254,14 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="fas fa-brain text-warning me-2"></i>AI-Powered Insights
+                        <i class="fas fa-brain text-kp-yellow me-2"></i>AI-Powered Insights
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <h6 class="text-primary">
+                                <h6 class="text-kp-blue">
                                     <i class="fas fa-chart-line me-2"></i>Payment Pattern
                                 </h6>
                                 <p class="mb-0">
@@ -274,23 +274,23 @@
                                 </p>
                             </div>
                             <div class="mb-3">
-                                <h6 class="text-warning">
+                                <h6 class="text-kp-yellow">
                                     <i class="fas fa-exclamation-triangle me-2"></i>Risk Assessment
                                 </h6>
                                 <p class="mb-0">
                                     @if(($outstandingUsd ?? 0) > 50000 || ($outstandingKsh ?? 0) > 6500000)
                                         <span class="text-danger">High risk customer</span> - Large outstanding balance requires immediate attention.
                                     @elseif(($outstandingUsd ?? 0) > 10000 || ($outstandingKsh ?? 0) > 1300000)
-                                        <span class="text-warning">Medium risk customer</span> - Monitor payment patterns closely.
+                                        <span class="text-kp-yellow">Medium risk customer</span> - Monitor payment patterns closely.
                                     @else
-                                        <span class="text-success">Low risk customer</span> - Consistent payment behavior observed.
+                                        <span class="text-kp-green">Low risk customer</span> - Consistent payment behavior observed.
                                     @endif
                                 </p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <h6 class="text-success">
+                                <h6 class="text-kp-green">
                                     <i class="fas fa-lightbulb me-2"></i>Recommendations
                                 </h6>
                                 <ul class="mb-0">

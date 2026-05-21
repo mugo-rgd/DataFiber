@@ -29,7 +29,7 @@
                         <a href="{{ route('conversion-data.index') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back to List
                         </a>
-                        <a href="{{ route('conversion-data.edit', $item->id) }}" class="btn btn-primary">
+                        <a href="{{ route('conversion-data.edit', $item->id) }}" class="btn btn-kp-primary">
                             <i class="fas fa-edit me-1"></i> Edit
                         </a>
                     </div>
@@ -72,9 +72,9 @@
             <div class="card mb-4">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-info-circle me-2 text-primary"></i>Basic Information
+                        <i class="fas fa-info-circle me-2 text-kp-blue"></i>Basic Information
                     </h5>
-                    <span class="badge {{ $item->status === 'active' ? 'bg-success' : 'bg-secondary' }}">
+                    <span class="badge {{ $item->status === 'active' ? 'bg-kp-green' : 'bg-secondary' }}">
                         {{ ucfirst($item->status ?? 'N/A') }}
                     </span>
                 </div>
@@ -110,7 +110,7 @@
                             <div class="mb-3">
                                 <label class="form-label text-muted small mb-1">Value</label>
                                 <div class="d-flex align-items-center">
-                                    <span class="fw-bold fs-5 {{ $item->value >= 0 ? 'text-success' : 'text-danger' }}">
+                                    <span class="fw-bold fs-5 {{ $item->value >= 0 ? 'text-kp-green' : 'text-danger' }}">
                                         £{{ number_format($item->value ?? 0, 2) }}
                                     </span>
                                     @if($item->value_percentage)
@@ -170,7 +170,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-file-alt me-2 text-primary"></i>Additional Details
+                        <i class="fas fa-file-alt me-2 text-kp-blue"></i>Additional Details
                     </h5>
                 </div>
                 <div class="card-body">
@@ -239,14 +239,14 @@
             <div class="card mb-4">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-chart-line me-2 text-primary"></i>Status & Metrics
+                        <i class="fas fa-chart-line me-2 text-kp-blue"></i>Status & Metrics
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="form-label text-muted small mb-1">Conversion Rate</label>
                         <div class="progress" style="height: 25px;">
-                            <div class="progress-bar bg-success" role="progressbar"
+                            <div class="progress-bar bg-kp-green" role="progressbar"
                                  style="width: {{ min($item->conversion_rate ?? 0, 100) }}%;"
                                  aria-valuenow="{{ $item->conversion_rate ?? 0 }}"
                                  aria-valuemin="0"
@@ -275,7 +275,7 @@
                         <label class="form-label text-muted small mb-1">Quality Score</label>
                         <div class="d-flex align-items-center">
                             @for($i = 1; $i <= 5; $i++)
-                                <i class="fas fa-star {{ $i <= ($item->quality_score ?? 0) ? 'text-warning' : 'text-light' }}"></i>
+                                <i class="fas fa-star {{ $i <= ($item->quality_score ?? 0) ? 'text-kp-yellow' : 'text-light' }}"></i>
                             @endfor
                             <span class="ms-2">{{ $item->quality_score ?? 'N/A' }}/5</span>
                         </div>
@@ -287,7 +287,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-link me-2 text-primary"></i>Related Data
+                        <i class="fas fa-link me-2 text-kp-blue"></i>Related Data
                     </h5>
                 </div>
                 <div class="card-body">
@@ -327,12 +327,12 @@
             <div class="card">
                 <div class="card-header bg-white">
                     <h5 class="card-title mb-0">
-                        <i class="fas fa-bolt me-2 text-primary"></i>Quick Actions
+                        <i class="fas fa-bolt me-2 text-kp-blue"></i>Quick Actions
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
+                        <button class="btn btn-outline-kp-primary" data-bs-toggle="modal" data-bs-target="#duplicateModal">
                             <i class="fas fa-copy me-1"></i> Duplicate Entry
                         </button>
                         <button class="btn btn-outline-secondary" onclick="downloadAsPDF()">
@@ -362,10 +362,10 @@
                         <i class="fas fa-file-pdf text-danger me-2"></i> Export as PDF
                     </a>
                     <a href="{{ route('conversion-data.export', ['id' => $item->id, 'format' => 'csv']) }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-file-csv text-success me-2"></i> Export as CSV
+                        <i class="fas fa-file-csv text-kp-green me-2"></i> Export as CSV
                     </a>
                     <a href="{{ route('conversion-data.export', ['id' => $item->id, 'format' => 'excel']) }}" class="list-group-item list-group-item-action">
-                        <i class="fas fa-file-excel text-success me-2"></i> Export as Excel
+                        <i class="fas fa-file-excel text-kp-green me-2"></i> Export as Excel
                     </a>
                 </div>
             </div>
@@ -393,7 +393,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Duplicate</button>
+                    <button type="submit" class="btn btn-kp-primary">Duplicate</button>
                 </div>
             </form>
         </div>
@@ -420,13 +420,13 @@
                 <div class="mb-3">
                     <label class="form-label">Share via</label>
                     <div class="d-flex gap-2">
-                        <button class="btn btn-outline-primary btn-sm">
+                        <button class="btn btn-outline-kp-primary btn-sm">
                             <i class="fas fa-envelope"></i> Email
                         </button>
                         <button class="btn btn-outline-info btn-sm">
                             <i class="fas fa-slack"></i> Slack
                         </button>
-                        <button class="btn btn-outline-success btn-sm">
+                        <button class="btn btn-outline-kp-success btn-sm">
                             <i class="fas fa-whatsapp"></i> WhatsApp
                         </button>
                     </div>
@@ -488,11 +488,11 @@
             navigator.clipboard.writeText(text).then(() => {
                 const originalHTML = this.innerHTML;
                 this.innerHTML = '<i class="fas fa-check"></i>';
-                this.classList.add('text-success');
+                this.classList.add('text-kp-green');
 
                 setTimeout(() => {
                     this.innerHTML = originalHTML;
-                    this.classList.remove('text-success');
+                    this.classList.remove('text-kp-green');
                 }, 2000);
             });
         });

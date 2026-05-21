@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-cog text-primary"></i> System Settings
+                <i class="fas fa-cog text-kp-blue"></i> System Settings
             </h1>
             <p class="text-muted">Manage system configuration and preferences</p>
         </div>
@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-sliders-h me-2"></i>System Configuration
                     </h6>

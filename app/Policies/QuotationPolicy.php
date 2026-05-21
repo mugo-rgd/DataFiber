@@ -22,6 +22,32 @@ class QuotationPolicy
         // ]);
     }
 
+    // In app/Policies/QuotationPolicy.php
+
+// In app/Policies/QuotationPolicy.php
+
+public function review(User $user, Quotation $quotation)
+{
+    // Admins can review any quotation
+    if ($user->role === 'admin') {
+        return true;
+    }
+
+    // Account managers can review quotations for their customers
+    if ($user->role === 'account_manager' &&
+        $quotation->customer->account_manager_id === $user->id) {
+        return true;
+    }
+
+    // Designers can review quotations they created
+    if ($user->role === 'designer' &&
+        $quotation->designRequest->designer_id === $user->id) {
+        return true;
+    }
+
+    return false;
+}
+
     /**
  * Determine whether the user can view the model.
  */
@@ -71,9 +97,9 @@ class QuotationPolicy
     public function update(User $user, Quotation $quotation): bool
     {
         // Only draft quotations can be updated
-        if ($quotation->status !== 'draft') {
-            return false;
-        }
+        if (!in_array($quotation->status, ['draft', 'rejected'])) {
+    return false;
+}
 
         // System admin and admin can update any draft quotation
         if (in_array($user->role, ['system_admin', 'admin'])) {

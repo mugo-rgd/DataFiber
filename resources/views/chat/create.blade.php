@@ -7,10 +7,12 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" style="background: linear-gradient(135deg, #0066B3 0%, #009639 100%);">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Start New Chat</h5>
-                        <a href="{{ route('chat.index') }}" class="btn btn-sm btn-outline-secondary">
+                        <h5 class="mb-0 text-white">
+                            <i class="fas fa-plus-circle me-2"></i>Start New Chat
+                        </h5>
+                        <a href="{{ route('chat.index') }}" class="btn btn-sm" style="background: white; color: #0066B3;">
                             <i class="fas fa-arrow-left me-1"></i> Back to Chats
                         </a>
                     </div>
@@ -26,8 +28,8 @@
                     @endif
 
                     @if(session('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle me-2"></i>
+                        <div class="alert alert-kp-success alert-dismissible fade show" role="alert" style="background: #d4edda; border-color: #c3e6cb; color: #009639;">
+                            <i class="fas fa-check-circle me-2" style="color: #009639;"></i>
                             {{ session('success') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
@@ -36,15 +38,15 @@
                     <!-- Search Bar -->
                     <div class="mb-4">
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search"></i>
+                            <span class="input-group-text bg-light border-end-0" style="background: #f8f9fa;">
+                                <i class="fas fa-search" style="color: #0066B3;"></i>
                             </span>
                             <input type="text"
                                    id="user-search"
                                    class="form-control border-start-0"
                                    placeholder="Search users by name or email..."
                                    autocomplete="off">
-                            <button class="btn btn-outline-secondary" type="button" id="clear-search">
+                            <button class="btn btn-outline-secondary" type="button" id="clear-search" style="border-color: #dee2e6;">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -62,8 +64,8 @@
                                      data-user-role="{{ $user->role }}">
                                     <div class="d-flex align-items-center">
                                         <div class="avatar me-3">
-                                            <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-                                                 style="width: 40px; height: 40px;">
+                                            <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                                                 style="width: 40px; height: 40px; background: linear-gradient(135deg, #0066B3, #009639);">
                                                 {{ strtoupper(substr($user->name, 0, 1)) }}
                                             </div>
                                         </div>
@@ -71,11 +73,11 @@
                                             <h6 class="mb-0">{{ $user->name }}</h6>
                                             <small class="text-muted">
                                                 {{ $user->email }}
-                                                <span class="badge bg-secondary ms-2">{{ $user->getFullRoleName() }}</span>
+                                                <span class="badge ms-2" style="background: #0066B3;">{{ $user->getFullRoleName() }}</span>
                                             </small>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-outline-primary start-chat-btn">
+                                    <button type="button" class="btn btn-sm start-chat-btn" style="border-color: #0066B3; color: #0066B3;">
                                         <i class="fas fa-comment me-1"></i> Chat
                                     </button>
                                 </div>
@@ -84,7 +86,7 @@
 
                         @if($users->isEmpty())
                             <div class="text-center py-5">
-                                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                <i class="fas fa-users fa-3x mb-3" style="color: #0066B3;"></i>
                                 <h5 class="text-muted">No users available to chat with</h5>
                                 <p class="text-muted">You don't have permission to start chats with other users.</p>
                             </div>
@@ -93,7 +95,7 @@
 
                     <!-- Loading indicator -->
                     <div id="loading-indicator" class="text-center py-3 d-none">
-                        <div class="spinner-border text-primary" role="status">
+                        <div class="spinner-border" role="status" style="color: #0066B3;">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <p class="text-muted mt-2">Searching users...</p>
@@ -101,7 +103,7 @@
 
                     <!-- No results message -->
                     <div id="no-results" class="text-center py-5 d-none">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <i class="fas fa-search fa-3x mb-3" style="color: #0066B3;"></i>
                         <h5 class="text-muted">No users found</h5>
                         <p class="text-muted">Try searching with a different name or email.</p>
                     </div>
@@ -124,6 +126,7 @@
     .user-item:hover {
         background-color: #f8f9fa;
         cursor: pointer;
+        border-left: 3px solid #0066B3;
     }
 
     .avatar {
@@ -132,7 +135,23 @@
 
     #user-search:focus {
         box-shadow: none;
-        border-color: #86b7fe;
+        border-color: #0066B3;
+    }
+
+    .start-chat-btn:hover {
+        background: linear-gradient(135deg, #0066B3, #009639);
+        border-color: transparent;
+        color: white !important;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #0066B3;
+        border-color: #0066B3;
+        color: white;
+    }
+
+    .btn-outline-secondary:hover i {
+        color: white;
     }
 </style>
 @endpush
@@ -253,20 +272,20 @@
                     userItem.innerHTML = `
                         <div class="d-flex align-items-center">
                             <div class="avatar me-3">
-                                <div class="bg-primary rounded-circle text-white d-flex align-items-center justify-content-center"
-                                     style="width: 40px; height: 40px;">
+                                <div class="rounded-circle text-white d-flex align-items-center justify-content-center"
+                                     style="width: 40px; height: 40px; background: linear-gradient(135deg, #0066B3, #009639);">
                                     ${avatarLetter}
                                 </div>
                             </div>
                             <div>
-                                <h6 class="mb-0">${user.name}</h6>
+                                <h6 class="mb-0">${escapeHtml(user.name)}</h6>
                                 <small class="text-muted">
-                                    ${user.email}
-                                    <span class="badge bg-secondary ms-2">${roleName}</span>
+                                    ${escapeHtml(user.email)}
+                                    <span class="badge ms-2" style="background: #0066B3;">${roleName}</span>
                                 </small>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary start-chat-btn">
+                        <button type="button" class="btn btn-sm start-chat-btn" style="border-color: #0066B3; color: #0066B3;">
                             <i class="fas fa-comment me-1"></i> Chat
                         </button>
                     `;
@@ -292,6 +311,14 @@
             });
             noResults.classList.add('d-none');
             userList.classList.remove('d-none');
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // Get readable role name

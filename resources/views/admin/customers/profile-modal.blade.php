@@ -3,7 +3,7 @@
     <!-- Profile Header -->
     <div class="text-center mb-4">
         <div class="avatar-xl mx-auto mb-3">
-            <div class="avatar-title bg-primary text-white rounded-circle" style="width: 80px; height: 80px; font-size: 32px;">
+            <div class="avatar-title bg-kp-blue text-white rounded-circle" style="width: 80px; height: 80px; font-size: 32px;">
                 {{ strtoupper(substr($customer->name, 0, 1)) }}
             </div>
         </div>
@@ -14,11 +14,11 @@
         <p class="text-muted mb-2">Customer ID: #{{ $customer->id }}</p>
         <div class="d-flex justify-content-center gap-2">
             @if($customer->status === 'active')
-                <span class="badge bg-success">Active Account</span>
+                <span class="badge bg-kp-green">Active Account</span>
             @elseif($customer->status === 'inactive')
                 <span class="badge bg-secondary">Inactive Account</span>
             @else
-                <span class="badge bg-warning">{{ ucfirst($customer->status) }}</span>
+                <span class="badge bg-kp-yellow">{{ ucfirst($customer->status) }}</span>
             @endif
             <span class="badge bg-info">Member since {{ $customer->created_at->format('M Y') }}</span>
         </div>
@@ -27,7 +27,7 @@
     <!-- Contact Information -->
     <div class="card mb-3 border-0 shadow-sm">
         <div class="card-header bg-transparent border-0">
-            <h6 class="mb-0"><i class="fas fa-address-card text-primary me-2"></i>Contact Information</h6>
+            <h6 class="mb-0"><i class="fas fa-address-card text-kp-blue me-2"></i>Contact Information</h6>
         </div>
         <div class="card-body pt-0">
             <div class="row">
@@ -84,13 +84,13 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-transparent border-0">
-                    <h6 class="mb-0"><i class="fas fa-user-tie text-primary me-2"></i>Account Manager</h6>
+                    <h6 class="mb-0"><i class="fas fa-user-tie text-kp-blue me-2"></i>Account Manager</h6>
                 </div>
                 <div class="card-body pt-0">
                     @if($customer->accountManager)
                         <div class="d-flex align-items-center">
                             <div class="avatar-sm me-3">
-                                <div class="avatar-title bg-success text-white rounded-circle">
+                                <div class="avatar-title bg-kp-green text-white rounded-circle">
                                     {{ substr($customer->accountManager->name, 0, 1) }}
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                         <div class="text-center py-3">
                             <i class="fas fa-user-slash fa-2x text-muted mb-2"></i>
                             <p class="text-muted mb-0">No account manager assigned</p>
-                            <button class="btn btn-sm btn-outline-primary mt-2" onclick="prepareAssignManager({{ $customer->id }}, '{{ $customer->name }}')" data-bs-dismiss="modal">
+                            <button class="btn btn-sm btn-outline-kp-primary mt-2" onclick="prepareAssignManager({{ $customer->id }}, '{{ $customer->name }}')" data-bs-dismiss="modal">
                                 <i class="fas fa-user-tie me-1"></i>Assign Manager
                             </button>
                         </div>
@@ -123,7 +123,7 @@
         <div class="col-md-6">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-transparent border-0">
-                    <h6 class="mb-0"><i class="fas fa-chart-bar text-primary me-2"></i>Billing Information</h6>
+                    <h6 class="mb-0"><i class="fas fa-chart-bar text-kp-blue me-2"></i>Billing Information</h6>
                 </div>
                 <div class="card-body pt-0">
                     <table class="table table-sm table-borderless">
@@ -141,7 +141,7 @@
                             <td class="text-muted">Auto Billing:</td>
                             <td>
                                 @if($customer->auto_billing_enabled)
-                                    <span class="badge bg-success">Enabled</span>
+                                    <span class="badge bg-kp-green">Enabled</span>
                                 @else
                                     <span class="badge bg-secondary">Disabled</span>
                                 @endif
@@ -169,7 +169,7 @@
     @if($customer->county_id)
     <div class="card mb-3 border-0 shadow-sm">
         <div class="card-header bg-transparent border-0">
-            <h6 class="mb-0"><i class="fas fa-map text-primary me-2"></i>County Assignment</h6>
+            <h6 class="mb-0"><i class="fas fa-map text-kp-blue me-2"></i>County Assignment</h6>
         </div>
         <div class="card-body pt-0">
             <p class="mb-1"><strong>County ID:</strong> {{ $customer->county_id }}</p>
@@ -188,19 +188,19 @@
     <!-- Profile Completion -->
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-transparent border-0">
-            <h6 class="mb-0"><i class="fas fa-check-circle text-primary me-2"></i>Profile Completion</h6>
+            <h6 class="mb-0"><i class="fas fa-check-circle text-kp-blue me-2"></i>Profile Completion</h6>
         </div>
         <div class="card-body pt-0">
             <div class="progress mb-2" style="height: 10px;">
-                <div class="progress-bar bg-success" role="progressbar"
+                <div class="progress-bar bg-kp-green" role="progressbar"
                      style="width: {{ $customer->profile_completion_percentage ?? 0 }}%"></div>
             </div>
             <div class="d-flex justify-content-between">
                 <small class="text-muted">{{ $customer->profile_completion_percentage ?? 0 }}% complete</small>
                 @if(($customer->profile_completion_percentage ?? 0) == 100)
-                    <small class="text-success"><i class="fas fa-check-circle"></i> Complete</small>
+                    <small class="text-kp-green"><i class="fas fa-check-circle"></i> Complete</small>
                 @else
-                    <small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Incomplete</small>
+                    <small class="text-kp-yellow"><i class="fas fa-exclamation-triangle"></i> Incomplete</small>
                 @endif
             </div>
         </div>
@@ -234,7 +234,7 @@
 }
 </style>
 @else
-<div class="alert alert-warning m-3">
+<div class="alert alert-kp-warning m-3">
     <i class="fas fa-exclamation-triangle me-2"></i>
     Customer information not available.
 </div>

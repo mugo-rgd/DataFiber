@@ -8,13 +8,13 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center py-3">
         <h1 class="h3 mb-0 text-gray-800">
-            <i class="fas fa-crystal-ball text-primary me-2"></i>Financial Forecasting
+            <i class="fas fa-crystal-ball text-kp-blue me-2"></i>Financial Forecasting
         </h1>
         <div>
-            <button class="btn btn-outline-primary" id="exportForecast">
+            <button class="btn btn-outline-kp-primary" id="exportForecast">
                 <i class="fas fa-download me-1"></i>Export Forecast
             </button>
-            <button class="btn btn-primary ms-2" id="runForecast">
+            <button class="btn btn-kp-primary ms-2" id="runForecast">
                 <i class="fas fa-sync-alt me-1"></i>Refresh Forecast
             </button>
         </div>
@@ -86,11 +86,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-blue text-uppercase mb-1">
                                 Next 30 Days Forecast</div>
                             <div class="h5 mb-0 fw-bold text-gray-800" id="next30Days">$0</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
-                                <span id="next30Change" class="text-success">
+                                <span id="next30Change" class="text-kp-green">
                                     <i class="fas fa-arrow-up"></i> 0%
                                 </span> vs previous
                             </div>
@@ -108,11 +108,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-green text-uppercase mb-1">
                                 Next Quarter Forecast</div>
                             <div class="h5 mb-0 fw-bold text-gray-800" id="nextQuarter">$0</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
-                                <span id="nextQuarterChange" class="text-success">
+                                <span id="nextQuarterChange" class="text-kp-green">
                                     <i class="fas fa-arrow-up"></i> 0%
                                 </span> vs previous
                             </div>
@@ -150,11 +150,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs fw-bold text-kp-yellow text-uppercase mb-1">
                                 Forecast Error (MAPE)</div>
                             <div class="h5 mb-0 fw-bold text-gray-800" id="forecastError">0%</div>
                             <div class="mt-2 mb-0 text-muted text-xs">
-                                <span id="errorTrend" class="text-success">Improving</span>
+                                <span id="errorTrend" class="text-kp-green">Improving</span>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -171,7 +171,7 @@
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Revenue Forecast</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Revenue Forecast</h6>
                     <div class="dropdown no-arrow">
                         <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
@@ -197,7 +197,7 @@
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Forecast Details</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Forecast Details</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -210,17 +210,17 @@
                                 </tr>
                                 <tr>
                                     <td><strong>Data Points</strong></td>
-                                    <td><span class="badge bg-success" id="dataPoints">0</span></td>
+                                    <td><span class="badge bg-kp-green" id="dataPoints">0</span></td>
                                     <td class="text-end">Last 90 days</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Seasonality</strong></td>
-                                    <td><span class="badge bg-warning" id="seasonalityDetected">Weekly</span></td>
+                                    <td><span class="badge bg-kp-yellow" id="seasonalityDetected">Weekly</span></td>
                                     <td class="text-end">Pattern detected</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Trend</strong></td>
-                                    <td><span class="badge bg-primary" id="trendStrength">Positive</span></td>
+                                    <td><span class="badge bg-kp-blue" id="trendStrength">Positive</span></td>
                                     <td class="text-end">Slope: +2.3%</td>
                                 </tr>
                                 <tr>
@@ -238,7 +238,7 @@
 
                     <!-- Assumptions -->
                     <div class="mt-4">
-                        <h6 class="fw-bold text-primary mb-3">Key Assumptions</h6>
+                        <h6 class="fw-bold text-kp-blue mb-3">Key Assumptions</h6>
                         <div class="form-group">
                             <label class="small">Monthly Growth Rate</label>
                             <input type="range" class="form-range" id="growthRate" min="0" max="10" step="0.5" value="3">
@@ -257,7 +257,7 @@
                                 <span class="small text-muted">100%</span>
                             </div>
                         </div>
-                        <button class="btn btn-sm btn-outline-primary w-100 mt-3" id="updateAssumptions">
+                        <button class="btn btn-sm btn-outline-kp-primary w-100 mt-3" id="updateAssumptions">
                             <i class="fas fa-calculator me-1"></i> Recalculate with New Assumptions
                         </button>
                     </div>
@@ -271,7 +271,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Scenario Analysis</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Scenario Analysis</h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -290,7 +290,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <span class="badge bg-success">Baseline</span>
+                                        <span class="badge bg-kp-green">Baseline</span>
                                     </td>
                                     <td>60%</td>
                                     <td id="scenarioBaseline30">$0</td>
@@ -312,7 +312,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <span class="badge bg-warning">Pessimistic</span>
+                                        <span class="badge bg-kp-yellow">Pessimistic</span>
                                     </td>
                                     <td>15%</td>
                                     <td id="scenarioPessimistic30">$0</td>
@@ -345,7 +345,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Risk Assessment</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Risk Assessment</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -453,7 +453,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Forecast Accuracy History</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Forecast Accuracy History</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -464,13 +464,13 @@
                             <div class="col-4">
                                 <div class="p-2 border rounded">
                                     <div class="text-xs text-muted">Last Month</div>
-                                    <div class="h6 mb-0 text-success" id="accuracyLastMonth">0%</div>
+                                    <div class="h6 mb-0 text-kp-green" id="accuracyLastMonth">0%</div>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="p-2 border rounded">
                                     <div class="text-xs text-muted">Last Quarter</div>
-                                    <div class="h6 mb-0 text-primary" id="accuracyLastQuarter">0%</div>
+                                    <div class="h6 mb-0 text-kp-blue" id="accuracyLastQuarter">0%</div>
                                 </div>
                             </div>
                             <div class="col-4">
@@ -492,10 +492,10 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body text-center py-5">
-                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                <div class="spinner-border text-kp-blue mb-3" role="status" style="width: 3rem; height: 3rem;">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <h5 class="text-primary">Running Forecast Models...</h5>
+                <h5 class="text-kp-blue">Running Forecast Models...</h5>
                 <p class="text-muted">Analyzing historical data and generating predictions</p>
                 <div class="progress mt-3">
                     <div class="progress-bar progress-bar-striped progress-bar-animated"
@@ -731,7 +731,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const errorTrend = Math.random() > 0.5 ? 'Improving' : 'Stable';
         document.getElementById('errorTrend').textContent = errorTrend;
-        document.getElementById('errorTrend').className = errorTrend === 'Improving' ? 'text-success' : 'text-warning';
+        document.getElementById('errorTrend').className = errorTrend === 'Improving' ? 'text-kp-green' : 'text-kp-yellow';
 
         // Update model details
         document.getElementById('modelUsed').textContent = document.getElementById('forecastModel').options[document.getElementById('forecastModel').selectedIndex].text;
@@ -985,7 +985,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateChangeIndicator(elementId, change) {
         const element = document.getElementById(elementId);
         const icon = change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
-        const colorClass = change >= 0 ? 'text-success' : 'text-danger';
+        const colorClass = change >= 0 ? 'text-kp-green' : 'text-danger';
 
         element.className = colorClass;
         element.innerHTML = `<i class="fas ${icon}"></i> ${Math.abs(change).toFixed(1)}%`;
@@ -1044,7 +1044,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showAlert(message, type = 'info') {
-        const alertClass = type === 'success' ? 'alert-success' :
+        const alertClass = type === 'success' ? 'alert-kp-success' :
                           type === 'error' ? 'alert-danger' : 'alert-info';
 
         const alert = document.createElement('div');

@@ -9,15 +9,15 @@
         <h1 class="h2">My Profile</h1>
         <div>
             @if($companyProfile)
-                <a href="{{ route('customer.profile.edit') }}" class="btn btn-primary">
+                <a href="{{ route('customer.profile.edit') }}" class="btn btn-kp-primary">
                     <i class="fas fa-edit me-2"></i>Edit Profile
                 </a>
             @else
-                <a href="{{ route('customer.profile.create') }}" class="btn btn-primary">
+                <a href="{{ route('customer.profile.create') }}" class="btn btn-kp-primary">
                     <i class="fas fa-plus me-2"></i>Create Profile
                 </a>
             @endif
-                    <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-kp-primary">
     <i class="fas fa-folder me-2"></i>View Documents
 </a>
         </div>
@@ -25,7 +25,7 @@
 
     <!-- Success/Error Messages -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
@@ -42,7 +42,7 @@
         <!-- Personal Information -->
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-user me-2"></i>Personal Information
                     </h5>
@@ -79,7 +79,7 @@
         <!-- Company Information -->
         <div class="col-md-6 mb-4">
             <div class="card shadow-sm h-100">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-kp-green text-white">
                     <h5 class="card-title mb-0">
                         <i class="fas fa-building me-2"></i>Company Information
                     </h5>
@@ -126,7 +126,7 @@
                         <div class="text-center py-4">
                             <i class="fas fa-building fa-3x text-muted mb-3"></i>
                             <p class="text-muted">No company profile found.</p>
-                            <a href="{{ route('customer.profile.create') }}" class="btn btn-primary">
+                            <a href="{{ route('customer.profile.create') }}" class="btn btn-kp-primary">
                                 Create Company Profile
                             </a>
                         </div>
@@ -141,7 +141,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card shadow-sm">
-            <div class="card-header bg-warning text-dark">
+            <div class="card-header bg-kp-yellow text-dark">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-file-alt me-2"></i>Uploaded Documents
                     @if($documents && $documents->count() > 0)
@@ -154,7 +154,7 @@
                     <!-- Documents Summary -->
                     <div class="row mb-4">
                         <div class="col-md-3">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-kp-green text-white">
                                 <div class="card-body text-center py-2">
                                     <h6 class="mb-1">{{ $documents->where('status', 'approved')->count() }}</h6>
                                     <small>Approved</small>
@@ -162,7 +162,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-warning text-dark">
+                            <div class="card bg-kp-yellow text-dark">
                                 <div class="card-body text-center py-2">
                                     <h6 class="mb-1">{{ $documents->where('status', 'pending_review')->count() }}</h6>
                                     <small>Pending</small>
@@ -211,7 +211,7 @@
                                                 @elseif(str_contains($document->document_type, 'report')) fa-file-chart-line
                                                 @else fa-file
                                                 @endif
-                                                me-3 text-primary">
+                                                me-3 text-kp-blue">
                                             </i>
                                             <div>
                                                 <strong>{{ $document->name }}</strong>
@@ -254,12 +254,12 @@
                                     <td>
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ route('customer.documents.download', $document) }}"
-                                               class="btn btn-outline-success"
+                                               class="btn btn-outline-kp-success"
                                                title="Download Document">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                             <a href="{{ route('customer.documents.show', $document) }}"
-                                               class="btn btn-outline-primary"
+                                               class="btn btn-outline-kp-primary"
                                                title="View Details">
                                                 <i class="fas fa-eye"></i>
                                             </a>
@@ -273,10 +273,10 @@
 
                     <!-- Upload More Button -->
                     <div class="text-center mt-4">
-                        <a href="{{ route('customer.documents.create') }}" class="btn btn-primary me-2">
+                        <a href="{{ route('customer.documents.create') }}" class="btn btn-kp-primary me-2">
                             <i class="fas fa-plus me-2"></i>Upload More Documents
                         </a>
-                        <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-primary">
+                        <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-kp-primary">
                             <i class="fas fa-folder me-2"></i>View All Documents
                         </a>
                     </div>
@@ -286,7 +286,7 @@
                         <i class="fas fa-file-upload fa-3x text-muted mb-3"></i>
                         <h5 class="text-muted">No documents uploaded</h5>
                         <p class="text-muted mb-4">Upload your company documents to get started.</p>
-                        <a href="{{ route('customer.documents.create') }}" class="btn btn-primary">
+                        <a href="{{ route('customer.documents.create') }}" class="btn btn-kp-primary">
                             <i class="fas fa-upload me-2"></i>Upload Documents
                         </a>
                     </div>
@@ -311,7 +311,7 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h3 class="text-primary">{{ $companyProfile->isComplete() ? '✓' : '✗' }}</h3>
+                                    <h3 class="text-kp-blue">{{ $companyProfile->isComplete() ? '✓' : '✗' }}</h3>
                                     <small class="text-muted">Profile Complete</small>
                                 </div>
                             </div>
@@ -319,7 +319,7 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h3 class="text-primary">{{ $totalDocumentCount ?? 0 }}</h3>
+                                    <h3 class="text-kp-blue">{{ $totalDocumentCount ?? 0 }}</h3>
                                     <small class="text-muted">Total Documents</small>
                                 </div>
                             </div>
@@ -327,7 +327,7 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h3 class="text-primary">{{ $documentTypesCount ?? 0 }}</h3>
+                                    <h3 class="text-kp-blue">{{ $documentTypesCount ?? 0 }}</h3>
                                     <small class="text-muted">Document Types</small>
                                 </div>
                             </div>
@@ -335,7 +335,7 @@
                         <div class="col-md-3 mb-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h3 class="text-primary">{{ $companyProfile->created_at->diffForHumans() }}</h3>
+                                    <h3 class="text-kp-blue">{{ $companyProfile->created_at->diffForHumans() }}</h3>
                                     <small class="text-muted">Profile Age</small>
                                 </div>
                             </div>

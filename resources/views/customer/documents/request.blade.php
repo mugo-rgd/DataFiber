@@ -100,7 +100,7 @@
                                             <span class="text-muted font-12">#{{ $lease->lease_number }}</span>
                                         </td>
                                         <td>
-                                            <span class="badge bg-primary">{{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}</span>
+                                            <span class="badge bg-kp-blue">{{ ucfirst(str_replace('_', ' ', $lease->service_type)) }}</span>
                                         </td>
                                         <td>
                                             <small class="text-muted">
@@ -120,18 +120,18 @@
                                                     @endforeach
                                                 </div>
                                             @else
-                                                <span class="badge bg-success">All Documents Available</span>
+                                                <span class="badge bg-kp-green">All Documents Available</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if(count($missingDocs) > 0)
-                                                <button type="button" class="btn btn-sm btn-primary"
+                                                <button type="button" class="btn btn-sm btn-kp-primary"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#requestModal{{ $lease->id }}">
                                                     <i class="fas fa-file-import me-1"></i> Request
                                                 </button>
                                             @else
-                                                <button class="btn btn-sm btn-success" disabled>
+                                                <button class="btn btn-sm btn-kp-success" disabled>
                                                     <i class="fas fa-check me-1"></i> Complete
                                                 </button>
                                             @endif
@@ -250,7 +250,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                                                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                                                        <button type="submit" class="btn btn-kp-primary">Submit Request</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -261,7 +261,7 @@
                             </table>
                         </div>
                     @else
-                        <div class="alert alert-warning">
+                        <div class="alert alert-kp-warning">
                             <i class="fas fa-exclamation-triangle me-2"></i>
                             You don't have any active projects. Please create a lease request first.
                         </div>
@@ -278,7 +278,7 @@
                     <div class="list-group list-group-flush">
                         <div class="list-group-item d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-file-invoice text-primary"></i>
+                                <i class="fas fa-file-invoice text-kp-blue"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-0">Quotations</h6>
@@ -288,7 +288,7 @@
 
                         <div class="list-group-item d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-file-contract text-warning"></i>
+                                <i class="fas fa-file-contract text-kp-yellow"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-0">Contracts</h6>
@@ -298,7 +298,7 @@
 
                         <div class="list-group-item d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-certificate text-success"></i>
+                                <i class="fas fa-certificate text-kp-green"></i>
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="mb-0">Acceptance Certificates</h6>
@@ -346,7 +346,7 @@
                             <a href="mailto:documents@darkfibre-crm.test" class="btn btn-outline-dark">
                                 <i class="fas fa-envelope me-1"></i> Email Support
                             </a>
-                            <a href="tel:+254700000000" class="btn btn-outline-primary">
+                            <a href="tel:+254700000000" class="btn btn-outline-kp-primary">
                                 <i class="fas fa-phone me-1"></i> Call Support
                             </a>
                         </div>

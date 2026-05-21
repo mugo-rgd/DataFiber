@@ -9,11 +9,11 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 text-gray-800">
-                        <i class="fas fa-network-wired text-primary"></i> ICT Engineer - Design Requests
+                        <i class="fas fa-network-wired text-kp-blue"></i> ICT Engineer - Design Requests
                     </h1>
                     <p class="text-muted">Manage fibre route design requests assigned to you for technical review</p>
                 </div>
-                <a href="{{ route('ictengineer.dashboard') }}" class="btn btn-outline-primary">
+                <a href="{{ route('ictengineer.dashboard') }}" class="btn btn-outline-kp-primary">
                     <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                 </a>
             </div>
@@ -24,10 +24,10 @@
         <div class="card-header bg-white py-3">
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 fw-semibold">
-                    <i class="fas fa-list-check me-2 text-primary"></i>Technical Review Requests
+                    <i class="fas fa-list-check me-2 text-kp-blue"></i>Technical Review Requests
                 </h5>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('ictengineer.dashboard') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ route('ictengineer.dashboard') }}" class="btn btn-sm btn-outline-kp-primary">
                         <i class="fas fa-tachometer-alt me-1"></i>Dashboard
                     </a>
                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="goBack()">
@@ -81,7 +81,7 @@
                                     <div class="btn-group btn-group-sm" role="group">
                                         <!-- View Design Request Details -->
                                         <a href="{{ route('ictengineer.requests.show', $request) }}"
-                                           class="btn btn-primary"
+                                           class="btn btn-kp-primary"
                                            title="View Design Request">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -107,7 +107,7 @@
     @else
         <!-- Generate Conditional Certificate -->
         <a href="{{ route('ictengineer.certificates.conditional.create', $request) }}"
-           class="btn btn-success me-2"
+           class="btn btn-kp-success me-2"
            title="Generate Conditional Certificate">
             <i class="fas fa-file-contract"></i>
         </a>
@@ -136,7 +136,7 @@
         @else
         <!-- Generate Acceptance Certificate -->
         <a href="{{ route('ictengineer.certificates.acceptance.create', $request) }}"
-           class="btn btn-warning"
+           class="btn btn-kp-warning"
            title="Generate Acceptance Certificate">
             <i class="fas fa-file-signature"></i>
         </a>
@@ -160,7 +160,7 @@
 
                                         <!-- Update Technical Status -->
                                         <button type="button"
-                                                class="btn btn-outline-primary update-technical-status-btn"
+                                                class="btn btn-outline-kp-primary update-technical-status-btn"
                                                 data-request-id="{{ $request->id }}"
                                                 data-current-status="{{ $request->status }}"
                                                 title="Update Technical Status">
@@ -176,7 +176,7 @@
                                     <p class="text-muted">No design requests assigned for technical review.</p>
                                     <p class="text-muted small">Design requests will appear here when assigned by administrators or designers.</p>
                                     <div class="mt-3">
-                                        <a href="{{ route('ictengineer.dashboard') }}" class="btn btn-primary me-2">
+                                        <a href="{{ route('ictengineer.dashboard') }}" class="btn btn-kp-primary me-2">
                                             <i class="fas fa-tachometer-alt me-1"></i>Go to Dashboard
                                         </a>
                                         <button type="button" class="btn btn-outline-secondary" onclick="goBack()">
@@ -238,7 +238,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="saveTechnicalStatus"
+                <button type="button" class="btn btn-kp-primary" id="saveTechnicalStatus"
                         data-update-url-template="{{ route('ictengineer.requests.update-status', ['id' => 'PLACEHOLDER']) }}">
                     Update Status
                 </button>
@@ -338,7 +338,7 @@ saveTechnicalStatusBtn.addEventListener('click', function() {
     // Toast notification function
     function showToast(message, type = 'info') {
         // Implement toast notification or use alert
-        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const alertClass = type === 'success' ? 'alert-kp-success' : 'alert-danger';
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert ${alertClass} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
         alertDiv.innerHTML = `
@@ -373,18 +373,18 @@ saveTechnicalStatusBtn.addEventListener('click', function() {
 }
 
 /* Button colors for different actions */
-.btn-primary { background-color: #0d6efd; }
-.btn-success { background-color: #198754; }
+.btn-kp-primary { background-color: #0d6efd; }
+.btn-kp-success { background-color: #198754; }
 .btn-info { background-color: #0dcaf0; }
-.btn-warning { background-color: #ffc107; }
+.btn-kp-warning { background-color: #ffc107; }
 .btn-secondary { background-color: #6c757d; }
 .btn-dark { background-color: #212529; }
-.btn-outline-primary { color: #0d6efd; border-color: #0d6efd; }
+.btn-outline-kp-primary { color: #0d6efd; border-color: #0d6efd; }
 
-.btn-primary:hover { background-color: #0b5ed7; }
-.btn-success:hover { background-color: #157347; }
+.btn-kp-primary:hover { background-color: #0b5ed7; }
+.btn-kp-success:hover { background-color: #157347; }
 .btn-info:hover { background-color: #0ba5d1; }
-.btn-warning:hover { background-color: #e0a800; }
+.btn-kp-warning:hover { background-color: #e0a800; }
 
 /* Action button tooltips */
 .btn-group .btn {

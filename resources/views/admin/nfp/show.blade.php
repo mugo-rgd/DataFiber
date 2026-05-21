@@ -10,12 +10,12 @@
             <i class="bi bi-arrow-left"></i> Back to List
         </a>
         @if($return->status === 'submitted' && auth()->user()->role === 'admin')
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
+            <button class="btn btn-kp-success" data-bs-toggle="modal" data-bs-target="#approveModal">
                 <i class="bi bi-check-circle"></i> Review & Approve
             </button>
         @endif
         @if($return->status === 'draft')
-            <a href="{{ route('nfp.edit', $return->id) }}" class="btn btn-warning">
+            <a href="{{ route('nfp.edit', $return->id) }}" class="btn btn-kp-warning">
                 <i class="bi bi-pencil"></i> Edit
             </a>
         @endif
@@ -26,7 +26,7 @@
     <div class="col-md-8">
         <!-- License Information -->
         <div class="card mb-3">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-kp-blue text-white">
                 <h5 class="mb-0">License Information</h5>
             </div>
             <div class="card-body">
@@ -42,7 +42,7 @@
 
         <!-- Address Information -->
         <div class="card mb-3">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-kp-blue text-white">
                 <h5 class="mb-0">Address Information</h5>
             </div>
             <div class="card-body">
@@ -63,7 +63,7 @@
 
         <!-- Status Timeline -->
         <div class="card mb-3">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-kp-blue text-white">
                 <h5 class="mb-0">Status Timeline</h5>
             </div>
             <div class="card-body">
@@ -91,14 +91,14 @@
     <div class="col-md-4">
         <!-- Documents -->
         <div class="card mb-3">
-            <div class="card-header bg-success text-white">
+            <div class="card-header bg-kp-green text-white">
                 <h5 class="mb-0">Attached Documents</h5>
             </div>
             <div class="card-body">
                 @if($return->documents)
                     @foreach($return->documents as $key => $doc)
                         <div class="mb-2">
-                            <a href="{{ Storage::url($doc) }}" target="_blank" class="btn btn-sm btn-outline-primary w-100">
+                            <a href="{{ Storage::url($doc) }}" target="_blank" class="btn btn-sm btn-outline-kp-primary w-100">
                                 <i class="bi bi-file-pdf"></i> {{ ucfirst(str_replace('_', ' ', $key)) }}
                             </a>
                         </div>
@@ -111,7 +111,7 @@
 
         <!-- Compliance Info -->
         @if($return->status === 'approved')
-        <div class="card mb-3 bg-success text-white">
+        <div class="card mb-3 bg-kp-green text-white">
             <div class="card-header">
                 <h5 class="mb-0">Compliance Certificate</h5>
             </div>
@@ -141,7 +141,7 @@
                         <label>Decision:</label>
                         <div class="form-check">
                             <input type="radio" name="official_decision" value="approved" class="form-check-input" required>
-                            <label class="form-check-label text-success">Approve</label>
+                            <label class="form-check-label text-kp-green">Approve</label>
                         </div>
                         <div class="form-check">
                             <input type="radio" name="official_decision" value="rejected" class="form-check-input">
@@ -155,7 +155,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Submit Decision</button>
+                    <button type="submit" class="btn btn-kp-primary">Submit Decision</button>
                 </div>
             </form>
         </div>

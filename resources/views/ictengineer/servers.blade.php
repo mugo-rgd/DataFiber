@@ -9,7 +9,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 text-gray-800">
-                    <i class="fas fa-server text-primary"></i> Network Servers
+                    <i class="fas fa-server text-kp-blue"></i> Network Servers
                 </h1>
                 <a href="{{ route('ictengineer.requests') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Requests
@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">Server List</h5>
                 </div>
                 <div class="card-body">

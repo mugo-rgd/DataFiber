@@ -8,10 +8,10 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center py-3">
         <h1 class="h3 mb-0 text-gray-800">
-            <i class="fas fa-chart-bar text-primary me-2"></i>Financial Benchmarking
+            <i class="fas fa-chart-bar text-kp-blue me-2"></i>Financial Benchmarking
         </h1>
         <div>
-            <button class="btn btn-outline-primary" id="exportBenchmarking">
+            <button class="btn btn-outline-kp-primary" id="exportBenchmarking">
                 <i class="fas fa-download me-1"></i>Export Report
             </button>
         </div>
@@ -58,7 +58,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Overall Benchmark Score</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Overall Benchmark Score</h6>
                 </div>
                 <div class="card-body">
                     <div class="row align-items-center">
@@ -66,12 +66,12 @@
                             <div class="display-4 fw-bold" id="overallScore">0</div>
                             <div class="text-muted">Out of 100</div>
                             <div class="mt-2">
-                                <span class="badge bg-success" id="scoreRating">Poor</span>
+                                <span class="badge bg-kp-green" id="scoreRating">Poor</span>
                             </div>
                         </div>
                         <div class="col-md-9">
                             <div class="progress mb-3" style="height: 25px;">
-                                <div class="progress-bar bg-success" id="scoreProgress" role="progressbar" style="width: 0%">
+                                <div class="progress-bar bg-kp-green" id="scoreProgress" role="progressbar" style="width: 0%">
                                     <span class="progress-text">0%</span>
                                 </div>
                             </div>
@@ -106,7 +106,7 @@
         <div class="col-lg-6 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ $category }} Benchmarks</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">{{ $category }} Benchmarks</h6>
                     <span class="badge" id="{{ strtolower($category) }}Badge">0%</span>
                 </div>
                 <div class="card-body">
@@ -157,7 +157,7 @@
                                             ${{ number_format($data['target'] ?? 0, 0) }}
                                         @endif
                                     </td>
-                                    <td class="{{ ($data['gap'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }}">
+                                    <td class="{{ ($data['gap'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }}">
                                         @if(str_contains($metricName, 'rate') || str_contains($metricName, 'margin') || str_contains($metricName, 'ratio'))
                                             {{ ($data['gap'] ?? 0) >= 0 ? '+' : '' }}{{ number_format($data['gap'] ?? 0, 1) }}%
                                         @else
@@ -197,7 +197,7 @@
         <div class="col-12">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Performance vs Targets</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Performance vs Targets</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -213,14 +213,14 @@
         <div class="col-lg-8">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Key Insights & Recommendations</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Key Insights & Recommendations</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card border-left-success mb-3">
                                 <div class="card-body">
-                                    <h6 class="card-title text-success">
+                                    <h6 class="card-title text-kp-green">
                                         <i class="fas fa-check-circle me-2"></i>Strengths
                                     </h6>
                                     <ul class="mb-0">
@@ -248,7 +248,7 @@
                     </div>
 
                     <div class="mt-4">
-                        <h6 class="text-primary mb-3">Action Plan</h6>
+                        <h6 class="text-kp-blue mb-3">Action Plan</h6>
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
@@ -276,7 +276,7 @@
         <div class="col-lg-4">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Industry Comparison</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Industry Comparison</h6>
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
@@ -307,22 +307,22 @@
                                     <tr>
                                         <td>Collection Rate</td>
                                         <td>85%</td>
-                                        <td class="text-success">95%</td>
+                                        <td class="text-kp-green">95%</td>
                                     </tr>
                                     <tr>
                                         <td>Net Margin</td>
                                         <td>18%</td>
-                                        <td class="text-success">25%</td>
+                                        <td class="text-kp-green">25%</td>
                                     </tr>
                                     <tr>
                                         <td>DSO</td>
                                         <td>40 days</td>
-                                        <td class="text-success">25 days</td>
+                                        <td class="text-kp-green">25 days</td>
                                     </tr>
                                     <tr>
                                         <td>Revenue Growth</td>
                                         <td>12%</td>
-                                        <td class="text-success">20%</td>
+                                        <td class="text-kp-green">20%</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -374,7 +374,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="confirmExport">Export</button>
+                <button type="button" class="btn btn-kp-primary" id="confirmExport">Export</button>
             </div>
         </div>
     </div>
@@ -401,9 +401,9 @@
     background-color: rgba(0, 0, 0, 0.02);
 }
 
-.badge.bg-success { background-color: #1cc88a !important; }
-.badge.bg-primary { background-color: #4e73df !important; }
-.badge.bg-warning { background-color: #f6c23e !important; }
+.badge.bg-kp-green { background-color: #1cc88a !important; }
+.badge.bg-kp-blue { background-color: #4e73df !important; }
+.badge.bg-kp-yellow { background-color: #f6c23e !important; }
 .badge.bg-danger { background-color: #e74a3b !important; }
 .badge.bg-info { background-color: #36b9cc !important; }
 </style>
@@ -862,7 +862,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showAlert(message, type = 'info') {
-        const alertClass = type === 'success' ? 'alert-success' :
+        const alertClass = type === 'success' ? 'alert-kp-success' :
                           type === 'error' ? 'alert-danger' : 'alert-info';
 
         const alert = document.createElement('div');

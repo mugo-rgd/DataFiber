@@ -9,7 +9,7 @@
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-bullhorn me-2"></i>Campaign Management
         </h1>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCampaignModal">
+        <button class="btn btn-kp-primary" data-bs-toggle="modal" data-bs-target="#createCampaignModal">
             <i class="fas fa-plus me-2"></i>Create Campaign
         </button>
     </div>
@@ -21,7 +21,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Active Campaigns
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">8</div>
@@ -39,7 +39,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Total Reach
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">45.2K</div>
@@ -75,7 +75,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 ROI
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">3.2x</div>
@@ -94,12 +94,12 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-primary">Marketing Campaigns</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Marketing Campaigns</h6>
                     <div class="btn-group">
-                        <button class="btn btn-outline-primary btn-sm active">All</button>
-                        <button class="btn btn-outline-primary btn-sm">Active</button>
-                        <button class="btn btn-outline-primary btn-sm">Completed</button>
-                        <button class="btn btn-outline-primary btn-sm">Draft</button>
+                        <button class="btn btn-outline-kp-primary btn-sm active">All</button>
+                        <button class="btn btn-outline-kp-primary btn-sm">Active</button>
+                        <button class="btn btn-outline-kp-primary btn-sm">Completed</button>
+                        <button class="btn btn-outline-kp-primary btn-sm">Draft</button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -122,7 +122,7 @@
                                 <tr>
                                     <td>Q4 Enterprise Push</td>
                                     <td>Email Marketing</td>
-                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td><span class="badge bg-kp-green">Active</span></td>
                                     <td>Oct 1, 2024</td>
                                     <td>Dec 31, 2024</td>
                                     <td>$15,000</td>
@@ -130,7 +130,7 @@
                                     <td>18%</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             <button class="btn btn-outline-secondary" title="Edit">
@@ -145,7 +145,7 @@
                                 <tr>
                                     <td>Social Media Awareness</td>
                                     <td>Social Media</td>
-                                    <td><span class="badge bg-success">Active</span></td>
+                                    <td><span class="badge bg-kp-green">Active</span></td>
                                     <td>Nov 1, 2024</td>
                                     <td>Nov 30, 2024</td>
                                     <td>$8,000</td>
@@ -153,7 +153,7 @@
                                     <td>12%</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             <button class="btn btn-outline-secondary" title="Edit">
@@ -168,7 +168,7 @@
                                 <tr>
                                     <td>Referral Program Launch</td>
                                     <td>Referral</td>
-                                    <td><span class="badge bg-warning">Draft</span></td>
+                                    <td><span class="badge bg-kp-yellow">Draft</span></td>
                                     <td>-</td>
                                     <td>-</td>
                                     <td>$5,000</td>
@@ -176,7 +176,7 @@
                                     <td>-</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             <button class="btn btn-outline-secondary" title="Edit">
@@ -196,7 +196,7 @@
                                     <td>22%</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <button class="btn btn-outline-primary" title="View">
+                                            <button class="btn btn-outline-kp-primary" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             <button class="btn btn-outline-info" title="Analytics">
@@ -231,7 +231,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" disabled>Create Campaign</button>
+                <button type="button" class="btn btn-kp-primary" disabled>Create Campaign</button>
             </div>
         </div>
     </div>

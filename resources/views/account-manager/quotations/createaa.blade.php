@@ -17,7 +17,7 @@
     <!-- Design Request Info Card -->
     @if(isset($designRequest))
     <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-primary">
+        <div class="card-header py-3 bg-kp-blue">
             <h6 class="m-0 font-weight-bold text-white">
                 <i class="fas fa-drafting-compass me-1"></i> Design Request Information
             </h6>
@@ -55,7 +55,7 @@
 
     <!-- Quotation Form -->
     <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-success">
+        <div class="card-header py-3 bg-kp-green">
             <h6 class="m-0 font-weight-bold text-white">
                 <i class="fas fa-edit me-1"></i> Quotation Details
             </h6>
@@ -166,7 +166,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="addItem" class="btn btn-primary btn-sm mt-2">
+                        <button type="button" id="addItem" class="btn btn-kp-primary btn-sm mt-2">
                             <i class="fas fa-plus me-1"></i> Add Item
                         </button>
                     </div>
@@ -220,10 +220,10 @@
                                 <i class="fas fa-times me-1"></i> Cancel
                             </button>
                             <div>
-                                <button type="submit" name="action" value="save_draft" class="btn btn-warning">
+                                <button type="submit" name="action" value="save_draft" class="btn btn-kp-warning">
                                     <i class="fas fa-save me-1"></i> Save as Draft
                                 </button>
-                                <button type="submit" name="action" value="send_to_customer" class="btn btn-success">
+                                <button type="submit" name="action" value="send_to_customer" class="btn btn-kp-success">
                                     <i class="fas fa-paper-plane me-1"></i> Send to Customer
                                 </button>
                             </div>

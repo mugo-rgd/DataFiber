@@ -6,7 +6,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="mb-0">
-                <i class="fas fa-file-alt me-2 text-primary"></i> CAK Compliance Dashboard
+                <i class="fas fa-file-alt me-2" style="color: #0066B3;"></i> CAK Compliance Dashboard
             </h3>
             <small class="text-muted">
                 <i class="fas fa-balance-scale me-1"></i> Kenya Information and Communications Act, 1998 — Section 27 Compliance
@@ -14,26 +14,26 @@
         </div>
 
         <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" style="background: #0066B3; color: white;">
                 <i class="fas fa-plus me-1"></i> New Return
             </button>
 
             <ul class="dropdown-menu dropdown-menu-end">
                 <li>
                     <a class="dropdown-item" href="{{ route('asp.create') }}">
-                        <i class="fas fa-server me-2 text-primary"></i> ASP Return
+                        <i class="fas fa-server me-2" style="color: #0066B3;"></i> ASP Return
                         <small class="text-muted d-block ms-4">Application Service Provider</small>
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item" href="{{ route('csp.create') }}">
-                        <i class="fas fa-envelope me-2 text-success"></i> CSP Return
+                        <i class="fas fa-envelope me-2" style="color: #009639;"></i> CSP Return
                         <small class="text-muted d-block ms-4">Content Service Provider</small>
                     </a>
                 </li>
                 <li>
                     <a class="dropdown-item" href="{{ route('nfp.create') }}">
-                        <i class="fas fa-network-wired me-2 text-warning"></i> NFP Return
+                        <i class="fas fa-network-wired me-2" style="color: #FFD700;"></i> NFP Return
                         <small class="text-muted d-block ms-4">Network Facility Provider</small>
                     </a>
                 </li>
@@ -42,16 +42,16 @@
     </div>
 
     {{-- UPCOMING DEADLINES (CAK Requirement) --}}
-    <div class="alert alert-warning border-warning mb-4" role="alert">
+    <div class="alert mb-4" role="alert" style="background: #fff3cd; border-color: #FFD700; color: #856404;">
         <div class="d-flex align-items-center">
-            <i class="fas fa-calendar-alt fa-lg me-3"></i>
+            <i class="fas fa-calendar-alt fa-lg me-3" style="color: #FFD700;"></i>
             <div>
                 <strong>CAK Filing Deadline:</strong> Quarterly returns must be submitted within <strong>15 days</strong> after the end of each quarter.
                 <br>
                 <small>Next deadline: {{ \Carbon\Carbon::now()->endOfQuarter()->format('d M Y') }}</small>
             </div>
             <div class="ms-auto">
-                <span class="badge bg-danger">
+                <span class="badge" style="background: #dc3545;">
                     {{ \Carbon\Carbon::now()->diffInDays(\Carbon\Carbon::now()->endOfQuarter(), false) }} days remaining
                 </span>
             </div>
@@ -62,7 +62,7 @@
     <div class="row mb-4">
 
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm border-primary h-100">
+            <div class="card shadow-sm h-100" style="border-left: 4px solid #0066B3;">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -70,7 +70,7 @@
                             <h2>{{ $aspCount ?? 0 }}</h2>
                             <small class="text-muted">Application Service Providers</small>
                         </div>
-                        <i class="fas fa-server fa-2x text-primary opacity-50"></i>
+                        <i class="fas fa-server fa-2x opacity-50" style="color: #0066B3;"></i>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between small">
@@ -78,7 +78,7 @@
                         <span>Filed: <strong>{{ $aspFiledCount ?? 0 }}</strong></span>
                         <span><i class="fas fa-chart-line"></i> {{ $aspComplianceRate ?? 0 }}%</span>
                     </div>
-                    <a href="{{ route('asp.index') }}" class="btn btn-sm btn-outline-primary mt-2 w-100">
+                    <a href="{{ route('asp.index') }}" class="btn btn-sm mt-2 w-100" style="border-color: #0066B3; color: #0066B3;">
                         <i class="fas fa-list"></i> Manage ASP Returns
                     </a>
                 </div>
@@ -86,7 +86,7 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm border-success h-100">
+            <div class="card shadow-sm h-100" style="border-left: 4px solid #009639;">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -94,7 +94,7 @@
                             <h2>{{ $cspCount ?? 0 }}</h2>
                             <small class="text-muted">Content Service Providers</small>
                         </div>
-                        <i class="fas fa-envelope fa-2x text-success opacity-50"></i>
+                        <i class="fas fa-envelope fa-2x opacity-50" style="color: #009639;"></i>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between small">
@@ -102,7 +102,7 @@
                         <span>Filed: <strong>{{ $cspFiledCount ?? 0 }}</strong></span>
                         <span><i class="fas fa-chart-line"></i> {{ $cspComplianceRate ?? 0 }}%</span>
                     </div>
-                    <a href="{{ route('csp.index') }}" class="btn btn-sm btn-outline-success mt-2 w-100">
+                    <a href="{{ route('csp.index') }}" class="btn btn-sm mt-2 w-100" style="border-color: #009639; color: #009639;">
                         <i class="fas fa-list"></i> Manage CSP Returns
                     </a>
                 </div>
@@ -110,7 +110,7 @@
         </div>
 
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm border-warning h-100">
+            <div class="card shadow-sm h-100" style="border-left: 4px solid #FFD700;">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
@@ -118,7 +118,7 @@
                             <h2>{{ $nfpCount ?? 0 }}</h2>
                             <small class="text-muted">Network Facility Providers</small>
                         </div>
-                        <i class="fas fa-network-wired fa-2x text-warning opacity-50"></i>
+                        <i class="fas fa-network-wired fa-2x opacity-50" style="color: #FFD700;"></i>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between small">
@@ -126,7 +126,7 @@
                         <span>Filed: <strong>{{ $nfpFiledCount ?? 0 }}</strong></span>
                         <span><i class="fas fa-chart-line"></i> {{ $nfpComplianceRate ?? 0 }}%</span>
                     </div>
-                    <a href="{{ route('nfp.index') }}" class="btn btn-sm btn-outline-warning mt-2 w-100">
+                    <a href="{{ route('nfp.index') }}" class="btn btn-sm mt-2 w-100" style="border-color: #FFD700; color: #8B6914;">
                         <i class="fas fa-list"></i> Manage NFP Returns
                     </a>
                 </div>
@@ -140,7 +140,7 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
-                    <strong><i class="fas fa-chart-pie me-1"></i> CAK Compliance Summary</strong>
+                    <strong><i class="fas fa-chart-pie me-1" style="color: #0066B3;"></i> CAK Compliance Summary</strong>
                     <small class="text-muted ms-2">Q{{ $currentQuarter ?? 1 }} {{ $currentYear ?? date('Y') }}</small>
                 </div>
                 <div class="card-body">
@@ -148,37 +148,37 @@
                         <div class="col-md-2 col-6 mb-2">
                             <div class="border rounded p-2 bg-light">
                                 <h6 class="text-muted mb-0">Total Licensees</h6>
-                                <h3 class="mb-0">{{ $totalLicensees ?? 0 }}</h3>
+                                <h3 class="mb-0" style="color: #0066B3;">{{ $totalLicensees ?? 0 }}</h3>
                             </div>
                         </div>
                         <div class="col-md-2 col-6 mb-2">
                             <div class="border rounded p-2 bg-light">
                                 <h6 class="text-muted mb-0">Returns Due</h6>
-                                <h3 class="text-warning mb-0">{{ $returnsDue ?? 0 }}</h3>
+                                <h3 class="mb-0" style="color: #FFD700;">{{ $returnsDue ?? 0 }}</h3>
                             </div>
                         </div>
                         <div class="col-md-2 col-6 mb-2">
                             <div class="border rounded p-2 bg-light">
                                 <h6 class="text-muted mb-0">Submitted</h6>
-                                <h3 class="text-info mb-0">{{ $submittedCount ?? 0 }}</h3>
+                                <h3 class="mb-0" style="color: #17a2b8;">{{ $submittedCount ?? 0 }}</h3>
                             </div>
                         </div>
                         <div class="col-md-2 col-6 mb-2">
                             <div class="border rounded p-2 bg-light">
                                 <h6 class="text-muted mb-0">Approved by CAK</h6>
-                                <h3 class="text-success mb-0">{{ $approvedCount ?? 0 }}</h3>
+                                <h3 class="mb-0" style="color: #009639;">{{ $approvedCount ?? 0 }}</h3>
                             </div>
                         </div>
                         <div class="col-md-2 col-6 mb-2">
                             <div class="border rounded p-2 bg-light">
                                 <h6 class="text-muted mb-0">Non-Compliant</h6>
-                                <h3 class="text-danger mb-0">{{ $nonCompliantCount ?? 0 }}</h3>
+                                <h3 class="mb-0" style="color: #dc3545;">{{ $nonCompliantCount ?? 0 }}</h3>
                             </div>
                         </div>
                         <div class="col-md-2 col-6 mb-2">
                             <div class="border rounded p-2 bg-light">
                                 <h6 class="text-muted mb-0">Compliance Rate</h6>
-                                <h3 class="text-primary mb-0">{{ $overallComplianceRate ?? 0 }}%</h3>
+                                <h3 class="mb-0" style="color: #0066B3;">{{ $overallComplianceRate ?? 0 }}%</h3>
                             </div>
                         </div>
                     </div>
@@ -192,7 +192,7 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
-                    <strong><i class="fas fa-tasks me-1"></i> Return Status Workflow (CAK Compliance)</strong>
+                    <strong><i class="fas fa-tasks me-1" style="color: #0066B3;"></i> Return Status Workflow (CAK Compliance)</strong>
                     <small class="text-muted ms-2">Submission → Validation → Approval</small>
                 </div>
                 <div class="card-body">
@@ -208,9 +208,9 @@
                             <i class="fas fa-arrow-right fa-2x text-muted"></i>
                         </div>
                         <div class="text-center p-2 flex-grow-1">
-                            <i class="fas fa-file-pdf fa-2x text-warning"></i>
+                            <i class="fas fa-file-pdf fa-2x" style="color: #FFD700;"></i>
                             <div class="mt-1">
-                                <span class="badge bg-warning">{{ $generatedCount ?? 0 }}</span>
+                                <span class="badge" style="background: #FFD700; color: #003f20;">{{ $generatedCount ?? 0 }}</span>
                                 <div><small>Generated (PDF)</small></div>
                             </div>
                         </div>
@@ -218,7 +218,7 @@
                             <i class="fas fa-arrow-right fa-2x text-muted"></i>
                         </div>
                         <div class="text-center p-2 flex-grow-1">
-                            <i class="fas fa-paper-plane fa-2x text-info"></i>
+                            <i class="fas fa-paper-plane fa-2x" style="color: #17a2b8;"></i>
                             <div class="mt-1">
                                 <span class="badge bg-info">{{ $submittedCount ?? 0 }}</span>
                                 <div><small>Submitted</small></div>
@@ -228,9 +228,9 @@
                             <i class="fas fa-arrow-right fa-2x text-muted"></i>
                         </div>
                         <div class="text-center p-2 flex-grow-1">
-                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                            <i class="fas fa-check-circle fa-2x" style="color: #009639;"></i>
                             <div class="mt-1">
-                                <span class="badge bg-success">{{ $approvedCount ?? 0 }}</span>
+                                <span class="badge" style="background: #009639;">{{ $approvedCount ?? 0 }}</span>
                                 <div><small>CAK Approved</small></div>
                             </div>
                         </div>
@@ -244,11 +244,11 @@
     <div class="card shadow-sm">
         <div class="card-header bg-light d-flex justify-content-between align-items-center">
             <div>
-                <strong><i class="fas fa-history me-1"></i> Recent CAK Compliance Returns</strong>
+                <strong><i class="fas fa-history me-1" style="color: #0066B3;"></i> Recent CAK Compliance Returns</strong>
                 <small class="text-muted ms-2">Last 30 days activity</small>
             </div>
             <div>
-                <span class="badge bg-info">CAK Format v2.1</span>
+                <span class="badge" style="background: #0066B3;">CAK Format v2.1</span>
             </div>
         </div>
 
@@ -273,10 +273,10 @@
                         <tr>
                             <td>
                                 <span class="badge
-                                    @if($item['type'] === 'ASP') bg-primary
-                                    @elseif($item['type'] === 'CSP') bg-success
-                                    @else bg-warning text-dark
-                                    @endif">
+                                    @if($item['type'] === 'ASP')" style="background: #0066B3;"
+                                    @elseif($item['type'] === 'CSP')" style="background: #009639;"
+                                    @else" style="background: #FFD700; color: #003f20;"
+                                    @endif>
                                     <i class="fas
                                         @if($item['type'] === 'ASP') fa-server
                                         @elseif($item['type'] === 'CSP') fa-envelope
@@ -294,11 +294,11 @@
                             <td>
                                 <span class="badge
                                     @if($item['record']->cak_status === 'draft') bg-secondary
-                                    @elseif($item['record']->cak_status === 'generated') bg-dark
-                                    @elseif($item['record']->cak_status === 'submitted') bg-warning
+                                    @elseif($item['record']->cak_status === 'generated')" style="background: #FFD700; color: #003f20;"
+                                    @elseif($item['record']->cak_status === 'submitted') bg-kp-yellow
                                     @elseif($item['record']->cak_status === 'submitted_to_cak') bg-info
-                                    @elseif($item['record']->cak_status === 'under_review') bg-primary
-                                    @elseif($item['record']->cak_status === 'approved') bg-success
+                                    @elseif($item['record']->cak_status === 'under_review')" style="background: #0066B3;"
+                                    @elseif($item['record']->cak_status === 'approved')" style="background: #009639;"
                                     @elseif($item['record']->cak_status === 'rejected') bg-danger
                                     @else bg-secondary
                                     @endif">
@@ -336,7 +336,7 @@
 
                                     @if(($item['record']->cak_status ?? $item['record']->status ?? '') === 'submitted')
                                         <button type="button"
-                                                class="btn btn-outline-primary"
+                                                class="btn btn-outline-kp-primary"
                                                 onclick="submitToCAK({{ $item['record']->id }}, '{{ $item['type'] }}')"
                                                 title="Submit to CAK">
                                             <i class="fas fa-paper-plane"></i>
@@ -345,37 +345,37 @@
 
                                     @if(($item['record']->cak_status ?? $item['record']->status ?? '') === 'submitted_to_cak')
                                         <button type="button"
-                                                class="btn btn-outline-success"
+                                                class="btn btn-outline-kp-success"
                                                 onclick="checkCAKStatus({{ $item['record']->id }}, '{{ $item['type'] }}')"
                                                 title="Check CAK Status">
                                             <i class="fas fa-sync-alt"></i>
                                         </button>
                                     @endif
                                 </div>
-                            </td>
-                        </tr>
+                             </td>
+                         </tr>
                     @empty
-                        <tr>
+                         <tr>
                             <td colspan="9" class="text-center text-muted py-4">
                                 <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
                                 No compliance returns found. Click "New Return" to begin.
                             </td>
-                        </tr>
+                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
         <div class="card-footer bg-light">
-    <div class="d-flex justify-content-between align-items-center">
-        <small class="text-muted">
-            <i class="fas fa-gavel me-1"></i> CAK Compliance Regulation 2023 — Section 42 (Return Filings)
-        </small>
-        <button onclick="window.print()" class="btn btn-link btn-sm">
-            <i class="fas fa-print me-1"></i> Print Dashboard
-        </button>
-    </div>
-</div>
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    <i class="fas fa-gavel me-1"></i> CAK Compliance Regulation 2023 — Section 42 (Return Filings)
+                </small>
+                <button onclick="window.print()" class="btn btn-link btn-sm" style="color: #0066B3;">
+                    <i class="fas fa-print me-1"></i> Print Dashboard
+                </button>
+            </div>
+        </div>
     </div>
 
 </div>

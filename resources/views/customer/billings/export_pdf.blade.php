@@ -11,8 +11,8 @@
         td { padding: 6px; border-bottom: 1px solid #ddd; }
         .text-end { text-align: right; }
         .badge { display: inline-block; padding: 3px 6px; border-radius: 3px; }
-        .bg-success { background-color: #1cc88a; color: white; }
-        .bg-warning { background-color: #f6c23e; color: white; }
+        .bg-kp-green { background-color: #1cc88a; color: white; }
+        .bg-kp-yellow { background-color: #f6c23e; color: white; }
         .bg-danger { background-color: #e74a3b; color: white; }
         .footer { margin-top: 30px; padding-top: 10px; border-top: 1px solid #ddd; text-align: center; color: #6c757d; }
     </style>

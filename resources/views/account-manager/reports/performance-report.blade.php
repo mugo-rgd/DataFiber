@@ -57,7 +57,7 @@
                         <input type="hidden" name="accountManager" value="{{ auth()->id() }}">
                         @endif
                         <div class="col-md-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-kp-primary w-100">
                                 <i class="fas fa-filter"></i> Apply Filters
                             </button>
                         </div>
@@ -77,14 +77,14 @@
                             <p class="text-truncate font-size-14 mb-2">Total Revenue</p>
                             <h4 class="mb-2">${{ number_format($performanceData['totalRevenue'], 2) }}</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['totalRevenue'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['totalRevenue'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['totalRevenue'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['totalRevenue'] ?? 0) }}%
                                 </span>
                                 from previous period
                             </p>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-light text-primary rounded-3">
+                            <span class="avatar-title bg-light text-kp-blue rounded-3">
                                 <i class="fas fa-dollar-sign font-size-24"></i>
                             </span>
                         </div>
@@ -101,14 +101,14 @@
                             <p class="text-truncate font-size-14 mb-2">New Customers</p>
                             <h4 class="mb-2">{{ $performanceData['newCustomers'] }}</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['newCustomers'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['newCustomers'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['newCustomers'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['newCustomers'] ?? 0) }}%
                                 </span>
                                 from previous period
                             </p>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-light text-success rounded-3">
+                            <span class="avatar-title bg-light text-kp-green rounded-3">
                                 <i class="fas fa-user-plus font-size-24"></i>
                             </span>
                         </div>
@@ -125,14 +125,14 @@
                             <p class="text-truncate font-size-14 mb-2">Average Deal Size</p>
                             <h4 class="mb-2">${{ number_format($performanceData['averageDealSize'], 2) }}</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['averageDealSize'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['averageDealSize'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['averageDealSize'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['averageDealSize'] ?? 0) }}%
                                 </span>
                                 from previous period
                             </p>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-light text-warning rounded-3">
+                            <span class="avatar-title bg-light text-kp-yellow rounded-3">
                                 <i class="fas fa-chart-pie font-size-24"></i>
                             </span>
                         </div>
@@ -149,7 +149,7 @@
                             <p class="text-truncate font-size-14 mb-2">Conversion Rate</p>
                             <h4 class="mb-2">{{ number_format($performanceData['conversionRate'], 2) }}%</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['conversionRate'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['conversionRate'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['conversionRate'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['conversionRate'] ?? 0) }}%
                                 </span>
                                 from previous period
@@ -176,14 +176,14 @@
                             <p class="text-truncate font-size-14 mb-2">Collection Rate</p>
                             <h4 class="mb-2">{{ number_format($performanceData['collectionRate'], 2) }}%</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['collectionRate'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['collectionRate'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['collectionRate'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['collectionRate'] ?? 0) }}%
                                 </span>
                                 from previous period
                             </p>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-light text-success rounded-3">
+                            <span class="avatar-title bg-light text-kp-green rounded-3">
                                 <i class="fas fa-credit-card font-size-24"></i>
                             </span>
                         </div>
@@ -200,14 +200,14 @@
                             <p class="text-truncate font-size-14 mb-2">Active Leases</p>
                             <h4 class="mb-2">{{ $performanceData['activeLeases'] }}</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['activeLeases'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['activeLeases'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['activeLeases'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['activeLeases'] ?? 0) }}%
                                 </span>
                                 from previous period
                             </p>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-light text-primary rounded-3">
+                            <span class="avatar-title bg-light text-kp-blue rounded-3">
                                 <i class="fas fa-network-wired font-size-24"></i>
                             </span>
                         </div>
@@ -224,14 +224,14 @@
                             <p class="text-truncate font-size-14 mb-2">New Leases</p>
                             <h4 class="mb-2">{{ $performanceData['newLeases'] }}</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['newLeases'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['newLeases'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['newLeases'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['newLeases'] ?? 0) }}%
                                 </span>
                                 from previous period
                             </p>
                         </div>
                         <div class="avatar-sm">
-                            <span class="avatar-title bg-light text-warning rounded-3">
+                            <span class="avatar-title bg-light text-kp-yellow rounded-3">
                                 <i class="fas fa-file-contract font-size-24"></i>
                             </span>
                         </div>
@@ -248,7 +248,7 @@
                             <p class="text-truncate font-size-14 mb-2">Resolved Tickets</p>
                             <h4 class="mb-2">{{ $performanceData['resolvedTickets'] }}</h4>
                             <p class="text-muted mb-0">
-                                <span class="{{ ($growthMetrics['resolvedTickets'] ?? 0) >= 0 ? 'text-success' : 'text-danger' }} me-2">
+                                <span class="{{ ($growthMetrics['resolvedTickets'] ?? 0) >= 0 ? 'text-kp-green' : 'text-danger' }} me-2">
                                     <i class="fas fa-arrow-{{ ($growthMetrics['resolvedTickets'] ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>{{ abs($growthMetrics['resolvedTickets'] ?? 0) }}%
                                 </span>
                                 from previous period

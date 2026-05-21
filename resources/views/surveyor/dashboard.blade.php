@@ -11,7 +11,7 @@
             <span class="badge badge-success badge-pill p-2 mr-3">
                 <i class="fas fa-user-check"></i> Surveyor
             </span>
-            <a href="{{ route('surveyor.assignments.index') }}" class="btn btn-primary shadow-sm">
+            <a href="{{ route('surveyor.assignments.index') }}" class="btn btn-kp-primary shadow-sm">
                 <i class="fas fa-tasks fa-sm text-white-50"></i> My Assignments
             </a>
         </div>
@@ -33,7 +33,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Welcome, {{ Auth::user()->name }}!
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
@@ -57,7 +57,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
                                 Pending Assignments
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingAssignments }}</div>
@@ -95,7 +95,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Completed (This Week)
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $completedThisWeek }}</div>
@@ -114,7 +114,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Assignments
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $assignedDesignRequests->count() }}</div>
@@ -133,8 +133,8 @@
         <div class="col-lg-8 mb-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Recent Design Requests</h6>
-                    <a href="{{ route('surveyor.assignments.index') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Recent Design Requests</h6>
+                    <a href="{{ route('surveyor.assignments.index') }}" class="btn btn-sm btn-outline-kp-primary">View All</a>
                 </div>
                 <div class="card-body">
                     @if($recentAssignments->count() > 0)
@@ -176,7 +176,7 @@
                                         </td>
                                         <td>
                                             <a href="{{ route('surveyor.assignments.show', $designRequest->id) }}"
-                                               class="btn btn-sm btn-outline-primary">
+                                               class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i> View
                                             </a>
                                         </td>
@@ -200,7 +200,7 @@
         <div class="col-lg-4 mb-4">
             <div class="card shadow">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Quick Actions</h6>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -210,11 +210,11 @@
 
                         @if($recentAssignments->count() > 0)
                         <a href="{{ route('surveyor.assignments.show', $recentAssignments->first()->id) }}"
-                           class="btn btn-success btn-block">
+                           class="btn btn-kp-success btn-block">
                             <i class="fas fa-file-alt fa-fw"></i> Work on Latest
                         </a>
                         @else
-                        <button class="btn btn-success btn-block" disabled>
+                        <button class="btn btn-kp-success btn-block" disabled>
                             <i class="fas fa-file-alt fa-fw"></i> Work on Latest
                         </button>
                         @endif
@@ -233,7 +233,7 @@
         <div class="col-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Upcoming Survey Deadlines</h6>
+                    <h6 class="m-0 font-weight-bold text-kp-blue">Upcoming Survey Deadlines</h6>
                 </div>
                 <div class="card-body">
                     @if($upcomingDeadlines->count() > 0)

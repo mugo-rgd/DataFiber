@@ -19,7 +19,7 @@ function pdfIcon($class) {
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-chart-bar text-primary me-2"></i>Summary Report
+                <i class="fas fa-chart-bar text-kp-blue me-2"></i>Summary Report
             </h1>
             <p class="mb-0 text-muted">Comprehensive overview of fibre network performance</p>
         </div>
@@ -44,7 +44,7 @@ function pdfIcon($class) {
     <div class="container-fluid px-4 py-3">
         <div class="row g-3">
             <div class="col-md-3">
-                <div class="card bg-primary text-white">
+                <div class="card bg-kp-blue text-white">
                     <div class="card-body">
                         <h6>Total Contracts</h6>
                         <h2>{{ number_format($summary['total_contracts']) }}</h2>
@@ -54,7 +54,7 @@ function pdfIcon($class) {
             </div>
 
             <div class="col-md-3">
-                <div class="card bg-success text-white">
+                <div class="card bg-kp-green text-white">
                     <div class="card-body">
                         <h6>Monthly Revenue</h6>
                         <h5>${{ number_format($summary['total_monthly_value_usd'], 2) }}</h5>
@@ -64,7 +64,7 @@ function pdfIcon($class) {
             </div>
 
             <div class="col-md-3">
-                <div class="card bg-warning text-white">
+                <div class="card bg-kp-yellow text-white">
                     <div class="card-body">
                         <h6>Total Contract Value</h6>
                         <h5>${{ number_format($summary['total_contract_value_usd'], 2) }}</h5>
@@ -95,7 +95,7 @@ function pdfIcon($class) {
                 <!-- Link Class Distribution -->
                 <div class="card shadow-sm mb-3">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0">{!! pdfIcon('fas fa-chart-pie text-primary me-2') !!}Link Class Distribution</h5>
+                        <h5 class="mb-0">{!! pdfIcon('fas fa-chart-pie text-kp-blue me-2') !!}Link Class Distribution</h5>
                     </div>
                     <div class="card-body">
                         @if($isPdf)
@@ -166,7 +166,7 @@ function pdfIcon($class) {
                 <!-- Top Customers -->
                 <div class="card shadow-sm mb-3">
                     <div class="card-header bg-white">
-                        <h5 class="mb-0">{!! pdfIcon('fas fa-crown text-warning me-2') !!}Top 10 Customers</h5>
+                        <h5 class="mb-0">{!! pdfIcon('fas fa-crown text-kp-yellow me-2') !!}Top 10 Customers</h5>
                     </div>
                     <div class="card-body">
                         <table class="table table-hover">

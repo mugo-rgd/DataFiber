@@ -12,7 +12,7 @@
                         <i class="fas fa-toolbox me-2"></i>Maintenance Equipment
                     </h5>
                     @can('manage-equipment')
-                        <a href="{{ route('maintenance.equipment.create') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ route('maintenance.equipment.create') }}" class="btn btn-kp-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Add Equipment
                         </a>
                     @endcan
@@ -91,9 +91,9 @@
                                                     @if($item->next_calibration->isPast())
                                                         <span class="badge bg-danger">Overdue</span>
                                                     @elseif($item->next_calibration->diffInDays(now()) <= 30)
-                                                        <span class="badge bg-warning">Due Soon</span>
+                                                        <span class="badge bg-kp-yellow">Due Soon</span>
                                                     @else
-                                                        <span class="badge bg-success">On Schedule</span>
+                                                        <span class="badge bg-kp-green">On Schedule</span>
                                                     @endif
                                                     <br>
                                                     <small>{{ $item->next_calibration->format('M j, Y') }}</small>
@@ -103,7 +103,7 @@
                                             </td>
                                             <td>
                                                 <div class="btn-group btn-group-sm">
-                                                    <a href="{{ route('maintenance.equipment.show', $item->id) }}" class="btn btn-outline-primary">
+                                                    <a href="{{ route('maintenance.equipment.show', $item->id) }}" class="btn btn-outline-kp-primary">
                                                         <i class="fas fa-eye"></i>
                                                     </a>
                                                     @can('manage-equipment')
@@ -138,7 +138,7 @@
                                 @endif
                             </p>
                             @can('manage-equipment')
-                                <a href="{{ route('maintenance.equipment.create') }}" class="btn btn-primary">
+                                <a href="{{ route('maintenance.equipment.create') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-plus me-1"></i>Add First Equipment
                                 </a>
                             @endcan

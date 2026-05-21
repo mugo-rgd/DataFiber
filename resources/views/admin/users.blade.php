@@ -7,12 +7,12 @@
     <!-- Header with Create Button -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2 text-primary">
+            <h1 class="h2 text-kp-blue">
                 <i class="fas fa-users me-2"></i>Users Management
             </h1>
             <p class="text-muted mb-0">Manage system users and their roles</p>
         </div>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
+        <button type="button" class="btn btn-kp-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
             <i class="fas fa-plus me-2"></i>Create New User
         </button>
     </div>
@@ -42,7 +42,7 @@
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="submit" class="btn btn-kp-primary">Filter</button>
                         <a href="{{ route('admin.users') }}" class="btn btn-secondary">Reset</a>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
     <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
+            <div class="card bg-kp-blue text-white mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
+            <div class="card bg-kp-green text-white mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -83,7 +83,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
+            <div class="card bg-kp-yellow text-white mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
@@ -162,13 +162,13 @@
                                 <td>{{ $user->created_at->format('M d, Y') }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-outline-primary" data-bs-toggle="tooltip" title="Edit User">
+                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-outline-kp-primary" data-bs-toggle="tooltip" title="Edit User">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <form method="POST" action="{{ url('/user/'.$user->id.'/assign-role/admin') }}" style="display: inline;">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-outline-success" data-bs-toggle="tooltip" title="Make Admin" onclick="return confirm('Are you sure you want to make this user an admin?')">
+                                            <button type="submit" class="btn btn-outline-kp-success" data-bs-toggle="tooltip" title="Make Admin" onclick="return confirm('Are you sure you want to make this user an admin?')">
                                                 <i class="fas fa-user-shield"></i>
                                             </button>
                                         </form>
@@ -206,7 +206,7 @@
                     </div>
                     <h4 class="text-muted">No Users Found</h4>
                     <p class="text-muted">Get started by creating your first user.</p>
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                    <button type="button" class="btn btn-kp-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
                         <i class="fas fa-plus me-2"></i>Create First User
                     </button>
                 </div>
@@ -219,7 +219,7 @@
 <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title" id="createUserModalLabel">
                     <i class="fas fa-user-plus me-2"></i>Create New User
                 </h5>
@@ -231,7 +231,7 @@
                     <div class="row">
                         <!-- Basic Information -->
                         <div class="col-md-6">
-                            <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
+                            <h6 class="text-kp-blue mb-3"><i class="fas fa-info-circle me-2"></i>Basic Information</h6>
 
                             <div class="form-group mb-3">
                                 <label for="name" class="required">Full Name</label>
@@ -276,7 +276,7 @@
 
                         <!-- Account Settings -->
                         <div class="col-md-6">
-                            <h6 class="text-primary mb-3"><i class="fas fa-cog me-2"></i>Account Settings</h6>
+                            <h6 class="text-kp-blue mb-3"><i class="fas fa-cog me-2"></i>Account Settings</h6>
 
                             <div class="form-group mb-3">
                                 <label for="role" class="required">Role</label>
@@ -383,7 +383,7 @@
                     <!-- Customer Specific Fields -->
                     <div id="customerFields" style="display: none;">
                         <hr>
-                        <h6 class="text-primary mb-3"><i class="fas fa-file-contract me-2"></i>Customer Information</h6>
+                        <h6 class="text-kp-blue mb-3"><i class="fas fa-file-contract me-2"></i>Customer Information</h6>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group mb-3">
@@ -517,7 +517,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-kp-primary">
                         <i class="fas fa-save me-1"></i>Create User
                     </button>
                 </div>

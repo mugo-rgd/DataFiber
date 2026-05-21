@@ -14,7 +14,7 @@
                     <a href="{{ route('customer.documents.index') }}" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-arrow-left me-2"></i>Back to Documents
                     </a>
-                    <a href="{{ route('customer.documents.download', $document) }}" class="btn btn-success">
+                    <a href="{{ route('customer.documents.download', $document) }}" class="btn btn-kp-success">
                         <i class="fas fa-download me-2"></i>Download
                     </a>
                 </div>
@@ -24,7 +24,7 @@
                 <!-- Document Information -->
                 <div class="col-md-8">
                     <div class="card shadow mb-4">
-                        <div class="card-header bg-primary text-white py-3">
+                        <div class="card-header bg-kp-blue text-white py-3">
                             <h5 class="mb-0">
                                 <i class="fas fa-info-circle me-2"></i>Document Information
                             </h5>
@@ -108,11 +108,11 @@
                                     </a>
                                 </div>
                             @else
-                                <div class="alert alert-warning">
-                                    <i class="fas fa-file fa-3x text-warning mb-3"></i>
+                                <div class="alert alert-kp-warning">
+                                    <i class="fas fa-file fa-3x text-kp-yellow mb-3"></i>
                                     <h5>Document File</h5>
                                     <p class="mb-3">This document type cannot be previewed in the browser.</p>
-                                    <a href="{{ route('customer.documents.download', $document) }}" class="btn btn-warning">
+                                    <a href="{{ route('customer.documents.download', $document) }}" class="btn btn-kp-warning">
                                         <i class="fas fa-download me-2"></i>Download File
                                     </a>
                                 </div>
@@ -132,7 +132,7 @@
                         <div class="card-body">
                             <div class="d-grid gap-2">
                                 <a href="{{ route('customer.documents.download', $document) }}"
-                                   class="btn btn-success mb-2">
+                                   class="btn btn-kp-success mb-2">
                                     <i class="fas fa-download me-2"></i>Download Document
                                 </a>
 
@@ -164,13 +164,13 @@
                         </div>
                         <div class="card-body">
                             @if($document->status === 'pending_review')
-                                <div class="alert alert-warning">
+                                <div class="alert alert-kp-warning">
                                     <i class="fas fa-clock me-2"></i>
                                     <strong>Pending Review</strong>
                                     <p class="mb-0 mt-2">Your document is awaiting review by our team. You will be notified once it's processed.</p>
                                 </div>
                             @elseif($document->status === 'approved')
-                                <div class="alert alert-success">
+                                <div class="alert alert-kp-success">
                                     <i class="fas fa-check-circle me-2"></i>
                                     <strong>Approved</strong>
                                     @if($document->approved_at)

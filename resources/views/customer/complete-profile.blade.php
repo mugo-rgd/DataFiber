@@ -7,8 +7,8 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10">
-            <div class="card border-warning shadow-lg">
-                <div class="card-header bg-warning text-white">
+            <div class="card border-kp-yellow shadow-lg">
+                <div class="card-header bg-kp-yellow text-white">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
                         <div>
@@ -25,7 +25,7 @@
                     </div>
 
                     @if(session('success'))
-                        <div class="alert alert-success">
+                        <div class="alert alert-kp-success">
                             {{ session('success') }}
                         </div>
                     @endif
@@ -50,14 +50,14 @@
                                 <small class="text-muted">Company Details</small>
                             </div>
                             <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-warning" style="width: 25%"></div>
+                                <div class="progress-bar bg-kp-yellow" style="width: 25%"></div>
                             </div>
                         </div>
 
                         <!-- Company Information -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2 text-primary">
+                                <h5 class="border-bottom pb-2 text-kp-blue">
                                     <i class="fas fa-building me-2"></i>Company Information
                                 </h5>
                                 <p class="text-muted mb-3">Basic details about your company</p>
@@ -117,7 +117,7 @@
                         <!-- Contact Persons -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2 text-primary">
+                                <h5 class="border-bottom pb-2 text-kp-blue">
                                     <i class="fas fa-users me-2"></i>Contact Persons
                                 </h5>
                                 <p class="text-muted mb-3">Primary and secondary contacts for your company</p>
@@ -171,7 +171,7 @@
                         <!-- Address Information -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2 text-primary">
+                                <h5 class="border-bottom pb-2 text-kp-blue">
                                     <i class="fas fa-map-marker-alt me-2"></i>Address Information
                                 </h5>
                                 <p class="text-muted mb-3">Physical and postal address details</p>
@@ -238,7 +238,7 @@
                                 <h5 class="border-bottom pb-2 text-danger">
                                     <i class="fas fa-file-pdf me-2"></i>Required Documents
                                 </h5>
-                                <div class="alert alert-warning">
+                                <div class="alert alert-kp-warning">
                                     <i class="fas fa-exclamation-triangle me-2"></i>
                                     <strong>Important:</strong> All documents must be uploaded in PDF format (max 5MB each). You cannot proceed without these documents.
                                 </div>
@@ -336,7 +336,7 @@
                         <!-- Optional Documents -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2 text-success">
+                                <h5 class="border-bottom pb-2 text-kp-green">
                                     <i class="fas fa-file-upload me-2"></i>Additional Information
                                 </h5>
                             </div>
@@ -358,7 +358,7 @@
                         <!-- Profile Photo -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="border-bottom pb-2 text-success">
+                                <h5 class="border-bottom pb-2 text-kp-green">
                                     <i class="fas fa-camera me-2"></i>Company Branding
                                 </h5>
                             </div>
@@ -402,7 +402,7 @@
                         <div class="row mt-5">
                             <div class="col-12">
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-success btn-lg py-3">
+                                    <button type="submit" class="btn btn-kp-success btn-lg py-3">
                                         <i class="fas fa-check-circle me-2"></i>Complete Profile & Continue
                                     </button>
                                 </div>

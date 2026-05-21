@@ -10,7 +10,7 @@
                 <h1 class="h3 text-gray-800">
                     <i class="fas fa-exchange-alt me-2"></i>Transactions
                 </h1>
-                <a href="{{ route('finance.transactions.create') }}" class="btn btn-primary">
+                <a href="{{ route('finance.transactions.create') }}" class="btn btn-kp-primary">
                     <i class="fas fa-plus me-2"></i>New Transaction
                 </a>
             </div>
@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
                                 Total Transactions</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $transactions->total() }}</div>
                         </div>
@@ -41,12 +41,12 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
                                 Total Income (USD)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 ${{ number_format(\App\Models\Transaction::where('direction', 'in')->where('currency', 'USD')->sum('amount'), 2) }}
                             </div>
-                            <div class="text-xs font-weight-bold text-success mt-2">
+                            <div class="text-xs font-weight-bold text-kp-green mt-2">
                                 Total Income (KES)</div>
                             <div class="h6 mb-0 font-weight-bold text-gray-600">
                                 KES {{ number_format(\App\Models\Transaction::where('direction', 'in')->where('currency', 'KSH')->sum('amount'), 2) }}
@@ -157,7 +157,7 @@
                     <input type="date" name="end_date" class="form-control" value="{{ request('end_date') }}" placeholder="End Date">
                 </div>
                 <div class="col-md-12 mt-2">
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    <button type="submit" class="btn btn-kp-primary">Apply Filters</button>
                     <a href="{{ route('finance.transactions.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </form>
@@ -203,7 +203,7 @@
                             </td>
                             <td>
                                 @if($transaction->direction === 'in')
-                                    <span class="badge bg-success">
+                                    <span class="badge bg-kp-green">
                                         <i class="fas fa-arrow-down me-1"></i> In
                                     </span>
                                 @else
@@ -215,17 +215,17 @@
                             <td>{{ Str::limit($transaction->description, 50) }}</td>
                             <td class="fw-bold">
                                 @if($transaction->currency === 'USD')
-                                    <span class="text-primary">$</span>
+                                    <span class="text-kp-blue">$</span>
                                 @elseif($transaction->currency === 'KSH')
-                                    <span class="text-success">KSh</span>
+                                    <span class="text-kp-green">KSh</span>
                                 @endif
                                 {{ number_format($transaction->amount, 2) }}
                             </td>
                             <td>
                                 @if($transaction->currency === 'USD')
-                                    <span class="badge bg-primary">USD</span>
+                                    <span class="badge bg-kp-blue">USD</span>
                                 @elseif($transaction->currency === 'KSH')
-                                    <span class="badge bg-success">KES</span>
+                                    <span class="badge bg-kp-green">KES</span>
                                 @else
                                     <span class="badge bg-secondary">{{ $transaction->currency }}</span>
                                 @endif
@@ -253,7 +253,7 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('finance.transactions.show', $transaction->id) }}" class="btn btn-outline-primary" title="View">
+                                    <a href="{{ route('finance.transactions.show', $transaction->id) }}" class="btn btn-outline-kp-primary" title="View">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('finance.transactions.edit', $transaction->id) }}" class="btn btn-outline-info" title="Edit">
@@ -275,7 +275,7 @@
                                 <i class="fas fa-exchange-alt fa-4x text-muted mb-3"></i>
                                 <h5 class="text-muted">No transactions found</h5>
                                 <p class="text-muted mb-4">Get started by creating your first transaction.</p>
-                                <a href="{{ route('finance.transactions.create') }}" class="btn btn-primary">
+                                <a href="{{ route('finance.transactions.create') }}" class="btn btn-kp-primary">
                                     <i class="fas fa-plus me-2"></i>Create First Transaction
                                 </a>
                             </td>
@@ -305,10 +305,10 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h6 class="text-primary"><i class="fas fa-dollar-sign me-2"></i>USD Summary</h6>
+                        <h6 class="text-kp-blue"><i class="fas fa-dollar-sign me-2"></i>USD Summary</h6>
                         <div class="d-flex justify-content-between mt-2">
                             <span>Total Income:</span>
-                            <strong class="text-success">${{ number_format(\App\Models\Transaction::where('direction', 'in')->where('currency', 'USD')->sum('amount'), 2) }}</strong>
+                            <strong class="text-kp-green">${{ number_format(\App\Models\Transaction::where('direction', 'in')->where('currency', 'USD')->sum('amount'), 2) }}</strong>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Total Expenses:</span>
@@ -322,10 +322,10 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <h6 class="text-success"><i class="fas fa-money-bill-wave me-2"></i>KES Summary</h6>
+                        <h6 class="text-kp-green"><i class="fas fa-money-bill-wave me-2"></i>KES Summary</h6>
                         <div class="d-flex justify-content-between mt-2">
                             <span>Total Income:</span>
-                            <strong class="text-success">KES {{ number_format(\App\Models\Transaction::where('direction', 'in')->where('currency', 'KSH')->sum('amount'), 2) }}</strong>
+                            <strong class="text-kp-green">KES {{ number_format(\App\Models\Transaction::where('direction', 'in')->where('currency', 'KSH')->sum('amount'), 2) }}</strong>
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Total Expenses:</span>

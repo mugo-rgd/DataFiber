@@ -7,7 +7,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h3 text-gray-800">
-                <i class="fas fa-file-invoice-dollar text-success"></i> Create Quotation
+                <i class="fas fa-file-invoice-dollar text-kp-green"></i> Create Quotation
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
@@ -24,7 +24,7 @@
         <div class="col-lg-8">
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h5 class="mb-0"><i class="fas fa-receipt text-success"></i> Quotation Details</h5>
+                    <h5 class="mb-0"><i class="fas fa-receipt text-kp-green"></i> Quotation Details</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('designer.quotations.store', $designRequest) }}" method="POST">
@@ -97,7 +97,7 @@
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-kp-success">
                                 <i class="fas fa-paper-plane me-2"></i>Send Quotation
                             </button>
                             <a href="{{ route('designer.requests.show', $designRequest) }}" class="btn btn-secondary">
@@ -113,14 +113,14 @@
             <!-- Design Summary -->
             <div class="card shadow">
                 <div class="card-header bg-white py-3">
-                    <h5 class="mb-0"><i class="fas fa-drafting-compass text-primary"></i> Design Summary</h5>
+                    <h5 class="mb-0"><i class="fas fa-drafting-compass text-kp-blue"></i> Design Summary</h5>
                 </div>
                 <div class="card-body">
                     <h6>Design Specifications:</h6>
                     <p class="text-muted small">{{ Str::limit($designRequest->design_specifications, 150) }}</p>
 
                     <h6>Estimated Cost:</h6>
-                    <p class="text-success">${{ number_format($designRequest->estimated_cost, 2) }}</p>
+                    <p class="text-kp-green">${{ number_format($designRequest->estimated_cost, 2) }}</p>
 
                     <h6>Design Notes:</h6>
                     <p class="text-muted small">{{ $designRequest->design_notes ?: 'No additional notes' }}</p>

@@ -163,12 +163,12 @@
             transition: 0.2s;
         }
 
-        .btn-primary {
+        .btn-kp-primary {
             background: var(--kp-yellow);
             color: var(--kp-dark);
         }
 
-        .btn-primary:hover {
+        .btn-kp-primary:hover {
             background: #e6c300;
             transform: translateY(-2px);
         }
@@ -436,12 +436,12 @@
             justify-content: center;
         }
 
-        .btn-primary {
+        .btn-kp-primary {
             background: var(--kp-yellow);
             color: var(--kp-dark);
         }
 
-        .btn-primary:hover {
+        .btn-kp-primary:hover {
             background: #e6c300;
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
@@ -643,7 +643,7 @@
                            class="form-input" required>
                 </div>
 
-                <button class="btn btn-primary" type="submit">Reset Password</button>
+                <button class="btn btn-kp-primary" type="submit">Reset Password</button>
 
                 <a href="{{ route('login') }}" class="form-link">← Back to Login</a>
 

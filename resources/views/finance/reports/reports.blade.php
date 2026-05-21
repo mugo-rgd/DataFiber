@@ -15,7 +15,7 @@
     <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
         <i class="fas fa-print me-1"></i>Print Report
     </button>
-    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-outline-primary btn-sm">
+    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-outline-kp-primary btn-sm">
     <i class="fas fa-download me-1"></i>Export Data
 </a>
 </div>
@@ -61,7 +61,7 @@
                                            value="{{ $endDate }}" id="end_date">
                                 </div>
                                 <div class="col-md-1 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary w-100">Apply</button>
+                                    <button type="submit" class="btn btn-kp-primary w-100">Apply</button>
                                 </div>
                             </form>
                         </div>
@@ -85,11 +85,11 @@
                         <div class="row mb-4">
                             <div class="col-md-12">
                                 <h5 class="border-bottom pb-2 mb-3">
-                                    <span class="badge bg-primary me-2">KSH</span> Kenyan Shilling Summary
+                                    <span class="badge bg-kp-blue me-2">KSH</span> Kenyan Shilling Summary
                                 </h5>
                             </div>
                             <div class="col-md-3">
-                                <div class="card bg-success text-white">
+                                <div class="card bg-kp-green text-white">
                                     <div class="card-body text-center">
                                         <h6 class="card-title">Total Revenue (KSH)</h6>
                                         <h3 class="mb-0">KSH {{ number_format($reportData['total_revenue_ksh'] ?? 0, 2) }}</h3>
@@ -97,7 +97,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="card bg-warning text-white">
+                                <div class="card bg-kp-yellow text-white">
                                     <div class="card-body text-center">
                                         <h6 class="card-title">Pending Invoices (KSH)</h6>
                                         <h3 class="mb-0">{{ $reportData['pending_invoices_ksh'] ?? 0 }}</h3>
@@ -139,7 +139,7 @@
                                 </h5>
                             </div>
                             <div class="col-md-3">
-                                <div class="card bg-success text-white">
+                                <div class="card bg-kp-green text-white">
                                     <div class="card-body text-center">
                                         <h6 class="card-title">Total Revenue (USD)</h6>
                                         <h3 class="mb-0">$ {{ number_format($reportData['total_revenue_usd'] ?? 0, 2) }}</h3>
@@ -147,7 +147,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="card bg-warning text-white">
+                                <div class="card bg-kp-yellow text-white">
                                     <div class="card-body text-center">
                                         <h6 class="card-title">Pending Invoices (USD)</h6>
                                         <h3 class="mb-0">{{ $reportData['pending_invoices_usd'] ?? 0 }}</h3>
@@ -295,7 +295,7 @@
                                                         $trendRevenue = $trend->monthly_revenue ?? 0;
                                                         $width = $maxRevenueKsh > 0 ? ($trendRevenue / $maxRevenueKsh) * 100 : 0;
                                                     @endphp
-                                                    <div class="progress-bar bg-success" style="width: {{ $width }}%"></div>
+                                                    <div class="progress-bar bg-kp-green" style="width: {{ $width }}%"></div>
                                                 </div>
                                             </div>
                                         @empty
@@ -323,7 +323,7 @@
                                                         $trendRevenue = $trend->monthly_revenue ?? 0;
                                                         $width = $maxRevenueUsd > 0 ? ($trendRevenue / $maxRevenueUsd) * 100 : 0;
                                                     @endphp
-                                                    <div class="progress-bar bg-success" style="width: {{ $width }}%"></div>
+                                                    <div class="progress-bar bg-kp-green" style="width: {{ $width }}%"></div>
                                                 </div>
                                             </div>
                                         @empty
@@ -504,7 +504,7 @@
                                                             <td>{{ $invoice->customer_name }}</td>
                                                             <td>KSH {{ number_format($invoice->total_amount, 2) }}</td>
                                                             <td>{{ \Carbon\Carbon::parse($invoice->due_date)->format('M j, Y') }}</td>
-                                                            <td><span class="badge bg-warning">{{ $invoice->days_until_due }} days</span></td>
+                                                            <td><span class="badge bg-kp-yellow">{{ $invoice->days_until_due }} days</span></td>
                                                         </tr>
                                                     @empty
                                                         <tr>
@@ -541,7 +541,7 @@
                                                             <td>{{ $invoice->customer_name }}</td>
                                                             <td>$ {{ number_format($invoice->total_amount, 2) }}</td>
                                                             <td>{{ \Carbon\Carbon::parse($invoice->due_date)->format('M j, Y') }}</td>
-                                                            <td><span class="badge bg-warning">{{ $invoice->days_until_due }} days</span></td>
+                                                            <td><span class="badge bg-kp-yellow">{{ $invoice->days_until_due }} days</span></td>
                                                         </tr>
                                                     @empty
                                                         <tr>
@@ -578,7 +578,7 @@
                                                         $customerRevenueKsh = $customer->revenue ?? 0;
                                                         $width = $maxRevenueKsh > 0 ? ($customerRevenueKsh / $maxRevenueKsh) * 100 : 0;
                                                     @endphp
-                                                    <div class="progress-bar bg-primary" style="width: {{ $width }}%"></div>
+                                                    <div class="progress-bar bg-kp-blue" style="width: {{ $width }}%"></div>
                                                 </div>
                                                 <small class="text-muted">{{ $customer->invoice_count ?? 0 }} invoices</small>
                                             </div>
@@ -607,7 +607,7 @@
                                                         $customerRevenueUsd = $customer->revenue ?? 0;
                                                         $width = $maxRevenueUsd > 0 ? ($customerRevenueUsd / $maxRevenueUsd) * 100 : 0;
                                                     @endphp
-                                                    <div class="progress-bar bg-primary" style="width: {{ $width }}%"></div>
+                                                    <div class="progress-bar bg-kp-blue" style="width: {{ $width }}%"></div>
                                                 </div>
                                                 <small class="text-muted">{{ $customer->invoice_count ?? 0 }} invoices</small>
                                             </div>
@@ -686,8 +686,8 @@
                                                 <tr>
                                                     <td>{{ $billing->customer_name ?? 'Unknown' }}</td>
                                                     <td>{{ $billing->total_billings ?? 0 }}</td>
-                                                    <td class="text-success">KSH {{ number_format($billing->paid_amount ?? 0, 2) }}</td>
-                                                    <td class="text-warning">KSH {{ number_format($billing->pending_amount ?? 0, 2) }}</td>
+                                                    <td class="text-kp-green">KSH {{ number_format($billing->paid_amount ?? 0, 2) }}</td>
+                                                    <td class="text-kp-yellow">KSH {{ number_format($billing->pending_amount ?? 0, 2) }}</td>
                                                     <td class="text-danger">KSH {{ number_format($billing->overdue_amount ?? 0, 2) }}</td>
                                                     <td class="fw-bold">
                                                         KSH {{ number_format(($billing->paid_amount ?? 0) + ($billing->pending_amount ?? 0) + ($billing->overdue_amount ?? 0), 2) }}
@@ -726,8 +726,8 @@
                                                 <tr>
                                                     <td>{{ $billing->customer_name ?? 'Unknown' }}</td>
                                                     <td>{{ $billing->total_billings ?? 0 }}</td>
-                                                    <td class="text-success">$ {{ number_format($billing->paid_amount ?? 0, 2) }}</td>
-                                                    <td class="text-warning">$ {{ number_format($billing->pending_amount ?? 0, 2) }}</td>
+                                                    <td class="text-kp-green">$ {{ number_format($billing->paid_amount ?? 0, 2) }}</td>
+                                                    <td class="text-kp-yellow">$ {{ number_format($billing->pending_amount ?? 0, 2) }}</td>
                                                     <td class="text-danger">$ {{ number_format($billing->overdue_amount ?? 0, 2) }}</td>
                                                     <td class="fw-bold">
                                                         $ {{ number_format(($billing->paid_amount ?? 0) + ($billing->pending_amount ?? 0) + ($billing->overdue_amount ?? 0), 2) }}
@@ -760,7 +760,7 @@
                 <i class="fas fa-chart-pie me-2"></i>
                 Accounts Receivable Aging Report - KSH
                 @if($kshAgingData->count() > 0)
-                    <span class="badge bg-primary ms-2">{{ $kshAgingData->count() }} customers</span>
+                    <span class="badge bg-kp-blue ms-2">{{ $kshAgingData->count() }} customers</span>
                 @endif
             </h6>
         </div>
@@ -803,19 +803,19 @@
                                         <br><small class="text-muted">Total: {{ number_format($total, 2) }}</small>
                                     @endif
                                 </td>
-                                <td class="text-end {{ $current > 0 ? 'text-success fw-bold' : 'text-secondary' }}">
+                                <td class="text-end {{ $current > 0 ? 'text-kp-green fw-bold' : 'text-secondary' }}">
                                     {{ number_format($current, 2) }}
                                 </td>
-                                <td class="text-end {{ $days30 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                <td class="text-end {{ $days30 > 0 ? 'text-kp-yellow fw-bold' : 'text-secondary' }}">
                                     {{ number_format($days30, 2) }}
                                 </td>
-                                <td class="text-end {{ $days60 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                <td class="text-end {{ $days60 > 0 ? 'text-kp-yellow fw-bold' : 'text-secondary' }}">
                                     {{ number_format($days60, 2) }}
                                 </td>
                                 <td class="text-end {{ $days90Plus > 0 ? 'text-danger fw-bold' : 'text-secondary' }}">
                                     {{ number_format($days90Plus, 2) }}
                                 </td>
-                                <td class="text-end fw-bold text-primary">
+                                <td class="text-end fw-bold text-kp-blue">
                                     {{ number_format($total, 2) }}
                                 </td>
                             </tr>
@@ -844,7 +844,7 @@
                             <td class="text-end bg-light">{{ number_format($kshAgingData->sum(function($item) {
                                 return is_object($item) ? ($item->days_90_plus ?? 0) : ($item['days_90_plus'] ?? 0);
                             }), 2) }}</td>
-                            <td class="text-end bg-light text-primary fw-bold">
+                            <td class="text-end bg-light text-kp-blue fw-bold">
                                 {{ number_format(
                                     $kshAgingData->sum(function($item) { return is_object($item) ? ($item->current ?? 0) : ($item['current'] ?? 0); }) +
                                     $kshAgingData->sum(function($item) { return is_object($item) ? ($item->days_30 ?? 0) : ($item['days_30'] ?? 0); }) +
@@ -867,7 +867,7 @@
                 <i class="fas fa-chart-pie me-2"></i>
                 Accounts Receivable Aging Report - USD
                 @if($usdAgingData->count() > 0)
-                    <span class="badge bg-primary ms-2">{{ $usdAgingData->count() }} customers</span>
+                    <span class="badge bg-kp-blue ms-2">{{ $usdAgingData->count() }} customers</span>
                 @endif
             </h6>
         </div>
@@ -909,19 +909,19 @@
                                         <br><small class="text-muted">Total: ${{ number_format($total, 2) }}</small>
                                     @endif
                                 </td>
-                                <td class="text-end {{ $current > 0 ? 'text-success fw-bold' : 'text-secondary' }}">
+                                <td class="text-end {{ $current > 0 ? 'text-kp-green fw-bold' : 'text-secondary' }}">
                                     {{ number_format($current, 2) }}
                                 </td>
-                                <td class="text-end {{ $days30 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                <td class="text-end {{ $days30 > 0 ? 'text-kp-yellow fw-bold' : 'text-secondary' }}">
                                     {{ number_format($days30, 2) }}
                                 </td>
-                                <td class="text-end {{ $days60 > 0 ? 'text-warning fw-bold' : 'text-secondary' }}">
+                                <td class="text-end {{ $days60 > 0 ? 'text-kp-yellow fw-bold' : 'text-secondary' }}">
                                     {{ number_format($days60, 2) }}
                                 </td>
                                 <td class="text-end {{ $days90Plus > 0 ? 'text-danger fw-bold' : 'text-secondary' }}">
                                     {{ number_format($days90Plus, 2) }}
                                 </td>
-                                <td class="text-end fw-bold text-primary">
+                                <td class="text-end fw-bold text-kp-blue">
                                     {{ number_format($total, 2) }}
                                 </td>
                             </tr>
@@ -950,7 +950,7 @@
                             <td class="text-end bg-light">$ {{ number_format($usdAgingData->sum(function($item) {
                                 return is_object($item) ? ($item->days_90_plus ?? 0) : ($item['days_90_plus'] ?? 0);
                             }), 2) }}</td>
-                            <td class="text-end bg-light text-primary fw-bold">
+                            <td class="text-end bg-light text-kp-blue fw-bold">
                                 $ {{ number_format(
                                     $usdAgingData->sum(function($item) { return is_object($item) ? ($item->current ?? 0) : ($item['current'] ?? 0); }) +
                                     $usdAgingData->sum(function($item) { return is_object($item) ? ($item->days_30 ?? 0) : ($item['days_30'] ?? 0); }) +
@@ -973,11 +973,11 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <h5 class="border-bottom pb-2 mb-3">
-                <span class="badge bg-primary me-2">KSH</span> Kenyan Shilling Debt Summary
+                <span class="badge bg-kp-blue me-2">KSH</span> Kenyan Shilling Debt Summary
             </h5>
         </div>
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-kp-blue text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Total Receivables (KSH)</h6>
                     <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['total_receivables'] ?? 0, 2) }}</h3>
@@ -985,7 +985,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-kp-green text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Current (KSH)</h6>
                     <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['current'] ?? 0, 2) }}</h3>
@@ -994,7 +994,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-kp-yellow text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Overdue (KSH)</h6>
                     <h3 class="mb-0">KSH {{ number_format($reportData['debt_summary_ksh']['overdue'] ?? 0, 2) }}</h3>
@@ -1023,7 +1023,7 @@
             </h5>
         </div>
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-kp-blue text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Total Receivables (USD)</h6>
                     <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['total_receivables'] ?? 0, 2) }}</h3>
@@ -1031,7 +1031,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-kp-green text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Current (USD)</h6>
                     <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['current'] ?? 0, 2) }}</h3>
@@ -1040,7 +1040,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-kp-yellow text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Overdue (USD)</h6>
                     <h3 class="mb-0">$ {{ number_format($reportData['debt_summary_usd']['overdue'] ?? 0, 2) }}</h3>
@@ -1100,7 +1100,7 @@
                 </span>
             </td>
             <td class="text-end fw-bold">{{ $currencySymbol }}{{ number_format($debt->total_due ?? 0, 2) }}</td>
-            <td class="text-end {{ ($debt->current ?? 0) > 0 ? 'text-success fw-bold' : '' }}">
+            <td class="text-end {{ ($debt->current ?? 0) > 0 ? 'text-kp-green fw-bold' : '' }}">
                 {{ $currencySymbol }}{{ number_format($debt->current ?? 0, 2) }}
             </td>
             <td class="text-center">
@@ -1110,10 +1110,10 @@
                 <br>
                 <small class="text-muted">Due: {{ \Carbon\Carbon::parse($debt->due_date)->format('M j, Y') }}</small>
             </td>
-            <td class="text-end {{ ($debt->days_30 ?? 0) > 0 ? 'text-warning fw-bold' : '' }}">
+            <td class="text-end {{ ($debt->days_30 ?? 0) > 0 ? 'text-kp-yellow fw-bold' : '' }}">
                 {{ $currencySymbol }}{{ number_format($debt->days_30 ?? 0, 2) }}
             </td>
-            <td class="text-end {{ ($debt->days_60 ?? 0) > 0 ? 'text-warning fw-bold' : '' }}">
+            <td class="text-end {{ ($debt->days_60 ?? 0) > 0 ? 'text-kp-yellow fw-bold' : '' }}">
                 {{ $currencySymbol }}{{ number_format($debt->days_60 ?? 0, 2) }}
             </td>
             <td class="text-end {{ ($debt->days_90 ?? 0) > 0 ? 'text-danger fw-bold' : '' }}">
@@ -1126,8 +1126,8 @@
                 @php
                     $riskLevel = $debt->risk_level ?? 'low';
                     $badgeClass = [
-                        'low' => 'bg-success',
-                        'medium' => 'bg-warning text-dark',
+                        'low' => 'bg-kp-green',
+                        'medium' => 'bg-kp-yellow text-dark',
                         'high' => 'bg-danger',
                         'critical' => 'bg-dark'
                     ][$riskLevel] ?? 'bg-secondary';
@@ -1140,7 +1140,7 @@
     @empty
         <tr>
             <td colspan="10" class="text-center text-muted py-5">
-                <i class="fas fa-check-circle fa-3x mb-3 d-block text-success"></i>
+                <i class="fas fa-check-circle fa-3x mb-3 d-block text-kp-green"></i>
                 <h5>No outstanding debts</h5>
                 <p class="mb-0">All customers are current on their payments.</p>
             </td>
@@ -1179,11 +1179,11 @@
                             <div class="row mb-4">
                                 <div class="col-md-12">
                                     <h5 class="border-bottom pb-2 mb-3">
-                                        <span class="badge bg-primary me-2">KSH</span> Kenyan Shilling Tax Summary
+                                        <span class="badge bg-kp-blue me-2">KSH</span> Kenyan Shilling Tax Summary
                                     </h5>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="card bg-primary text-white">
+                                    <div class="card bg-kp-blue text-white">
                                         <div class="card-body text-center">
                                             <h6 class="card-title">Total Tax Collected (KSH)</h6>
                                             <h3 class="mb-0">KSH {{ number_format($taxSummaryKsh->total_tax ?? 0, 2) }}</h3>
@@ -1191,7 +1191,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="card bg-success text-white">
+                                    <div class="card bg-kp-green text-white">
                                         <div class="card-body text-center">
                                             <h6 class="card-title">Total Revenue (KSH)</h6>
                                             <h3 class="mb-0">KSH {{ number_format($taxSummaryKsh->total_amount ?? 0, 2) }}</h3>
@@ -1225,7 +1225,7 @@
                                     </h5>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="card bg-primary text-white">
+                                    <div class="card bg-kp-blue text-white">
                                         <div class="card-body text-center">
                                             <h6 class="card-title">Total Tax Collected (USD)</h6>
                                             <h3 class="mb-0">$ {{ number_format($taxSummaryUsd->total_tax ?? 0, 2) }}</h3>
@@ -1233,7 +1233,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    <div class="card bg-success text-white">
+                                    <div class="card bg-kp-green text-white">
                                         <div class="card-body text-center">
                                             <h6 class="card-title">Total Revenue (USD)</h6>
                                             <h3 class="mb-0">$ {{ number_format($taxSummaryUsd->total_amount ?? 0, 2) }}</h3>
@@ -1312,11 +1312,11 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <h5 class="border-bottom pb-2 mb-3">
-                <span class="badge bg-primary me-2">Combined Summary</span>
+                <span class="badge bg-kp-blue me-2">Combined Summary</span>
             </h5>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-kp-green text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Operating Cash Flow</h6>
                     <h3 class="mb-0">$ {{ number_format($reportData['cash_flow_summary']['operating'] ?? 0, 2) }}</h3>
@@ -1332,7 +1332,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-kp-yellow text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Financing Cash Flow</h6>
                     <h3 class="mb-0">$ {{ number_format($reportData['cash_flow_summary']['financing'] ?? 0, 2) }}</h3>
@@ -1340,7 +1340,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-kp-blue text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Net Cash Flow</h6>
                     <h3 class="mb-0">$ {{ number_format($reportData['cash_flow_summary']['net_cash_flow'] ?? 0, 2) }}</h3>
@@ -1355,7 +1355,7 @@
             <div class="card">
                 <div class="card-header">
                     <h6 class="card-title mb-0">
-                        <span class="badge bg-primary me-2">KSH</span> Cash Flow Summary (KSH)
+                        <span class="badge bg-kp-blue me-2">KSH</span> Cash Flow Summary (KSH)
                     </h6>
                 </div>
                 <div class="card-body">
@@ -1363,7 +1363,7 @@
                         <div class="col-6 mb-3">
                             <div class="border rounded p-3 text-center">
                                 <small class="text-muted">Operating</small>
-                                <h5 class="text-success mb-0">KSH {{ number_format($reportData['cash_flow_summary_ksh']['operating'] ?? 0, 2) }}</h5>
+                                <h5 class="text-kp-green mb-0">KSH {{ number_format($reportData['cash_flow_summary_ksh']['operating'] ?? 0, 2) }}</h5>
                             </div>
                         </div>
                         <div class="col-6 mb-3">
@@ -1375,13 +1375,13 @@
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
                                 <small class="text-muted">Financing</small>
-                                <h5 class="text-warning mb-0">KSH {{ number_format($reportData['cash_flow_summary_ksh']['financing'] ?? 0, 2) }}</h5>
+                                <h5 class="text-kp-yellow mb-0">KSH {{ number_format($reportData['cash_flow_summary_ksh']['financing'] ?? 0, 2) }}</h5>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
                                 <small class="text-muted">Net Cash Flow</small>
-                                <h5 class="text-primary mb-0">KSH {{ number_format($reportData['cash_flow_summary_ksh']['net_cash_flow'] ?? 0, 2) }}</h5>
+                                <h5 class="text-kp-blue mb-0">KSH {{ number_format($reportData['cash_flow_summary_ksh']['net_cash_flow'] ?? 0, 2) }}</h5>
                             </div>
                         </div>
                     </div>
@@ -1400,7 +1400,7 @@
                         <div class="col-6 mb-3">
                             <div class="border rounded p-3 text-center">
                                 <small class="text-muted">Operating</small>
-                                <h5 class="text-success mb-0">$ {{ number_format($reportData['cash_flow_summary_usd']['operating'] ?? 0, 2) }}</h5>
+                                <h5 class="text-kp-green mb-0">$ {{ number_format($reportData['cash_flow_summary_usd']['operating'] ?? 0, 2) }}</h5>
                             </div>
                         </div>
                         <div class="col-6 mb-3">
@@ -1412,13 +1412,13 @@
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
                                 <small class="text-muted">Financing</small>
-                                <h5 class="text-warning mb-0">$ {{ number_format($reportData['cash_flow_summary_usd']['financing'] ?? 0, 2) }}</h5>
+                                <h5 class="text-kp-yellow mb-0">$ {{ number_format($reportData['cash_flow_summary_usd']['financing'] ?? 0, 2) }}</h5>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
                                 <small class="text-muted">Net Cash Flow</small>
-                                <h5 class="text-primary mb-0">$ {{ number_format($reportData['cash_flow_summary_usd']['net_cash_flow'] ?? 0, 2) }}</h5>
+                                <h5 class="text-kp-blue mb-0">$ {{ number_format($reportData['cash_flow_summary_usd']['net_cash_flow'] ?? 0, 2) }}</h5>
                             </div>
                         </div>
                     </div>
@@ -1433,7 +1433,7 @@
             <div class="card">
                 <div class="card-header">
                     <h6 class="card-title mb-0">
-                        <span class="badge bg-primary me-2">KSH</span> Cash Flow Statement (KSH)
+                        <span class="badge bg-kp-blue me-2">KSH</span> Cash Flow Statement (KSH)
                     </h6>
                 </div>
                 <div class="card-body">
@@ -1444,7 +1444,7 @@
                             </tr>
                             <tr>
                                 <td>Cash from Customers</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['cash_from_customers'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['cash_from_customers'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Cash Paid to Suppliers</td>
@@ -1484,11 +1484,11 @@
                             </tr>
                             <tr>
                                 <td>Investment Income</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['investment_income'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['investment_income'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Asset Sales</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['asset_sales'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['asset_sales'] ?? 0, 2) }}</td>
                             </tr>
                             <tr class="table-light">
                                 <td><strong>Net Cash from Investing</strong></td>
@@ -1500,11 +1500,11 @@
                             </tr>
                             <tr>
                                 <td>Loan Proceeds</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['loan_proceeds'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['loan_proceeds'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Equity Issuance</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['equity_issuance'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['equity_issuance'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Debt Repayment</td>
@@ -1543,7 +1543,7 @@
                             </tr>
                             <tr>
                                 <td>Cash from Customers</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['cash_from_customers'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['cash_from_customers'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Cash Paid to Suppliers</td>
@@ -1583,11 +1583,11 @@
                             </tr>
                             <tr>
                                 <td>Investment Income</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['investment_income'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['investment_income'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Asset Sales</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['asset_sales'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['asset_sales'] ?? 0, 2) }}</td>
                             </tr>
                             <tr class="table-light">
                                 <td><strong>Net Cash from Investing</strong></td>
@@ -1599,11 +1599,11 @@
                             </tr>
                             <tr>
                                 <td>Loan Proceeds</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['loan_proceeds'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['loan_proceeds'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Equity Issuance</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['equity_issuance'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['equity_issuance'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Debt Repayment</td>
@@ -1652,9 +1652,9 @@
                             </tr>
                             <tr>
                                 <td>Cash from Customers</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['cash_from_customers'] ?? 0, 2) }}</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['cash_from_customers'] ?? 0, 2) }}</td>
-                                <td class="text-success">
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['cash_from_customers'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['cash_from_customers'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">
                                     @php
                                         $exchangeRate = $reportData['exchange_rate'] ?? 130;
                                         $total = ($reportData['cash_flow_details_ksh']['cash_from_customers'] ?? 0) / $exchangeRate + ($reportData['cash_flow_details_usd']['cash_from_customers'] ?? 0);
@@ -1756,9 +1756,9 @@
                             </tr>
                             <tr>
                                 <td>Investment Income</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['investment_income'] ?? 0, 2) }}</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['investment_income'] ?? 0, 2) }}</td>
-                                <td class="text-success">
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['investment_income'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['investment_income'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">
                                     @php
                                         $total = ($reportData['cash_flow_details_ksh']['investment_income'] ?? 0) / $exchangeRate + ($reportData['cash_flow_details_usd']['investment_income'] ?? 0);
                                     @endphp
@@ -1767,9 +1767,9 @@
                             </tr>
                             <tr>
                                 <td>Asset Sales</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['asset_sales'] ?? 0, 2) }}</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['asset_sales'] ?? 0, 2) }}</td>
-                                <td class="text-success">
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['asset_sales'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['asset_sales'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">
                                     @php
                                         $total = ($reportData['cash_flow_details_ksh']['asset_sales'] ?? 0) / $exchangeRate + ($reportData['cash_flow_details_usd']['asset_sales'] ?? 0);
                                     @endphp
@@ -1793,9 +1793,9 @@
                             </tr>
                             <tr>
                                 <td>Loan Proceeds</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['loan_proceeds'] ?? 0, 2) }}</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['loan_proceeds'] ?? 0, 2) }}</td>
-                                <td class="text-success">
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['loan_proceeds'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['loan_proceeds'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">
                                     @php
                                         $total = ($reportData['cash_flow_details_ksh']['loan_proceeds'] ?? 0) / $exchangeRate + ($reportData['cash_flow_details_usd']['loan_proceeds'] ?? 0);
                                     @endphp
@@ -1804,9 +1804,9 @@
                             </tr>
                             <tr>
                                 <td>Equity Issuance</td>
-                                <td class="text-success">KSH {{ number_format($reportData['cash_flow_details_ksh']['equity_issuance'] ?? 0, 2) }}</td>
-                                <td class="text-success">$ {{ number_format($reportData['cash_flow_details_usd']['equity_issuance'] ?? 0, 2) }}</td>
-                                <td class="text-success">
+                                <td class="text-kp-green">KSH {{ number_format($reportData['cash_flow_details_ksh']['equity_issuance'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['cash_flow_details_usd']['equity_issuance'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">
                                     @php
                                         $total = ($reportData['cash_flow_details_ksh']['equity_issuance'] ?? 0) / $exchangeRate + ($reportData['cash_flow_details_usd']['equity_issuance'] ?? 0);
                                     @endphp
@@ -1886,11 +1886,11 @@
                     <div class="row mb-4">
                         <div class="col-md-12">
                             <h5 class="border-bottom pb-2 mb-3">
-                                <span class="badge bg-primary me-2">Profitability Ratios</span>
+                                <span class="badge bg-kp-blue me-2">Profitability Ratios</span>
                             </h5>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-success text-white">
+                            <div class="card bg-kp-green text-white">
                                 <div class="card-body text-center">
                     <h6 class="card-title">Gross Profit Margin</h6>
                     <h3 class="mb-0">{{ number_format($reportData['profitability_metrics']['gross_margin'] ?? 0, 1) }}%</h3>
@@ -1906,7 +1906,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-kp-blue text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">Net Profit Margin</h6>
                     <h3 class="mb-0">{{ number_format($reportData['profitability_metrics']['net_margin'] ?? 0, 1) }}%</h3>
@@ -1914,7 +1914,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-kp-yellow text-white">
                 <div class="card-body text-center">
                     <h6 class="card-title">ROI</h6>
                     <h3 class="mb-0">{{ number_format($reportData['profitability_metrics']['roi'] ?? 0, 1) }}%</h3>
@@ -1929,7 +1929,7 @@
             <div class="card">
                 <div class="card-header">
                     <h6 class="card-title mb-0">
-                        <span class="badge bg-primary me-2">KSH</span> Profit & Loss Statement (KSH)
+                        <span class="badge bg-kp-blue me-2">KSH</span> Profit & Loss Statement (KSH)
                     </h6>
                 </div>
                 <div class="card-body">
@@ -1937,7 +1937,7 @@
                         <tbody>
                             <tr>
                                 <td><strong>Total Revenue</strong></td>
-                                <td class="text-success">KSH {{ number_format($reportData['p_l_statement_ksh']['revenue'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">KSH {{ number_format($reportData['p_l_statement_ksh']['revenue'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Cost of Services</td>
@@ -1992,7 +1992,7 @@
                         <tbody>
                             <tr>
                                 <td><strong>Total Revenue</strong></td>
-                                <td class="text-success">$ {{ number_format($reportData['p_l_statement_usd']['revenue'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['p_l_statement_usd']['revenue'] ?? 0, 2) }}</td>
                             </tr>
                             <tr>
                                 <td>Cost of Services</td>
@@ -2057,8 +2057,8 @@
                         <tbody>
                             <tr>
                                 <td><strong>Revenue</strong></td>
-                                <td class="text-success">KSH {{ number_format($reportData['p_l_statement_ksh']['revenue'] ?? 0, 2) }}</td>
-                                <td class="text-success">$ {{ number_format($reportData['p_l_statement_usd']['revenue'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">KSH {{ number_format($reportData['p_l_statement_ksh']['revenue'] ?? 0, 2) }}</td>
+                                <td class="text-kp-green">$ {{ number_format($reportData['p_l_statement_usd']['revenue'] ?? 0, 2) }}</td>
                                 <td class="fw-bold">
                                     @php
                                         $exchangeRate = 130; // You should get this from your settings or API
@@ -2440,7 +2440,7 @@
 
                     // Show success message
                     const successMsg = document.createElement('div');
-                    successMsg.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
+                    successMsg.className = 'alert alert-kp-success alert-dismissible fade show position-fixed top-0 end-0 m-3';
                     successMsg.style.zIndex = '9999';
                     successMsg.innerHTML = `
                         <strong><i class="fas fa-check-circle me-2"></i>Export Complete!</strong><br>

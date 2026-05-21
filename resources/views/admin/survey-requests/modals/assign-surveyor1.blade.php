@@ -2,7 +2,7 @@
 <div class="modal fade" id="assignSurveyorModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-kp-blue text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-user-plus me-2"></i>Assign Surveyor4
                 </h5>

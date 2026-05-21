@@ -11,7 +11,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-8">
                         <h4 class="page-title mb-0">
-                            <i class="fas fa-chart-line text-primary me-2"></i>Predictive Analytics
+                            <i class="fas fa-chart-line text-kp-blue me-2"></i>Predictive Analytics
                         </h4>
                         <p class="text-muted mb-0">AI-powered predictions and forecasts for debt management</p>
                     </div>
@@ -19,7 +19,7 @@
                         <a href="{{ route('finance.ai.dashboard') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                         </a>
-                        <button onclick="refreshPredictions()" class="btn btn-outline-primary">
+                        <button onclick="refreshPredictions()" class="btn btn-outline-kp-primary">
                             <i class="fas fa-sync-alt me-1"></i> Refresh
                         </button>
                     </div>
@@ -31,7 +31,7 @@
     <!-- Prediction Summary Cards -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-kp-blue text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
+            <div class="card bg-kp-green text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-kp-yellow text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -94,7 +94,7 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="fas fa-chart-line text-primary me-2"></i>Collection Forecast (Next 90 Days)
+                        <i class="fas fa-chart-line text-kp-blue me-2"></i>Collection Forecast (Next 90 Days)
                     </h5>
                 </div>
                 <div class="card-body">
@@ -106,7 +106,7 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="fas fa-chart-pie text-success me-2"></i>Risk Distribution
+                        <i class="fas fa-chart-pie text-kp-green me-2"></i>Risk Distribution
                     </h5>
                 </div>
                 <div class="card-body">
@@ -142,7 +142,7 @@
                             <tbody id="riskTableBody">
                                 <tr>
                                     <td colspan="7" class="text-center text-muted py-4">
-                                        <div class="spinner-border text-primary" role="status">
+                                        <div class="spinner-border text-kp-blue" role="status">
                                             <span class="visually-hidden">Loading...</span>
                                         </div>
                                         <br>Loading predictions...
@@ -162,19 +162,19 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">
-                        <i class="fas fa-brain text-warning me-2"></i>AI-Powered Insights & Recommendations
+                        <i class="fas fa-brain text-kp-yellow me-2"></i>AI-Powered Insights & Recommendations
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6 class="text-primary">Key Predictions</h6>
+                            <h6 class="text-kp-blue">Key Predictions</h6>
                             <ul id="keyPredictions">
                                 <li>Loading predictions...</li>
                             </ul>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-success">Recommended Actions</h6>
+                            <h6 class="text-kp-green">Recommended Actions</h6>
                             <ul id="recommendedActions">
                                 <li>Loading recommendations...</li>
                             </ul>
@@ -286,7 +286,7 @@ function loadPredictions() {
                     </td>
                     <td class="text-${riskClass}">${customer.defaultProb}%</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" onclick="viewCustomer(${customer.id})">
+                        <button class="btn btn-sm btn-outline-kp-primary" onclick="viewCustomer(${customer.id})">
                             <i class="fas fa-eye"></i> View
                         </button>
                         <button class="btn btn-sm btn-outline-warning">
@@ -313,8 +313,8 @@ function loadPredictions() {
             'Review credit limits for customers with risk score above 70'
         ];
 
-        document.getElementById('keyPredictions').innerHTML = predictions.map(p => `<li><i class="fas fa-chart-line text-primary me-2"></i>${p}</li>`).join('');
-        document.getElementById('recommendedActions').innerHTML = recommendations.map(r => `<li><i class="fas fa-check-circle text-success me-2"></i>${r}</li>`).join('');
+        document.getElementById('keyPredictions').innerHTML = predictions.map(p => `<li><i class="fas fa-chart-line text-kp-blue me-2"></i>${p}</li>`).join('');
+        document.getElementById('recommendedActions').innerHTML = recommendations.map(r => `<li><i class="fas fa-check-circle text-kp-green me-2"></i>${r}</li>`).join('');
 
     }, 1500);
 }

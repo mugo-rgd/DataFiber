@@ -5,18 +5,18 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <h4 class="mb-0">
-                <i class="fas fa-network-wired text-warning me-2"></i>NFP Compliance Returns
+                <i class="fas fa-network-wired text-kp-yellow me-2"></i>NFP Compliance Returns
             </h4>
             <small class="text-muted">Network Facility Provider quarterly compliance filings — Fibre optic, towers, and physical infrastructure</small>
         </div>
 
-        <a href="{{ route('nfp.create') }}" class="btn btn-warning">
+        <a href="{{ route('nfp.create') }}" class="btn btn-kp-warning">
             <i class="fas fa-plus me-1"></i> New NFP Return
         </a>
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-kp-success alert-dismissible fade show" role="alert">
             <i class="fas fa-check-circle me-1"></i> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
@@ -39,7 +39,7 @@
                     </small>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <span class="badge bg-warning text-dark">CAK Class License</span>
+                    <span class="badge bg-kp-yellow text-dark">CAK Class License</span>
                     <span class="badge bg-info ms-1">NFP Category</span>
                 </div>
             </div>
@@ -86,10 +86,10 @@
                                         $statusClasses = [
                                             'draft' => 'bg-secondary',
                                             'generated' => 'bg-dark',
-                                            'submitted' => 'bg-warning text-dark',
+                                            'submitted' => 'bg-kp-yellow text-dark',
                                             'submitted_to_cak' => 'bg-info',
-                                            'under_review' => 'bg-primary',
-                                            'approved' => 'bg-success',
+                                            'under_review' => 'bg-kp-blue',
+                                            'approved' => 'bg-kp-green',
                                             'rejected' => 'bg-danger',
                                         ];
                                         $statusLabel = [
@@ -128,20 +128,20 @@
                                         </a>
 
                                         @if($record->status === 'submitted')
-                                            <button type="button" class="btn btn-outline-primary" title="Submit to CAK" onclick="submitToCAK({{ $record->id }})">
+                                            <button type="button" class="btn btn-outline-kp-primary" title="Submit to CAK" onclick="submitToCAK({{ $record->id }})">
                                                 <i class="fas fa-paper-plane"></i>
                                             </button>
                                         @endif
 
                                         @if(in_array($record->status, ['submitted_to_cak', 'under_review']))
-                                            <button type="button" class="btn btn-outline-success" title="Check CAK Status" onclick="checkCAKStatus({{ $record->id }})">
+                                            <button type="button" class="btn btn-outline-kp-success" title="Check CAK Status" onclick="checkCAKStatus({{ $record->id }})">
                                                 <i class="fas fa-sync-alt"></i>
                                             </button>
                                         @endif
 
                                         @if($record->status === 'approved' && $record->cak_reference_number)
                                             <span class="btn btn-outline-secondary" title="CAK Ref: {{ $record->cak_reference_number }}">
-                                                <i class="fas fa-check-circle text-success"></i>
+                                                <i class="fas fa-check-circle text-kp-green"></i>
                                             </span>
                                         @endif
 
@@ -165,7 +165,7 @@
                                     <br>
                                     <small class="text-muted">Network Facility Providers must submit quarterly returns on fibre, towers, and infrastructure deployment.</small>
                                     <br>
-                                    <a href="{{ route('nfp.create') }}" class="btn btn-sm btn-warning mt-2">
+                                    <a href="{{ route('nfp.create') }}" class="btn btn-sm btn-kp-warning mt-2">
                                         <i class="fas fa-plus me-1"></i> Create Your First NFP Return
                                     </a>
                                  </td>

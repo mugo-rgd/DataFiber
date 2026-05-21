@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Colocation Services</h1>
-        <a href="{{ route('admin.colocation-services.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.colocation-services.create') }}" class="btn btn-kp-primary">
             <i class="fas fa-plus"></i> Add Colocation Service
         </a>
     </div>
@@ -55,20 +55,20 @@
                                     <a href="{{ route('admin.colocation-services.show', $service) }}" class="btn btn-sm btn-info">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.colocation-services.edit', $service) }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ route('admin.colocation-services.edit', $service) }}" class="btn btn-sm btn-kp-primary">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     @if($service->status === 'active')
                                     <form action="{{ route('admin.colocation-services.suspend', $service) }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-warning" onclick="return confirm('Suspend this service?')">
+                                        <button type="submit" class="btn btn-sm btn-kp-warning" onclick="return confirm('Suspend this service?')">
                                             <i class="fas fa-pause"></i>
                                         </button>
                                     </form>
                                     @elseif($service->status === 'suspended')
                                     <form action="{{ route('admin.colocation-services.activate', $service) }}" method="POST" class="d-inline">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Activate this service?')">
+                                        <button type="submit" class="btn btn-sm btn-kp-success" onclick="return confirm('Activate this service?')">
                                             <i class="fas fa-play"></i>
                                         </button>
                                     </form>

@@ -8,7 +8,7 @@
 
     <!-- Conditional Certificate Button (Triggers Modal) -->
     <button type="button"
-            class="btn btn-warning"
+            class="btn btn-kp-warning"
             data-bs-toggle="modal"
             data-bs-target="#conditionalCertificateModal"
             title="Generate Conditional Certificate">
@@ -17,7 +17,7 @@
 
   <!-- Acceptance Certificate Button (Triggers Modal) -->
 <button type="button"
-        class="btn btn-success"
+        class="btn btn-kp-success"
         data-bs-toggle="modal"
         data-bs-target="#acceptanceCertificateModal"
         title="Generate Acceptance Certificate">
@@ -31,7 +31,7 @@
         <div class="modal-content">
             <form id="conditionalCertificateForm" method="POST" action="{{ route('designer.requests.certificate.conditional', $request->id) }}" enctype="multipart/form-data">
                 @csrf
-                <div class="modal-header bg-warning text-white">
+                <div class="modal-header bg-kp-yellow text-white">
                     <h5 class="modal-title" id="conditionalCertificateModalLabel">
                         <i class="fas fa-file-contract me-2"></i>Generate Conditional Certificate
                     </h5>
@@ -139,7 +139,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="btn btn-kp-warning">
                         <i class="fas fa-save me-2"></i>Generate Certificate
                     </button>
                 </div>
@@ -158,7 +158,7 @@
                 @csrf
                 <input type="hidden" name="request_id" value="{{ $request->id }}">
 
-                <div class="modal-header bg-success text-white">
+                <div class="modal-header bg-kp-green text-white">
                     <h5 class="modal-title" id="acceptanceCertificateModalLabel">
                         <i class="fas fa-award me-2"></i>Generate Acceptance Certificate
                     </h5>
@@ -168,11 +168,11 @@
                 <div class="modal-body">
                     <!-- Certificate Header -->
                     <div class="text-center mb-4">
-                        <h4 class="fw-bold text-primary">Certificate of Acceptance</h4>
+                        <h4 class="fw-bold text-kp-blue">Certificate of Acceptance</h4>
                         <p class="text-muted">Generate Kenya Power & Lighting Company PLC Acceptance Certificate</p>
                     </div>
 
-                    <div class="kplc-header bg-primary text-white p-3 rounded mb-4">
+                    <div class="kplc-header bg-kp-blue text-white p-3 rounded mb-4">
                         <h5 class="text-center mb-0">
                             <i class="fas fa-bolt me-2"></i>THE KENYA POWER & LIGHTING COMPANY PLC
                         </h5>
@@ -252,7 +252,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="border rounded p-3 h-100">
-                                        <h6 class="bg-primary text-white p-2 rounded mb-3">LESSOR</h6>
+                                        <h6 class="bg-kp-blue text-white p-2 rounded mb-3">LESSOR</h6>
                                         <div class="mb-3">
                                             <label class="form-label">Company Name</label>
                                             <input type="text" class="form-control"
@@ -264,7 +264,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <div class="border rounded p-3 h-100">
-                                        <h6 class="bg-success text-white p-2 rounded mb-3">LESSEE</h6>
+                                        <h6 class="bg-kp-green text-white p-2 rounded mb-3">LESSEE</h6>
                                         <div class="mb-3">
                                             <label class="form-label required">Company Name</label>
                                             <input type="text" class="form-control" name="lessee"
@@ -294,7 +294,7 @@
                         <div class="card-body">
                             <!-- Witness 1 -->
                             <div class="signatory-card border rounded p-3 mb-3">
-                                <div class="signatory-header bg-primary text-white p-2 rounded mb-3">
+                                <div class="signatory-header bg-kp-blue text-white p-2 rounded mb-3">
                                     1. INFRASTRUCTURE SUPPORT ENGINEER - TBU (WITNESS)
                                 </div>
 
@@ -340,7 +340,7 @@
 
                             <!-- Witness 2 -->
                             <div class="signatory-card border rounded p-3 mb-3">
-                                <div class="signatory-header bg-primary text-white p-2 rounded mb-3">
+                                <div class="signatory-header bg-kp-blue text-white p-2 rounded mb-3">
                                     2. TELECOM LEAD ENGINEER
                                 </div>
 
@@ -384,7 +384,7 @@
 
                             <!-- Witness 3 -->
                             <div class="signatory-card border rounded p-3 mb-3">
-                                <div class="signatory-header bg-primary text-white p-2 rounded mb-3">
+                                <div class="signatory-header bg-kp-blue text-white p-2 rounded mb-3">
                                     3. TELECOM MANAGER
                                 </div>
 
@@ -436,7 +436,7 @@
                         <div class="card-body">
                             <!-- Lessee 1 -->
                             <div class="signatory-card border rounded p-3 mb-3">
-                                <div class="signatory-header bg-success text-white p-2 rounded mb-3">
+                                <div class="signatory-header bg-kp-green text-white p-2 rounded mb-3">
                                     1. LESSEE - LEAD ENGINEER / TECHNICAL REPRESENTATIVE
                                 </div>
 
@@ -480,7 +480,7 @@
 
                             <!-- Lessee 2 -->
                             <div class="signatory-card border rounded p-3 mb-3">
-                                <div class="signatory-header bg-success text-white p-2 rounded mb-3">
+                                <div class="signatory-header bg-kp-green text-white p-2 rounded mb-3">
                                     2. LESSEE - MANAGER
                                 </div>
 
@@ -577,7 +577,7 @@
                                 <div class="col-md-6">
                                     <p><strong>Effective Date:</strong> <span id="previewDate">{{ date('F d, Y') }}</span></p>
                                     <p><strong>Signatories:</strong> <span id="previewSignatories">0 of 5 completed</span></p>
-                                    <p><strong>Status:</strong> <span class="badge bg-success">Ready to Generate</span></p>
+                                    <p><strong>Status:</strong> <span class="badge bg-kp-green">Ready to Generate</span></p>
                                 </div>
                             </div>
                         </div>
@@ -586,7 +586,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-kp-success">
                         <i class="fas fa-file-certificate me-2"></i>Generate Acceptance Certificate
                     </button>
                 </div>
@@ -949,23 +949,23 @@
         color: #dc3545;
     }
 
-    .btn-success {
+    .btn-kp-success {
         background-color: #28a745;
         border-color: #28a745;
     }
 
-    .btn-success:hover {
+    .btn-kp-success:hover {
         background-color: #218838;
         border-color: #1e7e34;
     }
 
-    .btn-warning {
+    .btn-kp-warning {
         background-color: #ffc107;
         border-color: #ffc107;
         color: #212529;
     }
 
-    .btn-warning:hover {
+    .btn-kp-warning:hover {
         background-color: #e0a800;
         border-color: #d39e00;
     }

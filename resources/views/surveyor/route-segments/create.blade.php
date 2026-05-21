@@ -18,7 +18,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-kp-blue text-white">
                     <h5 class="mb-0">
                         <i class="fas fa-route mr-2"></i>
                         Segment Details - {{ $surveyRoute->route_name }}
@@ -31,7 +31,7 @@
                         <!-- Basic Information -->
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <h5 class="text-primary mb-3"><i class="fas fa-info-circle mr-2"></i>Basic Information</h5>
+                                <h5 class="text-kp-blue mb-3"><i class="fas fa-info-circle mr-2"></i>Basic Information</h5>
 
                                 <div class="form-group">
                                     <label for="segment_number" class="font-weight-bold">Segment Number *</label>
@@ -84,7 +84,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <h5 class="text-primary mb-3"><i class="fas fa-mountain mr-2"></i>Terrain & Complexity</h5>
+                                <h5 class="text-kp-blue mb-3"><i class="fas fa-mountain mr-2"></i>Terrain & Complexity</h5>
 
                                 <div class="form-group">
                                     <label for="terrain_type" class="font-weight-bold">Terrain Type *</label>
@@ -137,7 +137,7 @@
                         <!-- Infrastructure Counts -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="text-primary mb-3"><i class="fas fa-hard-hat mr-2"></i>Infrastructure Details</h5>
+                                <h5 class="text-kp-blue mb-3"><i class="fas fa-hard-hat mr-2"></i>Infrastructure Details</h5>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -183,7 +183,7 @@
                         <!-- Obstacles -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="text-primary mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Obstacles & Challenges</h5>
+                                <h5 class="text-kp-blue mb-3"><i class="fas fa-exclamation-triangle mr-2"></i>Obstacles & Challenges</h5>
 
                                 <div class="form-group">
                                     <label class="font-weight-bold">Obstacles (Select all that apply)</label>
@@ -238,7 +238,7 @@
                         <!-- GPS Coordinates -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <h5 class="text-primary mb-3"><i class="fas fa-map-marker-alt mr-2"></i>GPS Coordinates (Optional)</h5>
+                                <h5 class="text-kp-blue mb-3"><i class="fas fa-map-marker-alt mr-2"></i>GPS Coordinates (Optional)</h5>
                             </div>
                             <div class="col-md-6">
                                 <div class="card">
@@ -274,7 +274,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="getCurrentLocation('start')">
+                                        <button type="button" class="btn btn-outline-kp-primary btn-sm" onclick="getCurrentLocation('start')">
                                             <i class="fas fa-location-arrow mr-1"></i> Use Current Location
                                         </button>
                                     </div>
@@ -314,7 +314,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="getCurrentLocation('end')">
+                                        <button type="button" class="btn btn-outline-kp-primary btn-sm" onclick="getCurrentLocation('end')">
                                             <i class="fas fa-location-arrow mr-1"></i> Use Current Location
                                         </button>
                                     </div>
@@ -325,8 +325,8 @@
                         <!-- Cost Preview -->
                         <div class="row mb-4">
                             <div class="col-12">
-                                <div class="card border-warning">
-                                    <div class="card-header bg-warning text-dark">
+                                <div class="card border-kp-yellow">
+                                    <div class="card-header bg-kp-yellow text-dark">
                                         <h6 class="mb-0"><i class="fas fa-calculator mr-2"></i>Cost Estimate Preview</h6>
                                     </div>
                                     <div class="card-body">
@@ -357,10 +357,10 @@
                                         <i class="fas fa-times mr-2"></i>Cancel
                                     </a>
                                     <div>
-                                        <button type="submit" name="action" value="save_and_new" class="btn btn-primary mr-2">
+                                        <button type="submit" name="action" value="save_and_new" class="btn btn-kp-primary mr-2">
                                             <i class="fas fa-save mr-2"></i>Save & Add Another
                                         </button>
-                                        <button type="submit" name="action" value="save" class="btn btn-success">
+                                        <button type="submit" name="action" value="save" class="btn btn-kp-success">
                                             <i class="fas fa-check mr-2"></i>Save Segment
                                         </button>
                                     </div>
@@ -434,7 +434,7 @@
     }
 
     function showAlert(message, type) {
-        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const alertClass = type === 'success' ? 'alert-kp-success' : 'alert-danger';
         const alertHtml = `
             <div class="alert ${alertClass} alert-dismissible fade show position-fixed"
                  style="top: 20px; right: 20px; z-index: 9999;">

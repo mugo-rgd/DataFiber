@@ -5,7 +5,7 @@
     <!-- Summary Cards -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
+            <div class="card bg-kp-blue text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-white">
+            <div class="card bg-kp-yellow text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
@@ -63,7 +63,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h3 mb-0">Customer Debt List</h1>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary" onclick="window.print()">
+                    <button type="button" class="btn btn-kp-primary" onclick="window.print()">
                         <i class="fas fa-print me-1"></i> Print Report
                     </button>
                     <a href="{{ route('finance.debt.collection.report') }}" class="btn btn-secondary">
@@ -127,7 +127,7 @@
                                         <span class="badge bg-danger">${{ number_format($billing->balance, 2) }}</span>
                                     </td>
                                     <td class="text-end">
-                                        <span class="badge bg-warning">KSh {{ number_format($billing->balance_kes, 2) }}</span>
+                                        <span class="badge bg-kp-yellow">KSh {{ number_format($billing->balance_kes, 2) }}</span>
                                     </td>
                                     <td class="text-center">
                                         @if($billing->last_due_date)
@@ -138,7 +138,7 @@
                                     </td>
                                     <td class="text-center">
                                         <a href="{{ route('customer.debt', ['id' => $billing->id]) }}"
-                                           class="btn btn-sm btn-outline-primary">
+                                           class="btn btn-sm btn-outline-kp-primary">
                                             <i class="fas fa-eye me-1"></i> View Details
                                         </a>
                                     </td>

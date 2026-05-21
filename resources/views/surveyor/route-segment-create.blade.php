@@ -16,7 +16,7 @@
                 <a href="{{ route('surveyor.routes.show', $surveyRoute->id) }}" class="btn btn-secondary mr-2">
                     <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to Route
                 </a>
-                <a href="{{ route('surveyor.dashboard') }}" class="btn btn-primary">
+                <a href="{{ route('surveyor.dashboard') }}" class="btn btn-kp-primary">
                     <i class="fas fa-tachometer-alt fa-sm text-white-50"></i> Dashboard
                 </a>
             </div>
@@ -25,7 +25,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-kp-blue text-white">
                         <h5 class="mb-0">
                             <i class="fas fa-plus-circle mr-2"></i>
                             New Segment for {{ $surveyRoute->route_name }}
@@ -127,7 +127,7 @@
                             </div>
 
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary btn-lg">
+                                <button type="submit" class="btn btn-kp-primary btn-lg">
                                     <i class="fas fa-save mr-2"></i> Create Segment
                                 </button>
                                 <a href="{{ route('surveyor.routes.show', $surveyRoute->id) }}" class="btn btn-secondary">

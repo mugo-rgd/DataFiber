@@ -1,7 +1,7 @@
 @if(session('success') || session('error') || session('warning') || session('info'))
 <div class="flash-messages-container">
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+    <div class="alert alert-kp-success alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-check-circle me-3 fa-lg"></i>
         <div class="flex-grow-1">{{ session('success') }}</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -17,7 +17,7 @@
     @endif
 
     @if(session('warning'))
-    <div class="alert alert-warning alert-dismissible fade show d-flex align-items-center" role="alert">
+    <div class="alert alert-kp-warning alert-dismissible fade show d-flex align-items-center" role="alert">
         <i class="fas fa-exclamation-triangle me-3 fa-lg"></i>
         <div class="flex-grow-1">{{ session('warning') }}</div>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
