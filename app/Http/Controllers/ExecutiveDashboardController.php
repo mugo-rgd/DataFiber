@@ -349,6 +349,9 @@ public function gis()
             ];
         });
 
+    // Auto-connect segments to nearest nodes
+    $connectedSegments = $this->connectSegmentsToNodes($segments->toArray(), $nodes->toArray());
+
     // Get stations with utilization calculation
     $stations = DB::table('fibre_stations')
         ->select(
@@ -390,8 +393,162 @@ public function gis()
 
     return view('executive.gis', [
         'nodes' => $nodes->values()->toArray(),
-        'segments' => $segments->values()->toArray(),
+        'segments' => $connectedSegments,
         'stations' => $stations->values()->toArray(),
     ]);
 }
+
+/**
+ * Auto-connect segments to the nearest nodes
+ */
+private function connectSegmentsToNodes($segments, $nodes)
+{
+    if (empty($nodes)) {
+        return $segments;
+    }
+
+    $nodeList = collect($nodes);
+    $connectedSegments = [];
+
+    foreach ($segments as $segment) {
+        // Find nearest node for source
+        $nearestSource = $this->findNearestNode(
+            $segment['source_lat'],
+            $segment['source_lon'],
+            $nodeList
+        );
+
+        // Find nearest node for destination
+        $nearestDest = $this->findNearestNode(
+            $segment['dest_lat'],
+            $segment['dest_lon'],
+            $nodeList
+        );
+
+        // Create connected segment
+        $connectedSegment = $segment;
+
+        // If source is not exactly at a node, add connection segment
+        if ($nearestSource && $this->distanceToNode($segment['source_lat'], $segment['source_lon'], $nearestSource) > 0.01) {
+            $connectedSegment['source_lat'] = $nearestSource['latitude'];
+            $connectedSegment['source_lon'] = $nearestSource['longitude'];
+            $connectedSegment['source_name'] = $nearestSource['node_name'] . ' (Auto-connected)';
+        }
+
+        // If destination is not exactly at a node, add connection segment
+        if ($nearestDest && $this->distanceToNode($segment['dest_lat'], $segment['dest_lon'], $nearestDest) > 0.01) {
+            $connectedSegment['dest_lat'] = $nearestDest['latitude'];
+            $connectedSegment['dest_lon'] = $nearestDest['longitude'];
+            $connectedSegment['destination_name'] = $nearestDest['node_name'] . ' (Auto-connected)';
+        }
+
+        // Recalculate distance if coordinates changed
+        if ($connectedSegment['source_lat'] != $segment['source_lat'] ||
+            $connectedSegment['dest_lat'] != $segment['dest_lat']) {
+            $connectedSegment['distance_km'] = $this->calculateDistance(
+                $connectedSegment['source_lat'], $connectedSegment['source_lon'],
+                $connectedSegment['dest_lat'], $connectedSegment['dest_lon']
+            );
+        }
+
+        $connectedSegments[] = $connectedSegment;
+    }
+
+    // Add connection segments from nodes to stations
+    $connectedSegments = $this->connectStationsToNodes($connectedSegments, $nodes);
+
+    return $connectedSegments;
+}
+
+/**
+ * Connect stations to nearest nodes
+ */
+private function connectStationsToNodes($segments, $nodes)
+{
+    $stations = DB::table('fibre_stations')
+        ->whereNotNull('lat')
+        ->whereNotNull('lng')
+        ->get();
+
+    $nodeList = collect($nodes);
+    $newSegments = [];
+
+    foreach ($stations as $station) {
+        $nearestNode = $this->findNearestNode($station->lat, $station->lng, $nodeList);
+
+        if ($nearestNode) {
+            $distance = $this->distanceToNode($station->lat, $station->lng, $nearestNode);
+
+            // Only create connection if station is not already connected (distance > 0.1km)
+            if ($distance > 0.1) {
+                $newSegments[] = [
+                    'id' => uniqid('conn_'),
+                    'source_lat' => $station->lat,
+                    'source_lon' => $station->lng,
+                    'dest_lat' => $nearestNode['latitude'],
+                    'dest_lon' => $nearestNode['longitude'],
+                    'network_id' => 'Station Connection',
+                    'segment_id' => 'conn_' . $station->id,
+                    'source_name' => $station->name . ' (Station)',
+                    'destination_name' => $nearestNode['node_name'] . ' (Node)',
+                    'distance_km' => $distance,
+                    'fiber_cores' => 0,
+                    'link_type' => 'Connection',
+                    'status' => 'Connected'
+                ];
+            }
+        }
+    }
+
+    return array_merge($segments, $newSegments);
+}
+
+/**
+ * Find the nearest node to given coordinates
+ */
+private function findNearestNode($lat, $lng, $nodeList)
+{
+    $nearest = null;
+    $minDistance = PHP_FLOAT_MAX;
+
+    foreach ($nodeList as $node) {
+        $distance = $this->calculateDistance($lat, $lng, $node['latitude'], $node['longitude']);
+        if ($distance < $minDistance) {
+            $minDistance = $distance;
+            $nearest = $node;
+        }
+    }
+
+    // Only return if within 50km (adjust as needed)
+    return $minDistance <= 50 ? $nearest : null;
+}
+
+/**
+ * Calculate distance between two points
+ */
+private function distanceToNode($lat, $lng, $node)
+{
+    return $this->calculateDistance($lat, $lng, $node['latitude'], $node['longitude']);
+}
+
+/**
+ * Calculate distance between coordinates in kilometers
+ */
+private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+{
+    $earthRadius = 6371; // km
+
+    $dLat = deg2rad($lat2 - $lat1);
+    $dLon = deg2rad($lon2 - $lon1);
+
+    $a = sin($dLat / 2) * sin($dLat / 2) +
+         cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+         sin($dLon / 2) * sin($dLon / 2);
+
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+    return $earthRadius * $c;
+}
+
+
 }
