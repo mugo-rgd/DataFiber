@@ -106,10 +106,12 @@ class Contract extends Model
         return $this->belongsTo(User::class, 'approved_by');
     }
 
-    // public function lease(): HasOne
-    // {
-    //     return $this->hasOne(Lease::class);
-    // }
+   public function approvals()
+{
+    return $this->hasMany(ContractApproval::class);
+    // or depending on your relationship:
+    // return $this->morphMany(ContractApproval::class, 'approvable');
+}
 
     public function lease(): HasOne
 {

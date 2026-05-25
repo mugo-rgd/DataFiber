@@ -41,7 +41,8 @@ class Quotation extends Model
         'customer_approval_status',
         'customer_approved_at',
         'customer_rejected_at',
-        'rejection_reason'
+        'rejection_reason',
+        'currency',
     ];
 
     protected $casts = [
@@ -57,6 +58,7 @@ class Quotation extends Model
         'total_amount' => 'decimal:2',
         'tax_rate' => 'decimal:4',
         'amount' => 'decimal:2',
+        'currency' => 'string',
     ];
 
     /**
@@ -488,6 +490,7 @@ public function colocationServices()
             'approved' => 'success',
             'rejected' => 'danger',
             'expired' => 'dark',
+            'customer_approved' => 'success',
             default => 'light'
         };
     }
@@ -500,6 +503,7 @@ public function colocationServices()
             'approved' => 'Approved',
             'rejected' => 'Rejected',
             'expired' => 'Expired',
+            'customer_approved' =>'Customer_approved',
             default => ucfirst($this->status)
         };
     }
@@ -571,5 +575,11 @@ public function colocationServices()
         ])
         ->withTimestamps();
 }
+
+    // Add scope for currency filtering
+    public function scopeCurrency($query, $currency)
+    {
+        return $query->where('currency', $currency);
+    }
 
 }

@@ -15,7 +15,7 @@
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
         <div>
-            <h4 class="mb-0">
+            <h4 class="mb-0 mt-4 pt-3">
                 <i class="fas fa-server me-2 text-kp-blue"></i> ASP Compliance Preview
             </h4>
             <small class="text-muted">Return ID: #{{ $record->id }} | Created: {{ $record->created_at->format('d M Y H:i') }}</small>

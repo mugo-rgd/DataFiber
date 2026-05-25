@@ -93,205 +93,367 @@ class QuotationController extends Controller
 {
     $this->authorize('create', Quotation::class);
 
-    // Add default values for missing totals
-    if (!$request->has('subtotal')) {
-        $request->merge([
-            'routes_total' => 0,
-            'services_total' => 0,
-            'custom_items_total' => 0,
-            'subtotal' => 0,
-            'tax_amount' => 0,
-            'total_amount' => 0
-        ]);
-    }
-
     $validated = $request->validate([
         'design_request_id' => 'required|exists:design_requests,id',
-        'scope_of_work' => 'required|string|max:2000',
-        'terms_and_conditions' => 'required|string|max:2000',
-        'customer_notes' => 'nullable|string|max:1000',
+        'scope_of_work' => 'required|string|max:5000',
+        'terms_and_conditions' => 'required|string|max:5000',
+        'customer_notes' => 'nullable|string|max:2000',
         'valid_until' => 'required|date|after:today',
         'tax_rate' => 'required|numeric|min:0|max:0.5',
+
         'selected_routes' => 'nullable|array',
         'selected_routes.*' => 'exists:commercial_routes,id',
         'route_cores' => 'nullable|array',
         'route_duration' => 'nullable|array',
+
         'selected_custom_routes' => 'nullable|array',
         'selected_custom_routes.*' => 'exists:custom_routes,id',
+
         'selected_services' => 'nullable|array',
-        'selected_services.*' => 'required',
         'service_duration' => 'nullable|array',
         'service_quantity' => 'nullable|array',
         'service_source' => 'nullable|array',
+
         'custom_items' => 'nullable|array',
-        'routes_total' => 'nullable|numeric',
-        'services_total' => 'nullable|numeric',
-        'custom_items_total' => 'nullable|numeric',
-        'subtotal' => 'nullable|numeric',
-        'tax_amount' => 'nullable|numeric',
-        'total_amount' => 'nullable|numeric',
+        'action' => 'nullable|in:draft,send',
     ]);
 
     try {
-        $quotation = null;
+        DB::beginTransaction();
 
-        DB::transaction(function () use ($request, &$quotation) {
-            $designRequest = DesignRequest::findOrFail($request->design_request_id);
+        $designRequest = DesignRequest::with('customer')->findOrFail($request->design_request_id);
 
-            if (Auth::user()->role === 'designer' && $designRequest->designer_id !== Auth::id()) {
-                abort(403, 'You are not authorized to create quotations for this design request.');
+        if (Auth::user()->role === 'designer' && $designRequest->designer_id !== Auth::id()) {
+            abort(403, 'You are not authorized to create quotations for this design request.');
+        }
+
+        $lineItems = [];
+        $subtotal = 0;
+
+        /*
+        |--------------------------------------------------------------------------
+        | Commercial Routes
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('selected_routes', []) as $routeId) {
+            $route = CommercialRoute::find($routeId);
+
+            if (!$route) {
+                continue;
             }
 
-            // Build line items using service
-            $lineItemsData = QuotationService::buildLineItems($request, $designRequest);
+            $cores = (int) ($request->input("route_cores.$routeId") ?? $route->no_of_cores_required ?? 1);
+            $duration = (int) ($request->input("route_duration.$routeId") ?? 12);
 
-            // Calculate totals - use request values OR calculate from service
-            $totals = QuotationService::calculateTotals(
-                $request->input('subtotal', $lineItemsData['subtotal'] ?? 0),
-                $request->tax_rate
+            $unitCost = $route->unit_cost_per_core_km_per_month
+                ?? $route->unit_cost_per_core_per_km_per_month
+                ?? $route->unit_cost
+                ?? match ($route->option ?? null) {
+                    'Non Premium' => 18,
+                    'Premium' => 19,
+                    'Metro' => 20,
+                    default => 0,
+                };
+
+            $distance = (float) ($route->approx_distance_km ?? 0);
+            $monthlyCost = (float) $unitCost * $distance * $cores;
+            $capex = (float) ($route->capital_expenditure ?? 0);
+            $totalCost = ($monthlyCost * $duration) + $capex;
+
+            $lineItems[] = [
+                'type' => 'commercial_route',
+                'item_id' => $route->id,
+                'description' => "{$route->name_of_route} ({$cores} cores, {$duration} months)",
+                'quantity' => $cores,
+                'unit_price' => $monthlyCost,
+                'total' => $totalCost,
+                'metadata' => [
+                    'route_id' => $route->id,
+                    'route_code' => $route->route_code ?? null,
+                    'route_name' => $route->name_of_route,
+                    'region' => $route->all_region ?? $route->region ?? null,
+                    'option' => $route->option ?? null,
+                    'link_class' => $route->option ?? null,
+                    'technology_type' => $route->tech_type ?? null,
+                    'distance_km' => $distance,
+
+                    'start_point' => $route->start_point
+                        ?? $route->from_location
+                        ?? $route->source_location
+                        ?? null,
+
+                    'end_point' => $route->end_point
+                        ?? $route->to_location
+                        ?? $route->destination_location
+                        ?? null,
+
+                    'pickup_points' => trim(
+                        (($route->start_point ?? $route->from_location ?? $route->source_location ?? 'N/A')
+                        . ' - ' .
+                        ($route->end_point ?? $route->to_location ?? $route->destination_location ?? 'N/A'))
+                    ),
+
+                    'cores' => $cores,
+                    'duration_months' => $duration,
+                    'unit_cost_per_core_per_km_per_month' => (float) $unitCost,
+                    'monthly_cost' => $monthlyCost,
+                    'capital_expenditure' => $capex,
+                ],
+            ];
+
+            $subtotal += $totalCost;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Custom Routes
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('selected_custom_routes', []) as $customRouteId) {
+            $customRoute = CustomRoute::find($customRouteId);
+
+            if (!$customRoute) {
+                continue;
+            }
+
+            $duration = (int) ($customRoute->contract_duration_months ?? 12);
+            $monthlyCost = (float) $customRoute->monthly_cost;
+            $capex = (float) ($customRoute->capital_expenditure ?? 0);
+            $totalCost = ($monthlyCost * $duration) + $capex;
+
+            $lineItems[] = [
+                'type' => 'custom_route',
+                'item_id' => $customRoute->id,
+                'description' => "{$customRoute->name_of_route} (Custom Route, {$duration} months)",
+                'quantity' => (int) ($customRoute->no_of_cores_required ?? 1),
+                'unit_price' => $monthlyCost,
+                'total' => $totalCost,
+                'metadata' => [
+                    'route_id' => $customRoute->id,
+                    'route_code' => 'CUSTOM-' . $customRoute->id,
+                    'route_name' => $customRoute->name_of_route,
+                    'region' => $customRoute->region,
+                    'option' => $customRoute->option,
+                    'link_class' => $customRoute->option,
+                    'technology_type' => $customRoute->tech_type,
+                    'distance_km' => (float) ($customRoute->approx_distance_km ?? 0),
+                    'pickup_points' => $customRoute->route_description ?? 'Custom route',
+                    'cores' => (int) ($customRoute->no_of_cores_required ?? 1),
+                    'duration_months' => $duration,
+                    'unit_cost_per_core_per_km_per_month' => (float) $customRoute->unit_cost_per_core_per_km_per_month,
+                    'monthly_cost' => $monthlyCost,
+                    'capital_expenditure' => $capex,
+                    'is_custom_route' => true,
+                ],
+            ];
+
+            $subtotal += $totalCost;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Colocation Services
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('selected_services', []) as $serviceId) {
+            $source = $request->input("service_source.$serviceId", 'list');
+            $duration = (int) ($request->input("service_duration.$serviceId") ?? 12);
+            $quantity = (int) ($request->input("service_quantity.$serviceId") ?? 1);
+
+            if ($source === 'list') {
+                $service = ColocationList::where('service_id', $serviceId)->first();
+
+                if (!$service) {
+                    continue;
+                }
+
+                $monthlyRate = (float) ($service->monthly_price_usd ?? (($service->recurrent_per_Annum ?? 0) / 12));
+                $setupFee = (float) ($service->setup_fee_usd ?? $service->oneoff_rate ?? 0);
+                $serviceName = $service->service_type ?? 'Colocation Service';
+                $serviceCategory = $service->service_category ?? null;
+                $realServiceId = $service->service_id;
+            } else {
+                $service = ColocationService::find($serviceId);
+
+                if (!$service) {
+                    continue;
+                }
+
+                $monthlyRate = (float) ($service->monthly_price ?? $service->monthly_price_usd ?? 0);
+                $setupFee = (float) ($service->setup_fee ?? $service->setup_fee_usd ?? 0);
+                $serviceName = $service->service_type ?? $service->name ?? 'Colocation Service';
+                $serviceCategory = $service->service_category ?? null;
+                $realServiceId = $service->id;
+            }
+
+            $monthlyTotal = $monthlyRate * $quantity;
+            $setupTotal = $setupFee * $quantity;
+            $totalCost = ($monthlyTotal * $duration) + $setupTotal;
+
+            $lineItems[] = [
+                'type' => 'colocation_service',
+                'item_id' => $realServiceId,
+                'description' => "{$serviceName} (Qty: {$quantity}, {$duration} months)",
+                'quantity' => $quantity,
+                'unit_price' => $monthlyTotal,
+                'total' => $totalCost,
+                'metadata' => [
+                    'service_id' => $realServiceId,
+                    'service_name' => $serviceName,
+                    'service_category' => $serviceCategory,
+                    'duration_months' => $duration,
+                    'quantity' => $quantity,
+                    'monthly_rate' => $monthlyRate,
+                    'setup_fee' => $setupTotal,
+                    'source' => $source,
+                ],
+            ];
+
+            $subtotal += $totalCost;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Custom Items
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('custom_items', []) as $index => $customItem) {
+            if (empty($customItem['description']) || empty($customItem['unit_price'])) {
+                continue;
+            }
+
+            $quantity = (int) ($customItem['quantity'] ?? 1);
+            $unitPrice = (float) $customItem['unit_price'];
+            $totalCost = $quantity * $unitPrice;
+
+            $lineItems[] = [
+                'type' => 'custom_item',
+                'item_id' => null,
+                'description' => $customItem['description'],
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'total' => $totalCost,
+                'metadata' => [
+                    'custom_item' => true,
+                    'index' => $index,
+                ],
+            ];
+
+            $subtotal += $totalCost;
+        }
+
+        $taxRate = (float) $request->tax_rate;
+        $taxAmount = $subtotal * $taxRate;
+        $totalAmount = $subtotal + $taxAmount;
+
+        $quotationNumber = QuotationService::generateQuotationNumber($designRequest);
+
+        $accountManagerId = Auth::user()->role === 'designer'
+            ? $designRequest->customer->account_manager_id
+            : Auth::id();
+
+        $status = Auth::user()->role === 'admin' && $request->action === 'send'
+            ? 'sent'
+            : 'draft';
+
+        $quotation = Quotation::create([
+            'design_request_id' => $designRequest->id,
+            'customer_id' => $designRequest->customer_id,
+            'account_manager_id' => $accountManagerId,
+            'quotation_number' => $quotationNumber,
+            'line_items' => $lineItems,
+            'subtotal' => $subtotal,
+            'tax_rate' => $taxRate,
+            'amount' => $subtotal,
+            'tax_amount' => $taxAmount,
+            'total_amount' => $totalAmount,
+            'scope_of_work' => $request->scope_of_work,
+            'terms_and_conditions' => $request->terms_and_conditions,
+            'customer_notes' => $request->customer_notes,
+            'valid_until' => $request->valid_until,
+            'status' => $status,
+            'sent_at' => $status === 'sent' ? now() : null,
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sync Pivot Tables
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('selected_routes', []) as $routeId) {
+            $routeItem = collect($lineItems)
+                ->where('type', 'commercial_route')
+                ->firstWhere('item_id', (int) $routeId);
+
+            if (!$routeItem) {
+                continue;
+            }
+
+            $quotation->commercialRoutes()->attach($routeId, [
+                'quantity' => $routeItem['quantity'],
+                'duration_months' => $routeItem['metadata']['duration_months'],
+                'unit_price' => $routeItem['unit_price'],
+                'total_price' => $routeItem['total'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        foreach ($request->input('selected_custom_routes', []) as $customRouteId) {
+            $customItem = collect($lineItems)
+                ->where('type', 'custom_route')
+                ->firstWhere('item_id', (int) $customRouteId);
+
+            if (!$customItem) {
+                continue;
+            }
+
+            $quotation->customRoutes()->attach($customRouteId, [
+                'monthly_cost' => $customItem['unit_price'],
+                'capital_expenditure' => $customItem['metadata']['capital_expenditure'],
+                'currency' => 'USD',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        foreach ($request->input('selected_services', []) as $serviceId) {
+            $serviceItem = collect($lineItems)
+                ->where('type', 'colocation_service')
+                ->firstWhere('item_id', $serviceId);
+
+            if (!$serviceItem) {
+                continue;
+            }
+
+            $quotation->colocationServices()->attach($serviceId, [
+                'quantity' => $serviceItem['quantity'],
+                'duration_months' => $serviceItem['metadata']['duration_months'],
+                'unit_price' => $serviceItem['unit_price'],
+                'total_price' => $serviceItem['total'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        DB::commit();
+
+        return redirect()
+            ->route('admin.quotations.show', $quotation)
+            ->with('success', $status === 'sent'
+                ? 'Quotation created and sent to customer successfully!'
+                : 'Quotation created successfully!'
             );
 
-            // Determine account manager
-            $accountManagerId = Auth::user()->role === 'designer'
-                ? $designRequest->customer->account_manager_id
-                : Auth::id();
+    } catch (\Throwable $e) {
+        DB::rollBack();
 
-            // Determine status
-            $status = 'draft';
-            $sentAt = null;
+        Log::error('Failed to create quotation', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
 
-            if (Auth::user()->role === 'admin' && $request->action === 'send') {
-                $status = 'sent';
-                $sentAt = now();
-            }
-
-            // Generate quotation number
-            $quotationNumber = QuotationService::generateQuotationNumber($designRequest);
-
-            // Fix scope_of_work if it's "undefined"
-            $scopeOfWork = $request->scope_of_work;
-            if ($scopeOfWork === 'undefined' || empty(trim($scopeOfWork))) {
-                $scopeOfWork = "Scope of work for quotation #{$quotationNumber}";
-            }
-
-            // Create quotation FIRST
-            $quotation = Quotation::create([
-                'design_request_id' => $designRequest->id,
-                'customer_id' => $designRequest->customer_id,
-                'account_manager_id' => $accountManagerId,
-                'quotation_number' => $quotationNumber,
-                'line_items' => $lineItemsData['line_items'] ?? [],
-                'subtotal' => $totals['subtotal'],
-                'tax_rate' => $totals['tax_rate'],
-                'amount' => $totals['subtotal'],
-                'tax_amount' => $totals['tax_amount'],
-                'total_amount' => $totals['total_amount'],
-                'scope_of_work' => $scopeOfWork,
-                'terms_and_conditions' => $request->terms_and_conditions,
-                'customer_notes' => $request->customer_notes,
-                'valid_until' => $request->valid_until,
-                'status' => $status,
-                'sent_at' => $sentAt,
-            ]);
-
-            // Attach custom routes AFTER quotation is created
-           $selectedCustomRoutes = $request->input('selected_custom_routes', []);
-
-foreach ($selectedCustomRoutes as $customRouteId) {
-    $customRoute = CustomRoute::find($customRouteId);
-
-    if (!$customRoute) {
-        continue;
-    }
-
-    $quotation->customRoutes()->syncWithoutDetaching([
-        $customRoute->id => [
-            'monthly_cost' => $customRoute->monthly_cost,
-            'capital_expenditure' => $customRoute->capital_expenditure,
-            'currency' => $customRoute->currency,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-    ]);
-}
-
-            // Attach commercial routes with details
-            if ($request->selected_routes) {
-                foreach ($request->selected_routes as $routeId) {
-                    $route = CommercialRoute::find($routeId);
-                    if (!$route) continue;
-
-                    $cores = $request->route_cores[$routeId] ?? $route->no_of_cores_required;
-                    $duration = $request->route_duration[$routeId] ?? 12;
-                    $monthlyCost = $route->calculateMonthlyCost($cores);
-
-                    $quotation->commercialRoutes()->attach($route->id, [
-                        'quantity' => $cores,
-                        'duration_months' => $duration,
-                        'unit_price' => $monthlyCost,
-                        'total_price' => $monthlyCost * $duration,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
-
-            // Attach colocation services with details
-            if ($request->selected_services) {
-                foreach ($request->selected_services as $serviceId) {
-                    $source = $request->service_source[$serviceId] ?? 'list';
-                    $duration = $request->service_duration[$serviceId] ?? 12;
-                    $quantity = $request->service_quantity[$serviceId] ?? 1;
-
-                    if ($source === 'list') {
-                        $service = ColocationList::where('service_id', $serviceId)->first();
-                        if (!$service) continue;
-
-                        $monthlyRate = $service->monthly_price_usd ?? ($service->recurrent_per_Annum / 12);
-                        $setupFee = $service->setup_fee_usd ?? $service->oneoff_rate ?? 0;
-                    } else {
-                        $service = ColocationService::find($serviceId);
-                        if (!$service) continue;
-
-                        $monthlyRate = $service->monthly_price;
-                        $setupFee = $service->setup_fee;
-                    }
-
-                    $monthlyTotal = $monthlyRate * $quantity;
-                    $setupTotal = $setupFee * $quantity;
-                    $totalCost = ($monthlyTotal * $duration) + $setupTotal;
-
-                    $quotation->colocationServices()->attach($serviceId, [
-                        'quantity' => $quantity,
-                        'duration_months' => $duration,
-                        'unit_price' => $monthlyTotal,
-                        'total_price' => $totalCost,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
-            }
-
-            Log::info('Quotation created', [
-                'quotation_id' => $quotation->id,
-                'quotation_number' => $quotation->quotation_number,
-                'created_by' => Auth::id(),
-                'user_role' => Auth::user()->role,
-                'status' => $status,
-                'total_amount' => $totals['total_amount']
-            ]);
-        });
-
-        $message = Auth::user()->role === 'admin' && $request->action === 'send'
-            ? 'Quotation created and sent to customer successfully!'
-            : 'Quotation created successfully!';
-
-        return redirect()->route('admin.quotations.show', $quotation)
-            ->with('success', $message);
-
-    } catch (\Exception $e) {
-        Log::error('Error creating quotation: ' . $e->getMessage());
-        return redirect()->back()
+        return back()
             ->with('error', 'Failed to create quotation: ' . $e->getMessage())
             ->withInput();
     }
@@ -387,297 +549,426 @@ foreach ($selectedCustomRoutes as $customRouteId) {
     return view('admin.quotations.show', compact('quotation', 'customerProfile'));
 }
 
+    // public function edit(Quotation $quotation)
+    // {
+    //     // Use policy for authorization
+    //     // $this->authorize('update', $quotation);
+
+    //     if ($quotation->status !== 'draft') {
+    //         return redirect()->route('admin.quotations.show', $quotation)
+    //             ->with('error', 'Only draft quotations can be edited.');
+    //     }
+
+    //     // $quotation->load(['designRequest.customer', 'commercialRoutes', 'colocationServices']);
+    //     // $commercialRoutes = CommercialRoute::where('availability', 'YES')->get();
+    //     // $colocationServices = ColocationService::all();
+
+    //     $quotation->load(['designRequest.customer', 'commercialRoutes', 'colocationServices','customRoutes']);
+    // $commercialRoutes = CommercialRoute::where('availability', 'YES')->get();
+    // $colocationServices = ColocationList::all();
+
+    //     return view('admin.quotations.edit', compact('quotation', 'commercialRoutes', 'colocationServices','customRoutes'));
+    // }
+
     public function edit(Quotation $quotation)
-    {
-        // Use policy for authorization
-        // $this->authorize('update', $quotation);
+{
+    $quotation->load([
+        'designRequest.customer',
+        'commercialRoutes',
+        'colocationServices',
+        'customRoutes',
+    ]);
 
-        if ($quotation->status !== 'draft') {
-            return redirect()->route('admin.quotations.show', $quotation)
-                ->with('error', 'Only draft quotations can be edited.');
-        }
+    $designRequest = $quotation->designRequest;
 
-        // $quotation->load(['designRequest.customer', 'commercialRoutes', 'colocationServices']);
-        // $commercialRoutes = CommercialRoute::where('availability', 'YES')->get();
-        // $colocationServices = ColocationService::all();
+           $commercialRoutes = CommercialRoute::where('availability', 'YES')->get();
 
-        $quotation->load(['designRequest.customer', 'commercialRoutes', 'colocationServices','customRoutes']);
-    $commercialRoutes = CommercialRoute::where('availability', 'YES')->get();
     $colocationServices = ColocationList::all();
 
-        return view('admin.quotations.edit', compact('quotation', 'commercialRoutes', 'colocationServices','customRoutes'));
-    }
+    $customRoutes = CustomRoute::where('design_request_id', $designRequest->id)
+        ->latest()
+        ->get();
+
+    $counties = DB::table('county')
+        ->where('is_active', 1)
+        ->orderBy('name')
+        ->get();
+
+    return view('admin.quotations.edit', compact(
+        'quotation',
+        'designRequest',
+        'commercialRoutes',
+        'colocationServices',
+        'customRoutes',
+        'counties'
+    ));
+}
 
    public function update(Request $request, Quotation $quotation)
 {
-    Log::info('=== QUOTATION UPDATE STARTED ===', [
-        'quotation_id' => $quotation->id,
-        'quotation_number' => $quotation->quotation_number,
-        'current_status' => $quotation->status,
-        'user_id' => Auth::id(),
-        'user_role' => Auth::user()->role
-    ]);
-
-    // Use policy for authorization
-    try {
-        // $this->authorize('update', $quotation);
-        Log::info('Authorization passed');
-    } catch (\Exception $e) {
-        Log::error('Authorization failed: ' . $e->getMessage());
-        return redirect()->route('admin.quotations.show', $quotation)
-            ->with('error', 'Unauthorized action.');
+    if (!in_array($quotation->status, ['draft', 'rejected'])) {
+        return redirect()
+            ->route('admin.quotations.show', $quotation)
+            ->with('error', 'Only draft or rejected quotations can be updated. Current status: ' . $quotation->status);
     }
-
-    if ($quotation->status !== 'draft'&& $quotation->status !== 'rejected') {
-        Log::warning('Quotation not in draft status', [
-            'current_status' => $quotation->status
-        ]);
-        return redirect()->route('admin.quotations.show', $quotation)
-            ->with('error', 'Only draft quotations can be updated. Current status: ' . $quotation->status);
-    }
-
-    Log::info('Validation starting...');
 
     $validated = $request->validate([
-        'scope_of_work' => 'required|string|max:2000',
-        'terms_and_conditions' => 'required|string|max:2000',
-        'customer_notes' => 'nullable|string|max:1000',
+        'scope_of_work' => 'required|string|max:5000',
+        'terms_and_conditions' => 'required|string|max:5000',
+        'customer_notes' => 'nullable|string|max:2000',
         'valid_until' => 'required|date|after:today',
         'tax_rate' => 'required|numeric|min:0|max:0.5',
+
         'selected_routes' => 'nullable|array',
         'selected_routes.*' => 'exists:commercial_routes,id',
         'route_cores' => 'nullable|array',
         'route_duration' => 'nullable|array',
+
+        'selected_custom_routes' => 'nullable|array',
+        'selected_custom_routes.*' => 'exists:custom_routes,id',
+
+        'selected_services' => 'nullable|array',
         'service_duration' => 'nullable|array',
         'service_quantity' => 'nullable|array',
-        'custom_items' => 'nullable|array',
-        'selected_services' => 'nullable|array',
-    'selected_services.*' => 'exists:colocation_services,id', // FIXED
-    ]);
+        'service_source' => 'nullable|array',
 
-    Log::info('Validation passed', [
-        'fields_received' => array_keys($validated)
+        'custom_items' => 'nullable|array',
+        'action' => 'nullable|in:draft,send',
     ]);
 
     try {
         DB::beginTransaction();
 
-        // Build line items array
         $lineItems = [];
         $subtotal = 0;
 
-        Log::info('Processing line items...');
+        /*
+        |--------------------------------------------------------------------------
+        | Commercial Routes
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('selected_routes', []) as $routeId) {
+            $route = CommercialRoute::find($routeId);
 
-        // Process commercial routes
-        if ($request->selected_routes) {
-            Log::info('Processing commercial routes', [
-                'count' => count($request->selected_routes)
-            ]);
-
-            foreach ($request->selected_routes as $routeId) {
-                $route = CommercialRoute::find($routeId);
-                if (!$route) {
-                    throw new \Exception("Commercial route not found: {$routeId}");
-                }
-
-                $cores = $request->route_cores[$routeId] ?? $route->no_of_cores_required;
-                $duration = $request->route_duration[$routeId] ?? 12;
-
-                $monthlyCost = $route->calculateMonthlyCost($cores);
-                $totalCost = $monthlyCost * $duration;
-
-                $lineItems[] = [
-                    'type' => 'commercial_route',
-                    'description' => $route->name_of_route . " ({$cores} cores, {$duration} months)",
-                    'quantity' => 1,
-                    'unit_price' => (float) $monthlyCost, // Cast to float
-                    'total' => (float) $totalCost, // Cast to float
-                    'metadata' => [
-                        'route_id' => $route->id,
-                        'cores' => (int) $cores,
-                        'duration_months' => (int) $duration,
-                        'monthly_cost' => (float) $monthlyCost
-                    ]
-                ];
-
-                $subtotal += $totalCost;
+            if (!$route) {
+                continue;
             }
+
+            $cores = (int) ($request->input("route_cores.$routeId") ?? $route->no_of_cores_required ?? 1);
+            $duration = (int) ($request->input("route_duration.$routeId") ?? 12);
+
+            $unitCost = $route->unit_cost_per_core_km_per_month
+                ?? $route->unit_cost_per_core_per_km_per_month
+                ?? $route->unit_cost
+                ?? match ($route->option ?? null) {
+                    'Non Premium' => 18,
+                    'Premium' => 19,
+                    'Metro' => 20,
+                    default => 0,
+                };
+
+            $distance = (float) ($route->approx_distance_km ?? 0);
+            $monthlyCost = (float) $unitCost * $distance * $cores;
+            $capex = (float) ($route->capital_expenditure ?? 0);
+            $totalCost = ($monthlyCost * $duration) + $capex;
+
+            $lineItems[] = [
+                'type' => 'commercial_route',
+                'item_id' => $route->id,
+                'description' => "{$route->name_of_route} ({$cores} cores, {$duration} months)",
+                'quantity' => $cores,
+                'unit_price' => $monthlyCost,
+                'total' => $totalCost,
+                'metadata' => [
+                    'route_id' => $route->id,
+                    'route_code' => $route->route_code ?? null,
+                    'route_name' => $route->name_of_route,
+                    'region' => $route->all_region ?? $route->region ?? null,
+                    'option' => $route->option ?? null,
+                    'link_class' => $route->option ?? null,
+                    'technology_type' => $route->tech_type ?? null,
+                    'distance_km' => $distance,
+
+                    'start_point' => $route->start_point
+                        ?? $route->from_location
+                        ?? $route->source_location
+                        ?? null,
+
+                    'end_point' => $route->end_point
+                        ?? $route->to_location
+                        ?? $route->destination_location
+                        ?? null,
+
+                    'pickup_points' => trim(
+                        (($route->start_point ?? $route->from_location ?? $route->source_location ?? 'N/A')
+                        . ' - ' .
+                        ($route->end_point ?? $route->to_location ?? $route->destination_location ?? 'N/A'))
+                    ),
+
+                    'cores' => $cores,
+                    'duration_months' => $duration,
+                    'unit_cost_per_core_per_km_per_month' => (float) $unitCost,
+                    'monthly_cost' => $monthlyCost,
+                    'capital_expenditure' => $capex,
+                ],
+            ];
+
+            $subtotal += $totalCost;
         }
 
-        // Process colocation services
-        if ($request->selected_services) {
-            Log::info('Processing colocation services', [
-                'count' => count($request->selected_services)
-            ]);
+        /*
+        |--------------------------------------------------------------------------
+        | Custom Routes
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('selected_custom_routes', []) as $customRouteId) {
+            $customRoute = CustomRoute::find($customRouteId);
 
-            foreach ($request->selected_services as $serviceId) {
-               $service = ColocationService::find($serviceId);
+            if (!$customRoute) {
+                continue;
+            }
+
+            $duration = (int) ($customRoute->contract_duration_months ?? 12);
+            $monthlyCost = (float) $customRoute->monthly_cost;
+            $capex = (float) ($customRoute->capital_expenditure ?? 0);
+            $totalCost = ($monthlyCost * $duration) + $capex;
+
+            $lineItems[] = [
+                'type' => 'custom_route',
+                'item_id' => $customRoute->id,
+                'description' => "{$customRoute->name_of_route} (Custom Route, {$duration} months)",
+                'quantity' => (int) ($customRoute->no_of_cores_required ?? 1),
+                'unit_price' => $monthlyCost,
+                'total' => $totalCost,
+                'metadata' => [
+                    'route_id' => $customRoute->id,
+                    'route_code' => 'CUSTOM-' . $customRoute->id,
+                    'route_name' => $customRoute->name_of_route,
+                    'region' => $customRoute->region,
+                    'option' => $customRoute->option,
+                    'link_class' => $customRoute->option,
+                    'technology_type' => $customRoute->tech_type,
+                    'distance_km' => (float) ($customRoute->approx_distance_km ?? 0),
+                    'pickup_points' => $customRoute->route_description ?? 'Custom route',
+                    'cores' => (int) ($customRoute->no_of_cores_required ?? 1),
+                    'duration_months' => $duration,
+                    'unit_cost_per_core_per_km_per_month' => (float) $customRoute->unit_cost_per_core_per_km_per_month,
+                    'monthly_cost' => $monthlyCost,
+                    'capital_expenditure' => $capex,
+                    'is_custom_route' => true,
+                ],
+            ];
+
+            $subtotal += $totalCost;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Colocation Services
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('selected_services', []) as $serviceId) {
+            $source = $request->input("service_source.$serviceId", 'list');
+            $duration = (int) ($request->input("service_duration.$serviceId") ?? 12);
+            $quantity = (int) ($request->input("service_quantity.$serviceId") ?? 1);
+
+            if ($source === 'list') {
+                $service = ColocationList::where('service_id', $serviceId)->first();
+
                 if (!$service) {
-                    throw new \Exception("Colocation service not found: {$serviceId}");
+                    continue;
                 }
 
-                $duration = $request->service_duration[$serviceId] ?? ($service->min_contract_months ?? 12);
-                $quantity = $request->service_quantity[$serviceId] ?? 1;
+                $monthlyRate = (float) ($service->monthly_price_usd ?? (($service->recurrent_per_Annum ?? 0) / 12));
+                $setupFee = (float) ($service->setup_fee_usd ?? $service->oneoff_rate ?? 0);
+                $serviceName = $service->service_type ?? 'Colocation Service';
+                $serviceCategory = $service->service_category ?? null;
+                $realServiceId = $service->service_id;
+            } else {
+                $service = ColocationService::find($serviceId);
 
-                $monthlyCost = $service->monthly_price_usd * $quantity;
-                $setupCost = $service->setup_fee_usd * $quantity;
-                $totalCost = ($monthlyCost * $duration) + $setupCost;
-
-                $lineItems[] = [
-                    'type' => 'colocation_service',
-                    'description' => $service->service_type . " (Qty: {$quantity}, {$duration} months)",
-                    'quantity' => (int) $quantity,
-                    'unit_price' => (float) $monthlyCost,
-                    'total' => (float) $totalCost,
-                    'metadata' => [
-                        'service_id' => $service->service_id,
-                        'duration_months' => (int) $duration,
-                        'quantity' => (int) $quantity,
-                        'setup_fee' => (float) $setupCost
-                    ]
-                ];
-
-                $subtotal += $totalCost;
-            }
-        }
-
-        // Process custom items
-        if ($request->custom_items) {
-            Log::info('Processing custom items', [
-                'count' => count($request->custom_items)
-            ]);
-
-            foreach ($request->custom_items as $index => $customItem) {
-                if (!empty($customItem['description']) && !empty($customItem['unit_price'])) {
-                    $quantity = $customItem['quantity'] ?? 1;
-                    $unitPrice = $customItem['unit_price'];
-                    $itemTotal = $quantity * $unitPrice;
-
-                    $lineItems[] = [
-                        'type' => 'custom_item',
-                        'description' => $customItem['description'],
-                        'quantity' => (int) $quantity,
-                        'unit_price' => (float) $unitPrice,
-                        'total' => (float) $itemTotal,
-                        'metadata' => [
-                            'custom_item' => true,
-                            'index' => $index
-                        ]
-                    ];
-
-                    $subtotal += $itemTotal;
+                if (!$service) {
+                    continue;
                 }
+
+                $monthlyRate = (float) ($service->monthly_price ?? $service->monthly_price_usd ?? 0);
+                $setupFee = (float) ($service->setup_fee ?? $service->setup_fee_usd ?? 0);
+                $serviceName = $service->service_type ?? $service->name ?? 'Colocation Service';
+                $serviceCategory = $service->service_category ?? null;
+                $realServiceId = $service->id;
             }
+
+            $monthlyTotal = $monthlyRate * $quantity;
+            $setupTotal = $setupFee * $quantity;
+            $totalCost = ($monthlyTotal * $duration) + $setupTotal;
+
+            $lineItems[] = [
+                'type' => 'colocation_service',
+                'item_id' => $realServiceId,
+                'description' => "{$serviceName} (Qty: {$quantity}, {$duration} months)",
+                'quantity' => $quantity,
+                'unit_price' => $monthlyTotal,
+                'total' => $totalCost,
+                'metadata' => [
+                    'service_id' => $realServiceId,
+                    'service_name' => $serviceName,
+                    'service_category' => $serviceCategory,
+                    'duration_months' => $duration,
+                    'quantity' => $quantity,
+                    'monthly_rate' => $monthlyRate,
+                    'setup_fee' => $setupTotal,
+                    'source' => $source,
+                ],
+            ];
+
+            $subtotal += $totalCost;
         }
 
-        // Calculate tax and total with proper casting
+        /*
+        |--------------------------------------------------------------------------
+        | Custom Items
+        |--------------------------------------------------------------------------
+        */
+        foreach ($request->input('custom_items', []) as $index => $customItem) {
+            if (empty($customItem['description']) || empty($customItem['unit_price'])) {
+                continue;
+            }
+
+            $quantity = (int) ($customItem['quantity'] ?? 1);
+            $unitPrice = (float) $customItem['unit_price'];
+            $totalCost = $quantity * $unitPrice;
+
+            $lineItems[] = [
+                'type' => 'custom_item',
+                'item_id' => null,
+                'description' => $customItem['description'],
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'total' => $totalCost,
+                'metadata' => [
+                    'custom_item' => true,
+                    'index' => $index,
+                ],
+            ];
+
+            $subtotal += $totalCost;
+        }
+
         $taxRate = (float) $request->tax_rate;
         $taxAmount = $subtotal * $taxRate;
         $totalAmount = $subtotal + $taxAmount;
 
-        Log::info('Financial calculations', [
+        $status = $quotation->status;
+
+        if ($request->action === 'send' && Auth::user()->role === 'admin') {
+            $status = 'sent';
+        } elseif ($quotation->status === 'rejected') {
+            $status = 'draft';
+        }
+
+        $quotation->update([
+            'line_items' => $lineItems,
             'subtotal' => $subtotal,
             'tax_rate' => $taxRate,
+            'amount' => $subtotal,
             'tax_amount' => $taxAmount,
             'total_amount' => $totalAmount,
-            'line_items_count' => count($lineItems)
-        ]);
-
-        // Update quotation with proper data casting
-        $updateData = [
-            'line_items' => $lineItems,
-            'subtotal' => (float) $subtotal,
-            'tax_rate' => $taxRate,
-            'amount' => (float) $subtotal,
-            'tax_amount' => (float) $taxAmount,
-            'total_amount' => (float) $totalAmount,
             'scope_of_work' => $request->scope_of_work,
             'terms_and_conditions' => $request->terms_and_conditions,
             'customer_notes' => $request->customer_notes,
             'valid_until' => $request->valid_until,
-        ];
+            'status' => $status,
+            'sent_at' => $status === 'sent' ? now() : $quotation->sent_at,
+            'rejection_reason' => null,
+            // 'rejection_notes' => null,
+        ]);
 
-        Log::info('Attempting to update quotation with data:', $updateData);
-
-        // Try updating individual fields to isolate the issue
-        $updated = $quotation->update($updateData);
-
-        if (!$updated) {
-            throw new \Exception('Failed to update quotation record');
-        }
-if ($quotation->status == 'rejected') {
-    $quotation->status = 'draft';
-    $quotation->save(); // Don't forget to save if you want to persist the change
-}
-        Log::info('Quotation base record updated successfully');
-
-        // Sync commercial routes
+        /*
+        |--------------------------------------------------------------------------
+        | Sync Pivot Tables
+        |--------------------------------------------------------------------------
+        */
         $quotation->commercialRoutes()->detach();
-        if ($request->selected_routes) {
-            foreach ($request->selected_routes as $routeId) {
-                $route = CommercialRoute::find($routeId);
-                $cores = $request->route_cores[$routeId] ?? $route->no_of_cores_required;
-                $duration = $request->route_duration[$routeId] ?? 12;
-                $monthlyCost = $route->calculateMonthlyCost($cores);
 
-                $quotation->commercialRoutes()->attach($route->id, [
-                    'quantity' => (int) $cores,
-                    'unit_price' => (float) $monthlyCost,
-                    'total_price' => (float) ($monthlyCost * $duration),
-                    'duration_months' => (int) $duration,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+        foreach ($request->input('selected_routes', []) as $routeId) {
+            $routeItem = collect($lineItems)
+                ->where('type', 'commercial_route')
+                ->firstWhere('item_id', (int) $routeId);
+
+            if (!$routeItem) {
+                continue;
             }
-            Log::info('Commercial routes attached', [
-                'count' => count($request->selected_routes)
+
+            $quotation->commercialRoutes()->attach($routeId, [
+                'quantity' => $routeItem['quantity'],
+                'duration_months' => $routeItem['metadata']['duration_months'],
+                'unit_price' => $routeItem['unit_price'],
+                'total_price' => $routeItem['total'],
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
 
-        // Sync colocation services
-        $quotation->colocationServices()->detach();
-        if ($request->selected_services) {
-            foreach ($request->selected_services as $serviceId) {
-               $service = ColocationService::find($serviceId);
-                $duration = $request->service_duration[$serviceId] ?? ($service->min_contract_months ?? 12);
-                $quantity = $request->service_quantity[$serviceId] ?? 1;
-                $monthlyCost = $service->monthly_price_usd * $quantity;
-                $totalCost = ($monthlyCost * $duration) + ($service->setup_fee_usd * $quantity);
+        $quotation->customRoutes()->detach();
 
-                $quotation->colocationServices()->attach($service->service_id, [
-                    'quantity' => (int) $quantity,
-                    'unit_price' => (float) $monthlyCost,
-                    'total_price' => (float) $totalCost,
-                    'duration_months' => (int) $duration,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+        foreach ($request->input('selected_custom_routes', []) as $customRouteId) {
+            $customItem = collect($lineItems)
+                ->where('type', 'custom_route')
+                ->firstWhere('item_id', (int) $customRouteId);
+
+            if (!$customItem) {
+                continue;
             }
-            Log::info('Colocation services attached', [
-                'count' => count($request->selected_services)
+
+            $quotation->customRoutes()->attach($customRouteId, [
+                'monthly_cost' => $customItem['unit_price'],
+                'capital_expenditure' => $customItem['metadata']['capital_expenditure'],
+                'currency' => 'USD',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        $quotation->colocationServices()->detach();
+
+        foreach ($request->input('selected_services', []) as $serviceId) {
+            $serviceItem = collect($lineItems)
+                ->where('type', 'colocation_service')
+                ->firstWhere('item_id', $serviceId);
+
+            if (!$serviceItem) {
+                continue;
+            }
+
+            $quotation->colocationServices()->attach($serviceId, [
+                'quantity' => $serviceItem['quantity'],
+                'duration_months' => $serviceItem['metadata']['duration_months'],
+                'unit_price' => $serviceItem['unit_price'],
+                'total_price' => $serviceItem['total'],
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
 
         DB::commit();
 
-        Log::info('=== QUOTATION UPDATE COMPLETED SUCCESSFULLY ===', [
-            'quotation_id' => $quotation->id,
-            'new_total_amount' => $totalAmount
-        ]);
+        return redirect()
+            ->route('admin.quotations.show', $quotation)
+            ->with('success', $status === 'sent'
+                ? 'Quotation updated and sent successfully!'
+                : 'Quotation updated successfully!'
+            );
 
-        return redirect()->route('admin.quotations.show', $quotation)
-            ->with('success', 'Quotation updated successfully!');
-
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         DB::rollBack();
 
-        Log::error('=== QUOTATION UPDATE FAILED ===', [
+        Log::error('Failed to update quotation', [
             'quotation_id' => $quotation->id,
-            'error_message' => $e->getMessage(),
-            'error_trace' => $e->getTraceAsString()
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
         ]);
 
-        return redirect()->back()
+        return back()
             ->with('error', 'Failed to update quotation: ' . $e->getMessage())
             ->withInput();
     }

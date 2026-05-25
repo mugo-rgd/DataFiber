@@ -14,6 +14,7 @@ use App\Http\Controllers\FiberSegmentController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Http\Controllers\Api\ExecutiveDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -185,3 +186,19 @@ if (app()->environment('local')) {
         });
     });
 }
+
+use App\Http\Controllers\Api\BiDashboardController;
+
+Route::prefix('bi')->middleware('auth:sanctum')->group(function () {
+    Route::get('/executive-summary', [BiDashboardController::class, 'executiveSummary']);
+    Route::get('/revenue', [BiDashboardController::class, 'revenue']);
+    Route::get('/debt-aging', [BiDashboardController::class, 'debtAging']);
+    Route::get('/quotations', [BiDashboardController::class, 'quotations']);
+    Route::get('/contracts', [BiDashboardController::class, 'contracts']);
+    Route::get('/leases', [BiDashboardController::class, 'leases']);
+    Route::get('/fibre-utilization', [BiDashboardController::class, 'fibreUtilization']);
+    Route::get('/sla-network', [BiDashboardController::class, 'slaNetwork']);
+    Route::get('/top-customers', [BiDashboardController::class, 'topCustomers']);
+});
+
+

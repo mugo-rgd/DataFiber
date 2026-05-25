@@ -83,6 +83,7 @@ use App\Http\Controllers\TeamPerformanceController;
 use App\Http\Controllers\CAK\ASPController;
 use App\Http\Controllers\CAK\CSPController;
 use App\Http\Controllers\CAK\NFPController;
+use App\Http\Controllers\ExecutiveDashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -781,7 +782,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/reports/aging', [DebtManagementController::class, 'agingReport'])->name('reports.aging');
             Route::get('/collection', [DebtManagementController::class, 'collectionReport'])->name('collection');
             Route::put('/payments/{payment}', [DebtManagementController::class, 'paymentUpdate'])->name('payments.update');
-
+Route::get('/export', [DebtManagementController::class, 'export'])->name('export');
             // Payment Management Routes
             Route::prefix('payments')->name('payments.')->group(function () {
                 Route::get('/', [DebtManagementController::class, 'paymentIndex'])->name('index');
@@ -1548,6 +1549,21 @@ Route::post('/designer/custom-routes', [QuotationController::class, 'storeCustom
 Route::get('/export', function () {
     return view('export.index');
 })->name('export.index');
+
+// use App\Http\Controllers\ExecutiveDashboardController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/executive-dashboard', [ExecutiveDashboardController::class, 'index'])
+        ->name('executive.dashboard');
+
+    Route::post('/executive-dashboard/refresh', [ExecutiveDashboardController::class, 'refresh'])
+        ->name('executive.dashboard.refresh');
+        Route::get('/executive-dashboard/gis', [ExecutiveDashboardController::class, 'gis'])
+    ->name('executive.dashboard.gis');
+});
+
+
+    // Route::get('/executive-dashboard', [ExecutiveDashboardController::class, 'index'])->name('executive.dashboard');
 
 // Include API routes
 require __DIR__.'/api.php';

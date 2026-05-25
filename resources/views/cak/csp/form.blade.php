@@ -2,14 +2,147 @@
 
 @section('title', 'CSP Compliance Return')
 @section('page-title', 'Content Service Provider (CSP) Compliance Return')
+<style>
+/* Main animation */
+@keyframes attractAttention {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+    }
+    20% {
+        transform: scale(1.08);
+        background: #ffc107;
+    }
+    40% {
+        transform: scale(0.98);
+    }
+    60% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+    80% {
+        transform: scale(0.99);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+/* Text pulse */
+@keyframes textPulse {
+    0%, 100% {
+        text-shadow: 0 0 0px #FFD700;
+    }
+    50% {
+        text-shadow: 0 0 8px #FFD700;
+        color: #003f20;
+    }
+}
+
+.attract-button {
+    animation: attractAttention 1.2s ease-in-out 3;
+    position: relative;
+    overflow: hidden;
+}
+
+.attract-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.pulse-text {
+    animation: textPulse 0.8s ease-in-out 6;
+}
+
+.hand-pointer {
+    display: inline-block;
+    animation: bounce 0.5s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+}
+
+/* Badge animation */
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); background: #dc3545; }
+}
+
+.new-badge {
+    animation: badgePulse 0.8s ease-in-out 3;
+    display: inline-block;
+}
+</style>
+
 <button type="button"
-        class="btn btn-kp-warning btn-lg autofill-form-btn"
+        id="magicAutoFillBtn"
+        class="btn btn-kp-warning btn-lg autofill-form-btn mt-5 pt-4 attract-button"
         data-url="{{ route('csp.autofill-record-2') }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
-        title="Auto fill the form and make changes where necessary and save draft or submit">
-    Auto Fill
+        title="✨ Click to automatically fill the form! ✨">
+    <i class="fas fa-magic me-2 pulse-text"></i>
+    <span class="pulse-text">Auto Fill</span>
+    <span class="hand-pointer ms-2">👉</span>
+    <span class="badge bg-danger ms-2 new-badge">NEW!</span>
 </button>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('magicAutoFillBtn');
+
+    if (btn) {
+        // Add hover tooltip enhancement
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.02)';
+            this.style.transition = 'all 0.3s ease';
+
+            // Optional: Play beep sound on hover (requires user interaction first)
+            if (window.speechSynthesis) {
+                const utterance = new SpeechSynthesisUtterance('Auto fill available');
+                utterance.volume = 0.3;
+                utterance.rate = 1.5;
+                window.speechSynthesis.speak(utterance);
+            }
+        });
+
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+
+        // Log to console (for debugging)
+        console.log('Auto Fill button is ready! User can click to auto-fill the form.');
+    }
+});
+</script>
 @push('styles')
 <style>
     .form-container { background:#fff; padding:25px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,.08); }

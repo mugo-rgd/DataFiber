@@ -1,115 +1,122 @@
 @extends('layouts.app')
 
-@section('title', 'Account Manager Dashboard')
+@section('title', 'Account Manager Dashboard - Dark Fibre CRM')
 
 @section('content')
 <div class="container-fluid px-0">
-    <!-- Dashboard Header - Fully Responsive -->
-    <div class="dashboard-header bg-gradient-primary py-2 py-sm-3 py-md-4">
+
+    {{-- Hero Section with Welcome Message --}}
+    <div class="dashboard-hero text-white py-4 py-md-5">
         <div class="container-fluid px-3 px-sm-4 px-md-5">
-            <div class="row align-items-center g-2 g-md-3">
-                <div class="col-12 col-lg-8 mb-2 mb-lg-0">
-                    <div class="d-flex align-items-center flex-wrap">
-                        <div class="header-icon me-2 me-sm-3 mb-1 mb-sm-0">
-                            <i class="fas fa-user-tie text-white responsive-icon"></i>
+            <div class="row align-items-center g-4">
+
+                {{-- Left Column - Greeting & User Info --}}
+                <div class="col-12 col-lg-7">
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div class="hero-icon">
+                            <i class="fas fa-user-tie fa-3x fa-fw"></i>
                         </div>
-                        <div class="flex-grow-1">
-                            <h1 class="responsive-heading text-white mb-1">Account Manager Dashboard</h1>
+                        <div>
                             @php
                                 $hour = now()->hour;
-                                if ($hour < 12) {
-                                    $greeting = 'Good morning';
-                                } elseif ($hour < 17) {
-                                    $greeting = 'Good afternoon';
-                                } else {
-                                    $greeting = 'Good evening';
-                                }
+                                $greeting = match(true) {
+                                    $hour < 12 => 'Good morning',
+                                    $hour < 17 => 'Good afternoon',
+                                    default => 'Good evening'
+                                };
                             @endphp
-                            <p class="mb-0 opacity-75 text-white responsive-text">{{ $greeting }}, <strong>{{ Auth::user()->name }}</strong>!</p>
+                            <h1 class="display-5 fw-bold mb-2">Account Manager Dashboard</h1>
+                            <p class="lead mb-0 opacity-90">{{ $greeting }}, <strong>{{ Auth::user()->name }}</strong>!</p>
                         </div>
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-1 gap-sm-2 mt-2">
-                        <span class="badge bg-white text-kp-blue responsive-badge">
-                            <i class="fas fa-calendar-day me-1"></i>
-                            <span class="date-text">{{ now()->format('F j, Y') }}</span>
+
+                    {{-- Meta Information --}}
+                    <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
+                        <span class="badge bg-white text-kp-blue px-3 py-2 rounded-pill">
+                            <i class="far fa-calendar-alt me-1"></i>
+                            {{ now()->format('l, F j, Y') }}
                         </span>
-                        <span class="badge bg-white-20 text-white responsive-badge">
-                            <i class="fas fa-clock me-1"></i>
+                        <span class="badge bg-white text-kp-blue px-3 py-2 rounded-pill">
+                            <i class="far fa-clock me-1"></i>
                             {{ now()->format('g:i A') }}
                         </span>
-                        <span class="badge bg-kp-green responsive-badge">
-                            <i class="fas fa-circle me-1"></i> Online
+                        <span class="badge bg-success px-3 py-2 rounded-pill">
+                            <i class="fas fa-circle me-1 small"></i> Online
                         </span>
                     </div>
                 </div>
-                <div class="col-12 col-lg-4">
-                    <div class="d-flex flex-wrap gap-1 gap-sm-2 justify-content-start justify-content-lg-end">
+
+                {{-- Right Column - Action Buttons --}}
+                <div class="col-12 col-lg-5">
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
                         @include('partials.role-help-widget')
-                        <a href="{{ route('kpi.dashboard', ['account_manager_id' => auth()->user()->id]) }}" class="btn btn-light responsive-btn">
-                            <i class="fas fa-chart-line me-1 me-sm-2"></i>
-                            <span class="btn-text">My KPIs</span>
+
+                        <a href="{{ route('kpi.dashboard', ['account_manager_id' => auth()->user()->id]) }}"
+                           class="btn btn-light btn-dashboard-action">
+                            <i class="fas fa-chart-line me-2"></i>My KPIs
                         </a>
-                        <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-light responsive-btn">
-                            <i class="fas fa-plus-circle me-1 me-sm-2"></i>
-                            <span class="btn-text">New Ticket</span>
+
+                        <a href="{{ route('account-manager.tickets.create') }}"
+                           class="btn btn-light btn-dashboard-action">
+                            <i class="fas fa-plus-circle me-2"></i>New Ticket
                         </a>
-                        <a href="{{ route('account-manager.payments.create') }}" class="btn btn-light responsive-btn">
-                            <i class="fas fa-money-bill-wave me-1 me-sm-2"></i>
-                            <span class="btn-text">Track Payment</span>
+
+                        <a href="{{ route('account-manager.payments.create') }}"
+                           class="btn btn-light btn-dashboard-action">
+                            <i class="fas fa-money-bill-wave me-2"></i>Track Payment
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- Alert Section - Auto Adjusting -->
+    {{-- Alert Banner for Urgent Issues --}}
     @if(($stats['high_priority_tickets'] ?? 0) > 0 || ($stats['overdue_payments'] ?? 0) > 0)
-    <div class="container-fluid px-3 px-sm-4 px-md-5 py-2 py-sm-3">
-        <div class="alert alert-kp-warning alert-dismissible fade show rounded-lg border-0 shadow-sm m-0" role="alert">
+    <div class="container-fluid px-3 px-sm-4 px-md-5 py-3">
+        <div class="alert alert-warning alert-dismissible fade show border-0 rounded-4 shadow-sm" role="alert">
             <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center">
-                <div class="alert-icon me-0 me-sm-2 me-md-3 mb-2 mb-sm-0">
-                    <i class="fas fa-exclamation-triangle responsive-alert-icon"></i>
+                <div class="alert-icon me-0 me-sm-3 mb-2 mb-sm-0">
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
                 </div>
                 <div class="flex-grow-1">
-                    <h6 class="alert-heading mb-2 fw-bold responsive-subheading">Attention Required</h6>
-                    <div class="d-flex flex-wrap gap-2">
+                    <h6 class="alert-heading mb-2 fw-bold">⚠️ Attention Required</h6>
+                    <div class="d-flex flex-wrap gap-3">
                         @if(($stats['high_priority_tickets'] ?? 0) > 0)
-                        <div class="alert-item responsive-text">
-                            <i class="fas fa-headset me-1"></i>
-                            <span class="fw-bold">{{ $stats['high_priority_tickets'] }}</span> urgent tickets
-                        </div>
+                            <span class="badge bg-danger rounded-pill px-3 py-2">
+                                <i class="fas fa-headset me-1"></i>
+                                {{ $stats['high_priority_tickets'] }} Urgent Ticket(s)
+                            </span>
                         @endif
                         @if(($stats['overdue_payments'] ?? 0) > 0)
-                        <div class="alert-item responsive-text">
-                            <i class="fas fa-money-bill-wave me-1"></i>
-                            <span class="fw-bold">{{ $stats['overdue_payments'] }}</span> overdue
-                        </div>
+                            <span class="badge bg-danger rounded-pill px-3 py-2">
+                                <i class="fas fa-money-bill-wave me-1"></i>
+                                {{ $stats['overdue_payments'] }} Overdue Payment(s)
+                            </span>
                         @endif
                     </div>
                 </div>
-                <button type="button" class="btn-close mt-2 mt-sm-0 ms-0 ms-sm-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button type="button" class="btn-close mt-2 mt-sm-0" data-bs-dismiss="alert"></button>
             </div>
         </div>
     </div>
     @endif
 
-    <!-- Main Content - Fluid Container -->
-    <div class="container-fluid px-3 px-sm-4 px-md-5 py-3 py-sm-4">
-        <!-- Customer Success Metrics - Dynamic Grid -->
-        <div class="row g-2 g-sm-3 g-md-4 mb-3 mb-sm-4">
+    {{-- Main Content --}}
+    <div class="container-fluid px-3 px-sm-4 px-md-5 py-4">
+
+        {{-- Key Performance Metrics Grid --}}
+        <div class="row g-4 mb-5">
             @php
                 $metrics = [
                     [
                         'title' => 'Customers',
                         'value' => $stats['total_customers'] ?? 0,
-                        'icon' => 'user-friends',
+                        'icon' => 'users',
                         'color' => 'primary',
-                        'trend' => '12%',
-                        'trend_color' => 'success',
-                        'badge' => 'Active',
-                        'badge_color' => 'success',
-                        'subtitle' => 'in portfolio',
+                        'trend' => '+12%',
+                        'subtitle' => 'active customers',
                         'link' => route('account-manager.customers.index'),
                         'link_text' => 'View Portfolio'
                     ],
@@ -119,28 +126,25 @@
                         'icon' => 'headset',
                         'color' => 'warning',
                         'alert' => ($stats['high_priority_tickets'] ?? 0) > 0 ? $stats['high_priority_tickets'] . ' urgent' : null,
-                        'alert_color' => 'danger',
-                        'subtitle' => 'open requests',
+                        'subtitle' => 'open tickets',
                         'link' => route('account-manager.tickets.index'),
                         'link_text' => 'Manage Tickets'
                     ],
                     [
                         'title' => 'Payment Health',
                         'value' => $stats['pending_payments'] ?? 0,
-                        'icon' => 'chart-line',
+                        'icon' => 'credit-card',
                         'color' => 'info',
                         'alert' => ($stats['overdue_payments'] ?? 0) > 0 ? $stats['overdue_payments'] . ' overdue' : null,
-                        'alert_color' => 'danger',
                         'subtitle' => 'pending collection',
                         'link' => route('account-manager.payments.index'),
                         'link_text' => 'Review Payments'
                     ],
                     [
-                        'title' => 'Satisfaction',
+                        'title' => 'Satisfaction Score',
                         'value' => ($stats['satisfaction_score'] ?? 'N/A') . '%',
                         'icon' => 'star',
                         'color' => 'success',
-                        'score' => $stats['satisfaction_score'] ?? 0,
                         'subtitle' => 'average rating',
                         'link' => '#',
                         'link_text' => 'View Feedback'
@@ -149,259 +153,74 @@
             @endphp
 
             @foreach($metrics as $metric)
-            <div class="col-6 col-md-6 col-lg-3 mb-2 mb-sm-3">
-                <div class="stat-card bg-white rounded-lg shadow-sm border-0 h-100">
-                    <div class="stat-card-body p-2 p-sm-3 p-md-4">
-                        <div class="d-flex justify-content-between align-items-start mb-2 mb-sm-3 mb-md-4">
-                            <div class="stat-icon bg-{{ $metric['color'] }}-light rounded-circle responsive-stat-icon">
-                                <i class="fas fa-{{ $metric['icon'] }} text-{{ $metric['color'] }}"></i>
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="metric-card bg-white rounded-4 shadow-sm h-100 p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="metric-icon rounded-circle bg-{{ $metric['color'] }}-light">
+                                <i class="fas fa-{{ $metric['icon'] }} fa-fw text-{{ $metric['color'] }}"></i>
                             </div>
-                            <div class="trend-indicator">
-                                @if(isset($metric['alert']))
-                                <span class="badge bg-{{ $metric['alert_color'] }} responsive-badge">{{ $metric['alert'] }}</span>
-                                @elseif(isset($metric['trend']))
-                                <span class="badge bg-{{ $metric['trend_color'] ?? 'success' }} responsive-badge">
+                            @if(isset($metric['alert']))
+                                <span class="badge bg-danger rounded-pill">{{ $metric['alert'] }}</span>
+                            @elseif(isset($metric['trend']))
+                                <span class="badge bg-success rounded-pill">
                                     <i class="fas fa-arrow-up me-1"></i>{{ $metric['trend'] }}
                                 </span>
-                                @elseif(isset($metric['score']))
-                                @php
-                                    $score = $metric['score'];
-                                    $scoreClass = $score >= 90 ? 'success' : ($score >= 80 ? 'warning' : 'danger');
-                                @endphp
-                                <span class="badge bg-{{ $scoreClass }} responsive-badge">{{ $score }}%</span>
-                                @endif
-                            </div>
-                        </div>
-                        <h6 class="stat-title text-muted text-uppercase small mb-1 mb-sm-2">{{ $metric['title'] }}</h6>
-                        <div class="stat-value fw-bold text-dark responsive-stat-value">{{ $metric['value'] }}</div>
-                        <div class="stat-subtitle mb-2 mb-sm-3">
-                            @if(isset($metric['badge']))
-                            <span class="badge bg-{{ $metric['badge_color'] ?? 'success' }} responsive-badge">{{ $metric['badge'] }}</span>
                             @endif
-                            <small class="text-muted ms-1 responsive-text">{{ $metric['subtitle'] }}</small>
                         </div>
-                        <a href="{{ $metric['link'] }}" class="d-block text-{{ $metric['color'] }} text-decoration-none small fw-bold responsive-link">
+
+                        <h6 class="text-muted text-uppercase small fw-semibold mb-2">{{ $metric['title'] }}</h6>
+                        <div class="metric-value fw-bold text-kp-blue mb-2">{{ $metric['value'] }}</div>
+                        <p class="small text-muted mb-3">{{ $metric['subtitle'] }}</p>
+
+                        <a href="{{ $metric['link'] }}" class="btn btn-sm btn-outline-{{ $metric['color'] }} rounded-pill w-100">
                             {{ $metric['link_text'] }} <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     </div>
                 </div>
-            </div>
             @endforeach
         </div>
 
-        <!-- Quick Actions - Dynamic Grid -->
-        <div class="row mb-3 mb-sm-4">
+        {{-- Quick Actions Section --}}
+        @php
+            $quickActions = [
+                ['title' => 'New Ticket', 'icon' => 'headset', 'color' => 'info', 'link' => route('account-manager.tickets.create'), 'desc' => 'Register support issues'],
+                ['title' => 'Track Payment', 'icon' => 'money-bill-wave', 'color' => 'success', 'link' => route('account-manager.payments.create'), 'desc' => 'Track payments & debts'],
+                ['title' => 'Customers', 'icon' => 'users', 'color' => 'primary', 'link' => route('account-manager.customers.index'), 'desc' => 'Review customer info'],
+                ['title' => 'Design Requests', 'icon' => 'drafting-compass', 'color' => 'warning', 'link' => route('admin.design-requests.index'), 'desc' => 'Allocate requests'],
+                ['title' => 'Contracts', 'icon' => 'file-contract', 'color' => 'purple', 'link' => route('contracts.index'), 'desc' => 'Manage agreements'],
+                ['title' => 'Quotations', 'icon' => 'file-invoice-dollar', 'color' => 'danger', 'link' => route('admin.quotations.index'), 'desc' => 'Create quotations'],
+                ['title' => 'Leases', 'icon' => 'network-wired', 'color' => 'dark', 'link' => route('account-manager.leases.index'), 'desc' => 'Manage leases'],
+                ['title' => 'Reports', 'icon' => 'chart-bar', 'color' => 'secondary', 'link' => route('account-manager.reports.performance'), 'desc' => 'Analytics & performance'],
+            ];
+        @endphp
+
+        <div class="row mb-5">
             <div class="col-12">
-                <div class="card border-0 shadow-sm mb-2 mb-sm-3 mb-md-4">
-                    @php
-                        $actions = [
-                            [
-                                'title' => 'New Ticket',
-                                'icon' => 'headset',
-                                'color' => 'info',
-                                'link' => route('account-manager.tickets.create'),
-                                'desc' => 'Register customer support issues'
-                            ],
-                            [
-                                'title' => 'Track Payment',
-                                'icon' => 'money-bill-wave',
-                                'color' => 'success',
-                                'link' => route('account-manager.payments.create'),
-                                'desc' => 'Track payments and debts'
-                            ],
-                            [
-                                'title' => 'Customers',
-                                'icon' => 'users',
-                                'color' => 'primary',
-                                'link' => route('account-manager.customers.index'),
-                                'desc' => 'Review customer information'
-                            ],
-                            [
-                                'title' => 'Requests',
-                                'icon' => 'drafting-compass',
-                                'color' => 'warning',
-                                'link' => route('admin.design-requests.index'),
-                                'desc' => 'Allocate design requests'
-                            ],
-                            [
-                                'title' => 'Link Inventory',
-                                'icon' => 'tachometer-alt',
-                                'color' => 'danger',
-                                'desc' => 'Fibre link management',
-                                'links' => [
-                                    [
-                                        'label' => 'View All',
-                                        'route' => route('conversion-data.index'),
-                                        'icon' => 'list'
-                                    ],
-                                    [
-                                        'label' => 'Summary',
-                                        'route' => route('conversion-data.summary-report'),
-                                        'icon' => 'chart-bar'
-                                    ],
-                                    [
-                                        'label' => 'Add New',
-                                        'route' => route('conversion-data.create'),
-                                        'icon' => 'plus'
-                                    ]
-                                ]
-                            ],
-                            [
-                                'title' => 'Leases',
-                                'icon' => 'network-wired',
-                                'color' => 'dark',
-                                'link' => function() {
-                                    if(in_array(auth()->user()->role, ['admin', 'technical_admin', 'system_admin'])) {
-                                        return route('admin.leases.index');
-                                    } elseif(auth()->user()->role === 'account_manager') {
-                                        return route('account-manager.leases.index');
-                                    }
-                                    return '#';
-                                },
-                                'desc' => 'Manage network leases',
-                                'disabled' => !in_array(auth()->user()->role, ['admin', 'technical_admin', 'system_admin', 'account_manager'])
-                            ],
-                            [
-                                'title' => 'Reports',
-                                'icon' => 'chart-bar',
-                                'color' => 'secondary',
-                                'link' => route('account-manager.reports.performance'),
-                                'desc' => 'Analytics & performance'
-                            ],
-                            [
-                                'title' => 'Contracts',
-                                'icon' => 'file-contract',
-                                'color' => 'purple',
-                                'link' => route('admin.contracts.index'),
-                                'desc' => 'Manage agreements'
-                            ],
-                            [
-                                'title' => 'Quotations',
-                                'icon' => 'file-invoice-dollar',
-                                'color' => 'danger',
-                                'link' => route('admin.quotations.index'),
-                                'desc' => 'Create and view quotations',
-                                'permission' => 'isAccountManager'
-                            ],
-                            [
-                                'title' => 'System Documents',
-                                'icon' => 'folder',
-                                'color' => 'danger',
-                                'link' => route('documents.index'),
-                                'desc' => 'View System Generated Documents',
-                                'permission' => 'view-system-documents'
-                            ]
-                        ];
-
-                        $visibleActionsCount = 0;
-                        foreach ($actions as $action) {
-                            $hasPermission = true;
-
-                            if (isset($action['permission'])) {
-                                if (is_string($action['permission'])) {
-                                    $hasPermission = \Illuminate\Support\Facades\Gate::allows($action['permission']);
-                                } elseif ($action['permission'] instanceof \Closure) {
-                                    $hasPermission = $action['permission'](auth()->user());
-                                }
-                            }
-
-                            if (isset($action['disabled']) && $action['disabled']) {
-                                $hasPermission = false;
-                            }
-
-                            if ($hasPermission) {
-                                $visibleActionsCount++;
-                            }
-                        }
-                    @endphp
-
-                    <div class="card-header bg-white border-0 py-2 py-sm-3">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 responsive-subheading">
-                                <i class="fas fa-bolt text-kp-yellow me-2"></i>Quick Actions
-                            </h5>
-                            <span class="badge bg-kp-yellow d-none d-sm-inline responsive-badge">{{ $visibleActionsCount }} Actions</span>
+                            <h4 class="mb-0 fw-bold">
+                                <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
+                            </h4>
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                                {{ count($quickActions) }} Available
+                            </span>
                         </div>
+                        <p class="text-muted mb-0 mt-2">Frequently used tools and shortcuts</p>
                     </div>
-                    <div class="card-body p-2 p-sm-3 p-md-4">
-                        <div class="row g-2 g-sm-3 g-md-4">
-                            @foreach($actions as $action)
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2 col-xl-2 col-xxl-2">
-                                @php
-                                    $hasMultipleLinks = isset($action['links']);
-                                    $hasSingleLink = isset($action['link']);
-                                    $disabled = $action['disabled'] ?? false;
 
-                                    if ($hasSingleLink) {
-                                        $link = is_callable($action['link']) ? $action['link']() : $action['link'];
-                                    } else {
-                                        $link = '#';
-                                    }
-
-                                    $hasPermission = true;
-                                    if (isset($action['permission'])) {
-                                        $hasPermission = \Illuminate\Support\Facades\Gate::allows($action['permission']);
-                                    }
-                                @endphp
-
-                                @if(isset($action['permission']) && !$hasPermission)
-                                    @continue
-                                @endif
-
-                                @if($hasMultipleLinks)
-                                    <div class="dropdown position-relative">
-                                        <div class="action-card dropdown-toggle {{ $disabled ? 'disabled' : '' }}"
-                                             @if(!$disabled) data-bs-toggle="dropdown" aria-expanded="false" @endif
-                                             style="cursor: pointer;">
-                                            <div class="action-icon bg-{{ $action['color'] }}">
-                                                <i class="fas fa-{{ $action['icon'] }}"></i>
-                                            </div>
-                                            <div class="action-content">
-                                                <h6 class="responsive-text">{{ $action['title'] }}</h6>
-                                                <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
-                                                <span class="dropdown-toggle-indicator">
-                                                    <i class="fas fa-chevron-down small text-muted"></i>
-                                                </span>
-                                            </div>
+                    <div class="card-body p-4 pt-2">
+                        <div class="row g-3">
+                            @foreach($quickActions as $action)
+                                <div class="col-6 col-md-4 col-lg-3">
+                                    <a href="{{ $action['link'] }}" class="action-card text-center p-3 rounded-3 border h-100 text-decoration-none d-block">
+                                        <div class="action-icon bg-{{ $action['color'] }} rounded-3 mx-auto mb-3">
+                                            <i class="fas fa-{{ $action['icon'] }} fa-fw"></i>
                                         </div>
-                                        @if(!$disabled)
-                                        <ul class="dropdown-menu dropdown-menu-end p-2 border-0 shadow-lg rounded-lg"
-                                            style="min-width: 200px;">
-                                            @foreach($action['links'] as $subLink)
-                                            <li>
-                                                <a href="{{ $subLink['route'] }}"
-                                                   class="dropdown-item d-flex align-items-center py-2 px-3 rounded"
-                                                   onclick="event.stopPropagation();">
-                                                    <i class="fas fa-{{ $subLink['icon'] }} text-{{ $action['color'] }} me-2"></i>
-                                                    <span>{{ $subLink['label'] }}</span>
-                                                </a>
-                                            </li>
-                                            @endforeach
-                                        </ul>
-                                        @endif
-                                    </div>
-                                @elseif($disabled)
-                                    <div class="action-card disabled">
-                                        <div class="action-icon bg-{{ $action['color'] }}">
-                                            <i class="fas fa-{{ $action['icon'] }}"></i>
-                                        </div>
-                                        <div class="action-content">
-                                            <h6 class="responsive-text">{{ $action['title'] }}</h6>
-                                            <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
-                                        </div>
-                                    </div>
-                                @else
-                                    <a href="{{ $link }}" class="action-card">
-                                        <div class="action-icon bg-{{ $action['color'] }}">
-                                            <i class="fas fa-{{ $action['icon'] }}"></i>
-                                        </div>
-                                        <div class="action-content">
-                                            <h6 class="responsive-text">{{ $action['title'] }}</h6>
-                                            <p class="text-muted small d-none d-sm-block">{{ $action['desc'] }}</p>
-                                        </div>
+                                        <h6 class="fw-semibold mb-1">{{ $action['title'] }}</h6>
+                                        <small class="text-muted d-none d-md-block">{{ $action['desc'] }}</small>
                                     </a>
-                                @endif
-                            </div>
+                                </div>
                             @endforeach
                         </div>
                     </div>
@@ -409,641 +228,364 @@
             </div>
         </div>
 
-        <!-- Recent Activity Section - Dynamic Layout -->
-        <div class="row g-2 g-sm-3 g-md-4">
-            <!-- Recent Support Tickets -->
-            <div class="col-12 col-lg-6 col-xl-6 col-xxl-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-2 py-sm-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap">
-                            <h5 class="mb-0 responsive-subheading">
-                                <i class="fas fa-headset text-kp-blue me-2"></i>Recent Support
-                            </h5>
-                            <div class="d-flex align-items-center mt-1 mt-sm-0">
-                                <span class="badge bg-light text-dark responsive-badge d-none d-sm-inline">{{ $stats['open_tickets'] ?? 0 }} active</span>
-                                <a href="{{ route('account-manager.tickets.index') }}" class="btn btn-sm btn-kp-primary ms-1 ms-sm-2 responsive-btn">
-                                    <span class="d-none d-sm-inline">View All</span>
-                                    <span class="d-inline d-sm-none">All</span>
-                                </a>
-                            </div>
-                        </div>
+        {{-- Recent Activity Section --}}
+        <div class="row g-4">
+
+            {{-- Recent Support Tickets --}}
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-headset text-kp-blue me-2"></i>Recent Support Tickets
+                        </h5>
+                        <a href="{{ route('account-manager.tickets.index') }}" class="btn btn-sm btn-outline-kp-blue rounded-pill px-3">
+                            View All <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
                     <div class="card-body p-0">
-                        @forelse($recentTickets as $ticket)
-                        <div class="ticket-item p-2 p-sm-3 p-md-4 border-bottom">
-                            <div class="d-flex align-items-start">
-                                <div class="ticket-avatar me-2 me-sm-3">
-                                    <div class="avatar-circle bg-{{ $ticket->priority === 'high' ? 'danger' : 'warning' }}-light">
-                                        <i class="fas fa-{{ $ticket->priority === 'high' ? 'exclamation-triangle' : 'ticket-alt' }} text-{{ $ticket->priority === 'high' ? 'danger' : 'warning' }} responsive-icon-sm"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start mb-1 mb-sm-2">
-                                        <h6 class="fw-bold mb-0 text-dark responsive-text">{{ Str::limit($ticket->title, 50) }}</h6>
-                                        <span class="badge bg-{{ $ticket->priority === 'high' ? 'danger' : 'warning' }} badge-pill responsive-badge">
-                                            {{ ucfirst($ticket->priority) }}
-                                        </span>
-                                    </div>
-                                    <p class="text-muted small mb-2 mb-sm-3 responsive-text-sm">
-                                        <i class="fas fa-user me-1"></i>{{ Str::limit($ticket->customer->name ?? 'Unknown', 25) }}
-                                        • <i class="fas fa-clock me-1"></i>{{ $ticket->created_at->diffForHumans() }}
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                        <span class="badge bg-{{ $ticket->status === 'open' ? 'primary' : ($ticket->status === 'in_progress' ? 'info' : 'success') }} mb-1 responsive-badge">
-                                            {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
-                                        </span>
-                                        <div>
-                                            @if($ticket->due_date)
-                                            <small class="text-{{ $ticket->due_date->isPast() ? 'danger' : 'muted' }} responsive-text-sm">
-                                                <i class="fas fa-clock me-1"></i>Due {{ $ticket->due_date->format('M d') }}
-                                            </small>
-                                            @endif
+                        @forelse($recentTickets ?? [] as $ticket)
+                            <div class="ticket-item p-4 border-bottom">
+                                <div class="d-flex gap-3">
+                                    <div class="flex-shrink-0">
+                                        <div class="avatar-circle bg-{{ $ticket->priority === 'high' ? 'danger' : 'warning' }}-light">
+                                            <i class="fas fa-{{ $ticket->priority === 'high' ? 'exclamation-triangle' : 'ticket-alt' }} text-{{ $ticket->priority === 'high' ? 'danger' : 'warning' }}"></i>
                                         </div>
                                     </div>
-                                    <a href="{{ route('account-manager.tickets.show', $ticket) }}"
-                                       class="btn btn-sm btn-outline-kp-primary w-100 w-sm-auto mt-2 responsive-btn">
-                                        <i class="fas fa-eye me-1"></i>View Details
-                                    </a>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                                            <h6 class="fw-bold mb-0">{{ Str::limit($ticket->title, 50) }}</h6>
+                                            <span class="badge bg-{{ $ticket->priority === 'high' ? 'danger' : 'warning' }} rounded-pill">
+                                                {{ ucfirst($ticket->priority) }} Priority
+                                            </span>
+                                        </div>
+                                        <p class="text-muted small mb-2">
+                                            <i class="fas fa-user me-1"></i>{{ Str::limit($ticket->customer->name ?? 'Unknown', 25) }}
+                                            • <i class="far fa-clock me-1"></i>{{ $ticket->created_at->diffForHumans() }}
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                            <span class="badge bg-{{ $ticket->status === 'open' ? 'primary' : ($ticket->status === 'in_progress' ? 'info' : 'success') }} rounded-pill">
+                                                {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
+                                            </span>
+                                            <a href="{{ route('account-manager.tickets.show', $ticket) }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                                View Details <i class="fas fa-chevron-right ms-1"></i>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         @empty
-                        <div class="text-center py-4 py-sm-5">
-                            <div class="empty-state">
-                                <i class="fas fa-headset text-gray-300 responsive-empty-icon mb-3"></i>
-                                <h5 class="text-gray-600 responsive-subheading">No Active Support Requests</h5>
-                                <p class="text-muted mb-3 mb-sm-4 responsive-text">All customers are supported!</p>
-                                <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-kp-primary responsive-btn">
+                            <div class="text-center py-5">
+                                <i class="fas fa-ticket-alt fa-4x text-muted opacity-25 mb-3"></i>
+                                <h6 class="text-muted">No active support tickets</h6>
+                                <p class="small text-muted">All customer issues are resolved</p>
+                                <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-kp-primary rounded-pill px-4">
                                     <i class="fas fa-plus-circle me-2"></i>Create Ticket
                                 </a>
                             </div>
-                        </div>
                         @endforelse
                     </div>
                 </div>
             </div>
 
-            <!-- Payment Follow-ups -->
-            <div class="col-12 col-lg-6 col-xl-6 col-xxl-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-2 py-sm-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap">
-                            <h5 class="mb-0 responsive-subheading">
-                                <i class="fas fa-money-bill-wave text-kp-blue me-2"></i>Payment Follow-ups
-                            </h5>
-                            <div class="d-flex align-items-center mt-1 mt-sm-0">
-                                <span class="badge bg-light text-dark responsive-badge d-none d-sm-inline">{{ $upcomingPayments->count() }} pending</span>
-                                <a href="{{ route('account-manager.payments.index') }}" class="btn btn-sm btn-kp-primary ms-1 ms-sm-2 responsive-btn">
-                                    <span class="d-none d-sm-inline">View All</span>
-                                    <span class="d-inline d-sm-none">All</span>
-                                </a>
-                            </div>
-                        </div>
+            {{-- Payment Follow-ups --}}
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-money-bill-wave text-kp-green me-2"></i>Payment Follow-ups
+                        </h5>
+                        <a href="{{ route('account-manager.payments.index') }}" class="btn btn-sm btn-outline-kp-green rounded-pill px-3">
+                            View All <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
                     <div class="card-body p-0">
-                        @forelse($upcomingPayments as $payment)
-                        <div class="payment-item p-2 p-sm-3 p-md-4 border-bottom">
-                            <div class="d-flex align-items-start">
-                                <div class="payment-avatar me-2 me-sm-3">
-                                    <div class="avatar-circle bg-{{ $payment->due_date->isPast() ? 'danger' : 'info' }}-light">
-                                        <i class="fas fa-{{ $payment->due_date->isPast() ? 'exclamation-triangle' : 'calendar' }} text-{{ $payment->due_date->isPast() ? 'danger' : 'info' }} responsive-icon-sm"></i>
+                        @forelse($upcomingPayments ?? [] as $payment)
+                            <div class="payment-item p-4 border-bottom">
+                                <div class="d-flex gap-3">
+                                    <div class="flex-shrink-0">
+                                        <div class="avatar-circle bg-{{ $payment->due_date->isPast() ? 'danger' : 'info' }}-light">
+                                            <i class="fas fa-{{ $payment->due_date->isPast() ? 'exclamation-triangle' : 'calendar' }} text-{{ $payment->due_date->isPast() ? 'danger' : 'info' }}"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start mb-1 mb-sm-2">
-                                        <h6 class="fw-bold mb-0 text-dark responsive-text">{{ Str::limit($payment->customer->name ?? 'Unknown', 30) }}</h6>
-                                        <span class="h6 mb-0 fw-bold text-kp-blue responsive-text">
-                                            ${{ number_format($payment->amount, 2) }}
-                                        </span>
-                                    </div>
-                                    <p class="text-muted small mb-2 mb-sm-3 responsive-text-sm">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        Due {{ $payment->due_date->format('M d, Y') }}
-                                        <span class="d-none d-sm-inline">•</span>
-                                        <br class="d-block d-sm-none">
-                                        <i class="fas fa-clock me-1"></i>{{ $payment->due_date->diffForHumans() }}
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap">
-                                        <span class="badge bg-{{ $payment->status === 'pending' ? 'warning' : ($payment->status === 'reminded' ? 'info' : 'success') }} mb-2 mb-sm-0 responsive-badge">
-                                            {{ ucfirst($payment->status) }}
-                                        </span>
-                                        <div class="action-buttons d-flex gap-1">
-                                            @if($payment->status === 'pending')
-                                            <form action="{{ route('account-manager.payments.remind', $payment) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-outline-warning responsive-btn-sm">
-                                                    <i class="fas fa-bell"></i>
-                                                    <span class="d-none d-sm-inline">Remind</span>
-                                                </button>
-                                            </form>
-                                            @endif
-                                            <form action="{{ route('account-manager.payments.paid', $payment) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-outline-kp-success responsive-btn-sm">
-                                                    <i class="fas fa-check"></i>
-                                                    <span class="d-none d-sm-inline">Paid</span>
-                                                </button>
-                                            </form>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+                                            <h6 class="fw-bold mb-0">{{ Str::limit($payment->customer->name ?? 'Unknown', 30) }}</h6>
+                                            <span class="fw-bold text-kp-blue fs-5">${{ number_format($payment->amount, 2) }}</span>
+                                        </div>
+                                        <p class="text-muted small mb-2">
+                                            <i class="far fa-calendar me-1"></i>Due {{ $payment->due_date->format('M d, Y') }}
+                                            • <i class="far fa-clock me-1"></i>{{ $payment->due_date->diffForHumans() }}
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                            <span class="badge bg-{{ $payment->status === 'pending' ? 'warning' : ($payment->status === 'reminded' ? 'info' : 'success') }} rounded-pill">
+                                                {{ ucfirst($payment->status) }}
+                                            </span>
+                                            <div class="btn-group">
+                                                @if($payment->status === 'pending')
+                                                    <form action="{{ route('account-manager.payments.remind', $payment) }}" method="POST" class="d-inline">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill">
+                                                            <i class="fas fa-bell me-1"></i>Remind
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                <form action="{{ route('account-manager.payments.paid', $payment) }}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-outline-success rounded-pill">
+                                                        <i class="fas fa-check me-1"></i>Mark Paid
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         @empty
-                        <div class="text-center py-4 py-sm-5">
-                            <div class="empty-state">
-                                <i class="fas fa-money-bill-wave text-gray-300 responsive-empty-icon mb-3"></i>
-                                <h5 class="text-gray-600 responsive-subheading">No Payment Follow-ups</h5>
-                                <p class="text-muted mb-3 mb-sm-4 responsive-text">All payments are up to date!</p>
-                                <a href="{{ route('account-manager.payments.create') }}" class="btn btn-kp-primary responsive-btn">
-                                    <i class="fas fa-plus-circle me-2"></i>Track Payment
+                            <div class="text-center py-5">
+                                <i class="fas fa-check-circle fa-4x text-success opacity-25 mb-3"></i>
+                                <h6 class="text-muted">All payments up to date!</h6>
+                                <p class="small text-muted">No pending follow-ups required</p>
+                                <a href="{{ route('account-manager.payments.create') }}" class="btn btn-kp-primary rounded-pill px-4">
+                                    <i class="fas fa-plus-circle me-2"></i>Record Payment
                                 </a>
                             </div>
-                        </div>
                         @endforelse
                     </div>
                 </div>
             </div>
+
         </div>
 
-        <!-- Additional Metrics - Dynamic Grid -->
-        <div class="row g-2 g-sm-3 g-md-4 mt-3 mt-sm-4">
-            @php
-                $additionalMetrics = [
-                    [
-                        'title' => 'Ticket Distribution',
-                        'icon' => 'chart-pie',
-                        'color' => 'info',
-                        'desc' => 'Ticket statistics chart'
-                    ],
-                    [
-                        'title' => 'Upcoming Activities',
-                        'icon' => 'calendar-check',
-                        'color' => 'success',
-                        'desc' => 'Meetings & follow-ups'
-                    ],
-                    [
-                        'title' => 'Top Customers',
-                        'icon' => 'trophy',
-                        'color' => 'warning',
-                        'desc' => 'Top by revenue'
-                    ]
-                ];
-            @endphp
-
-            @foreach($additionalMetrics as $metric)
-            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 col-xxl-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-2 py-sm-3">
-                        <h5 class="mb-0 responsive-subheading">
-                            <i class="fas fa-{{ $metric['icon'] }} text-{{ $metric['color'] }} me-2"></i>{{ $metric['title'] }}
-                        </h5>
+        {{-- Additional Insights Section --}}
+        <div class="row g-4 mt-3">
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                    <div class="insight-icon bg-info-light rounded-circle mx-auto mb-3">
+                        <i class="fas fa-chart-pie fa-2x text-info"></i>
                     </div>
-                    <div class="card-body p-2 p-sm-3 p-md-4">
-                        <div class="text-center py-3 py-sm-4">
-                            <div class="metric-placeholder">
-                                <i class="fas fa-{{ $metric['icon'] }} text-muted opacity-25 responsive-empty-icon"></i>
-                            </div>
-                            <p class="text-muted mt-3 mb-0 responsive-text">{{ $metric['desc'] }}</p>
-                        </div>
-                    </div>
+                    <h5 class="fw-bold">Ticket Distribution</h5>
+                    <p class="small text-muted">View analytics and statistics</p>
+                    <button class="btn btn-outline-info rounded-pill px-4" disabled>Coming Soon</button>
                 </div>
             </div>
-            @endforeach
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                    <div class="insight-icon bg-success-light rounded-circle mx-auto mb-3">
+                        <i class="fas fa-calendar-check fa-2x text-success"></i>
+                    </div>
+                    <h5 class="fw-bold">Upcoming Activities</h5>
+                    <p class="small text-muted">Meetings & follow-ups</p>
+                    <button class="btn btn-outline-success rounded-pill px-4" disabled>Coming Soon</button>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+                    <div class="insight-icon bg-warning-light rounded-circle mx-auto mb-3">
+                        <i class="fas fa-trophy fa-2x text-warning"></i>
+                    </div>
+                    <h5 class="fw-bold">Top Customers</h5>
+                    <p class="small text-muted">Highest revenue clients</p>
+                    <button class="btn btn-outline-warning rounded-pill px-4" disabled>Coming Soon</button>
+                </div>
+            </div>
         </div>
+
     </div>
 </div>
 
 <style>
-/* CSS Custom Properties for dynamic scaling */
 :root {
     --kp-blue: #0066B3;
     --kp-green: #009639;
     --kp-yellow: #FFD700;
     --kp-dark: #003f20;
-    --scale-factor: 1;
-    --min-scale: 0.8;
-    --max-scale: 1.2;
-    --base-font-size: 16px;
-    --spacing-unit: 0.25rem;
 }
 
-/* Kenya Power Gradient Header */
-.bg-gradient-primary {
-    background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%) !important;
+.dashboard-hero {
+    background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%);
 }
 
-/* Fluid Typography */
-.responsive-heading {
-    font-size: clamp(1.25rem, 4vw, 2rem);
-    line-height: 1.2;
+/* Metric Cards */
+.metric-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
-.responsive-subheading {
-    font-size: clamp(1rem, 3vw, 1.5rem);
-    line-height: 1.3;
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
 }
 
-.responsive-text {
-    font-size: clamp(0.875rem, 2vw, 1rem);
-}
-
-.responsive-text-sm {
-    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
-}
-
-/* Fluid Icons */
-.responsive-icon {
-    font-size: clamp(1.5rem, 4vw, 2.5rem);
-}
-
-.responsive-icon-sm {
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
-}
-
-.responsive-alert-icon {
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
-}
-
-.responsive-empty-icon {
-    font-size: clamp(2.5rem, 8vw, 5rem);
-}
-
-/* Fluid Cards & Containers */
-.stat-card {
-    transition: transform 0.3s, box-shadow 0.3s;
-    border: 1px solid #e9ecef;
-    height: 100%;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
-}
-
-.responsive-stat-icon {
-    width: clamp(2.5rem, 6vw, 3.75rem);
-    height: clamp(2.5rem, 6vw, 3.75rem);
+.metric-icon {
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
-    padding: clamp(0.5rem, 1.5vw, 0.75rem);
+    font-size: 1.5rem;
 }
 
-.responsive-stat-value {
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    font-weight: 700;
-}
-
-/* Fluid Badges */
-.responsive-badge {
-    font-size: clamp(0.65rem, 1.5vw, 0.75rem);
-    padding: clamp(0.25rem, 0.5vw, 0.375rem) clamp(0.5rem, 1vw, 0.75rem);
-    border-radius: 9999px;
-}
-
-/* Fluid Buttons */
-.responsive-btn {
-    font-size: clamp(0.75rem, 2vw, 0.875rem);
-    padding: clamp(0.375rem, 1vw, 0.5rem) clamp(0.75rem, 2vw, 1rem);
-    min-height: clamp(2.5rem, 6vw, 2.75rem);
-    white-space: nowrap;
-}
-
-.responsive-btn-sm {
-    font-size: clamp(0.7rem, 1.8vw, 0.8rem);
-    padding: clamp(0.25rem, 0.75vw, 0.375rem) clamp(0.5rem, 1.5vw, 0.75rem);
-    min-height: clamp(2rem, 5vw, 2.25rem);
+.metric-value {
+    font-size: 2rem;
+    line-height: 1.2;
 }
 
 /* Action Cards */
 .action-card {
-    display: block;
-    padding: clamp(0.75rem, 2vw, 1rem);
+    transition: all 0.3s ease;
     background: white;
-    border: 1px solid #e9ecef;
-    border-radius: clamp(0.5rem, 1.5vw, 0.75rem);
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s;
-    height: 100%;
-    text-align: center;
-    position: relative;
 }
 
 .action-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-color: var(--kp-blue);
-}
-
-.action-card.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-color: transparent !important;
 }
 
 .action-icon {
-    width: clamp(2.5rem, 6vw, 3.125rem);
-    height: clamp(2.5rem, 6vw, 3.125rem);
-    border-radius: clamp(0.5rem, 1.5vw, 0.625rem);
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto clamp(0.5rem, 1.5vw, 0.75rem);
+    font-size: 1.5rem;
     color: white;
-    font-size: clamp(1rem, 2.5vw, 1.25rem);
 }
 
-/* Kenya Power Colors for Action Icons */
-.bg-kp-blue { background-color: var(--kp-blue) !important; }
-.bg-kp-green { background-color: var(--kp-green) !important; }
-.bg-kp-yellow { background-color: var(--kp-yellow) !important; color: var(--kp-dark) !important; }
-.text-kp-blue { color: var(--kp-blue) !important; }
-.text-kp-green { color: var(--kp-green) !important; }
-.text-kp-yellow { color: var(--kp-yellow) !important; }
-
-/* Avatar Circles */
+/* Avatar Circle */
 .avatar-circle {
-    width: clamp(2.25rem, 5vw, 3rem);
-    height: clamp(2.25rem, 5vw, 3rem);
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.875rem, 2vw, 1.125rem);
+    font-size: 1.25rem;
 }
 
-/* Color Light Classes */
-.bg-kp-blue-light { background-color: rgba(0, 102, 179, 0.1); }
-.bg-kp-green-light { background-color: rgba(0, 150, 57, 0.1); }
-.bg-info-light { background-color: rgba(54, 185, 204, 0.1); }
-.bg-kp-yellow-light { background-color: rgba(255, 215, 0, 0.1); }
-.bg-danger-light { background-color: rgba(231, 74, 59, 0.1); }
-.bg-purple-light { background-color: rgba(111, 66, 193, 0.1); }
-.bg-white-20 { background-color: rgba(255, 255, 255, 0.2); }
+/* Insight Icons */
+.insight-icon {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Button Styles */
+.btn-dashboard-action {
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-dashboard-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-outline-kp-blue {
+    border: 1px solid var(--kp-blue);
+    color: var(--kp-blue);
+}
+.btn-outline-kp-blue:hover {
+    background: var(--kp-blue);
+    color: white;
+}
+
+.btn-outline-kp-green {
+    border: 1px solid var(--kp-green);
+    color: var(--kp-green);
+}
+.btn-outline-kp-green:hover {
+    background: var(--kp-green);
+    color: white;
+}
+
+/* Color Classes */
+.bg-primary-light { background: rgba(0, 102, 179, 0.1); }
+.bg-success-light { background: rgba(0, 150, 57, 0.1); }
+.bg-warning-light { background: rgba(255, 215, 0, 0.15); }
+.bg-info-light { background: rgba(23, 162, 184, 0.1); }
+.bg-danger-light { background: rgba(220, 53, 69, 0.1); }
+.bg-purple-light { background: rgba(111, 66, 193, 0.1); }
 
 .bg-purple { background-color: #6f42c1 !important; }
+.text-purple { color: #6f42c1 !important; }
 
-/* Dropdown styling for multi-link actions */
-.dropdown-toggle-indicator {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    opacity: 0.6;
+.btn-outline-purple {
+    border: 1px solid #6f42c1;
+    color: #6f42c1;
+}
+.btn-outline-purple:hover {
+    background: #6f42c1;
+    color: white;
 }
 
-.action-card.dropdown-toggle {
-    cursor: pointer;
+.text-kp-blue { color: var(--kp-blue) !important; }
+.text-kp-green { color: var(--kp-green) !important; }
+.bg-kp-blue { background-color: var(--kp-blue) !important; }
+.bg-kp-green { background-color: var(--kp-green) !important; }
+.btn-kp-primary { background: var(--kp-blue); border-color: var(--kp-blue); color: white; }
+.btn-kp-primary:hover { background: #005499; border-color: #005499; }
+
+/* Rounded utilities */
+.rounded-4 { border-radius: 1rem !important; }
+.rounded-3 { border-radius: 0.75rem !important; }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .metric-value { font-size: 1.5rem; }
+    .action-card { text-align: left; }
+    .action-icon { margin: 0 0 0.75rem 0; }
+    .btn-dashboard-action { padding: 6px 16px; font-size: 0.875rem; }
 }
 
-.action-card.dropdown-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-color: var(--kp-blue);
+@media (max-width: 576px) {
+    .col-6 { width: 100%; }
+    .dashboard-hero { text-align: center; }
+    .hero-icon { display: none; }
 }
 
-/* Show dropdown menu on hover for better UX */
-@media (min-width: 768px) {
-    .dropdown:hover .dropdown-menu {
-        display: block;
-        margin-top: 0;
-    }
-
-    .dropdown .dropdown-menu {
-        display: none;
-    }
-}
-
-.dropdown-item:hover {
-    background-color: #f8f9fa;
-}
-
-/* Touch Device Optimization */
-@media (hover: none) and (pointer: coarse) {
-    .stat-card:hover,
-    .action-card:hover {
-        transform: none;
-    }
-
-    .btn, .action-card, .ticket-item, .payment-item {
-        min-height: 44px;
-    }
-
-    .btn-sm {
-        min-height: 36px;
-    }
-
-    .responsive-badge,
-    .responsive-link {
-        padding: 0.5em 0.75em;
-    }
-}
-
-/* Viewport Height Adjustments */
-@media (max-height: 600px) and (orientation: landscape) {
-    .dashboard-header {
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-    }
-
-    .responsive-heading {
-        font-size: 1.25rem;
-    }
-
-    .stat-card {
-        margin-bottom: 0.5rem;
-    }
-}
-
-/* Dynamic Grid Adjustment */
-@media (max-width: 360px) {
-    .col-6 {
-        width: 100%;
-    }
-
-    .action-icon {
-        width: 2.25rem;
-        height: 2.25rem;
-        font-size: 1rem;
-    }
-}
-
-@media (min-width: 1400px) {
-    .col-xxl-2 {
-        width: 20%;
-        flex: 0 0 auto;
-    }
-}
-
-/* Smooth Transitions */
-.stat-card,
-.action-card,
-.btn,
-.badge {
-    transition: all 0.2s ease-in-out;
-}
-
-/* Performance Optimizations */
-@media (prefers-reduced-motion: reduce) {
-    .stat-card,
-    .action-card,
-    .btn,
-    .badge {
-        transition: none;
-    }
-}
-
-/* Custom Scrollbar for Desktop */
-@media (min-width: 768px) {
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #c1c1c1;
-        border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
-    }
+@media print {
+    .dashboard-hero, .action-card, .btn, .badge { display: none !important; }
+    .card { border: 1px solid #ddd !important; box-shadow: none !important; }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap components
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    // Initialize tooltips
+    const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    tooltips.forEach(el => new bootstrap.Tooltip(el));
 
-    // Initialize dropdowns
-    const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-    const dropdownList = [...dropdownElementList].map(dropdownToggleEl => {
-        if (!dropdownToggleEl.classList.contains('disabled')) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
-        }
-    });
-
-    // Auto-dismiss alerts
-    const alerts = document.querySelectorAll('.alert');
+    // Auto-dismiss alerts after 8 seconds
+    const alerts = document.querySelectorAll('.alert-dismissible');
     alerts.forEach(alert => {
         setTimeout(() => {
-            const bsAlert = new bootstrap.Alert(alert);
+            const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
             bsAlert.close();
-        }, 10000);
+        }, 8000);
     });
 
-    // Dynamic scaling based on viewport
-    function updateScaleFactor() {
-        const viewportWidth = window.innerWidth;
-        const isMobile = viewportWidth < 768;
-        const isTablet = viewportWidth >= 768 && viewportWidth < 1024;
+    // Add animation to cards on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
 
-        let scaleFactor;
-        if (isMobile) {
-            scaleFactor = Math.max(0.8, Math.min(1.2, viewportWidth / 375));
-        } else if (isTablet) {
-            scaleFactor = Math.max(0.9, Math.min(1.1, viewportWidth / 768));
-        } else {
-            scaleFactor = 1;
-        }
-
-        document.documentElement.style.setProperty('--scale-factor', scaleFactor);
-
-        const metricsGrid = document.querySelector('.row.g-2.g-sm-3.g-md-4');
-        if (metricsGrid && viewportWidth < 400) {
-            metricsGrid.style.gap = '0.5rem';
-        }
-    }
-
-    // Update date format based on screen size
-    function updateDateDisplay() {
-        const dateElements = document.querySelectorAll('.date-text');
-        const now = new Date();
-
-        dateElements.forEach(el => {
-            if (window.innerWidth < 576) {
-                el.textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-            } else if (window.innerWidth < 768) {
-                el.textContent = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            } else {
-                el.textContent = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-            }
-        });
-    }
-
-    // Update button text based on screen size
-    function updateButtonText() {
-        const btnTexts = document.querySelectorAll('.btn-text');
-        const isMobile = window.innerWidth < 768;
-
-        btnTexts.forEach(el => {
-            const text = el.textContent;
-            if (isMobile) {
-                if (text === 'New Ticket') el.textContent = 'Ticket';
-                if (text === 'Track Payment') el.textContent = 'Payment';
-            } else {
-                if (text === 'Ticket') el.textContent = 'New Ticket';
-                if (text === 'Payment') el.textContent = 'Track Payment';
-            }
-        });
-    }
-
-    // Optimize for touch devices
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-        document.body.classList.add('touch-device');
-
-        document.querySelectorAll('.btn, .action-card, .responsive-link').forEach(el => {
-            el.style.minHeight = '44px';
-            el.style.padding = '12px 16px';
-        });
-    }
-
-    // Prevent horizontal scroll
-    document.body.style.overflowX = 'hidden';
-    document.documentElement.style.overflowX = 'hidden';
-
-    // Initialize and update on resize
-    updateScaleFactor();
-    updateDateDisplay();
-    updateButtonText();
-
-    let resizeTimeout;
-    window.addEventListener('resize', function() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(function() {
-            updateScaleFactor();
-            updateDateDisplay();
-            updateButtonText();
-        }, 100);
-    });
-
-    window.addEventListener('orientationchange', function() {
-        setTimeout(function() {
-            updateScaleFactor();
-            updateDateDisplay();
-            updateButtonText();
-        }, 100);
-    });
-
-    // Performance optimization for animations
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
+                observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1 });
+    }, observerOptions);
 
-    document.querySelectorAll('.stat-card, .action-card').forEach(card => {
+    document.querySelectorAll('.metric-card, .action-card').forEach(card => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
         card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
@@ -1051,4 +593,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
 @endsection

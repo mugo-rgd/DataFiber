@@ -245,16 +245,16 @@
                         </div>
 
                         <div class="d-flex">
-                            <a href="{{ route('quotations.pdf.preview', $quotation) }}"
+                            <a href="{{ route('customer.quotations.show', $quotation) }}"
                                class="btn btn-info me-2"
                                target="_blank">
                                 <i class="fas fa-eye me-2"></i>Preview PDF
                             </a>
 
-                            <a href="{{ route('quotations.pdf.download', $quotation) }}"
+                            {{-- <a href="{{ route('quotations.pdf.download', $quotation) }}"
                                class="btn btn-kp-primary">
                                 <i class="fas fa-download me-2"></i>Download PDF
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
                 </div>

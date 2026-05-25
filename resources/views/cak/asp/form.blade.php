@@ -2,14 +2,146 @@
 
 @section('title', 'ASP Compliance Return')
 @section('page-title', 'Application Service Provider (ASP) Compliance Return')
+<style>
+/* Main animation */
+@keyframes attractAttention {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+    }
+    20% {
+        transform: scale(1.08);
+        background: #ffc107;
+    }
+    40% {
+        transform: scale(0.98);
+    }
+    60% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 15px rgba(255, 215, 0, 0.3);
+    }
+    80% {
+        transform: scale(0.99);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+/* Text pulse */
+@keyframes textPulse {
+    0%, 100% {
+        text-shadow: 0 0 0px #FFD700;
+    }
+    50% {
+        text-shadow: 0 0 8px #FFD700;
+        color: #003f20;
+    }
+}
+
+.attract-button {
+    animation: attractAttention 1.2s ease-in-out 3;
+    position: relative;
+    overflow: hidden;
+}
+
+.attract-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.pulse-text {
+    animation: textPulse 0.8s ease-in-out 6;
+}
+
+.hand-pointer {
+    display: inline-block;
+    animation: bounce 0.5s ease infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+}
+
+/* Badge animation */
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); background: #dc3545; }
+}
+
+.new-badge {
+    animation: badgePulse 0.8s ease-in-out 3;
+    display: inline-block;
+}
+</style>
+
 <button type="button"
-        class="btn btn-kp-warning btn-lg autofill-asp-btn"
+        id="magicAutoFillBtn"
+        class="btn btn-kp-warning btn-lg autofill-asp-btn mt-5 pt-4 attract-button"
         data-url="{{ route('asp.autofill-record-2') }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
-        title="Auto fill the form and make changes where necessary and save draft or submit">
-    Auto Fill
+        title="✨ Click to automatically fill the form! ✨">
+    <i class="fas fa-magic me-2 pulse-text"></i>
+    <span class="pulse-text">Auto Fill</span>
+    <span class="hand-pointer ms-2">👉</span>
+    <span class="badge bg-danger ms-2 new-badge">NEW!</span>
 </button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('magicAutoFillBtn');
+
+    if (btn) {
+        // Add hover tooltip enhancement
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.02)';
+            this.style.transition = 'all 0.3s ease';
+
+            // Optional: Play beep sound on hover (requires user interaction first)
+            if (window.speechSynthesis) {
+                const utterance = new SpeechSynthesisUtterance('Auto fill available');
+                utterance.volume = 0.3;
+                utterance.rate = 1.5;
+                window.speechSynthesis.speak(utterance);
+            }
+        });
+
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+
+        // Log to console (for debugging)
+        console.log('Auto Fill button is ready! User can click to auto-fill the form.');
+    }
+});
+</script>
 
 
 @push('styles')
@@ -78,6 +210,29 @@
 .instruction-box,
 .form-container p {
     text-align:justify;
+}
+.autofill-kp-btn {
+    background: linear-gradient(135deg, #0066B3 0%, #005499 100%);
+    border: none;
+    color: red;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+}
+
+.autofill-kp-btn:hover {
+    background: linear-gradient(135deg, #005499 0%, #004080 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 102, 179, 0.3);
+}
+
+.autofill-kp-btn:active {
+    transform: translateY(0);
+}
+
+.autofill-kp-btn i {
+    margin-right: 0.5rem;
 }
     }
 </style>
@@ -1175,12 +1330,12 @@
     Auto Fill
 </button> --}}
 <button type="button"
-        class="btn btn-kp-warning btn-lg autofill-asp-btn"
+        class="btn autofill-kp-btn autofill-asp-btn"
         data-url="{{ route('asp.autofill-record-2') }}"
         data-bs-toggle="tooltip"
         data-bs-placement="top"
         title="Auto fill the form and make changes where necessary and save draft or submit">
-    Auto Fill
+    <i class="fas fa-magic"></i> Auto Fill
 </button>
 
 

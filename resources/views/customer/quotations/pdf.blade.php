@@ -321,6 +321,178 @@
                 margin-top: 0.5px !important;
                 margin-bottom: 0.5px !important;
             }
+
+           body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f5f5f5;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        overflow: hidden;
+        padding: 30px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        padding: 20px;
+        margin: 0;
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .section {
+        margin: 25px 0;
+        padding: 0 10px;
+    }
+
+    .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 12px;
+        border-left: 4px solid #3498db;
+        padding-left: 12px;
+    }
+
+    .note {
+        padding: 15px 20px;
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        margin: 0;
+        color: #856404;
+        font-size: 14px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th {
+        background-color: #2c3e50;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .service-name {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .price {
+        font-family: monospace;
+        font-size: 16px;
+    }
+
+    .one-off {
+        color: #28a745;
+        font-weight: 500;
+    }
+
+    .recurrent {
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .conditions-list {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    .conditions-list li {
+        margin-bottom: 10px;
+        padding-left: 20px;
+        position: relative;
+    }
+
+    .conditions-list li:before {
+        content: "•";
+        position: absolute;
+        left: 5px;
+        color: #3498db;
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .signature-block {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .signature-block p {
+        margin: 8px 0;
+    }
+
+    .footer-note {
+        padding: 15px 20px;
+        background-color: #d1ecf1;
+        border-left: 4px solid #17a2b8;
+        margin: 0;
+        color: #0c5460;
+        font-size: 13px;
+    }
+
+    .acceptance-text {
+        margin: 25px 0;
+        font-style: italic;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+
+        th {
+            display: none;
+        }
+
+        tr {
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        td:before {
+            content: attr(data-label);
+            font-weight: 600;
+            margin-right: 10px;
+            color: #2c3e50;
+        }
+    }
         }
     </style>
 </head>
@@ -454,20 +626,49 @@
                             @endforeach
                         @endif
 
-                        <!-- Custom Items -->
-                        @if(isset($groupedItems['custom_items']) && count($groupedItems['custom_items']) > 0)
-                            @foreach($groupedItems['custom_items'] as $item)
-                                @php $customItemsTotal += $item['total']; @endphp
-                                <tr>
-                                    <td>Other Services</td>
-                                    <td>{{ $item['description'] }}</td>
-                                    <td class="text-center">{{ $item['quantity'] }}</td>
-                                    <td class="text-end">N/A</td>
-                                    <td class="text-end">${{ number_format($item['unit_price'], 2) }}</td>
-                                    <td class="text-end">${{ number_format($item['total'], 2) }}</td>
-                                </tr>
-                            @endforeach
-                        @endif
+                       <!-- Custom Items (exclude custom routes already listed above) -->
+@if(isset($groupedItems['custom_items']) && count($groupedItems['custom_items']) > 0)
+
+    @foreach($groupedItems['custom_items'] as $item)
+
+        @php
+            // Skip if item is actually a custom route
+            if(
+                ($item['type'] ?? '') === 'custom_route' ||
+                ($item['metadata']['is_custom_route'] ?? false)
+            ){
+                continue;
+            }
+
+            $customItemsTotal += $item['total'];
+        @endphp
+
+        <tr>
+            <td>Other Services</td>
+
+            <td>
+                {{ $item['description'] }}
+            </td>
+
+            <td class="text-center">
+                {{ $item['quantity'] }}
+            </td>
+
+            <td class="text-end">
+                N/A
+            </td>
+
+            <td class="text-end">
+                ${{ number_format($item['unit_price'],2) }}
+            </td>
+
+            <td class="text-end">
+                ${{ number_format($item['total'],2) }}
+            </td>
+        </tr>
+
+    @endforeach
+@endif
 
                         <!-- Summary Rows -->
                         @if($commercialRoutesTotal > 0)
@@ -484,12 +685,16 @@
                             </tr>
                         @endif
 
-                        @if($customItemsTotal > 0)
-                            <tr class="subtotal-row">
-                                <td colspan="5" class="text-end"><strong>Other Services Subtotal:</strong></td>
-                                <td class="text-end"><strong>${{ number_format($customItemsTotal, 2) }}</strong></td>
-                            </tr>
-                        @endif
+                       @if($customItemsTotal > 0)
+<tr class="subtotal-row">
+    <td colspan="5" class="text-end">
+        <strong>Other Services Subtotal:</strong>
+    </td>
+    <td class="text-end">
+        <strong>${{ number_format($customItemsTotal,2) }}</strong>
+    </td>
+</tr>
+@endif
 
                         <tr class="total-row">
                             <td colspan="5" class="text-end"><strong>Subtotal:</strong></td>
@@ -530,26 +735,93 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($groupedItems['commercial_routes'] as $route)
-                                    <tr>
-                                        <td>{{ $route['metadata']['route_name'] ?? $route['description'] }}</td>
-                                        <td class="text-center">{{ $route['metadata']['cores'] ?? 1 }}</td>
-                                        <td class="text-center">{{ $route['metadata']['technology_type'] ?? 'OPGW' }}</td>
-                                        <td class="text-center">{{ $route['metadata']['distance_km'] ?? 'N/A' }} km</td>
-                                        <td class="text-center">{{ $route['metadata']['pickup_points'] ?? 'N/A' }}</td>
-                                        <td class="text-center">{{ $route['metadata']['link_class'] ?? 'Premium' }}</td>
-                                        <td class="text-end">
-                                            @php
-                                                $unitPrice = $route['metadata']['monthly_cost'] ?? $route['unit_price'];
-                                                $cores = $route['metadata']['cores'] ?? 1;
-                                                $perCorePrice = $cores > 0 ? $unitPrice / $cores : $unitPrice;
-                                            @endphp
-                                            ${{ number_format($perCorePrice, 2) }}
-                                        </td>
-                                        <td class="text-end">${{ number_format($route['total'], 2) }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
+    @php
+        $totalDistance = 0;
+        $totalMonthlyPerCore = 0;
+        $grandTotalValue = 0;
+    @endphp
+
+    @foreach($groupedItems['commercial_routes'] as $route)
+
+        @php
+            $distance = (float)($route['metadata']['distance_km'] ?? 0);
+
+            $unitPrice = $route['metadata']['monthly_cost'] ?? $route['unit_price'];
+
+            $cores = (int)($route['metadata']['cores'] ?? 1);
+
+            $perCorePrice = $cores > 0
+                ? $unitPrice / $cores
+                : $unitPrice;
+
+            $totalDistance += $distance;
+            $totalMonthlyPerCore += $perCorePrice;
+            $grandTotalValue += $route['total'];
+        @endphp
+
+        <tr>
+            <td>
+                {{ $route['metadata']['route_name'] ?? $route['description'] }}
+            </td>
+
+            <td class="text-center">
+                {{ $cores }}
+            </td>
+
+            <td class="text-center">
+                {{ $route['metadata']['technology_type'] ?? 'OPGW' }}
+            </td>
+
+            <td class="text-center">
+                {{ number_format($distance,2) }} km
+            </td>
+
+            <td class="text-center">
+                {{ $route['metadata']['pickup_points'] ?? 'N/A' }}
+            </td>
+
+            <td class="text-center">
+                {{ $route['metadata']['link_class'] ?? 'Premium' }}
+            </td>
+
+            <td class="text-end">
+                ${{ number_format($perCorePrice,2) }}
+            </td>
+
+            <td class="text-end">
+                ${{ number_format($route['total'],2) }}
+            </td>
+        </tr>
+
+    @endforeach
+
+    <!-- Totals Row -->
+    <tr style="
+        font-weight:bold;
+        background:#f5f7fa;
+        border-top:2px solid #1a3a6c;
+    ">
+        <td colspan="3" class="text-end">
+            TOTAL
+        </td>
+
+        <td class="text-center">
+            {{ number_format($totalDistance,2) }} km
+        </td>
+
+        <td></td>
+
+        <td></td>
+
+        <td class="text-end">
+            ${{ number_format($totalMonthlyPerCore,2) }}
+        </td>
+
+        <td class="text-end">
+            ${{ number_format($grandTotalValue,2) }}
+        </td>
+    </tr>
+</tbody>
                         </table>
                     @else
                         <p class="text-muted">No fibre lease services selected.</p>
@@ -614,8 +886,58 @@
                             </tbody>
                         </table>
                     @else
-                        <p class="text-muted">No colocation services selected.</p>
-                    @endif
+                        {{-- <p class="text-muted">No colocation services selected.</p> --}}
+<body>
+    <div class="container">
+               <div class="note">
+            <strong>Note:</strong> The following rates will apply for the collocation facilities where provided.
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Service Description</th>
+                    <th>One-time Fee (USD)</th>
+                    <th>Recurrent Fee (USD/Annum)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="service-name" data-label="Service">Collocating in sub-station area (for 15M² shelter)</td>
+                    <td data-label="One-time Fee" class="price one-off">$6,500</td>
+                    <td data-label="Recurrent Fee" class="price recurrent">$1,000</td>
+                </tr>
+                <tr>
+                    <td class="service-name" data-label="Service">42U Full Rack Cabinet</td>
+                    <td data-label="One-time Fee" class="price one-off">$3,900</td>
+                    <td data-label="Recurrent Fee" class="price recurrent">$850</td>
+                </tr>
+                <tr>
+                    <td class="service-name" data-label="Service">1/2 Rack Cabinet</td>
+                    <td data-label="One-time Fee" class="price one-off">$1,950</td>
+                    <td data-label="Recurrent Fee" class="price recurrent">$425</td>
+                </tr>
+                <tr>
+                    <td class="service-name" data-label="Service">1/4 Rack Cabinet</td>
+                    <td data-label="One-time Fee" class="price one-off">$975</td>
+                    <td data-label="Recurrent Fee" class="price recurrent">$200</td>
+                </tr>
+                <tr>
+                    <td class="service-name" data-label="Service">1U &amp; Up Cabinet</td>
+                    <td data-label="One-time Fee" class="price one-off">$100</td>
+                    <td data-label="Recurrent Fee" class="price recurrent">$50</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer-note">
+            <strong>Note:</strong> $50 annual recurrent fee to charge for every subsequent U where applicable for the 1U &amp; Up Cabinet service.
+        </div>
+    </div>
+</body>
+
+
+                        @endif
                 </div>
 
                 <div class="subsection">
@@ -629,12 +951,38 @@
                 <p>The above-mentioned services are ready for provisioning as confirmed by site surveys and technical evaluations.</p>
             </div>
 
+             <!-- Section iv: Other Conditions -->
+        <div class="section">
+            <div class="section-title">iv. Other Conditions</div>
+            <ul class="conditions-list">
+                <li>All quoted prices are valid for a 30-day period from the date of the quotation unless agreed to in writing stating otherwise.</li>
+                <li>KPLC will enter into a commercial contract for lease and Operations and Management (O&M) with the lessee.</li>
+                <li>A one off deposit equal to one quarter shall be made on the first billing on the onset of the contract period. This may be in form of cash or bank guarantee.</li>
+                <li>A joint site survey will be required by the two technical teams to establish the full details of the link and a commissioning certificate issued once all commercial processes are completed.</li>
+                <li>The final optical time-domain reflectometer (OTDR) distance upon commissioning will be used for invoicing.</li>
+                <li>All taxes are applicable on lease.</li>
+            </ul>
+        </div>
+
+        <!-- Acceptance Offer Text -->
+        <div class="acceptance-text">
+            <p>If you accept this offer, please complete the attached IRU/Lease Order Form and return it to the undersigned office.</p>
+        </div>
+
+        <!-- Signature Block -->
+        <div class="signature-block">
+            <p>Yours faithfully,</p>
+            <p><strong>For: THE KENYA POWER & LIGHTING CO. LTD</strong></p>
+            <p style="margin-top: 10px;">_________________________________</p>
+            <p><strong>GENERAL MANAGER, ICT</strong></p>
+        </div>
+
             <!-- Page break for Page 2 -->
             <div class="page-break"></div>
 
             <!-- Page 2 -->
             <div class="section">
-    <div class="section-title">iv. Terms and Conditions</div>
+    <div class="section-title">v. Terms and Conditions</div>
     <div class="text-left" style="white-space: pre-line; font-size: 11px; line-height: 1.3; margin-top: 1px;">
         @php
             $terms = $quotation->terms_and_conditions;

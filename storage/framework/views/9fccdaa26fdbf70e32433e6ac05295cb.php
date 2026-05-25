@@ -82,10 +82,7 @@
         color: var(--kp-yellow) !important;
     }
 
-    /* ========================================
-       DROPDOWN STYLES - FIXED
-    ========================================= */
-    /* Base dropdown - let Bootstrap control display */
+    /* Dropdown Styles */
     .dropdown-menu {
         position: absolute;
         top: 100%;
@@ -106,13 +103,18 @@
         border-top: 3px solid var(--kp-yellow);
     }
 
-    /* Right-aligned dropdown */
+    /* Desktop hover effect */
+    @media (min-width: 992px) {
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+    }
+
     .dropdown-menu-end {
         right: 0;
         left: auto;
     }
 
-    /* Dropdown items */
     .dropdown-item {
         display: block;
         width: 100%;
@@ -140,7 +142,6 @@
         color: white;
     }
 
-    /* Dropdown header */
     .dropdown-header {
         display: block;
         padding: 0.5rem 1.5rem;
@@ -151,7 +152,6 @@
         background: linear-gradient(135deg, var(--kp-light-blue), var(--kp-light-green));
     }
 
-    /* Dropdown divider */
     .dropdown-divider {
         height: 0;
         margin: 0.5rem 0;
@@ -159,7 +159,6 @@
         border-top: 1px solid #e9ecef;
     }
 
-    /* Dropdown toggle arrow */
     .dropdown-toggle::after {
         display: inline-block;
         margin-left: 0.255em;
@@ -178,7 +177,7 @@
         padding-bottom: 2rem;
     }
 
-    /* Card styling - Kenya Power */
+    /* Card styling */
     .card {
         box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 102, 179, 0.1);
         border: 1px solid #e3e6f0;
@@ -200,54 +199,26 @@
         border-radius: 12px 12px 0 0;
     }
 
-    /* Statistics cards - Kenya Power colors */
-    .border-left-primary {
-        border-left: 4px solid var(--kp-blue) !important;
-    }
+    /* Kenya Power Colors */
+    .border-left-primary { border-left: 4px solid var(--kp-blue) !important; }
+    .border-left-success { border-left: 4px solid var(--kp-green) !important; }
+    .border-left-warning { border-left: 4px solid var(--kp-yellow) !important; }
+    .border-left-info { border-left: 4px solid #36b9cc !important; }
 
-    .border-left-success {
-        border-left: 4px solid var(--kp-green) !important;
-    }
+    .text-kp-blue { color: var(--kp-blue) !important; }
+    .text-kp-green { color: var(--kp-green) !important; }
+    .text-kp-yellow { color: var(--kp-yellow) !important; }
 
-    .border-left-warning {
-        border-left: 4px solid var(--kp-yellow) !important;
-    }
+    .bg-kp-blue { background-color: var(--kp-blue) !important; }
+    .bg-kp-green { background-color: var(--kp-green) !important; }
+    .bg-kp-yellow { background-color: var(--kp-yellow) !important; }
 
-    .border-left-info {
-        border-left: 4px solid #36b9cc !important;
-    }
-
-    .text-kp-blue {
-        color: var(--kp-blue) !important;
-    }
-
-    .text-kp-green {
-        color: var(--kp-green) !important;
-    }
-
-    .text-kp-yellow {
-        color: var(--kp-yellow) !important;
-    }
-
-    .bg-kp-blue {
-        background-color: var(--kp-blue) !important;
-    }
-
-    .bg-kp-green {
-        background-color: var(--kp-green) !important;
-    }
-
-    .bg-kp-yellow {
-        background-color: var(--kp-yellow) !important;
-    }
-
-    /* Buttons - Kenya Power */
+    /* Buttons */
     .btn-kp-primary {
         background-color: var(--kp-blue);
         border-color: var(--kp-blue);
         transition: all 0.3s ease;
     }
-
     .btn-kp-primary:hover {
         background-color: #005499;
         border-color: #005499;
@@ -259,23 +230,9 @@
         border-color: var(--kp-green);
         transition: all 0.3s ease;
     }
-
     .btn-kp-success:hover {
         background-color: #00802c;
         border-color: #00802c;
-        transform: translateY(-1px);
-    }
-
-    .btn-kp-warning {
-        background-color: var(--kp-yellow);
-        border-color: var(--kp-yellow);
-        color: var(--kp-dark);
-        transition: all 0.3s ease;
-    }
-
-    .btn-kp-warning:hover {
-        background-color: #e6c300;
-        border-color: #e6c300;
         transform: translateY(-1px);
     }
 
@@ -284,23 +241,9 @@
         color: var(--kp-blue);
         transition: all 0.3s ease;
     }
-
     .btn-outline-kp-primary:hover {
         background-color: var(--kp-blue);
         border-color: var(--kp-blue);
-        color: white;
-        transform: translateY(-1px);
-    }
-
-    .btn-outline-kp-success {
-        border-color: var(--kp-green);
-        color: var(--kp-green);
-        transition: all 0.3s ease;
-    }
-
-    .btn-outline-kp-success:hover {
-        background-color: var(--kp-green);
-        border-color: var(--kp-green);
         color: white;
         transform: translateY(-1px);
     }
@@ -318,7 +261,7 @@
         background-color: var(--kp-light-yellow);
     }
 
-    /* Alert styling - Kenya Power */
+    /* Alerts */
     .alert-kp-success {
         background-color: var(--kp-light-green);
         border-left: 4px solid var(--kp-green);
@@ -333,78 +276,7 @@
         border-radius: 10px;
     }
 
-    .alert-danger {
-        background-color: #f8d7da;
-        border-left: 4px solid #dc3545;
-        color: #721c24;
-        border-radius: 10px;
-    }
-
-    .alert-info {
-        background-color: var(--kp-light-blue);
-        border-left: 4px solid var(--kp-blue);
-        color: var(--kp-dark);
-        border-radius: 10px;
-    }
-
-    /* Badge styling */
-    .badge.bg-kp-blue {
-        background-color: var(--kp-blue) !important;
-    }
-
-    .badge.bg-kp-green {
-        background-color: var(--kp-green) !important;
-    }
-
-    .badge.bg-kp-yellow {
-        background-color: var(--kp-yellow) !important;
-        color: var(--kp-dark);
-    }
-
-    /* Pagination */
-    .pagination .page-item.active .page-link {
-        background-color: var(--kp-blue);
-        border-color: var(--kp-blue);
-    }
-
-    .pagination .page-link {
-        color: var(--kp-blue);
-        transition: all 0.3s ease;
-    }
-
-    .pagination .page-link:hover {
-        background-color: var(--kp-green);
-        border-color: var(--kp-green);
-        color: white;
-    }
-
-    /* Progress bar */
-    .progress {
-        border-radius: 10px;
-        background-color: var(--kp-light-blue);
-    }
-
-    .progress-bar {
-        background-color: var(--kp-green);
-        border-radius: 10px;
-    }
-
-    /* Modal styling */
-    .modal-header {
-        background: linear-gradient(135deg, var(--kp-blue), var(--kp-green));
-        color: white;
-        border-bottom: none;
-    }
-
-    .modal-header .btn-close {
-        filter: brightness(0) invert(1);
-    }
-
-    .modal-footer {
-        border-top: 1px solid var(--kp-light-blue);
-    }
-
-    /* Footer - Kenya Power Colors */
+    /* Footer */
     .footer-compact {
         background: linear-gradient(135deg, var(--kp-dark) 0%, #001a0d 100%) !important;
         border-top: 3px solid var(--kp-yellow);
@@ -443,27 +315,8 @@
         transition: color 0.2s ease;
     }
 
-    .footer-link:hover:not(.disabled-link) {
+    .footer-link:hover {
         color: var(--kp-yellow) !important;
-    }
-
-    .social-icon.small-icon {
-        width: 28px;
-        height: 28px;
-        background: rgba(255, 255, 255, 0.08);
-        border-radius: 6px;
-        color: #cbd5e0;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .social-icon.small-icon:hover {
-        background: var(--kp-yellow);
-        color: var(--kp-dark);
-        transform: translateY(-2px);
     }
 
     .status-dot {
@@ -472,10 +325,7 @@
         border-radius: 50%;
         display: inline-block;
     }
-
-    .status-dot.bg-kp-green {
-        background-color: var(--kp-green) !important;
-    }
+    .status-dot.bg-kp-green { background-color: var(--kp-green) !important; }
 
     .back-to-top {
         border-radius: 6px;
@@ -494,18 +344,7 @@
         border-color: var(--kp-yellow);
     }
 
-    /* Kenya Fibre Dashboard link styles */
-    .kenya-fibre-link {
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    .kenya-fibre-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-1px);
-    }
-
-    /* Notification styling */
+    /* Notifications */
     .notification-item.unread {
         background-color: var(--kp-light-blue);
         border-left: 3px solid var(--kp-blue);
@@ -517,11 +356,6 @@
         opacity: 0.85;
     }
 
-    .notification-item.unread:hover {
-        background-color: #e3f2fd;
-    }
-
-    /* Avatar styling */
     .avatar-sm {
         width: 32px;
         height: 32px;
@@ -535,19 +369,9 @@
         border-radius: 50%;
     }
 
-    /* Form controls */
-    .form-control:focus, .form-select:focus {
-        border-color: var(--kp-blue);
-        box-shadow: 0 0 0 0.2rem rgba(0, 102, 179, 0.25);
-    }
-
-    /* ========================================
-       RESPONSIVE STYLES - FIXED FOR DROPDOWNS
-    ========================================= */
+    /* Responsive Styles */
     @media (max-width: 991.98px) {
-        body {
-            padding-top: 56px;
-        }
+        body { padding-top: 56px; }
 
         .navbar-collapse {
             background: linear-gradient(135deg, var(--kp-blue) 0%, var(--kp-green) 100%);
@@ -557,11 +381,8 @@
             overflow-y: auto;
         }
 
-        .nav-item {
-            width: 100%;
-        }
+        .nav-item { width: 100%; }
 
-        /* Mobile dropdown styles - different from desktop */
         .dropdown-menu {
             position: static !important;
             width: 100% !important;
@@ -593,76 +414,88 @@
     }
 
     @media (max-width: 768px) {
-        .footer-compact {
-            text-align: center;
-        }
-
-        .footer-heading::after {
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .footer-brand {
-            justify-content: center;
-        }
-
-        .footer-meta {
-            justify-content: center !important;
-        }
+        .footer-compact { text-align: center; }
+        .footer-heading::after { left: 50%; transform: translateX(-50%); }
+        .footer-brand { justify-content: center; }
     }
 
     @media (max-width: 576px) {
-        .container-fluid {
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-
-        .navbar-brand {
-            font-size: 1rem;
-        }
+        .container-fluid { padding-left: 10px; padding-right: 10px; }
+        .navbar-brand { font-size: 1rem; }
     }
 
-    /* Print styles */
     @media print {
-        .navbar, footer, .no-print {
-            display: none !important;
-        }
-
-        body {
-            padding-top: 0;
-        }
-
-        .card {
-            border: 1px solid #ddd;
-            box-shadow: none;
-        }
+        .navbar, footer, .no-print { display: none !important; }
+        body { padding-top: 0; }
+        .card { border: 1px solid #ddd; box-shadow: none; }
     }
 
     /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--kp-light-blue); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--kp-blue); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--kp-green); }
+    /* Dropdown enhancements */
+.dropdown-menu {
+    border-radius: 0.75rem;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    margin-top: 0.5rem;
+}
 
-    ::-webkit-scrollbar-track {
-        background: var(--kp-light-blue);
-        border-radius: 4px;
-    }
+.dropdown-item {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
 
-    ::-webkit-scrollbar-thumb {
-        background: var(--kp-blue);
-        border-radius: 4px;
-    }
+.dropdown-item:hover {
+    background-color: rgba(0, 102, 179, 0.08);
+    transform: translateX(3px);
+}
 
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--kp-green);
-    }
-</style>
+.dropdown-item.active {
+    background: linear-gradient(90deg, rgba(0, 102, 179, 0.1), rgba(0, 150, 57, 0.05));
+    color: #0066B3;
+    font-weight: 500;
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.dropdown-header {
+    background: linear-gradient(135deg, #0066B3, #009639);
+    color: white;
+    border-radius: 0.75rem 0.75rem 0 0;
+    padding: 0.75rem 1rem;
+}
+
+.dropdown-divider {
+    margin: 0.3rem 0;
+}
+
+/* Color classes */
+.text-kp-blue { color: #0066B3 !important; }
+.text-kp-green { color: #009639 !important; }
+.text-purple { color: #6f42c1 !important; }
+.text-warning { color: #ffc107 !important; }
+
+.bg-kp-primary { background: #0066B3 !important; }
+.bg-kp-blue-light { background: rgba(0, 102, 179, 0.1) !important; }
+
+/* Hover animation on dropdown parent */
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+    </style>
 
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
-    <!-- Navbar with Kenya Power Colors -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="<?php echo e(url('/')); ?>">
@@ -677,135 +510,155 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <?php if(auth()->guard()->check()): ?>
-                        <!-- DASHBOARD - DIRECT LINK (NOT A DROPDOWN) -->
-                        <?php if(in_array(Auth::user()->role, ['admin', 'technical_admin', 'system_admin', 'accountmanager_admin'])): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('admin.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <!-- Dashboard Links by Role -->
+                        <?php if(in_array(Auth::user()->role, ['admin', 'technical_admin', 'system_admin', 'accountmanager_admin']) && Route::has('admin.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('admin.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'customer'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('customer.customer-dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'customer' && Route::has('customer.customer-dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('customer.customer-dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'finance'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('finance.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'finance' && Route::has('finance.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('finance.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'designer'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('designer.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'designer' && Route::has('designer.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('designer.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'surveyor'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('surveyor.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'surveyor' && Route::has('surveyor.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('surveyor.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'technician'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('technician.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'technician' && Route::has('technician.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('technician.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'ict_engineer'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('ictengineer.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'ict_engineer' && Route::has('ictengineer.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('ictengineer.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'account_manager'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('account-manager.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'account_manager' && Route::has('account-manager.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('account-manager.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <?php if(Auth::user()->role === 'debt_manager'): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('finance.debt.dashboard')); ?>">
-                                <i class="fas fa-tachometer-alt me-1"></i>Dashboard
-                            </a>
-                        </li>
+                        <?php if(Auth::user()->role === 'debt_manager' && Route::has('finance.debt.dashboard')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('finance.debt.dashboard')); ?>">
+                                    <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                                </a>
+                            </li>
                         <?php endif; ?>
 
-                        <!-- Maintenance Module - Dropdown -->
+                        <!-- Maintenance Module Dropdown -->
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view-maintenance')): ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="maintenanceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-tools me-1"></i> Maintenance
                             </a>
                             <div class="dropdown-menu">
                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('isTechnician')): ?>
-                                    <a class="dropdown-item" href="<?php echo e(route('technician.dashboard')); ?>">
-                                        <i class="fas fa-tachometer-alt me-2"></i> My Dashboard
-                                    </a>
-                                    <a class="dropdown-item" href="<?php echo e(route('technician.work-orders.index')); ?>">
-                                        <i class="fas fa-clipboard-list me-2"></i> My Work Orders
-                                    </a>
-                                    <a class="dropdown-item" href="<?php echo e(route('technician.equipment.index')); ?>">
-                                        <i class="fas fa-toolbox me-2"></i> Equipment
-                                    </a>
+                                    <?php if(Route::has('technician.dashboard')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('technician.dashboard')); ?>">
+                                            <i class="fas fa-tachometer-alt me-2"></i> My Dashboard
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('technician.work-orders.index')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('technician.work-orders.index')); ?>">
+                                            <i class="fas fa-clipboard-list me-2"></i> My Work Orders
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('technician.equipment.index')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('technician.equipment.index')); ?>">
+                                            <i class="fas fa-toolbox me-2"></i> Equipment
+                                        </a>
+                                    <?php endif; ?>
                                     <div class="dropdown-divider"></div>
                                 <?php endif; ?>
 
-                                <a class="dropdown-item" href="<?php echo e(route('maintenance.dashboard')); ?>">
-                                    <i class="fas fa-tachometer-alt me-2"></i> Maintenance Dashboard
-                                </a>
-
-                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create-maintenance-request')): ?>
-                                <a class="dropdown-item" href="<?php echo e(route('maintenance.requests.create')); ?>">
-                                    <i class="fas fa-plus-circle me-2"></i> New Request
-                                </a>
+                                <?php if(Route::has('maintenance.dashboard')): ?>
+                                    <a class="dropdown-item" href="<?php echo e(route('maintenance.dashboard')); ?>">
+                                        <i class="fas fa-tachometer-alt me-2"></i> Maintenance Dashboard
+                                    </a>
                                 <?php endif; ?>
 
-                                <a class="dropdown-item" href="<?php echo e(route('maintenance.requests.index')); ?>">
-                                    <i class="fas fa-list me-2"></i> All Requests
-                                </a>
+                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('create-maintenance-request')): ?>
+                                    <?php if(Route::has('maintenance.requests.create')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('maintenance.requests.create')); ?>">
+                                            <i class="fas fa-plus-circle me-2"></i> New Request
+                                        </a>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+
+                                <?php if(Route::has('maintenance.requests.index')): ?>
+                                    <a class="dropdown-item" href="<?php echo e(route('maintenance.requests.index')); ?>">
+                                        <i class="fas fa-list me-2"></i> All Requests
+                                    </a>
+                                <?php endif; ?>
 
                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('assign-work-orders')): ?>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?php echo e(route('maintenance.work-orders.index')); ?>">
-                                    <i class="fas fa-clipboard-check me-2"></i> Work Orders
-                                </a>
-                                <a class="dropdown-item" href="<?php echo e(route('maintenance.work-orders.create')); ?>">
-                                    <i class="fas fa-plus-circle me-2"></i> Create Work Order
-                                </a>
+                                    <div class="dropdown-divider"></div>
+                                    <?php if(Route::has('maintenance.work-orders.index')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('maintenance.work-orders.index')); ?>">
+                                            <i class="fas fa-clipboard-check me-2"></i> Work Orders
+                                        </a>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('maintenance.work-orders.create')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('maintenance.work-orders.create')); ?>">
+                                            <i class="fas fa-plus-circle me-2"></i> Create Work Order
+                                        </a>
+                                    <?php endif; ?>
                                 <?php endif; ?>
 
                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage-equipment')): ?>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?php echo e(route('maintenance.equipment.index')); ?>">
-                                    <i class="fas fa-toolbox me-2"></i> Equipment Management
-                                </a>
+                                    <div class="dropdown-divider"></div>
+                                    <?php if(Route::has('maintenance.equipment.index')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('maintenance.equipment.index')); ?>">
+                                            <i class="fas fa-toolbox me-2"></i> Equipment Management
+                                        </a>
+                                    <?php endif; ?>
                                 <?php endif; ?>
 
                                 <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view-maintenance-reports')): ?>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="<?php echo e(route('maintenance.reports')); ?>">
-                                    <i class="fas fa-chart-bar me-2"></i> Reports & Analytics
-                                </a>
+                                    <div class="dropdown-divider"></div>
+                                    <?php if(Route::has('maintenance.reports')): ?>
+                                        <a class="dropdown-item" href="<?php echo e(route('maintenance.reports')); ?>">
+                                            <i class="fas fa-chart-bar me-2"></i> Reports & Analytics
+                                        </a>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </div>
                         </li>
@@ -813,147 +666,167 @@
 
                         <!-- Admin Menu Items -->
                         <?php if(in_array(Auth::user()->role, ['admin', 'technical_admin', 'system_admin'])): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('admin.users')); ?>">
-                                    <i class="fas fa-users me-1"></i>Users
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('admin.customers.assign')); ?>">
-                                    <i class="fas fa-user-tie me-1"></i>Assign Customers
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('admin.design-requests.index')); ?>">
-                                    <i class="fas fa-drafting-compass me-1"></i>Design Requests
-                                </a>
-                            </li>
-<li class="nav-item">
-                            <a href="<?php echo e(route('contracts.index')); ?>"
-   class="nav-link <?php echo e(request()->routeIs('contracts.*') ? 'active' : ''); ?>">
-    <i class="fas fa-file-contract me-2"></i>
-    Contracts
-</a>
-</li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('admin.leases.index')); ?>">
-                                    <i class="fas fa-network-wired me-1"></i>Leases
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('admin.tickets')); ?>">
-                                    <i class="fas fa-ticket-alt me-1"></i>Tickets
-                                </a>
-                            </li>
+                            <?php if(in_array(Auth::user()->role, ['admin', 'system_admin']) && Route::has('admin.users')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('admin.users')); ?>">
+                                        <i class="fas fa-users me-1"></i>Users
+                                    </a>
+                                </li>
+                            <?php endif; ?>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="cakDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-file-alt me-1"></i> CAK Compliance
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="cakDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('asp.create')); ?>">
-                                            <i class="fas fa-server me-2 text-kp-blue"></i> ASP Return
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('csp.create')); ?>">
-                                            <i class="fas fa-envelope me-2 text-kp-green"></i> CSP Return
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('nfp.create')); ?>">
-                                            <i class="fas fa-network-wired me-2 text-kp-yellow"></i> NFP Return
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('asp.index')); ?>">
-                                            <i class="fas fa-list me-2"></i> ASP Submissions
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('csp.index')); ?>">
-                                            <i class="fas fa-list me-2"></i> CSP Submissions
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('nfp.index')); ?>">
-                                            <i class="fas fa-list me-2"></i> NFP Submissions
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('cak.dashboard')); ?>">
-                                            <i class="fas fa-tachometer-alt me-2"></i> CAK Dashboard
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            <?php if(Route::has('admin.customers.assign')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('admin.customers.assign')); ?>">
+                                        <i class="fas fa-user-tie me-1"></i>Assign Customers
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <?php if(Route::has('admin.design-requests.index')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('admin.design-requests.index')); ?>">
+                                        <i class="fas fa-drafting-compass me-1"></i>Design Requests/Tickets
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+
+                            <!-- Commercial Documents Dropdown (Admin) -->
+                            <?php
+    $leaseCount = \App\Models\Lease::count();
+    $quotationCount = \App\Models\Quotation::count();
+    $contractCount = \App\Models\Contract::count();
+?>
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="commercialDocsAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <span class="badge bg-kp-primary ms-1 rounded-pill"><?php echo e($leaseCount + $quotationCount + $contractCount); ?></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="commercialDocsAdmin">
+        <?php if(Route::has('admin.leases.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.leases.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.leases.index')); ?>">
+                    <span>
+                        <i class="fas fa-network-wired me-2 text-kp-blue"></i> Leases
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($leaseCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('admin.quotations.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.quotations.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.quotations.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-invoice-dollar me-2 text-kp-green"></i> Quotations
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($quotationCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('contracts.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('contracts.*') ? 'active' : ''); ?>" href="<?php echo e(route('contracts.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-contract me-2 text-purple"></i> Contracts
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($contractCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <?php if(Route::has('cak.dashboard')): ?>
+            <li>
+                <a class="dropdown-item <?php echo e(request()->routeIs('cak.*') ? 'active' : ''); ?>" href="<?php echo e(route('cak.dashboard')); ?>">
+                    <i class="fas fa-tachometer-alt me-2 text-warning"></i> CAK Forms
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</li>
                         <?php endif; ?>
 
                         <!-- Customer Menu Items -->
                         <?php if(Auth::user()->role === 'customer'): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('customer.profile.show')); ?>">
-                                    <i class="fas fa-id-card me-1"></i>Profile
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('customer.leases.index')); ?>">
-                                    <i class="fas fa-network-wired me-1"></i>My Leases
-                                </a>
-                            </li>
-<li class="nav-item">
-                            <a href="<?php echo e(route('customer.contracts.index')); ?>"
-   class="nav-link <?php echo e(request()->routeIs('customer.contracts.*') ? 'active' : ''); ?>">
-    <i class="fas fa-file-contract me-2"></i>
-    My Contracts
-</a>
-</li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('customer.tickets')); ?>">
-                                    <i class="fas fa-ticket-alt me-1"></i>Support
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('customer.design-requests.index')); ?>">
-                                    <i class="fas fa-drafting-compass me-1"></i>Design Requests
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('customer.billings.index')); ?>">
-                                    <i class="fas fa-file-invoice me-1"></i>Invoices
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('customer.documents.index')); ?>">
-                                    <i class="fas fa-folder me-1"></i>My Documents
-                                </a>
-                            </li>
+                            <?php if(Route::has('customer.profile.show')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('customer.profile.show')); ?>">
+                                        <i class="fas fa-id-card me-1"></i>Profile
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if(Route::has('customer.leases.index')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('customer.leases.index')); ?>">
+                                        <i class="fas fa-network-wired me-1"></i>My Leases
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if(Route::has('customer.contracts.index')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('customer.contracts.index')); ?>">
+                                        <i class="fas fa-file-contract me-2"></i> My Contracts
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if(Route::has('customer.tickets')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('customer.tickets')); ?>">
+                                        <i class="fas fa-ticket-alt me-1"></i>Support
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if(Route::has('customer.design-requests.index')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('customer.design-requests.index')); ?>">
+                                        <i class="fas fa-drafting-compass me-1"></i>Design Requests
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if(Route::has('customer.billings.index')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('customer.billings.index')); ?>">
+                                        <i class="fas fa-file-invoice me-1"></i>Invoices
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                            <?php if(Route::has('customer.documents.index')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('customer.documents.index')); ?>">
+                                        <i class="fas fa-folder me-1"></i>My Documents
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="certificatesDropdown" role="button"
-                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="customerCertificatesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-certificate me-1"></i> Certificates
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="certificatesDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('customer.certificates.conditional.index')); ?>">
-                                            <i class="fas fa-file-contract me-2"></i> Conditional Certificates
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="<?php echo e(route('customer.certificates.acceptance.index')); ?>">
-                                            <i class="fas fa-check-circle me-2"></i> Acceptance Certificates
-                                        </a>
-                                    </li>
+                                <ul class="dropdown-menu" aria-labelledby="customerCertificatesDropdown">
+                                    <?php if(Route::has('customer.certificates.conditional.index')): ?>
+                                        <li>
+                                            <a class="dropdown-item" href="<?php echo e(route('customer.certificates.conditional.index')); ?>">
+                                                <i class="fas fa-file-contract me-2"></i> Conditional Certificates
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('customer.certificates.acceptance.index')): ?>
+                                        <li>
+                                            <a class="dropdown-item" href="<?php echo e(route('customer.certificates.acceptance.index')); ?>">
+                                                <i class="fas fa-check-circle me-2"></i> Acceptance Certificates
+                                            </a>
+                                        </li>
+                                    <?php endif; ?>
                                 </ul>
                             </li>
                         <?php endif; ?>
 
-                        <!-- Finance Menu Items - Dropdown -->
+                        <!-- Finance Menu Items -->
                         <?php if(Auth::user()->role === 'finance'): ?>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-chart-line me-1"></i>
                                     <span class="d-none d-lg-inline">Finance</span>
                                 </a>
@@ -970,289 +843,361 @@
                                         </div>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('leases.finance.index')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-file-contract text-kp-blue"></i></div>
-                                                <div><div class="fw-medium">Leases Management</div><small class="text-muted">View, search and manage all leases</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.billing.index')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-file-invoice-dollar text-kp-green"></i></div>
-                                                <div><div class="fw-medium">Lease Billings</div><small class="text-muted">Manage billing cycles and invoices</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.payments.followups')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-money-check text-info"></i></div>
-                                                <div><div class="fw-medium">Payment Management</div><small class="text-muted">Track and process payments</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    <?php if(Route::has('leases.finance.index')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('leases.finance.index')); ?>"><i class="fas fa-file-contract text-kp-blue me-2"></i> Leases Management</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('finance.billing.index')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.billing.index')); ?>"><i class="fas fa-file-invoice-dollar text-kp-green me-2"></i> Lease Billings</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('finance.payments.followups')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.payments.followups')); ?>"><i class="fas fa-money-check text-info me-2"></i> Payment Management</a></li>
+                                    <?php endif; ?>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.transactions.index')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-exchange-alt text-kp-yellow"></i></div>
-                                                <div><div class="fw-medium">Transactions</div><small class="text-muted">View all financial transactions</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.auto-billing')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-robot text-secondary"></i></div>
-                                                <div><div class="fw-medium">Auto Billing</div><small class="text-muted">Automated billing configurations</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    <?php if(Route::has('finance.transactions.index')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.transactions.index')); ?>"><i class="fas fa-exchange-alt text-kp-yellow me-2"></i> Transactions</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('finance.auto-billing')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.auto-billing')); ?>"><i class="fas fa-robot text-secondary me-2"></i> Auto Billing</a></li>
+                                    <?php endif; ?>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.reports')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-chart-bar text-danger"></i></div>
-                                                <div><div class="fw-medium">Financial Reports</div><small class="text-muted">Generate detailed financial reports</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="dropdown-header mt-2">
-                                        <div class="text-muted small text-uppercase">AI Analytics</div>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.ai.dashboard')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-brain text-purple"></i></div>
-                                                <div>
-                                                    <div class="fw-medium">Debtors Analytics</div>
-                                                    <small class="text-muted">AI-powered debt analysis dashboard</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.ai.predictive')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-chart-line text-kp-yellow"></i></div>
-                                                <div>
-                                                    <div class="fw-medium">Predictive Analytics</div>
-                                                    <small class="text-muted">Forecasts and predictions</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.ai.recommendations')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-lightbulb text-kp-green"></i></div>
-                                                <div>
-                                                    <div class="fw-medium">AI Recommendations</div>
-                                                    <small class="text-muted">Actionable insights</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.ai.report')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-file-pdf text-danger"></i></div>
-                                                <div>
-                                                    <div class="fw-medium">Generate Report</div>
-                                                    <small class="text-muted">Export analysis report</small>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    <?php if(Route::has('finance.reports')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.reports')); ?>"><i class="fas fa-chart-bar text-danger me-2"></i> Financial Reports</a></li>
+                                    <?php endif; ?>
+                                    <li class="dropdown-header mt-2">AI Analytics</li>
+                                    <?php if(Route::has('finance.ai.dashboard')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.ai.dashboard')); ?>"><i class="fas fa-brain text-purple me-2"></i> Debtors Analytics</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('finance.ai.predictive')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.ai.predictive')); ?>"><i class="fas fa-chart-line text-kp-yellow me-2"></i> Predictive Analytics</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('finance.ai.recommendations')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.ai.recommendations')); ?>"><i class="fas fa-lightbulb text-kp-green me-2"></i> AI Recommendations</a></li>
+                                    <?php endif; ?>
                                     <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.financial-analytics.dashboard')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-chart-pie text-info"></i></div>
-                                                <div><div class="fw-medium">Finance Analytics</div><small class="text-muted">Comprehensive financial analytics</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item py-2" href="<?php echo e(route('finance.financial-parameters.index')); ?>">
-                                            <div class="d-flex align-items-center">
-                                                <div class="icon-container me-3"><i class="fas fa-cog text-dark"></i></div>
-                                                <div><div class="fw-medium">Financial Parameters</div><small class="text-muted">Configure financial settings</small></div>
-                                            </div>
-                                        </a>
-                                    </li>
+                                    <?php if(Route::has('finance.financial-parameters.index')): ?>
+                                        <li><a class="dropdown-item py-2" href="<?php echo e(route('finance.financial-parameters.index')); ?>"><i class="fas fa-cog text-dark me-2"></i> Financial Parameters</a></li>
+                                    <?php endif; ?>
                                 </ul>
                             </li>
+
+                            <!-- Commercial Documents Dropdown (Finance) -->
+                            <?php
+    $leaseCount = \App\Models\Lease::count();
+    $quotationCount = \App\Models\Quotation::count();
+    $contractCount = \App\Models\Contract::count();
+?>
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="commercialDocsFinance" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <span class="badge bg-kp-primary ms-1 rounded-pill"><?php echo e($leaseCount + $quotationCount + $contractCount); ?></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="commercialDocsFinance">
+        <?php if(Route::has('admin.leases.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.leases.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.leases.index')); ?>">
+                    <span>
+                        <i class="fas fa-network-wired me-2 text-kp-blue"></i> Leases
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($leaseCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('admin.quotations.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.quotations.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.quotations.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-invoice-dollar me-2 text-kp-green"></i> Quotations
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($quotationCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('contracts.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('contracts.*') ? 'active' : ''); ?>" href="<?php echo e(route('contracts.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-contract me-2 text-purple"></i> Contracts
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($contractCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <?php if(Route::has('cak.dashboard')): ?>
+            <li>
+                <a class="dropdown-item <?php echo e(request()->routeIs('cak.*') ? 'active' : ''); ?>" href="<?php echo e(route('cak.dashboard')); ?>">
+                    <i class="fas fa-tachometer-alt me-2 text-warning"></i> CAK Forms
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</li>
                         <?php endif; ?>
 
                         <!-- Designer Menu Items -->
                         <?php if(Auth::user()->role === 'designer'): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('designer.requests.index')); ?>">
-                                    <i class="fas fa-drafting-compass me-1"></i>Design Requests
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('designer.quotations.index')); ?>">
-                                    <i class="fas fa-file-invoice-dollar me-1"></i>Quotations
-                                </a>
-                            </li>
+                            <?php if(Route::has('designer.requests.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('designer.requests.index')); ?>"><i class="fas fa-drafting-compass me-1"></i>Design Requests</a></li>
+                            <?php endif; ?>
+                            <?php if(Route::has('designer.quotations.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('designer.quotations.index')); ?>"><i class="fas fa-file-invoice-dollar me-1"></i>Quotations</a></li>
+                            <?php endif; ?>
                         <?php endif; ?>
 
                         <!-- Surveyor Menu Items -->
                         <?php if(Auth::user()->role === 'surveyor'): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('surveyor.assignments.index')); ?>">
-                                    <i class="fas fa-tasks me-1"></i>Assignments
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('surveyor.routes.index')); ?>">
-                                    <i class="fas fa-route me-1"></i>Routes
-                                </a>
-                            </li>
+                            <?php if(Route::has('surveyor.assignments.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('surveyor.assignments.index')); ?>"><i class="fas fa-tasks me-1"></i>Assignments</a></li>
+                            <?php endif; ?>
+                            <?php if(Route::has('surveyor.routes.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('surveyor.routes.index')); ?>"><i class="fas fa-route me-1"></i>Routes</a></li>
+                            <?php endif; ?>
                         <?php endif; ?>
 
-                        <!-- Technician Quick Access Menu Items -->
+                        <!-- Technician Menu Items -->
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('isTechnician')): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('technician.work-orders.index')); ?>">
-                                    <i class="fas fa-clipboard-list me-1"></i> Work Orders
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('technician.equipment.index')); ?>">
-                                    <i class="fas fa-toolbox me-1"></i> Equipment
-                                </a>
-                            </li>
+                            <?php if(Route::has('technician.work-orders.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('technician.work-orders.index')); ?>"><i class="fas fa-clipboard-list me-1"></i> Work Orders</a></li>
+                            <?php endif; ?>
+                            <?php if(Route::has('technician.equipment.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('technician.equipment.index')); ?>"><i class="fas fa-toolbox me-1"></i> Equipment</a></li>
+                            <?php endif; ?>
                         <?php endif; ?>
 
                         <!-- Account Manager Menu Items -->
                         <?php if(Auth::user()->role === 'account_manager'): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('account-manager.customers.index')); ?>">
-                                    <i class="fas fa-users me-1"></i>My Customers
-                                </a>
-                            </li>
-<li class="nav-item">
-                            <a href="<?php echo e(route('contracts.index')); ?>"
-   class="nav-link <?php echo e(request()->routeIs('contracts.*') ? 'active' : ''); ?>">
-    <i class="fas fa-file-contract me-2"></i>
-    Contracts
-</a>
+                            <?php if(Route::has('account-manager.customers.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('account-manager.customers.index')); ?>"><i class="fas fa-users me-1"></i>My Customers</a></li>
+                            <?php endif; ?>
+
+                            <!-- Legal Documents Dropdown (Account Manager) -->
+                            <?php
+    $leaseCount = \App\Models\Lease::count();
+    $quotationCount = \App\Models\Quotation::count();
+    $contractCount = \App\Models\Contract::count();
+?>
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="legalDocsAccountManager" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <span class="badge bg-kp-primary ms-1 rounded-pill"><?php echo e($leaseCount + $quotationCount + $contractCount); ?></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="legalDocsAccountManager">
+        <?php if(Route::has('admin.leases.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.leases.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.leases.index')); ?>">
+                    <span>
+                        <i class="fas fa-network-wired me-2 text-kp-blue"></i> Leases
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($leaseCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('admin.quotations.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.quotations.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.quotations.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-invoice-dollar me-2 text-kp-green"></i> Quotations
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($quotationCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('contracts.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('contracts.*') ? 'active' : ''); ?>" href="<?php echo e(route('contracts.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-contract me-2 text-purple"></i> Contracts
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($contractCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <?php if(Route::has('cak.dashboard')): ?>
+            <li>
+                <a class="dropdown-item <?php echo e(request()->routeIs('cak.*') ? 'active' : ''); ?>" href="<?php echo e(route('cak.dashboard')); ?>">
+                    <i class="fas fa-tachometer-alt me-2 text-warning"></i> CAK Forms
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
 </li>
 
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('account-manager.tickets.index')); ?>">
-                                    <i class="fas fa-ticket-alt me-1"></i>Support Tickets
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo e(route('account-manager.payments.index')); ?>">
-                                    <i class="fas fa-money-bill-wave me-1"></i>Payment Followups
-                                </a>
-                            </li>
+                            <?php if(Route::has('account-manager.tickets.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('account-manager.tickets.index')); ?>"><i class="fas fa-ticket-alt me-1"></i>Support Tickets</a></li>
+                            <?php endif; ?>
+                            <?php if(Route::has('account-manager.payments.index')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('account-manager.payments.index')); ?>"><i class="fas fa-money-bill-wave me-1"></i>Payment Followups</a></li>
+                            <?php endif; ?>
                         <?php endif; ?>
 
                         <!-- Debt Manager Menu -->
-                        <?php echo $__env->make('partials.menus.debt-manager', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-
-                        <!-- Marketing Admin (Account Manager Admin) Menu Items -->
-                        <?php if(Auth::user()->role === 'accountmanager_admin'): ?>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-chart-pie me-1"></i>Marketing Analytics
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.dashboard')); ?>">Dashboard</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.analytics')); ?>">Performance Analytics</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.campaigns')); ?>">Campaign Management</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.reports')); ?>">Marketing Reports</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user-tie me-1"></i>Team Management
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="<?php echo e(route('admin.account-managers.index') ?? url('/admin/account-managers/index')); ?>">Account Managers</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.performance') ?? url('/marketing-admin/performance')); ?>">Team Performance</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.targets') ?? url('/marketing-admin/targets')); ?>">Sales Targets</a></li>
-                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.commissions') ?? url('/marketing-admin/commissions')); ?>">Commission Reports</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="nav-item">
-                            <a href="<?php echo e(route('contracts.index')); ?>"
-   class="nav-link <?php echo e(request()->routeIs('contracts.*') ? 'active' : ''); ?>">
-    <i class="fas fa-file-contract me-2"></i>
-    Contracts
-</a>
-</li>
-
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-fix" href="<?php echo e(route('marketing-admin.customer-insights')); ?>">
-                                    <i class="fas fa-user-chart me-1"></i>Customer Insights
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-fix" href="<?php echo e(route('marketing-admin.sales-pipeline') ?? url('/marketing-admin/sales-pipeline')); ?>">
-                                    <i class="fas fa-funnel-dollar me-1"></i>Sales Pipeline
-                                </a>
-                            </li>
+                        <?php if(Auth::user()->role === 'debt_manager'): ?>
+                            <?php if(Route::has('debt-manager.dashboard')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('debt-manager.dashboard')); ?>"><i class="fas fa-chart-line me-1"></i> Debt Dashboard</a></li>
+                            <?php endif; ?>
+                            <?php if(Route::has('debt-manager.customers')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('debt-manager.customers')); ?>"><i class="fas fa-users me-1"></i> Customers</a></li>
+                            <?php endif; ?>
+                            <?php if(Route::has('debt-manager.payments')): ?>
+                                <li class="nav-item"><a class="nav-link" href="<?php echo e(route('debt-manager.payments')); ?>"><i class="fas fa-money-bill-wave me-1"></i> Payments</a></li>
+                            <?php endif; ?>
                         <?php endif; ?>
 
-                        <!-- Kenya Fibre Dashboard -->
-                        <?php if(!in_array(Auth::user()->role, ['customer'])): ?>
+                        <!-- Marketing Admin Menu Items -->
+                        <?php if(Auth::user()->role === 'accountmanager_admin'): ?>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="marketingAnalyticsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-chart-pie me-1"></i>Marketing Analytics
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="marketingAnalyticsDropdown">
+                                    <?php if(Route::has('marketing-admin.dashboard')): ?>
+                                        <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.dashboard')); ?>">Dashboard</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('marketing-admin.analytics')): ?>
+                                        <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.analytics')); ?>">Performance Analytics</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('marketing-admin.campaigns')): ?>
+                                        <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.campaigns')); ?>">Campaign Management</a></li>
+                                    <?php endif; ?>
+                                    <?php if(Route::has('marketing-admin.reports')): ?>
+                                        <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.reports')); ?>">Marketing Reports</a></li>
+                                    <?php endif; ?>
+                                </ul>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="teamManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-tie me-1"></i>Team Management
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="teamManagementDropdown">
+                                    <li><a class="dropdown-item" href="<?php echo e(route('admin.account-managers.index') ?? '#'); ?>">Account Managers</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.performance') ?? '#'); ?>">Team Performance</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.targets') ?? '#'); ?>">Sales Targets</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.commissions') ?? '#'); ?>">Commission Reports</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.customer-insights') ?? '#'); ?>">Customer Insights</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo e(route('marketing-admin.sales-pipeline') ?? '#'); ?>">Sales Pipeline</a></li>
+                                </ul>
+                            </li>
+
+                            <!-- Legal Documents Dropdown (Marketing Admin) -->
+                            <?php
+    $leaseCount = \App\Models\Lease::count();
+    $quotationCount = \App\Models\Quotation::count();
+    $contractCount = \App\Models\Contract::count();
+?>
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="legalDocsMarketingAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <span class="badge bg-kp-primary ms-1 rounded-pill"><?php echo e($leaseCount + $quotationCount + $contractCount); ?></span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="legalDocsMarketingAdmin">
+        <?php if(Route::has('admin.leases.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.leases.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.leases.index')); ?>">
+                    <span>
+                        <i class="fas fa-network-wired me-2 text-kp-blue"></i> Leases
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($leaseCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('admin.quotations.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('admin.quotations.*') ? 'active' : ''); ?>" href="<?php echo e(route('admin.quotations.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-invoice-dollar me-2 text-kp-green"></i> Quotations
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($quotationCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <?php if(Route::has('contracts.index')): ?>
+            <li>
+                <a class="dropdown-item d-flex justify-content-between align-items-center <?php echo e(request()->routeIs('contracts.*') ? 'active' : ''); ?>" href="<?php echo e(route('contracts.index')); ?>">
+                    <span>
+                        <i class="fas fa-file-contract me-2 text-purple"></i> Contracts
+                    </span>
+                    <span class="badge bg-secondary rounded-pill"><?php echo e($contractCount); ?></span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <li><hr class="dropdown-divider"></li>
+
+        <?php if(Route::has('cak.dashboard')): ?>
+            <li>
+                <a class="dropdown-item <?php echo e(request()->routeIs('cak.*') ? 'active' : ''); ?>" href="<?php echo e(route('cak.dashboard')); ?>">
+                    <i class="fas fa-tachometer-alt me-2 text-warning"></i> CAK Forms
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</li>
+                        <?php endif; ?>
+
+                        <!-- Kenya Fibre Dashboard (GIS Map) -->
+                        <?php if(!in_array(Auth::user()->role, ['customer']) && Route::has('kenya.fibre.dashboard')): ?>
                             <li class="nav-item">
-                                <a class="nav-link kenya-fibre-link nav-link-fix" href="<?php echo e(route('kenya.fibre.dashboard')); ?>">
-                                    <i class="fas fa-globe-africa me-1"></i> Kenya Fibre Dashboard
+                                <a class="nav-link kenya-fibre-link" href="<?php echo e(route('kenya.fibre.dashboard')); ?>">
+                                    <i class="fas fa-globe-africa me-1"></i> Map(GIS)
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+    <?php if(in_array(Auth::user()->role, ['admin','technical_admin','accountmanager_admin', 'system_admin', 'executive', 'finance', 'management'])): ?>
+    <li class="nav-item">
+        <a href="<?php echo e(route('executive.dashboard')); ?>"
+           class="nav-link <?php echo e(request()->routeIs('executive.dashboard') ? 'active' : ''); ?>">
+            <i class="fas fa-chart-line"></i>
+            <span>Executive Dashboard</span>
+        </a>
+    </li>
+<?php endif; ?>
+</li>
                         <?php endif; ?>
 
                         <!-- Statements -->
-                        <li class="nav-item">
-                            <?php if(auth()->guard()->check()): ?>
-                                <a class="nav-link nav-link-fix"
-                                href="<?php echo e(auth()->user()->role === 'customer'
-                                            ? route('customer.statements')
-                                            : route('statements.index')); ?>">
-                                    <i class="fas fa-file-invoice me-1"></i>
-                                    <?php echo e(auth()->user()->role === 'customer'
-                                            ? 'My Statements'
-                                            : 'Generate Statements'); ?>
-
-                                </a>
-                            <?php endif; ?>
-                        </li>
-
-                        <!-- Chat Link -->
-                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('use-chat')): ?>
+                        <?php if((Auth::user()->role === 'customer' && Route::has('customer.statements')) || Route::has('statements.index')): ?>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-fix" href="<?php echo e(route('chat.index')); ?>">
-                                    <i class="fas fa-comments me-1"></i> WeChat
-                                    <?php if(auth()->guard()->check()): ?>
-                                        <?php
-                                            $unreadCount = auth()->user()->totalUnreadMessages();
-                                        ?>
-                                        <?php if($unreadCount > 0): ?>
-                                            <span class="badge bg-danger ms-1"><?php echo e($unreadCount); ?></span>
-                                        <?php endif; ?>
-                                    <?php endif; ?>
+                                <a class="nav-link" href="<?php echo e(Auth::user()->role === 'customer' ? route('customer.statements') : route('statements.index')); ?>">
+                                    <i class="fas fa-file-invoice me-1"></i>
+                                    <?php echo e(Auth::user()->role === 'customer' ? 'My Statements' : 'Generate Statements'); ?>
+
                                 </a>
                             </li>
                         <?php endif; ?>
 
+                        <!-- Chat Link -->
+                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('use-chat')): ?>
+                            <?php if(Route::has('chat.index')): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="<?php echo e(route('chat.index')); ?>">
+                                        <i class="fas fa-comments me-1"></i> WeChat
+                                        <?php $unreadCount = auth()->user()->totalUnreadMessages(); ?>
+                                        <?php if($unreadCount > 0): ?>
+                                            <span class="badge bg-danger ms-1"><?php echo e($unreadCount); ?></span>
+                                        <?php endif; ?>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
                         <!-- Notifications Dropdown -->
-                        <?php if(auth()->guard()->check()): ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link position-relative dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-bell"></i>
                                 <?php
                                     $unreadNotificationsCount = auth()->user()->unreadNotifications->count();
@@ -1262,10 +1207,6 @@
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
                                         <?php echo e($unreadNotificationsCount > 99 ? '99+' : $unreadNotificationsCount); ?>
 
-                                    </span>
-                                <?php else: ?>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" style="display: none;">
-                                        0
                                     </span>
                                 <?php endif; ?>
                             </a>
@@ -1282,12 +1223,10 @@
                                             $data = $notification->data;
                                             $isUnread = is_null($notification->read_at);
                                         ?>
-                                        <li class="dropdown-item-text notification-item <?php echo e($isUnread ? 'unread' : 'read'); ?>"
-                                            data-id="<?php echo e($notification->id); ?>">
+                                        <li class="dropdown-item-text notification-item <?php echo e($isUnread ? 'unread' : 'read'); ?>" data-id="<?php echo e($notification->id); ?>">
                                             <div class="d-flex align-items-start">
                                                 <div class="avatar me-2 mt-1">
-                                                    <div class="bg-<?php echo e($isUnread ? 'primary' : 'secondary'); ?> rounded-circle text-white d-flex align-items-center justify-content-center"
-                                                         style="width: 32px; height: 32px; font-size: 14px;">
+                                                    <div class="bg-<?php echo e($isUnread ? 'primary' : 'secondary'); ?> rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 14px;">
                                                         <?php echo e($data['sender_avatar'] ?? 'N'); ?>
 
                                                     </div>
@@ -1305,19 +1244,11 @@
                                                     </div>
                                                     <small class="d-block <?php echo e($isUnread ? 'text-dark' : 'text-muted'); ?>"><?php echo e($data['message_preview'] ?? 'New message'); ?></small>
                                                     <div class="mt-2 d-flex gap-2">
-                                                        <a href="#" onclick="event.preventDefault(); openChat(<?php echo e($data['conversation_id'] ?? 0); ?>)"
-                                                           class="small text-kp-blue text-decoration-none">
-                                                            <i class="fas fa-comment"></i> Open Chat
-                                                        </a>
+                                                        <a href="#" onclick="event.preventDefault(); openChat(<?php echo e($data['conversation_id'] ?? 0); ?>)" class="small text-kp-blue text-decoration-none"><i class="fas fa-comment"></i> Open Chat</a>
                                                         <?php if($isUnread): ?>
-                                                            <a href="#" onclick="event.preventDefault(); markAsRead('<?php echo e($notification->id); ?>')"
-                                                               class="small text-kp-green text-decoration-none">
-                                                                <i class="fas fa-check-circle"></i> Mark Read
-                                                            </a>
+                                                            <a href="#" onclick="event.preventDefault(); markAsRead('<?php echo e($notification->id); ?>')" class="small text-kp-green text-decoration-none"><i class="fas fa-check-circle"></i> Mark Read</a>
                                                         <?php else: ?>
-                                                            <span class="small text-muted">
-                                                                <i class="fas fa-check-double"></i> Read
-                                                            </span>
+                                                            <span class="small text-muted"><i class="fas fa-check-double"></i> Read</span>
                                                         <?php endif; ?>
                                                     </div>
                                                 </div>
@@ -1337,28 +1268,25 @@
                                     <li><hr class="dropdown-divider"></li>
                                     <li class="text-center p-2">
                                         <div class="d-flex justify-content-between">
-                                            <a href="<?php echo e(route('notifications.index')); ?>" class="btn btn-sm btn-outline-kp-primary">
-                                                <i class="fas fa-list"></i> View All
-                                            </a>
+                                            <?php if(Route::has('notifications.index')): ?>
+                                                <a href="<?php echo e(route('notifications.index')); ?>" class="btn btn-sm btn-outline-kp-primary"><i class="fas fa-list"></i> View All</a>
+                                            <?php endif; ?>
                                             <?php if($unreadNotificationsCount > 0): ?>
-                                                <a href="#" onclick="event.preventDefault(); markAllAsRead()" class="btn btn-sm btn-outline-kp-success">
-                                                    <i class="fas fa-check-double"></i> Mark All Read
-                                                </a>
+                                                <a href="#" onclick="event.preventDefault(); markAllAsRead()" class="btn btn-sm btn-outline-kp-success"><i class="fas fa-check-double"></i> Mark All Read</a>
                                             <?php endif; ?>
                                         </div>
                                     </li>
                                 <?php endif; ?>
                             </ul>
                         </li>
-                        <?php endif; ?>
                     <?php endif; ?>
                 </ul>
 
-                <!-- Right-side navigation -->
+                <!-- Right-side User Menu -->
                 <ul class="navbar-nav ms-auto">
                     <?php if(auth()->guard()->check()): ?>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userMenuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-user-circle me-1"></i>
                                 <span class="d-none d-sm-inline"><?php echo e(Auth::user()->name); ?></span>
                                 <span class="badge bg-<?php echo e(Auth::user()->role === 'admin' ? 'danger' :
@@ -1375,7 +1303,7 @@
                                     <span class="badge bg-info ms-1"><?php echo e(Auth::user()->employee_id); ?></span>
                                 <?php endif; ?>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuDropdown">
                                 <li class="dropdown-header">
                                     <small>Logged in as</small><br>
                                     <strong><?php echo e(Auth::user()->email); ?></strong>
@@ -1397,12 +1325,12 @@
                                 <i class="fas fa-sign-in-alt me-1"></i>Login
                             </a>
                         </li>
-                        <?php if(Route::has('register')): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?php echo e(route('register.customer')); ?>">
-                                <i class="fas fa-user-plus me-1"></i>Register
-                            </a>
-                        </li>
+                        <?php if(Route::has('register.customer')): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="<?php echo e(route('register.customer')); ?>">
+                                    <i class="fas fa-user-plus me-1"></i>Register
+                                </a>
+                            </li>
                         <?php endif; ?>
                     <?php endif; ?>
                 </ul>
@@ -1453,7 +1381,7 @@
         </div>
     </main>
 
-    <!-- Footer with Kenya Power Colors -->
+    <!-- Footer -->
     <footer class="footer-compact bg-dark text-light py-3 py-sm-4 mt-auto">
         <div class="container-fluid px-3 px-sm-4">
             <div class="row align-items-center g-2 g-sm-3">
@@ -1475,8 +1403,9 @@
                             <h6 class="footer-heading mb-1 small fw-bold" style="color: var(--kp-yellow);">Quick Links</h6>
                             <ul class="list-unstyled footer-links mb-0">
                                 <li class="mb-1"><a href="<?php echo e(url('/')); ?>" class="footer-link small">Home</a></li>
-                                <li class="mb-1"><a href="<?php echo e(route('help.index')); ?>" class="footer-link small">Help Center</a></li>
-                                
+                                <?php if(Route::has('help.index')): ?>
+                                    <li class="mb-1"><a href="<?php echo e(route('help.index')); ?>" class="footer-link small">Help Center</a></li>
+                                <?php endif; ?>
                             </ul>
                         </div>
                         <div class="col-6 col-sm-3">
@@ -1548,23 +1477,17 @@
     </footer>
 
     <!-- Scripts -->
-    
-
-<!-- Scripts -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Bootstrap JS MUST be loaded after jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         (function() {
-            // Back to top button functionality
+            // Back to top button
             document.getElementById('backToTop')?.addEventListener('click', function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            // Initialize tooltips
+            // Initialize all tooltips
             document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
                 try {
                     new bootstrap.Tooltip(el);
@@ -1573,40 +1496,63 @@
                 }
             });
 
+            // Reinitialize all dropdowns to ensure they work
+            document.querySelectorAll('.dropdown-toggle').forEach(function(dropdown) {
+                try {
+                    new bootstrap.Dropdown(dropdown);
+                } catch (e) {
+                    console.log('Dropdown error:', e);
+                }
+            });
+
+            // Auto-dismiss alerts after 5 seconds
+            document.querySelectorAll('.alert').forEach(function(alert) {
+                setTimeout(function() {
+                    try {
+                        const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                        bsAlert.close();
+                    } catch (e) {
+                        console.log('Alert error:', e);
+                    }
+                }, 5000);
+            });
+
+            // Mobile dropdown fix
+            if (window.innerWidth < 992) {
+                document.querySelectorAll('.dropdown-toggle').forEach(function(toggle) {
+                    toggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const parent = this.closest('.dropdown');
+                        const menu = parent.querySelector('.dropdown-menu');
+                        if (menu) {
+                            menu.classList.toggle('show');
+                        }
+                    });
+                });
+            }
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+                        menu.classList.remove('show');
+                    });
+                }
+            });
+
             // ==================== NOTIFICATION FUNCTIONS ====================
             window.markAsRead = function(notificationId) {
                 fetch(`/notifications/${notificationId}/read`, {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json'
                     }
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
-                        if (notificationItem) {
-                            notificationItem.classList.remove('unread');
-                            notificationItem.classList.add('read');
-                            const avatar = notificationItem.querySelector('.avatar div');
-                            if (avatar) {
-                                avatar.classList.remove('bg-kp-blue');
-                                avatar.classList.add('bg-secondary');
-                            }
-                            const newBadge = notificationItem.querySelector('.badge.bg-kp-blue.ms-1');
-                            if (newBadge) newBadge.remove();
-                            const actionDiv = notificationItem.querySelector('.mt-2.d-flex.gap-2');
-                            if (actionDiv) {
-                                const markReadBtn = actionDiv.querySelector('a.text-kp-green');
-                                if (markReadBtn) {
-                                    const readSpan = document.createElement('span');
-                                    readSpan.className = 'small text-muted';
-                                    readSpan.innerHTML = '<i class="fas fa-check-double"></i> Read';
-                                    actionDiv.replaceChild(readSpan, markReadBtn);
-                                }
-                            }
-                        }
-                        window.updateNotificationBadge();
+                        location.reload();
                     }
                 })
                 .catch(error => console.error('Error marking as read:', error));
@@ -1616,38 +1562,14 @@
                 fetch('/notifications/read-all', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Content-Type': 'application/json'
                     }
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.querySelectorAll('.notification-item.unread').forEach(item => {
-                            item.classList.remove('unread');
-                            item.classList.add('read');
-                            const avatar = item.querySelector('.avatar div');
-                            if (avatar) {
-                                avatar.classList.remove('bg-kp-blue');
-                                avatar.classList.add('bg-secondary');
-                            }
-                            const newBadge = item.querySelector('.badge.bg-kp-blue.ms-1');
-                            if (newBadge) newBadge.remove();
-                            const actionDiv = item.querySelector('.mt-2.d-flex.gap-2');
-                            if (actionDiv) {
-                                const markReadBtn = actionDiv.querySelector('a.text-kp-green');
-                                if (markReadBtn) {
-                                    const readSpan = document.createElement('span');
-                                    readSpan.className = 'small text-muted';
-                                    readSpan.innerHTML = '<i class="fas fa-check-double"></i> Read';
-                                    actionDiv.replaceChild(readSpan, markReadBtn);
-                                }
-                            }
-                        });
-                        window.updateNotificationBadge();
-                        const markAllBtn = document.querySelector('.btn-outline-kp-success');
-                        if (markAllBtn) markAllBtn.style.display = 'none';
-                        const headerBadge = document.querySelector('.dropdown-header .badge.bg-kp-blue');
-                        if (headerBadge) headerBadge.remove();
+                        location.reload();
                     }
                 })
                 .catch(error => console.error('Error marking all as read:', error));
@@ -1672,14 +1594,8 @@
                         if (data.count > 0) {
                             badge.textContent = data.count > 99 ? '99+' : data.count;
                             badge.style.display = 'inline';
-                            const headerBadge = document.querySelector('.dropdown-header .badge.bg-kp-blue');
-                            if (headerBadge) {
-                                headerBadge.textContent = data.count + ' new';
-                            }
                         } else {
                             badge.style.display = 'none';
-                            const headerBadge = document.querySelector('.dropdown-header .badge.bg-kp-blue');
-                            if (headerBadge) headerBadge.remove();
                         }
                     }
                 })
@@ -1687,7 +1603,7 @@
             };
 
             window.updateNotificationBadge();
-            setInterval(() => window.updateNotificationBadge(), 30000);
+            setInterval(function() { window.updateNotificationBadge(); }, 30000);
         })();
     </script>
 

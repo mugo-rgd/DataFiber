@@ -616,8 +616,8 @@
                 </div>
             </div>
           <div class="copyright">
-    &copy; <?php echo date('Y'); ?> Kenya Power and Lighting Company. All rights reserved.
-</div>
+            &copy; <?php echo date('Y'); ?> Kenya Power and Lighting Company. All rights reserved.
+        </div>
         </div>
     </footer>
 
