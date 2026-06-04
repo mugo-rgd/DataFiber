@@ -9,7 +9,7 @@ class ColocationList extends Model
 {
     use HasFactory;
 
-    protected $table = 'colocation_list'; // Specify the table name
+    protected $table = 'colocation_lists'; // Specify the table name
 
     protected $primaryKey = 'service_id'; // Specify the primary key
 

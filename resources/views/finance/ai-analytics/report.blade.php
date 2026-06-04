@@ -81,7 +81,7 @@
                     <button onclick="window.print()" class="btn btn-light btn-lg">
                         <i class="fas fa-print me-2"></i>Print Report
                     </button>
-                    <a href="{{ route('finance.ai.dashboard') }}" class="btn btn-outline-light btn-lg ms-2">
+                    <a href="{{ route('finance.ai-analytics.dashboard') }}" class="btn btn-outline-light btn-lg ms-2">
                         <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                     </a>
                 </div>

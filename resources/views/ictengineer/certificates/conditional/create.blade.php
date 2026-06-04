@@ -13,7 +13,7 @@
                     </h1>
                     <p class="text-muted mb-0">ICT Engineer - Create Conditional Certificate for Design Request</p>
                 </div>
-                <a href="{{ route('ictengineer.requests') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-2"></i>Back to Requests
                 </a>
             </div>
@@ -209,11 +209,11 @@
         </div>
 
         <!-- Status Field -->
-        <div class="mb-3">
-    <label for="status" class="form-label required">Certificate Status</label>
-    <select class="form-select" id="status" name="status" required>
+    <div class="mb-3">
+    <label class="form-label fw-bold">Certificate Status</label>
+    <select class="form-select" name="certificate_status" required>
         <option value="draft">Draft</option>
-        <option value="pending_designer" selected>Pending Designer</option>
+        <option value="pending_designer">Pending Designer Review</option>
         <option value="sent_to_designer">Sent to Designer</option>
         <option value="acknowledged">Acknowledged</option>
         <option value="completed">Completed</option>
@@ -268,10 +268,10 @@
                                 </div>
                             </div>
                         </div>
-
+<input type="hidden" name="certificate_status" value="sent_to_designer">
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-between align-items-center border-top pt-4">
-                            <a href="{{ route('ictengineer.requests') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
                             <button type="submit" class="btn btn-kp-warning" id="generateCertificateBtn">

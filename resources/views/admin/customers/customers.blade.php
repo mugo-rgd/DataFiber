@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container-fluid">
     <!-- Header -->
     <div class="header-actions">
@@ -219,60 +220,60 @@
                                 @endif
                             </td>
                             <td>
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-outline-kp-primary dropdown-toggle" data-bs-toggle="dropdown">
-                                        <i class="fas fa-cog"></i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewProfileModal"
-                                               onclick="viewProfile({{ $customer->id }})">
-                                                <i class="fas fa-eye me-2"></i>View Profile
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assignManagerModal"
-                                               onclick="prepareAssignManager({{ $customer->id }}, '{{ $customer->name }}')">
-                                                <i class="fas fa-user-tie me-2"></i>
-                                                {{ $customer->accountManager ? 'Change' : 'Assign' }} Manager
-                                            </a>
-                                        </li>
-                                        @if($customer->accountManager)
-                                        <li>
-                                            <a class="dropdown-item text-danger" href="#"
-                                               onclick="disassignManager({{ $customer->id }}, '{{ $customer->name }}')">
-                                                <i class="fas fa-user-times me-2"></i>Disassign Manager
-                                            </a>
-                                        </li>
-                                        @endif
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a class="dropdown-item" href="{{ route('admin.customers.quotations', $customer->id) }}">
-                                                <i class="fas fa-file-invoice me-2"></i>View Quotations
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="{{ route('admin.customers.requests', $customer->id) }}">
-                                                <i class="fas fa-drafting-compass me-2"></i>Design Requests
-                                            </a>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            @if($customer->is_active)
-                                                <a class="dropdown-item text-kp-yellow" href="#"
-                                                   onclick="toggleStatus({{ $customer->id }}, 0)">
-                                                    <i class="fas fa-ban me-2"></i>Deactivate
-                                                </a>
-                                            @else
-                                                <a class="dropdown-item text-kp-green" href="#"
-                                                   onclick="toggleStatus({{ $customer->id }}, 1)">
-                                                    <i class="fas fa-check me-2"></i>Activate
-                                                </a>
-                                            @endif
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
+    <div class="dropdown">
+        <button class="btn btn-sm btn-outline-kp-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-cog"></i> Actions
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#viewProfileModal"
+                   onclick="viewProfile({{ $customer->id }})">
+                    <i class="fas fa-eye me-2"></i>View Profile
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assignManagerModal"
+                   onclick="prepareAssignManager({{ $customer->id }}, '{{ $customer->name }}')">
+                    <i class="fas fa-user-tie me-2"></i>
+                    {{ $customer->accountManager ? 'Change' : 'Assign' }} Manager
+                </a>
+            </li>
+            @if($customer->accountManager)
+            <li>
+                <a class="dropdown-item text-danger" href="#"
+                   onclick="disassignManager({{ $customer->id }}, '{{ $customer->name }}')">
+                    <i class="fas fa-user-times me-2"></i>Disassign Manager
+                </a>
+            </li>
+            @endif
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item" href="{{ route('admin.customers.quotations', $customer->id) }}">
+                    <i class="fas fa-file-invoice me-2"></i>View Quotations
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ route('admin.customers.requests', $customer->id) }}">
+                    <i class="fas fa-drafting-compass me-2"></i>Design Requests
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                @if($customer->is_active)
+                    <a class="dropdown-item text-warning" href="#"
+                       onclick="toggleStatus({{ $customer->id }}, 0)">
+                        <i class="fas fa-ban me-2"></i>Deactivate
+                    </a>
+                @else
+                    <a class="dropdown-item text-success" href="#"
+                       onclick="toggleStatus({{ $customer->id }}, 1)">
+                        <i class="fas fa-check me-2"></i>Activate
+                    </a>
+                @endif
+            </li>
+        </ul>
+    </div>
+</td>
                         </tr>
                         @empty
                         <tr>
@@ -411,6 +412,25 @@
 body.modal-open {
     overflow: auto !important;
     padding-right: 0 !important;
+}/* Add to your styles section */
+.dropdown-menu {
+    z-index: 1050;
+}
+
+.btn-group .dropdown-toggle::after {
+    margin-left: 0.5em;
+}
+
+/* Ensure dropdowns are clickable */
+.dropdown-toggle {
+    cursor: pointer;
+}
+
+/* Fix for Bootstrap 5 dropdowns */
+.dropdown-menu.show {
+    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 </style>
 

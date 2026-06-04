@@ -54,6 +54,9 @@ class AuthServiceProvider extends ServiceProvider
             return $user->role === 'account_manager';
         });
 
+         Gate::define('isExecutive', function ($user) {
+            return $user->role === 'executive';
+        });
          // Define a gate for marketing admin
         Gate::define('view-marketing-dashboard', function ($user) {
             return $user->role === 'accountmanager_admin';
@@ -214,6 +217,34 @@ class AuthServiceProvider extends ServiceProvider
 
         // ===== TECHNICAL ADMIN GATES =====
         $this->defineTechnicalGates();
+
+        // Add this to your boot() method in AuthServiceProvider
+Gate::define('review-quotations', function (?User $user, Quotation $quotation = null) {
+    if (!$user) return false;
+
+    // Admins can review any quotation
+    if (in_array($user->role, ['admin', 'system_admin', 'technical_admin'])) {
+        return true;
+    }
+
+    // Account managers can review quotations for their customers
+    if (in_array($user->role, ['account_manager', 'accountmanager_admin']) && $quotation) {
+        if (!$quotation->relationLoaded('customer')) {
+            $quotation->load('customer');
+        }
+        return $quotation->customer && $quotation->customer->account_manager_id === $user->id;
+    }
+
+    // Designers can review quotations they created
+    if ($user->role === 'designer' && $quotation) {
+        if (!$quotation->relationLoaded('designRequest')) {
+            $quotation->load('designRequest');
+        }
+        return $quotation->designRequest && $quotation->designRequest->designer_id === $user->id;
+    }
+
+    return false;
+});
     }
 
     /**
@@ -226,6 +257,7 @@ class AuthServiceProvider extends ServiceProvider
             'isCustomer' => ['customer'],
             'isFinance' => ['finance'],
             'isDesigner' => ['designer'],
+            'isExecutive' => ['executive'],
             'isTechnician' => ['technician'],
             'isSurveyor' => ['surveyor'],
             'isTechnicalAdmin' => ['technical_admin'],
@@ -261,6 +293,7 @@ class AuthServiceProvider extends ServiceProvider
                 'customer',
                 'finance',
                 'designer',
+                'executive',
                 'surveyor',
                 'technician',
                 'debt_manager',

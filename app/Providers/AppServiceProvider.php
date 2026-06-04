@@ -146,7 +146,7 @@ Gate::define('accountManagerOrDesigner', function ($user) {
 
         // Manage payments
         Gate::define('manage-payments', function ($user) {
-            return in_array($user->role, ['admin', 'finance', 'debt_manager']);
+            return in_array($user->role, ['admin', 'finance', 'account_manager', 'debt_manager']);
         });
 
         // View financial reports
@@ -156,12 +156,12 @@ Gate::define('accountManagerOrDesigner', function ($user) {
 
         // Manage transactions
         Gate::define('manage-transactions', function ($user) {
-            return in_array($user->role, ['admin', 'finance', 'debt_manager']);
+            return in_array($user->role, ['admin', 'account_manager', 'finance', 'debt_manager']);
         });
 
         // Export financial data
         Gate::define('export-financial-data', function ($user) {
-            return in_array($user->role, ['admin', 'finance', 'debt_manager']);
+            return in_array($user->role, ['admin', 'account_manager', 'finance', 'debt_manager']);
         });
 
         // Manage auto-billing
@@ -180,12 +180,12 @@ Gate::define('accountManagerOrDesigner', function ($user) {
 
         // Create maintenance requests
         Gate::define('create-maintenance-request', function ($user) {
-            return in_array($user->role, ['admin', 'technician', 'designer', 'surveyor', 'customer']);
+            return in_array($user->role, ['admin', 'account_manager', 'technician', 'designer', 'surveyor', 'customer']);
         });
 
         // Assign work orders
         Gate::define('assign-work-orders', function ($user) {
-            return in_array($user->role, ['admin', 'designer']);
+            return in_array($user->role, ['admin', 'account_manager', 'designer']);
         });
 
         // Manage equipment
@@ -200,12 +200,12 @@ Gate::define('accountManagerOrDesigner', function ($user) {
 
         // Resolve maintenance requests
         Gate::define('resolve-maintenance-requests', function ($user) {
-            return in_array($user->role, ['admin', 'technician', 'designer']);
+            return in_array($user->role, ['admin', 'account_manager', 'technician', 'designer']);
         });
 
         // View maintenance reports
         Gate::define('view-maintenance-reports', function ($user) {
-            return in_array($user->role, ['admin', 'designer', 'finance']);
+            return in_array($user->role, ['admin', 'account_manager', 'designer', 'finance']);
         });
 
         // Manage maintenance settings
@@ -248,12 +248,12 @@ Gate::define('accountManagerOrDesigner', function ($user) {
 
         // Can manage maintenance schedules
         Gate::define('manage-maintenance-schedules', function ($user) {
-            return in_array($user->role, ['admin', 'designer']);
+            return in_array($user->role, ['admin', 'account_manager', 'designer']);
         });
 
         // Can export maintenance data
         Gate::define('export-maintenance-data', function ($user) {
-            return in_array($user->role, ['admin', 'designer', 'finance']);
+            return in_array($user->role, ['admin', 'account_manager', 'designer', 'finance']);
         });
     }
 

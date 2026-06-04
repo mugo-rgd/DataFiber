@@ -41,7 +41,7 @@ class PaymentFollowupController extends Controller
 
         $followups = $query->orderBy('due_date', 'asc')->paginate(15);
 
-        return view('finance.payments.followups', compact('followups'));
+        return view('finance.payments.index', compact('followups'));
     }
 
     /**
@@ -72,7 +72,7 @@ class PaymentFollowupController extends Controller
 
         PaymentFollowup::create($validated);
 
-        return redirect()->route('finance.payments.followups')
+        return redirect()->route('finance.payments.index')
                         ->with('success', 'Payment followup created successfully.');
     }
 

@@ -60,4 +60,33 @@ class Ticket extends Model
             default => 'secondary'
         };
     }
+
+    // app/Models/Ticket.php
+
+public function getPriorityBadgeClass()
+{
+    return match($this->priority) {
+        'low' => 'badge-priority-low',
+        'medium' => 'badge-priority-medium',
+        'high' => 'badge-priority-high',
+        'urgent' => 'badge-priority-urgent',
+        default => 'badge-secondary',
+    };
+}
+
+public function getStatusBadgeClass()
+{
+    return match($this->status) {
+        'open' => 'badge-status-open',
+        'in_progress' => 'badge-status-in_progress',
+        'resolved' => 'badge-status-resolved',
+        'closed' => 'badge-status-closed',
+        default => 'badge-secondary',
+    };
+}
+
+public function isOverdue()
+{
+    return $this->due_date && $this->due_date->isPast() && $this->status !== 'closed' && $this->status !== 'resolved';
+}
 }

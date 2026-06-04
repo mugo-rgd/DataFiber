@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
  use App\Models\ConsolidatedBilling;
 use App\Models\BillingLineItem;
+use Illuminate\Support\Facades\Mail;
 
 class CustomerController extends Controller
 {
@@ -762,5 +763,82 @@ private function calculateProfileCompletion($user)
     }
 
     return round(($completed / $totalFields) * 100);
+}
+
+
+
+
+
+public function sendReminder(Request $request, $customerId)
+{
+    try {
+        $customer = User::findOrFail($customerId);
+        $totalDebt = $request->total_debt;
+        $overdueDebt = $request->overdue_debt;
+
+        // Send email using Mailtrap
+        Mail::send('emails.payment-reminder', [
+            'customer' => $customer,
+            'totalDebt' => $totalDebt,
+            'overdueDebt' => $overdueDebt
+        ], function ($message) use ($customer) {
+            $message->to($customer->email, $customer->name)
+                    ->subject('Payment Reminder - Outstanding Balance - Kenya Power')
+                    ->from('billing@kplc.co.ke', 'Kenya Power Billing');
+        });
+
+        // Check if email was sent successfully
+        if (Mail::failures()) {
+            throw new \Exception('Failed to send email');
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "Payment reminder sent to {$customer->name} via email"
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Failed to send reminder: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send reminder: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
+public function sendInvoiceReminder(Request $request, $customerId)
+{
+    try {
+        $customer = User::findOrFail($customerId);
+        $invoiceNumber = $request->invoice_number;
+        $amountDue = $request->amount_due;
+
+        // Find the invoice
+        $invoice = ConsolidatedBilling::where('billing_number', $invoiceNumber)
+            ->where('user_id', $customerId)
+            ->first();
+
+        // Send email reminder for specific invoice
+        Mail::send('emails.invoice-reminder', [
+            'customer' => $customer,
+            'invoice' => $invoice,
+            'invoiceNumber' => $invoiceNumber,
+            'amountDue' => $amountDue
+        ], function ($message) use ($customer, $invoiceNumber) {
+            $message->to($customer->email)
+                    ->subject("Payment Reminder - Invoice {$invoiceNumber}");
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => "Reminder for invoice {$invoiceNumber} sent to {$customer->name}"
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send reminder: ' . $e->getMessage()
+        ], 500);
+    }
 }
 }

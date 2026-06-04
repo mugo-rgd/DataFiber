@@ -1,4 +1,3 @@
-{{-- resources/views/finance/ai-analytics/dashboard.blade.php --}}
 @extends('layouts.app')
 
 @section('title', 'AI-Powered Debt Analytics')
@@ -6,308 +5,192 @@
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h4 class="page-title mb-0">
-                            <i class="fas fa-brain text-kp-blue me-2"></i>AI-Powered Debt Analytics
-                        </h4>
-                        <p class="text-muted mb-0">Intelligent insights and predictions for debt management across USD and KSH</p>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <a href="{{ route('finance.ai.report') }}" class="btn btn-outline-kp-primary">
-    <i class="fas fa-file-pdf me-1"></i> Generate Report
-</a>
-                    </div>
-                </div>
-            </div>
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h4 class="mb-0">
+                <i class="fas fa-brain text-primary me-2"></i>AI-Powered Debt Analytics
+            </h4>
+            <p class="text-muted mb-0">Intelligent insights and predictions for debt management across USD and KSH</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{{ route('finance.ai-analytics.predictive') }}" class="btn btn-outline-primary me-2">
+                <i class="fas fa-chart-line me-1"></i> Predictive Analytics
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+                <i class="fas fa-print me-1"></i> Print
+            </button>
         </div>
     </div>
 
-    <!-- Currency Filter -->
-    <div class="row mb-3">
+    <!-- Summary Cards - USD -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h5 class="mb-3">
+                <span class="badge bg-primary me-2">USD</span> US Dollar Summary
+            </h5>
+        </div>
         <div class="col-md-3">
-            <select class="form-select" id="currencyFilter" onchange="filterByCurrency(this.value)">
-                <option value="all" {{ request('currency', 'all') == 'all' ? 'selected' : '' }}>All Currencies</option>
-                <option value="USD" {{ request('currency') == 'USD' ? 'selected' : '' }}>USD Only</option>
-                <option value="KSH" {{ request('currency') == 'KSH' ? 'selected' : '' }}>KSH Only</option>
-            </select>
+            <div class="card border-left-primary shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Total Outstanding</div>
+                    <h3 class="mb-0">${{ number_format($usdMetrics->total_outstanding, 2) }}</h3>
+                    <small class="text-muted">{{ number_format($usdMetrics->overdue_percentage, 1) }}% overdue</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-success shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Collection Rate</div>
+                    <h3 class="mb-0">{{ number_format($usdMetrics->collection_rate, 1) }}%</h3>
+                    <small class="text-muted">{{ $usdMetrics->collection_rate >= 70 ? 'Good' : 'Needs improvement' }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-warning shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Overdue Amount</div>
+                    <h3 class="mb-0">${{ number_format($usdMetrics->overdue_amount, 2) }}</h3>
+                    <small class="text-muted">{{ number_format($usdMetrics->overdue_percentage, 1) }}% of total</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-info shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Today's Collections</div>
+                    <h3 class="mb-0">${{ number_format($usdMetrics->today_collections, 2) }}</h3>
+                    <small class="text-muted">Updated: {{ now()->format('g:i A') }}</small>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Alert based on AI insights -->
-    @if(isset($insights['alerts']) && count($insights['alerts']) > 0)
+    <!-- Summary Cards - KSH -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="alert alert-kp-warning alert-dismissible fade show" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
-                    <div>
-                        <h5 class="alert-heading mb-1">AI Alert</h5>
-                        <p class="mb-0">{{ $insights['alerts'][0] ?? 'Attention needed' }}</p>
-                        @if(count($insights['alerts']) > 1)
-                        <small class="text-muted">+{{ count($insights['alerts']) - 1 }} more alerts</small>
-                        @endif
-                    </div>
+            <h5 class="mb-3">
+                <span class="badge bg-secondary me-2">KSH</span> Kenyan Shilling Summary
+            </h5>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-secondary shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Total Outstanding</div>
+                    <h3 class="mb-0">KSH {{ number_format($kshMetrics->total_outstanding, 2) }}</h3>
+                    <small class="text-muted">{{ number_format($kshMetrics->overdue_percentage, 1) }}% overdue</small>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-success shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Collection Rate</div>
+                    <h3 class="mb-0">{{ number_format($kshMetrics->collection_rate, 1) }}%</h3>
+                    <small class="text-muted">{{ $kshMetrics->collection_rate >= 70 ? 'Good' : 'Needs improvement' }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-warning shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Overdue Amount</div>
+                    <h3 class="mb-0">KSH {{ number_format($kshMetrics->overdue_amount, 2) }}</h3>
+                    <small class="text-muted">{{ number_format($kshMetrics->overdue_percentage, 1) }}% of total</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-left-info shadow h-100">
+                <div class="card-body">
+                    <div class="text-muted small">Today's Collections</div>
+                    <h3 class="mb-0">KSH {{ number_format($kshMetrics->today_collections, 2) }}</h3>
+                    <small class="text-muted">Updated: {{ now()->format('g:i A') }}</small>
+                </div>
             </div>
         </div>
     </div>
-    @endif
 
-    <!-- Key Metrics - Dual Currency -->
+    <!-- AI Insights Section -->
     <div class="row mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-left-primary">
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line text-primary me-2"></i>Key Findings
+                    </h6>
+                </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Total Outstanding (USD)</h6>
-                            <h3 class="mb-0">${{ number_format($metrics['total_outstanding_usd'] ?? 0, 0) }}</h3>
-                            <small class="text-muted">
-                                <span class="text-danger">{{ $metrics['overdue_count_usd'] ?? 0 }} overdue</span>
-                            </small>
-                        </div>
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-kp-blue rounded-circle">
-                                <i class="fas fa-dollar-sign"></i>
-                            </span>
-                        </div>
-                    </div>
+                    <ul class="list-unstyled mb-0">
+                        @forelse($insights['key_findings'] as $finding)
+                            <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> {{ $finding }}</li>
+                        @empty
+                            <li class="text-muted">No key findings available</li>
+                        @endforelse
+                    </ul>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-left-success">
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>Risk Analysis
+                    </h6>
+                </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Total Outstanding (KSH)</h6>
-                            <h3 class="mb-0">KSH {{ number_format($metrics['total_outstanding_ksh'] ?? 0, 0) }}</h3>
-                            <small class="text-muted">
-                                <span class="text-danger">{{ $metrics['overdue_count_ksh'] ?? 0 }} overdue</span>
-                            </small>
-                        </div>
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-kp-green rounded-circle">
-                                <i class="fas fa-shilling-sign"></i>
-                            </span>
-                        </div>
-                    </div>
+                    <ul class="list-unstyled mb-0">
+                        @forelse($insights['risk_analysis'] as $risk)
+                            <li class="mb-2"><i class="fas fa-chart-line text-warning me-2"></i> {{ $risk }}</li>
+                        @empty
+                            <li class="text-muted">No risk analysis available</li>
+                        @endforelse
+                    </ul>
                 </div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-left-warning">
+        <div class="col-md-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb text-success me-2"></i>Recommended Actions
+                    </h6>
+                </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Collection Rate (USD)</h6>
-                            <h3 class="mb-0">{{ number_format($metrics['collection_rate_usd'] ?? 0, 1) }}%</h3>
-                            <small class="text-muted">
-                                @if(($metrics['collection_rate_usd'] ?? 0) < 50)
-                                <span class="text-danger">Needs improvement</span>
-                                @elseif(($metrics['collection_rate_usd'] ?? 0) < 80)
-                                <span class="text-kp-yellow">Moderate</span>
-                                @else
-                                <span class="text-kp-green">Good</span>
+                    <ul class="list-unstyled mb-0">
+                        @forelse($insights['recommendations'] as $recommendation)
+                            <li class="mb-2">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                {{ is_array($recommendation) ? ($recommendation['action'] ?? '') : $recommendation }}
+                                @if(is_array($recommendation) && isset($recommendation['priority']))
+                                    <span class="badge bg-{{ $recommendation['priority'] == 'High' ? 'danger' : ($recommendation['priority'] == 'Medium' ? 'warning' : 'info') }} ms-2">
+                                        Priority: {{ $recommendation['priority'] }}
+                                    </span>
                                 @endif
-                            </small>
-                        </div>
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-kp-yellow rounded-circle">
-                                <i class="fas fa-chart-line"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-left-info">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Collection Rate (KSH)</h6>
-                            <h3 class="mb-0">{{ number_format($metrics['collection_rate_ksh'] ?? 0, 1) }}%</h3>
-                            <small class="text-muted">
-                                @if(($metrics['collection_rate_ksh'] ?? 0) < 50)
-                                <span class="text-danger">Needs improvement</span>
-                                @elseif(($metrics['collection_rate_ksh'] ?? 0) < 80)
-                                <span class="text-kp-yellow">Moderate</span>
-                                @else
-                                <span class="text-kp-green">Good</span>
-                                @endif
-                            </small>
-                        </div>
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-info rounded-circle">
-                                <i class="fas fa-percentage"></i>
-                            </span>
-                        </div>
-                    </div>
+                            </li>
+                        @empty
+                            <li class="text-muted">No recommendations available</li>
+                        @endforelse
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Secondary Metrics -->
+    <!-- Aging Analysis Table -->
     <div class="row mb-4">
-        <div class="col-xl-4 col-md-6">
-            <div class="card border-left-secondary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Overdue Amount (USD)</h6>
-                            <h3 class="mb-0 text-danger">${{ number_format($metrics['overdue_amount_usd'] ?? 0, 0) }}</h3>
-                            <small class="text-muted">
-                                {{ $metrics['overdue_percentage_usd'] ?? 0 }}% of total
-                            </small>
-                        </div>
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-secondary rounded-circle">
-                                <i class="fas fa-exclamation-circle"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-md-6">
-            <div class="card border-left-dark">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Overdue Amount (KSH)</h6>
-                            <h3 class="mb-0 text-danger">KSH {{ number_format($metrics['overdue_amount_ksh'] ?? 0, 0) }}</h3>
-                            <small class="text-muted">
-                                {{ $metrics['overdue_percentage_ksh'] ?? 0 }}% of total
-                            </small>
-                        </div>
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-dark rounded-circle">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-4 col-md-6">
-            <div class="card border-left-danger">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-muted mb-1">Today's Collections</h6>
-                            <h3 class="mb-0 text-kp-blue">${{ number_format($metrics['today_collections_usd'] ?? 0, 0) }}</h3>
-                            <h5 class="mb-0 text-kp-green">KSH {{ number_format($metrics['today_collections_ksh'] ?? 0, 0) }}</h5>
-                            <small class="text-muted">Updated: {{ now()->format('h:i A') }}</small>
-                        </div>
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-danger rounded-circle">
-                                <i class="fas fa-hand-holding-usd"></i>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- AI Insights & Charts -->
-    <div class="row mb-4">
-        <!-- AI Insights -->
-        <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
-                        <i class="fas fa-lightbulb text-kp-yellow me-2"></i>AI Insights
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <!-- Key Findings -->
-                    <div class="mb-4">
-                        <h6 class="text-kp-blue mb-3">
-                            <i class="fas fa-search me-2"></i>Key Findings
-                        </h6>
-                        <div class="list-group list-group-flush">
-                            @forelse($insights['key_findings'] ?? [] as $finding)
-                            <div class="list-group-item d-flex align-items-start">
-                                <i class="fas fa-check-circle text-kp-green mt-1 me-2"></i>
-                                <span>{{ $finding }}</span>
-                            </div>
-                            @empty
-                            <div class="list-group-item text-muted">No key findings available</div>
-                            @endforelse
-                        </div>
-                    </div>
-
-                    <!-- Risk Analysis -->
-                    <div class="mb-4">
-                        <h6 class="text-kp-blue mb-3">
-                            <i class="fas fa-exclamation-triangle me-2"></i>Risk Analysis
-                        </h6>
-                        <div class="row">
-                            @forelse($insights['risk_analysis'] ?? [] as $risk)
-                            <div class="col-md-6 mb-2">
-                                <div class="card border-kp-yellow">
-                                    <div class="card-body py-2">
-                                        <p class="mb-0 small">{{ $risk }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            @empty
-                            <div class="col-12">
-                                <p class="text-muted">No risk analysis available</p>
-                            </div>
-                            @endforelse
-                        </div>
-                    </div>
-
-                    <!-- Recommendations -->
-                    <div>
-                        <h6 class="text-kp-blue mb-3">
-                            <i class="fas fa-bullseye me-2"></i>Recommended Actions
-                        </h6>
-                        <div class="list-group">
-                            @forelse($insights['recommendations'] ?? [] as $index => $recommendation)
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">Action {{ $index + 1 }}</h6>
-                                    <small class="text-muted">Priority: High</small>
-                                </div>
-                                <p class="mb-1">{{ $recommendation }}</p>
-                            </a>
-                            @empty
-                            <div class="list-group-item text-muted">No recommendations available</div>
-                            @endforelse
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Aging Analysis & Top Debtors -->
-        <div class="col-lg-6">
-            <!-- Aging Analysis with Dual Currency -->
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
-                        <i class="fas fa-calendar-alt text-info me-2"></i>Aging Analysis
-                    </h5>
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-bar text-primary me-2"></i>Aging Analysis
+                    </h6>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-sm mb-0">
-                            <thead>
+                        <table class="table table-bordered">
+                            <thead class="table-light">
                                 <tr>
                                     <th>Age Bucket</th>
                                     <th class="text-end">USD</th>
@@ -317,171 +200,172 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
-                                    $totalUsd = $agingAnalysis['total_usd'] ?? 0;
-                                    $totalKsh = $agingAnalysis['total_ksh'] ?? 0;
-                                    $totalCombined = $totalUsd + ($totalKsh / 130);
-                                    $buckets = [
-                                        [
-                                            'label' => 'Current (0-30 days)',
-                                            'usd' => $agingAnalysis['current_usd'] ?? 0,
-                                            'ksh' => $agingAnalysis['current_ksh'] ?? 0,
-                                            'count' => $agingAnalysis['current_count'] ?? 0
-                                        ],
-                                        [
-                                            'label' => '31-60 days',
-                                            'usd' => $agingAnalysis['days_31_60_usd'] ?? 0,
-                                            'ksh' => $agingAnalysis['days_31_60_ksh'] ?? 0,
-                                            'count' => $agingAnalysis['days_31_60_count'] ?? 0
-                                        ],
-                                        [
-                                            'label' => '61-90 days',
-                                            'usd' => $agingAnalysis['days_61_90_usd'] ?? 0,
-                                            'ksh' => $agingAnalysis['days_61_90_ksh'] ?? 0,
-                                            'count' => $agingAnalysis['days_61_90_count'] ?? 0
-                                        ],
-                                        [
-                                            'label' => 'Over 90 days',
-                                            'usd' => $agingAnalysis['days_over_90_usd'] ?? 0,
-                                            'ksh' => $agingAnalysis['days_over_90_ksh'] ?? 0,
-                                            'count' => $agingAnalysis['days_over_90_count'] ?? 0
-                                        ]
-                                    ];
-                                @endphp
-                                @foreach($buckets as $bucket)
                                 <tr>
-                                    <td>{{ $bucket['label'] }}</td>
-                                    <td class="text-end">${{ number_format($bucket['usd'], 0) }}</td>
-                                    <td class="text-end">KSH {{ number_format($bucket['ksh'], 0) }}</td>
-                                    <td class="text-end">{{ $bucket['count'] }}</td>
-                                    <td class="text-end">
-                                        @php
-                                            $bucketCombined = $bucket['usd'] + ($bucket['ksh'] / 130);
-                                            $percentage = $totalCombined > 0 ? ($bucketCombined / $totalCombined) * 100 : 0;
-                                        @endphp
-                                        {{ number_format($percentage, 1) }}%
-                                    </td>
+                                    <td><strong>Current (Not overdue)</strong></td>
+                                    <td class="text-end">${{ number_format($usdAging->current ?? 0, 2) }}</td>
+                                    <td class="text-end">KSH {{ number_format($kshAging->current ?? 0, 2) }}</td>
+                                    <td class="text-end">{{ ($usdAging->invoice_count ?? 0) + ($kshAging->invoice_count ?? 0) }}</td>
+                                    <td class="text-end">{{ number_format((($usdAging->current_percentage ?? 0) + ($kshAging->current_percentage ?? 0)) / 2, 1) }}%</td>
                                 </tr>
-                                @endforeach
-                                <tr class="table-active">
-                                    <td><strong>Total</strong></td>
-                                    <td class="text-end"><strong>${{ number_format($totalUsd, 0) }}</strong></td>
-                                    <td class="text-end"><strong>KSH {{ number_format($totalKsh, 0) }}</strong></td>
-                                    <td class="text-end"><strong>{{ array_sum(array_column($buckets, 'count')) }}</strong></td>
-                                    <td class="text-end"><strong>100%</strong></td>
+                                <tr>
+                                    <td><strong>1-30 Days Overdue</strong></td>
+                                    <td class="text-end text-warning">${{ number_format($usdAging->days1_30 ?? 0, 2) }}</td>
+                                    <td class="text-end text-warning">KSH {{ number_format($kshAging->days1_30 ?? 0, 2) }}</td>
+                                    <td class="text-end">-</td>
+                                    <td class="text-end">{{ number_format((($usdAging->days1_30_percentage ?? 0) + ($kshAging->days1_30_percentage ?? 0)) / 2, 1) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>31-60 Days Overdue</strong></td>
+                                    <td class="text-end text-warning">${{ number_format($usdAging->days31_60 ?? 0, 2) }}</td>
+                                    <td class="text-end text-warning">KSH {{ number_format($kshAging->days31_60 ?? 0, 2) }}</td>
+                                    <td class="text-end">-</td>
+                                    <td class="text-end">{{ number_format((($usdAging->days31_60_percentage ?? 0) + ($kshAging->days31_60_percentage ?? 0)) / 2, 1) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>61-90 Days Overdue</strong></td>
+                                    <td class="text-end text-warning">${{ number_format($usdAging->days61_90 ?? 0, 2) }}</td>
+                                    <td class="text-end text-warning">KSH {{ number_format($kshAging->days61_90 ?? 0, 2) }}</td>
+                                    <td class="text-end">-</td>
+                                    <td class="text-end">{{ number_format((($usdAging->days61_90_percentage ?? 0) + ($kshAging->days61_90_percentage ?? 0)) / 2, 1) }}%</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Over 90 Days Overdue</strong></td>
+                                    <td class="text-end text-danger fw-bold">${{ number_format($usdAging->days_over_90 ?? 0, 2) }}</td>
+                                    <td class="text-end text-danger fw-bold">KSH {{ number_format($kshAging->days_over_90 ?? 0, 2) }}</td>
+                                    <td class="text-end">-</td>
+                                    <td class="text-end">{{ number_format((($usdAging->days_over_90_percentage ?? 0) + ($kshAging->days_over_90_percentage ?? 0)) / 2, 1) }}%</td>
                                 </tr>
                             </tbody>
+                            <tfoot class="table-light">
+                                <tr class="fw-bold">
+                                    <td>TOTAL</td>
+                                    <td class="text-end">${{ number_format($usdAging->total ?? 0, 2) }}</td>
+                                    <td class="text-end">KSH {{ number_format($kshAging->total ?? 0, 2) }}</td>
+                                    <td class="text-end">{{ ($usdAging->invoice_count ?? 0) + ($kshAging->invoice_count ?? 0) }}</td>
+                                    <td class="text-end">100%</td>
+                                </tr>
+                            </tfoot>
                         </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Debtors with Currency Split - FIXED SECTION -->
-            <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
-                        <i class="fas fa-users text-danger me-2"></i>Top 5 Debtors
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        @forelse(($topDebtors ?? []) as $debtor)
-                        <a href="{{ route('finance.ai.customer', $debtor['id'] ?? 0) }}"
-                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-0">{{ $debtor['name'] ?? 'Unknown' }}</h6>
-                                <small class="text-muted">{{ $debtor['email'] ?? 'No email' }}</small>
-                            </div>
-                            <div class="text-end">
-                                @php
-                                    $riskLevel = $debtor['risk_level'] ?? 'low';
-                                    $badgeColor = $riskLevel == 'critical' ? 'danger' : ($riskLevel == 'high' ? 'warning' : 'secondary');
-                                    $outstandingUsd = isset($debtor['outstanding_usd']) ? floatval($debtor['outstanding_usd']) : 0;
-                                    $outstandingKsh = isset($debtor['outstanding_ksh']) ? floatval($debtor['outstanding_ksh']) : 0;
-                                    $overdueInvoices = $debtor['overdue_invoices'] ?? 0;
-                                @endphp
-
-                                <span class="badge bg-{{ $badgeColor }} rounded-pill mb-1">
-                                    {{ ucfirst($riskLevel) }}
-                                </span>
-                                <div>
-                                    @if($outstandingUsd > 0)
-                                        <strong>${{ number_format($outstandingUsd, 0) }}</strong>
-                                    @endif
-                                    @if($outstandingKsh > 0)
-                                        @if($outstandingUsd > 0)<br>@endif
-                                        <strong>KSH {{ number_format($outstandingKsh, 0) }}</strong>
-                                    @endif
-                                    @if($outstandingUsd == 0 && $outstandingKsh == 0)
-                                        <strong class="text-muted">$0</strong>
-                                    @endif
-                                    <small class="text-muted d-block">{{ $overdueInvoices }} overdue</small>
-                                </div>
-                            </div>
-                        </a>
-                        @empty
-                        <div class="list-group-item text-center text-muted">
-                            No debtor data available
-                        </div>
-                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Collection Trends with Dual Currency -->
-    <div class="row">
+    <!-- Top 10 Debtors -->
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">
-                        <i class="fas fa-chart-line text-kp-green me-2"></i>Collection Trends (Last 30 Days)
-                    </h5>
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-trophy text-warning me-2"></i>Top 10 Debtors
+                    </h6>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <canvas id="collectionChart" height="250"></canvas>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card border-kp-green">
-                                <div class="card-body">
-                                    <h6 class="text-kp-green mb-3">Trend Summary</h6>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block">Total Collected (USD)</small>
-                                        <h4 class="text-kp-blue">${{ number_format($collectionTrends['total_collected_usd'] ?? 0, 0) }}</h4>
-                                    </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block">Total Collected (KSH)</small>
-                                        <h4 class="text-kp-green">KSH {{ number_format($collectionTrends['total_collected_ksh'] ?? 0, 0) }}</h4>
-                                    </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block">Average Daily (USD)</small>
-                                        <h4 class="text-kp-blue">${{ number_format($collectionTrends['average_daily_usd'] ?? 0, 0) }}</h4>
-                                    </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block">Average Daily (KSH)</small>
-                                        <h4 class="text-kp-green">KSH {{ number_format($collectionTrends['average_daily_ksh'] ?? 0, 0) }}</h4>
-                                    </div>
-                                    <div class="mb-3">
-                                        <small class="text-muted d-block">Total Payments</small>
-                                        <h4 class="text-kp-green">{{ array_sum($collectionTrends['counts'] ?? [0]) }}</h4>
-                                    </div>
-                                    <div>
-                                        <small class="text-muted d-block">Trend Analysis</small>
-                                        @php
-                                            $trend = $collectionTrends['trend'] ?? ['direction' => 'stable', 'percentage' => 0, 'message' => 'No data'];
-                                        @endphp
-                                        <h4 class="{{ $trend['direction'] == 'up' ? 'text-kp-green' : ($trend['direction'] == 'down' ? 'text-danger' : 'text-secondary') }}">
-                                            <i class="fas fa-arrow-{{ $trend['direction'] }} me-1"></i>
-                                            {{ $trend['percentage'] ?? 0 }}%
-                                        </h4>
-                                        <small class="text-muted">{{ $trend['message'] ?? 'No trend data' }}</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Email</th>
+                                    <th class="text-end">USD Outstanding</th>
+                                    <th class="text-end">KSH Outstanding</th>
+                                    <th class="text-end">Overdue Invoices</th>
+                                    <th>Risk Level</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($topDebtors as $debtor)
+                                    <tr>
+                                        <td>
+                                            <strong>{{ $debtor['customer_name'] }}</strong>
+                                        </td>
+                                        <td>{{ $debtor['email'] }}</td>
+                                        <td class="text-end">${{ number_format($debtor['usd_outstanding'], 2) }}</td>
+                                        <td class="text-end">KSH {{ number_format($debtor['ksh_outstanding'], 2) }}</td>
+                                        <td class="text-end text-danger">{{ $debtor['overdue_count'] }}</td>
+                                        <td>
+                                            @php
+                                                $riskClass = $debtor['risk_level'] == 'Critical' ? 'danger' : ($debtor['risk_level'] == 'High' ? 'warning' : ($debtor['risk_level'] == 'Medium' ? 'info' : 'success'));
+                                            @endphp
+                                            <span class="badge bg-{{ $riskClass }}">{{ $debtor['risk_level'] }}</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('finance.ai-analytics.customer', $debtor['user_id']) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                            <button class="btn btn-sm btn-outline-warning" onclick="sendReminder({{ $debtor['user_id'] }}, '{{ addslashes($debtor['customer_name']) }}')">
+                                                <i class="fas fa-bell"></i> Remind
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                                            No debtor data available
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Trends -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line text-success me-2"></i>Collection Trends (Last 30 Days)
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="collectionChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-pie text-info me-2"></i>Trend Summary
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Total Collected (USD)</small>
+                        <h5 class="mb-0">${{ number_format($collectionTrends['total_usd'], 2) }}</h5>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Total Collected (KSH)</small>
+                        <h5 class="mb-0">KSH {{ number_format($collectionTrends['total_ksh'], 2) }}</h5>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Average Daily (USD)</small>
+                        <h5 class="mb-0">${{ number_format($collectionTrends['avg_daily_usd'], 2) }}</h5>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Average Daily (KSH)</small>
+                        <h5 class="mb-0">KSH {{ number_format($collectionTrends['avg_daily_ksh'], 2) }}</h5>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Total Payments</small>
+                        <h5 class="mb-0">{{ number_format($collectionTrends['total_payments']) }}</h5>
+                    </div>
+                    <hr>
+                    <div>
+                        <small class="text-muted">Trend Analysis</small>
+                        <h5 class="mb-0 {{ $collectionTrends['trend_direction'] == 'up' ? 'text-success' : ($collectionTrends['trend_direction'] == 'down' ? 'text-danger' : 'text-secondary') }}">
+                            <i class="fas fa-arrow-{{ $collectionTrends['trend_direction'] == 'up' ? 'up' : ($collectionTrends['trend_direction'] == 'down' ? 'down' : 'right') }} me-1"></i>
+                            {{ $collectionTrends['trend_percentage'] }}%
+                        </h5>
+                        <small class="text-muted">{{ $collectionTrends['trend_message'] }}</small>
                     </div>
                 </div>
             </div>
@@ -493,102 +377,90 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Currency filter function
-    function filterByCurrency(currency) {
-        const url = new URL(window.location.href);
-        url.searchParams.set('currency', currency);
-        window.location.href = url.toString();
-    }
-
-    // Collection Trend Chart with Dual Currency
-    const chartElement = document.getElementById('collectionChart');
-    if (chartElement) {
-        const collectionChart = new Chart(chartElement.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: @json($collectionTrends['labels'] ?? []),
-                datasets: [
-                    {
-                        label: 'USD Collections ($)',
-                        data: @json($collectionTrends['amounts_usd'] ?? []),
-                        borderColor: 'rgb(54, 162, 235)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.1)',
-                        tension: 0.3,
-                        fill: true,
-                        yAxisID: 'y-usd'
-                    },
-                    {
-                        label: 'KSH Collections',
-                        data: @json($collectionTrends['amounts_ksh'] ?? []),
-                        borderColor: 'rgb(40, 167, 69)',
-                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                        tension: 0.3,
-                        fill: true,
-                        yAxisID: 'y-ksh'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
+    document.addEventListener('DOMContentLoaded', function() {
+        const collectionCtx = document.getElementById('collectionChart')?.getContext('2d');
+        if (collectionCtx) {
+            const chartData = @json($collectionTrends);
+            new Chart(collectionCtx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [
+                        {
+                            label: 'USD Collections ($)',
+                            data: chartData.usd_amounts,
+                            borderColor: 'rgb(54, 162, 235)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'KSH Collections (KSH)',
+                            data: chartData.ksh_amounts,
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'y1'
+                        }
+                    ]
                 },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.dataset.label || '';
-                                const value = context.parsed.y || 0;
-                                if (label.includes('USD')) {
-                                    return label + ': $' + value.toLocaleString();
-                                } else {
-                                    return label + ': KSH ' + value.toLocaleString();
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    if (label.includes('USD')) {
+                                        return label + ': $' + value.toLocaleString();
+                                    } else {
+                                        return label + ': KSH ' + value.toLocaleString();
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-                scales: {
-                    'y-usd': {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'USD Amount ($)'
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
-                            }
-                        }
                     },
-                    'y-ksh': {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'KSH Amount'
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Amount (USD)' },
+                            ticks: { callback: (value) => '$' + value.toLocaleString() }
                         },
-                        ticks: {
-                            callback: function(value) {
-                                return 'KSH ' + value.toLocaleString();
-                            }
-                        },
-                        grid: {
-                            drawOnChartArea: false,
+                        y1: {
+                            position: 'right',
+                            beginAtZero: true,
+                            title: { display: true, text: 'Amount (KSH)' },
+                            ticks: { callback: (value) => 'KSH ' + value.toLocaleString() },
+                            grid: { drawOnChartArea: false }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+    });
+
+    function sendReminder(customerId, customerName) {
+        if (confirm(`Send payment reminder to ${customerName}?`)) {
+            fetch(`/finance/ai-analytics/send-reminder/${customerId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message || 'Reminder sent successfully');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to send reminder');
+            });
+        }
     }
 </script>
 @endsection

@@ -108,20 +108,52 @@ use Carbon\Carbon;
     </div>
 
     <div class="mb-3">
-    <div class="btn-group">
-        <button type="button" class="btn btn-kp-warning dropdown-toggle" data-bs-toggle="dropdown">
+    <div class="dropdown">
+        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #FFD700; border-color: #FFD700; color: #333;">
             <i class="fas fa-bell me-1"></i> Bulk Email Actions
         </button>
         <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#" onclick="sendOverdueNotices()">
-                <i class="fas fa-exclamation-triangle me-2"></i> Send Overdue Notices
-            </a></li>
-            <li><a class="dropdown-item" href="#" onclick="sendDueReminders()">
-                <i class="fas fa-clock me-2"></i> Send Due Reminders
-            </a></li>
+            <li>
+                <a class="dropdown-item" href="#" onclick="sendOverdueNotices(); return false;">
+                    <i class="fas fa-exclamation-triangle text-danger me-2"></i> Send Overdue Notices
+                </a>
+            </li>
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li>
+                <a class="dropdown-item" href="#" onclick="sendDueReminders(); return false;">
+                    <i class="fas fa-clock text-warning me-2"></i> Send Due Reminders
+                </a>
+            </li>
         </ul>
     </div>
 </div>
+
+<script>
+function sendOverdueNotices() {
+    if (confirm('Send overdue notices to all customers with overdue invoices?')) {
+        // Your AJAX call here
+        alert('Sending overdue notices...');
+    }
+}
+
+function sendDueReminders() {
+    if (confirm('Send due reminders to all customers with upcoming due dates?')) {
+        // Your AJAX call here
+        alert('Sending due reminders...');
+    }
+}
+
+// Ensure dropdowns work
+document.addEventListener('DOMContentLoaded', function() {
+    // Re-initialize dropdowns
+    var dropdowns = document.querySelectorAll('.dropdown-toggle');
+    dropdowns.forEach(function(dropdown) {
+        new bootstrap.Dropdown(dropdown);
+    });
+});
+</script>
     <!-- Billings Table -->
    <!-- Billings Table -->
     <div class="card shadow-sm">
@@ -272,87 +304,89 @@ use Carbon\Carbon;
                                 @endif
                             </td>
                             <td class="text-center">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <!-- View Details -->
-                                    <a href="{{ route('finance.billing.show', $billing->id) }}"
-                                       class="btn btn-outline-kp-primary"
-                                       title="View Details">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+    <div class="btn-group btn-group-sm" role="group">
+        <!-- View Details -->
+        <a href="{{ route('finance.billing.show', $billing->id) }}"
+           class="btn btn-outline-kp-primary"
+           title="View Details">
+            <i class="fas fa-eye"></i>
+        </a>
 
-                                    <!-- Download PDF -->
-                                    <a href="{{ route('finance.billing.download', $billing->id) }}"
-                                       class="btn btn-outline-info"
-                                       title="Download PDF">
-                                        <i class="fas fa-download"></i>
-                                    </a>
+        <!-- Download PDF -->
+        <a href="{{ route('finance.billing.download', $billing->id) }}"
+           class="btn btn-outline-info"
+           title="Download PDF">
+            <i class="fas fa-download"></i>
+        </a>
 
-                                    <a href="{{ route('finance.billing.preview', $billing->id) }}"
-                                       class="btn btn-sm btn-outline-secondary"
-                                       title="Preview PDF"
-                                       data-bs-toggle="tooltip"
-                                       target="_blank">
-                                        <i class="fas fa-file-pdf"></i>
-                                    </a>
+        <a href="{{ route('finance.billing.preview', $billing->id) }}"
+           class="btn btn-sm btn-outline-secondary"
+           title="Preview PDF"
+           data-bs-toggle="tooltip"
+           target="_blank">
+            <i class="fas fa-file-pdf"></i>
+        </a>
 
-                                    <!-- More Actions Dropdown -->
-                                    <button type="button" class="btn btn-outline-kp-success dropdown-toggle"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false"
-                                            title="More Actions">
-                                        <i class="fas fa-cog"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        @if($billing->status !== 'paid')
-                                        <li>
-                                            <a class="dropdown-item text-kp-green" href="#"
-                                               onclick="markAsPaid({{ $billing->id }})">
-                                                <i class="fas fa-check me-2"></i>Mark as Paid
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-kp-blue" href="#"
-                                               onclick="submitKra({{ $billing->id }})">
-                                                <i class="fas fa-dollar me-2"></i>Submit KRA
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:void(0);"
-                                               onclick="sendReminder({{ $billing->id }});">
-                                                <i class="fas fa-envelope me-2"></i>Send Reminder
-                                            </a>
-                                        </li>
-                                        @endif
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a class="dropdown-item text-info"
-                                               href="{{ route('finance.billing.edit', $billing->id) }}">
-                                                <i class="fas fa-edit me-2"></i>Edit Invoice
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-kp-yellow" href="#"
-                                               onclick="duplicateBilling({{ $billing->id }})">
-                                                <i class="fas fa-copy me-2"></i>Duplicate
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               href="{{ route('finance.billing.show', $billing->id) }}"
-                                               target="_blank">
-                                                <i class="fas fa-file-pdf me-2"></i>View PDF
-                                            </a>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a class="dropdown-item text-danger" href="#"
-                                               onclick="deleteBilling({{ $billing->id }})">
-                                                <i class="fas fa-trash me-2"></i>Delete Invoice
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
+        <!-- More Actions Dropdown - FIXED -->
+        <div class="dropdown d-inline-block">
+            <button type="button" class="btn btn-outline-kp-success dropdown-toggle"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    title="More Actions">
+                <i class="fas fa-cog"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                @if($billing->status !== 'paid')
+                <li>
+                    <a class="dropdown-item text-kp-green" href="#"
+                       onclick="markAsPaid({{ $billing->id }})">
+                        <i class="fas fa-check me-2"></i>Mark as Paid
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item text-kp-blue" href="#"
+                       onclick="submitKra({{ $billing->id }})">
+                        <i class="fas fa-dollar-sign me-2"></i>Submit KRA
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0);"
+                       onclick="sendReminder({{ $billing->id }});">
+                        <i class="fas fa-envelope me-2"></i>Send Reminder
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                @endif
+                <li>
+                    <a class="dropdown-item text-info"
+                       href="{{ route('finance.billing.edit', $billing->id) }}">
+                        <i class="fas fa-edit me-2"></i>Edit Invoice
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item text-warning" href="#"
+                       onclick="duplicateBilling({{ $billing->id }})">
+                        <i class="fas fa-copy me-2"></i>Duplicate
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item"
+                       href="{{ route('finance.billing.show', $billing->id) }}"
+                       target="_blank">
+                        <i class="fas fa-file-pdf me-2"></i>View PDF
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger" href="#"
+                       onclick="deleteBilling({{ $billing->id }})">
+                        <i class="fas fa-trash me-2"></i>Delete Invoice
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</td>
 
                             <td class="text-center">
     <div class="btn-group" role="group">

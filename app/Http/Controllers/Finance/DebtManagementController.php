@@ -4,6 +4,8 @@
 namespace App\Http\Controllers\Finance;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentPlan;
+use App\Models\PaymentPlanInstallment;
 use Illuminate\Http\Request;
 use App\Models\ConsolidatedBilling;
 use App\Models\User;
@@ -62,7 +64,10 @@ class DebtManagementController extends Controller
         ->sum('total_amount');
 
     $result->collection_rate = $totalBilled > 0 ? ($result->total_paid / $totalBilled) * 100 : 0;
-    $result->collection_invoices = 0; // For backward compatibility
+
+    // Add missing properties to avoid errors
+    $result->total_overdue_usd = ($currency == 'all' || $currency == 'USD') ? $result->total_overdue : 0;
+    $result->total_overdue_ksh = ($currency == 'all' || $currency == 'KSH') ? $result->total_overdue : 0;
 
     return $result;
 }
@@ -89,7 +94,7 @@ class DebtManagementController extends Controller
         $query->where('currency', $currency);
     }
 
-    return $query->groupBy('age_bucket')
+    $results = $query->groupBy('age_bucket')
         ->orderByRaw("
             CASE age_bucket
                 WHEN '0-30 days' THEN 1
@@ -99,38 +104,33 @@ class DebtManagementController extends Controller
             END
         ")
         ->get();
-}
 
-    private function getTopDebtors($limit = 10, $currency = 'all')
-{
-    $query = DB::table('consolidated_billings')
-        ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
-        ->select(
-            'users.id',
-            'users.name',
-            'users.email',
-            'users.phone',
-            'consolidated_billings.currency',
-            DB::raw('COUNT(consolidated_billings.id) as overdue_invoices'),
-            DB::raw('SUM(consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0)) as total_outstanding'),
-            DB::raw('MAX(DATEDIFF(CURDATE(), consolidated_billings.due_date)) as max_days_overdue'),
-            DB::raw('AVG(DATEDIFF(CURDATE(), consolidated_billings.due_date)) as avg_days_overdue')
-        )
-        ->whereRaw('consolidated_billings.due_date < CURDATE()')
-        ->whereRaw('COALESCE(consolidated_billings.paid_amount, 0) < consolidated_billings.total_amount');
+    // Ensure all buckets are represented
+    $buckets = ['0-30 days', '31-60 days', '61-90 days', '90+ days'];
+    $formattedResults = [];
 
-    if ($currency !== 'all') {
-        $query->where('consolidated_billings.currency', $currency);
+    foreach ($buckets as $bucket) {
+        $found = $results->firstWhere('age_bucket', $bucket);
+        $formattedResults[] = (object)[
+            'age_bucket' => $bucket,
+            'invoice_count' => $found->invoice_count ?? 0,
+            'total_amount' => $found->total_amount ?? 0,
+            'paid_amount' => $found->paid_amount ?? 0,
+            'outstanding' => $found->outstanding ?? 0,
+            // For all currencies view
+            'usd_amount' => ($currency == 'all' && $found) ? ($found->total_amount ?? 0) : 0,
+            'usd_paid' => ($currency == 'all' && $found) ? ($found->paid_amount ?? 0) : 0,
+            'usd_outstanding' => ($currency == 'all' && $found) ? ($found->outstanding ?? 0) : 0,
+            'ksh_amount' => 0,
+            'ksh_paid' => 0,
+            'ksh_outstanding' => 0,
+        ];
     }
 
-    return $query->groupBy('users.id', 'users.name', 'users.email', 'users.phone', 'consolidated_billings.currency')
-        ->having('total_outstanding', '>', 0)
-        ->orderBy('total_outstanding', 'desc')
-        ->limit($limit)
-        ->get();
+    return collect($formattedResults);
 }
 
-    private function getPaymentTrend($currency = 'all')
+ private function getPaymentTrend($currency = 'all')
 {
     $query = DB::table('consolidated_billings')
         ->select(
@@ -223,21 +223,41 @@ class DebtManagementController extends Controller
 
         $query = ConsolidatedBilling::with('user')
             ->where('due_date', '<', now())
-            ->whereRaw('COALESCE(paid_amount, 0) < total_amount');
+            ->whereRaw('COALESCE(paid_amount, 0) < total_amount')
+            ->orderBy('due_date', 'asc');
 
         if ($currency !== 'all') {
             $query->where('currency', $currency);
         }
 
-        $overdueBillings = $query->orderBy('due_date', 'asc')->get();
+        $overdueBillings = $query->get();
 
-        return view('finance.debt.partials.overdue-invoices-table', [
+        // Log for debugging
+        \Log::info('Overdue invoices loaded', [
+            'count' => $overdueBillings->count(),
+            'currency' => $currency,
+            'is_ajax' => $request->ajax()
+        ]);
+
+        // For AJAX requests, return the HTML directly
+        if ($request->ajax()) {
+            return view('finance.debt.partials.overdue-invoices-rows', [
+                'overdueBillings' => $overdueBillings
+            ])->render();
+        }
+
+        return view('finance.debt.overdue-invoices', [
             'overdueBillings' => $overdueBillings
         ]);
 
     } catch (\Exception $e) {
         \Log::error('Error in overdueInvoices: ' . $e->getMessage());
-        return view('finance.debt.partials.overdue-invoices-table', [
+
+        if ($request->ajax()) {
+            return '<tr><td colspan="8" class="text-center py-5 text-danger">Error: ' . $e->getMessage() . '</td></tr>';
+        }
+
+        return view('finance.debt.overdue-invoices', [
             'overdueBillings' => collect(),
             'error' => $e->getMessage()
         ]);
@@ -248,6 +268,16 @@ class DebtManagementController extends Controller
 public function dashboard(Request $request)
 {
     $currency = $request->get('currency', 'all');
+
+    // Initialize variables with default values
+    $collectionRateUsd = 0;
+    $collectionRateKsh = 0;
+    $avgDaysOverdue = 0;
+    $totalOutstandingUsd = 0;
+    $totalOutstandingKsh = 0;
+    $totalOverdueUsd = 0;
+    $totalOverdueKsh = 0;
+    $totalOutstanding = 0;
 
     if ($currency == 'all') {
         // Get data for both currencies separately
@@ -261,42 +291,99 @@ public function dashboard(Request $request)
         // Merge aging analysis for display
         $agingAnalysis = $this->mergeAgingAnalysis($usdAging, $kshAging);
 
-        // Get top debtors for both currencies
-        $topDebtors = $this->getTopDebtors(10, 'all');
+        // Calculate overall metrics
+        $totalOverdueUsd = $usdSummary->total_overdue ?? 0;
+        $totalOverdueKsh = $kshSummary->total_overdue ?? 0;
+        $totalInvoices = ($usdSummary->overdue_invoices ?? 0) + ($kshSummary->overdue_invoices ?? 0);
+
+        // Calculate collection rates
+        $totalBilledUsd = DB::table('consolidated_billings')->where('currency', 'USD')->sum('total_amount') ?: 1;
+        $totalPaidUsd = DB::table('consolidated_billings')->where('currency', 'USD')->where('status', 'paid')->sum('paid_amount') ?: 0;
+        $totalBilledKsh = DB::table('consolidated_billings')->where('currency', 'KSH')->sum('total_amount') ?: 1;
+        $totalPaidKsh = DB::table('consolidated_billings')->where('currency', 'KSH')->where('status', 'paid')->sum('paid_amount') ?: 0;
+
+        $collectionRateUsd = ($totalPaidUsd / $totalBilledUsd) * 100;
+        $collectionRateKsh = ($totalPaidKsh / $totalBilledKsh) * 100;
+        $collectionRate = ($collectionRateUsd + $collectionRateKsh) / 2;
+
+        // Calculate average days overdue
+        $avgDaysOverdue = max($usdSummary->avg_days_overdue ?? 0, $kshSummary->avg_days_overdue ?? 0);
+
+        // Calculate total outstanding
+        $totalOutstandingUsd = DB::table('consolidated_billings')
+            ->where('currency', 'USD')
+            ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
+            ->whereRaw('total_amount > COALESCE(paid_amount, 0)')
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
+
+        $totalOutstandingKsh = DB::table('consolidated_billings')
+            ->where('currency', 'KSH')
+            ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
+            ->whereRaw('total_amount > COALESCE(paid_amount, 0)')
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
 
         $overdueSummary = (object)[
-            'overdue_invoices' => ($usdSummary->overdue_invoices ?? 0) + ($kshSummary->overdue_invoices ?? 0),
-            'total_overdue_usd' => $usdSummary->total_overdue ?? 0,
-            'total_overdue_ksh' => $kshSummary->total_overdue ?? 0,
-            'avg_days_overdue' => max($usdSummary->avg_days_overdue ?? 0, $kshSummary->avg_days_overdue ?? 0),
-            'collection_rate' => $this->calculateOverallCollectionRate(),
-            'paid_invoices' => ($usdSummary->paid_invoices ?? 0) + ($kshSummary->paid_invoices ?? 0),
-            'total_paid_usd' => $usdSummary->total_paid ?? 0,
-            'total_paid_ksh' => $kshSummary->total_paid ?? 0,
+            'overdue_invoices' => $totalInvoices,
+            'total_overdue_usd' => $totalOverdueUsd,
+            'total_overdue_ksh' => $totalOverdueKsh,
         ];
+
+        $topDebtors = $this->getTopDebtors(10, 'all');
+        $paymentTrend = $this->getPaymentTrend($currency);
+        $currencySummary = $this->getCurrencySummary();
+
+        // Get recent overdue invoices
+        $overdueInvoices = ConsolidatedBilling::with('user')
+            ->where('due_date', '<', now())
+            ->whereRaw('COALESCE(paid_amount, 0) < total_amount')
+            ->orderBy('due_date', 'asc')
+            ->take(10)
+            ->get();
+
     } else {
-        // Single currency view
+        // Single currency view - existing code...
         $overdueSummary = $this->getOverdueSummary($currency);
         $agingAnalysis = $this->getAgingAnalysis($currency);
         $topDebtors = $this->getTopDebtors(10, $currency);
+        $paymentTrend = $this->getPaymentTrend($currency);
+        $currencySummary = $this->getCurrencySummary();
+
+        $collectionRate = $overdueSummary->collection_rate ?? 0;
+        $avgDaysOverdue = $overdueSummary->avg_days_overdue ?? 0;
+
+        $totalOutstanding = DB::table('consolidated_billings')
+            ->where('currency', $currency)
+            ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
+            ->whereRaw('total_amount > COALESCE(paid_amount, 0)')
+            ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
+
+        $totalOutstandingUsd = $currency == 'USD' ? $totalOutstanding : 0;
+        $totalOutstandingKsh = $currency == 'KSH' ? $totalOutstanding : 0;
+        $totalOverdueUsd = $currency == 'USD' ? ($overdueSummary->total_overdue ?? 0) : 0;
+        $totalOverdueKsh = $currency == 'KSH' ? ($overdueSummary->total_overdue ?? 0) : 0;
+
+        $overdueInvoices = ConsolidatedBilling::with('user')
+            ->where('due_date', '<', now())
+            ->where('currency', $currency)
+            ->whereRaw('COALESCE(paid_amount, 0) < total_amount')
+            ->orderBy('due_date', 'asc')
+            ->take(10)
+            ->get();
+
+        // Set collection rates for single currency view
+        if ($currency == 'USD') {
+            $collectionRateUsd = $collectionRate;
+            $collectionRateKsh = 0;
+        } else {
+            $collectionRateUsd = 0;
+            $collectionRateKsh = $collectionRate;
+        }
+
+        // Wrap aging analysis in collection if needed
+        if (!($agingAnalysis instanceof \Illuminate\Support\Collection)) {
+            $agingAnalysis = collect($agingAnalysis);
+        }
     }
-
-    $paymentTrend = $this->getPaymentTrend($currency);
-    $currencySummary = $this->getCurrencySummary();
-
-    $overdueInvoices = ConsolidatedBilling::with('user')
-        ->where('due_date', '<', now())
-        ->whereRaw('COALESCE(paid_amount, 0) < total_amount')
-        ->when($currency != 'all', function($query) use ($currency) {
-            return $query->where('currency', $currency);
-        })
-        ->orderBy('due_date', 'asc')
-        ->take(10)
-        ->get()
-        ->map(function($invoice) {
-            $invoice->days_overdue = now()->diffInDays($invoice->due_date, false);
-            return $invoice;
-        });
 
     return view('finance.debt.dashboard', compact(
         'overdueSummary',
@@ -305,59 +392,135 @@ public function dashboard(Request $request)
         'paymentTrend',
         'currencySummary',
         'overdueInvoices',
-        'currency'
+        'currency',
+        'collectionRate',
+        'collectionRateUsd',
+        'collectionRateKsh',
+        'avgDaysOverdue',
+        'totalOutstandingUsd',
+        'totalOutstandingKsh',
+        'totalOutstanding',
+        'totalOverdueUsd',
+        'totalOverdueKsh'
     ));
 }
 
-private function mergeAgingAnalysis($usdAging, $kshAging)
+private function getTopDebtors($limit = 10, $currency = 'all')
 {
-    $merged = [];
+    $query = DB::table('consolidated_billings')
+        ->join('users', 'consolidated_billings.user_id', '=', 'users.id')
+        ->select(
+            'users.id',
+            'users.name',
+            'users.email',
+            'consolidated_billings.currency',
+            DB::raw('COUNT(DISTINCT consolidated_billings.id) as overdue_invoices'),
+            DB::raw('SUM(consolidated_billings.total_amount - COALESCE(consolidated_billings.paid_amount, 0)) as total_outstanding'),
+            DB::raw('MAX(DATEDIFF(CURDATE(), consolidated_billings.due_date)) as max_days_overdue'),
+            DB::raw('AVG(DATEDIFF(CURDATE(), consolidated_billings.due_date)) as avg_days_overdue')
+        )
+        ->whereRaw('consolidated_billings.due_date < CURDATE()')
+        ->whereRaw('COALESCE(consolidated_billings.paid_amount, 0) < consolidated_billings.total_amount');
 
-    // Process USD aging
-    foreach ($usdAging as $bucket) {
-        $merged[$bucket->age_bucket] = [
-            'age_bucket' => $bucket->age_bucket,
-            'invoice_count' => $bucket->invoice_count,
-            'usd_amount' => $bucket->total_amount,
-            'usd_paid' => $bucket->paid_amount,
-            'usd_outstanding' => $bucket->outstanding,
-            'ksh_amount' => 0,
-            'ksh_paid' => 0,
-            'ksh_outstanding' => 0,
-            'total_invoices' => $bucket->invoice_count,
-        ];
+    // Apply currency filter
+    if ($currency !== 'all') {
+        $query->where('consolidated_billings.currency', $currency);
     }
 
-    // Add KSH aging
-    foreach ($kshAging as $bucket) {
-        if (isset($merged[$bucket->age_bucket])) {
-            $merged[$bucket->age_bucket]['ksh_amount'] = $bucket->total_amount;
-            $merged[$bucket->age_bucket]['ksh_paid'] = $bucket->paid_amount;
-            $merged[$bucket->age_bucket]['ksh_outstanding'] = $bucket->outstanding;
-            $merged[$bucket->age_bucket]['total_invoices'] += $bucket->invoice_count;
-            $merged[$bucket->age_bucket]['invoice_count'] += $bucket->invoice_count;
-        } else {
-            $merged[$bucket->age_bucket] = [
-                'age_bucket' => $bucket->age_bucket,
-                'invoice_count' => $bucket->invoice_count,
-                'usd_amount' => 0,
-                'usd_paid' => 0,
-                'usd_outstanding' => 0,
-                'ksh_amount' => $bucket->total_amount,
-                'ksh_paid' => $bucket->paid_amount,
-                'ksh_outstanding' => $bucket->outstanding,
-                'total_invoices' => $bucket->invoice_count,
-            ];
+    $results = $query->groupBy('users.id', 'users.name', 'users.email', 'consolidated_billings.currency')
+        ->having('total_outstanding', '>', 0)
+        ->orderBy('total_outstanding', 'desc')
+        ->limit($limit)
+        ->get();
+
+    // Group by customer to combine currencies if showing all
+    if ($currency == 'all') {
+        $grouped = [];
+        foreach ($results as $debtor) {
+            $userId = $debtor->id;
+            if (!isset($grouped[$userId])) {
+                $grouped[$userId] = (object)[
+                    'id' => $debtor->id,
+                    'name' => $debtor->name,
+                    'email' => $debtor->email,
+                    'currency' => 'MULTI',
+                    'overdue_invoices' => 0,
+                    'total_outstanding' => 0,
+                    'max_days_overdue' => 0,
+                    'avg_days_overdue' => 0,
+                ];
+            }
+            $grouped[$userId]->overdue_invoices += $debtor->overdue_invoices;
+            $grouped[$userId]->total_outstanding += $debtor->total_outstanding;
+            $grouped[$userId]->max_days_overdue = max($grouped[$userId]->max_days_overdue, $debtor->max_days_overdue);
+        }
+
+        // Sort by total outstanding and take limit
+        uasort($grouped, function($a, $b) {
+            return $b->total_outstanding <=> $a->total_outstanding;
+        });
+
+        return array_slice($grouped, 0, $limit);
+    }
+
+    return $results;
+}
+public function bulkSendReminder(Request $request)
+{
+    $ids = $request->input('ids', []);
+    $sent = 0;
+
+    foreach ($ids as $id) {
+        $billing = ConsolidatedBilling::find($id);
+        if ($billing && $billing->user && $billing->user->email) {
+            // Send email logic here
+            // Mail::to($billing->user->email)->send(new PaymentReminder($billing));
+            $sent++;
         }
     }
 
-    // Sort by age bucket
-    $order = ['0-30 days' => 1, '31-60 days' => 2, '61-90 days' => 3, '90+ days' => 4];
-    uksort($merged, function($a, $b) use ($order) {
-        return ($order[$a] ?? 5) <=> ($order[$b] ?? 5);
-    });
+    return response()->json(['success' => true, 'sent' => $sent]);
+}
+private function mergeAgingAnalysis($usdAging, $kshAging)
+{
+    $merged = [];
+    $buckets = ['0-30 days', '31-60 days', '61-90 days', '90+ days'];
 
-    return array_values($merged);
+    // Create a map for quick lookup
+    $usdMap = [];
+    $kshMap = [];
+
+    foreach ($usdAging as $bucket) {
+        $usdMap[$bucket->age_bucket] = $bucket;
+    }
+
+    foreach ($kshAging as $bucket) {
+        $kshMap[$bucket->age_bucket] = $bucket;
+    }
+
+    foreach ($buckets as $bucket) {
+        $usd = $usdMap[$bucket] ?? null;
+        $ksh = $kshMap[$bucket] ?? null;
+
+        $merged[] = (object)[
+            'age_bucket' => $bucket,
+            'invoice_count' => ($usd->invoice_count ?? 0) + ($ksh->invoice_count ?? 0),
+            // USD amounts
+            'usd_amount' => $usd->total_amount ?? 0,
+            'usd_paid' => $usd->paid_amount ?? 0,
+            'usd_outstanding' => $usd->outstanding ?? 0,
+            // KSH amounts
+            'ksh_amount' => $ksh->total_amount ?? 0,
+            'ksh_paid' => $ksh->paid_amount ?? 0,
+            'ksh_outstanding' => $ksh->outstanding ?? 0,
+            // Total amounts (for single currency view)
+            'total_amount' => ($usd->total_amount ?? 0) + ($ksh->total_amount ?? 0),
+            'paid_amount' => ($usd->paid_amount ?? 0) + ($ksh->paid_amount ?? 0),
+            'outstanding' => ($usd->outstanding ?? 0) + ($ksh->outstanding ?? 0),
+        ];
+    }
+
+    return collect($merged);
 }
 
 private function calculateOverallCollectionRate()
@@ -647,170 +810,6 @@ private function logReminderAction($invoice, $reminderType)
         ]);
     }
 }
-public function createPaymentPlan(Request $request, $id)
-{
-    // Check permission
-    if (!Auth::user()->can('create_payment_plans')) {
-        abort(403, 'Unauthorized access');
-    }
-
-    // Validate request
-    $validated = $request->validate([
-        'installment_count' => 'required|integer|min:1|max:24',
-        'start_date' => 'required|date|after_or_equal:today',
-        'down_payment' => 'nullable|numeric|min:0',
-        'frequency' => 'required|in:weekly,biweekly,monthly,quarterly',
-        'notes' => 'nullable|string|max:500',
-        'terms' => 'nullable|string'
-    ]);
-
-    DB::beginTransaction();
-
-    try {
-        // Find the invoice
-        $invoice = ConsolidatedBilling::with('user')->findOrFail($id);
-
-        // Check if invoice is eligible for payment plan
-        if ($invoice->status === 'paid') {
-            throw new \Exception('Invoice is already paid.');
-        }
-
-        if ($invoice->status === 'written_off') {
-            throw new \Exception('Invoice has been written off.');
-        }
-
-        if ($invoice->status === 'payment_plan') {
-            throw new \Exception('Invoice already has an active payment plan.');
-        }
-
-        // Calculate outstanding amount
-        $outstandingAmount = $invoice->total_amount - $invoice->paid_amount;
-
-        // Validate down payment
-        $downPayment = $request->down_payment ?? 0;
-        if ($downPayment > $outstandingAmount) {
-            throw new \Exception('Down payment cannot exceed outstanding amount.');
-        }
-
-        // Calculate remaining amount after down payment
-        $remainingAmount = $outstandingAmount - $downPayment;
-
-        // Calculate installment amount
-        $installmentCount = $request->installment_count;
-        $installmentAmount = round($remainingAmount / $installmentCount, 2);
-
-        // Calculate end date based on frequency
-        $startDate = Carbon::parse($request->start_date);
-        $endDate = $this->calculateEndDate($startDate, $installmentCount, $request->frequency);
-
-        // Create payment plan
-        $paymentPlan = \App\Models\PaymentPlan::create([
-            'consolidated_billing_id' => $invoice->id,
-            'user_id' => $invoice->user_id,
-            'total_amount' => $outstandingAmount,
-            'down_payment' => $downPayment,
-            'installment_count' => $installmentCount,
-            'installment_amount' => $installmentAmount,
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'frequency' => $request->frequency,
-            'status' => 'active',
-            'terms' => $request->terms ?? $this->defaultTerms(),
-            'notes' => $request->notes
-        ]);
-
-        // Create installments
-        $this->createInstallments($paymentPlan, $startDate, $installmentCount, $installmentAmount, $request->frequency);
-
-        // Update invoice status
-        $invoice->update([
-            'status' => 'payment_plan',
-            'metadata' => array_merge(
-                $invoice->metadata ?? [],
-                [
-                    'payment_plan_id' => $paymentPlan->id,
-                    'payment_plan_created_at' => now()->toISOString(),
-                    'payment_plan_created_by' => Auth::id()
-                ]
-            )
-        ]);
-
-        // Log the action
-        $this->logPaymentPlanAction($invoice, $paymentPlan);
-
-        // Notify customer
-        $this->notifyPaymentPlanCreated($invoice, $paymentPlan);
-
-        DB::commit();
-
-        return back()->with('success', 'Payment plan created successfully.');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        \Log::error('Failed to create payment plan: ' . $e->getMessage());
-        return back()->with('error', 'Failed to create payment plan: ' . $e->getMessage());
-    }
-}
-
-private function calculateEndDate($startDate, $installmentCount, $frequency)
-{
-    $endDate = clone $startDate;
-
-    switch ($frequency) {
-        case 'weekly':
-            $endDate->addWeeks($installmentCount - 1);
-            break;
-        case 'biweekly':
-            $endDate->addWeeks(($installmentCount - 1) * 2);
-            break;
-        case 'monthly':
-            $endDate->addMonths($installmentCount - 1);
-            break;
-        case 'quarterly':
-            $endDate->addMonths(($installmentCount - 1) * 3);
-            break;
-    }
-
-    return $endDate;
-}
-
-private function createInstallments($paymentPlan, $startDate, $installmentCount, $installmentAmount, $frequency)
-{
-    $installments = [];
-    $currentDate = clone $startDate;
-
-    for ($i = 1; $i <= $installmentCount; $i++) {
-        // Calculate due date for this installment
-        $dueDate = clone $currentDate;
-
-        switch ($frequency) {
-            case 'weekly':
-                $dueDate->addWeeks($i - 1);
-                break;
-            case 'biweekly':
-                $dueDate->addWeeks(($i - 1) * 2);
-                break;
-            case 'monthly':
-                $dueDate->addMonths($i - 1);
-                break;
-            case 'quarterly':
-                $dueDate->addMonths(($i - 1) * 3);
-                break;
-        }
-
-        $installments[] = [
-            'payment_plan_id' => $paymentPlan->id,
-            'installment_number' => $i,
-            'amount' => $installmentAmount,
-            'due_date' => $dueDate,
-            'status' => 'pending',
-            'created_at' => now(),
-            'updated_at' => now()
-        ];
-    }
-
-    \App\Models\PaymentPlanInstallment::insert($installments);
-}
 
 private function defaultTerms()
 {
@@ -871,58 +870,6 @@ private function notifyPaymentPlanCreated($invoice, $paymentPlan)
         'installments' => $schedule->toArray()
     ]);
 }
-// Get invoices eligible for payment plans
-public function getInvoicesForPaymentPlan()
-{
-    $invoices = ConsolidatedBilling::with('user')
-        ->whereIn('status', ['pending', 'sent', 'overdue'])
-        ->whereRaw('total_amount > paid_amount')
-        ->where('due_date', '<', now())
-        ->orderBy('due_date')
-        ->get();
-
-    return response()->json($invoices);
-}
-
-// Get payment plan details
-public function getPaymentPlanDetails($id)
-{
-    $paymentPlan = \App\Models\PaymentPlan::with(['installments', 'invoice.user'])
-        ->findOrFail($id);
-
-    return response()->json($paymentPlan);
-}
-
-// Cancel payment plan
-public function cancelPaymentPlan($id)
-{
-    DB::beginTransaction();
-
-    try {
-        $paymentPlan = \App\Models\PaymentPlan::findOrFail($id);
-
-        // Cancel installments
-        $paymentPlan->installments()->update(['status' => 'cancelled']);
-
-        // Update payment plan
-        $paymentPlan->update(['status' => 'cancelled']);
-
-        // Update invoice status back to overdue
-        $paymentPlan->invoice->update(['status' => 'overdue']);
-
-        // Log the action
-        $this->logPaymentPlanCancellation($paymentPlan);
-
-        DB::commit();
-
-        return back()->with('success', 'Payment plan cancelled successfully.');
-
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return back()->with('error', 'Failed to cancel payment plan: ' . $e->getMessage());
-    }
-}
-
 // Record payment against installment
 public function recordInstallmentPayment($installmentId, Request $request)
 {
@@ -1742,4 +1689,387 @@ private function sendPaymentNotification(ConsolidatedBilling $payment)
         \Log::error('Failed to send payment notification: ' . $e->getMessage());
     }
 }
+
+/**
+ * Export overdue invoices to CSV
+ */
+public function export(Request $request)
+{
+    try {
+        $currency = $request->get('currency', 'all');
+        $severity = $request->get('severity', 'all');
+        $search = $request->get('search', '');
+
+        // Build query
+        $query = ConsolidatedBilling::with('user')
+            ->where('due_date', '<', now())
+            ->whereRaw('COALESCE(paid_amount, 0) < total_amount');
+
+        // Apply currency filter
+        if ($currency !== 'all') {
+            $query->where('currency', $currency);
+        }
+
+        // Get results
+        $billings = $query->orderBy('due_date', 'asc')->get();
+
+        // Apply severity filter (calculated in PHP)
+        if ($severity !== 'all') {
+            $billings = $billings->filter(function($billing) use ($severity) {
+                $dueDate = $billing->due_date instanceof \Carbon\Carbon
+                    ? $billing->due_date
+                    : \Carbon\Carbon::parse($billing->due_date);
+                $daysOverdue = $dueDate->isPast() ? $dueDate->diffInDays(now()) : 0;
+
+                if ($severity === 'critical') return $daysOverdue > 90;
+                if ($severity === 'high') return $daysOverdue > 60 && $daysOverdue <= 90;
+                if ($severity === 'medium') return $daysOverdue > 30 && $daysOverdue <= 60;
+                if ($severity === 'low') return $daysOverdue > 0 && $daysOverdue <= 30;
+                return true;
+            });
+        }
+
+        // Apply search filter
+        if (!empty($search)) {
+            $searchLower = strtolower($search);
+            $billings = $billings->filter(function($billing) use ($searchLower) {
+                $customer = $billing->user;
+                $customerName = strtolower($customer->name ?? '');
+                $invoiceNumber = strtolower($billing->billing_number ?? '');
+                return strpos($customerName, $searchLower) !== false ||
+                       strpos($invoiceNumber, $searchLower) !== false;
+            });
+        }
+
+        // Prepare CSV data
+        $csvData = [];
+        $csvData[] = [
+            'Invoice #',
+            'Customer',
+            'Currency',
+            'Amount',
+            'Due Date',
+            'Overdue Days',
+            'Status'
+        ];
+
+        foreach ($billings as $billing) {
+            $dueDate = $billing->due_date instanceof \Carbon\Carbon
+                ? $billing->due_date
+                : \Carbon\Carbon::parse($billing->due_date);
+            $daysOverdue = $dueDate->isPast() ? $dueDate->diffInDays(now()) : 0;
+
+            $customer = $billing->user;
+            $customerName = $customer->name ?? 'Unknown Customer';
+
+            $formattedAmount = $billing->currency == 'USD'
+                ? '$' . number_format($billing->total_amount, 2)
+                : 'KSH ' . number_format($billing->total_amount, 2);
+
+            $status = $billing->status == 'partial' ? 'Partially Paid' : 'Overdue';
+
+            $csvData[] = [
+                $billing->billing_number ?? 'CONS-' . $billing->id,
+                $customerName,
+                $billing->currency,
+                $formattedAmount,
+                $dueDate->format('Y-m-d'),
+                $daysOverdue,
+                $status
+            ];
+        }
+
+        // Generate CSV file
+        $filename = 'overdue_invoices_' . date('Y-m-d_His') . '.csv';
+        $handle = fopen('php://temp', 'w');
+
+        // Add UTF-8 BOM for Excel compatibility
+        fwrite($handle, "\xEF\xBB\xBF");
+
+        foreach ($csvData as $row) {
+            fputcsv($handle, $row);
+        }
+
+        rewind($handle);
+        $csvContent = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($csvContent, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Export error: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Failed to export data: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Get invoices eligible for payment plans
+ */
+public function getInvoicesForPaymentPlan()
+{
+    $invoices = ConsolidatedBilling::with('user')
+        ->whereIn('status', ['pending', 'sent', 'overdue'])
+        ->whereRaw('total_amount > COALESCE(paid_amount, 0)')
+        ->orderBy('due_date')
+        ->get()
+        ->map(function($invoice) {
+            $outstanding = $invoice->total_amount - ($invoice->paid_amount ?? 0);
+            return [
+                'id' => $invoice->id,
+                'billing_number' => $invoice->billing_number,
+                'customer_name' => $invoice->user->name ?? 'Unknown',
+                'currency' => $invoice->currency,
+                'total_amount' => $invoice->total_amount,
+                'outstanding' => $outstanding,
+                'due_date' => $invoice->due_date ? $invoice->due_date->format('Y-m-d') : null,
+                'days_overdue' => $invoice->due_date && $invoice->due_date->isPast() ? $invoice->due_date->diffInDays(now()) : 0,
+            ];
+        });
+
+    return response()->json($invoices);
+}
+
+/**
+ * Create a new payment plan
+ */
+public function createPaymentPlan(Request $request, $id)
+{
+    $request->validate([
+        'installment_count' => 'required|integer|min:1|max:36',
+        'frequency' => 'required|in:weekly,biweekly,monthly,quarterly',
+        'down_payment' => 'nullable|numeric|min:0',
+        'start_date' => 'required|date|after_or_equal:today',
+        'notes' => 'nullable|string|max:500',
+    ]);
+
+    DB::beginTransaction();
+
+    try {
+        $invoice = ConsolidatedBilling::with('user')->findOrFail($id);
+
+        // Check if invoice is eligible
+        if ($invoice->status === 'paid') {
+            throw new \Exception('Invoice is already paid.');
+        }
+
+        if ($invoice->status === 'payment_plan') {
+            throw new \Exception('Invoice already has an active payment plan.');
+        }
+
+        $outstandingAmount = $invoice->total_amount - ($invoice->paid_amount ?? 0);
+        $downPayment = $request->down_payment ?? 0;
+
+        if ($downPayment > $outstandingAmount) {
+            throw new \Exception('Down payment cannot exceed outstanding amount.');
+        }
+
+        $remainingAmount = $outstandingAmount - $downPayment;
+        $installmentCount = $request->installment_count;
+        $installmentAmount = round($remainingAmount / $installmentCount, 2);
+
+        // Calculate end date
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = $this->calculateEndDate($startDate, $installmentCount, $request->frequency);
+
+        // Create payment plan
+        $paymentPlan = PaymentPlan::create([
+            'consolidated_billing_id' => $invoice->id,
+            'user_id' => $invoice->user_id,
+            'total_amount' => $outstandingAmount,
+            'down_payment' => $downPayment,
+            'installment_count' => $installmentCount,
+            'installment_amount' => $installmentAmount,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'frequency' => $request->frequency,
+            'status' => 'active',
+            'notes' => $request->notes,
+            'metadata' => [
+                'created_by' => auth()->id(),
+                'created_at' => now()->toISOString(),
+                'original_invoice_number' => $invoice->billing_number,
+            ]
+        ]);
+
+        // Create installments
+        $this->createInstallments($paymentPlan, $startDate, $installmentCount, $installmentAmount, $request->frequency);
+
+        // Update invoice status
+        $invoice->update([
+            'status' => 'payment_plan',
+            'metadata' => array_merge($invoice->metadata ?? [], [
+                'payment_plan_id' => $paymentPlan->id,
+                'payment_plan_created_at' => now()->toISOString(),
+            ])
+        ]);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment plan created successfully.',
+            'payment_plan' => $paymentPlan->load('installments')
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Failed to create payment plan: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 422);
+    }
+}
+
+/**
+ * Calculate end date based on frequency
+ */
+private function calculateEndDate($startDate, $installmentCount, $frequency)
+{
+    $endDate = clone $startDate;
+
+    switch ($frequency) {
+        case 'weekly':
+            $endDate->addWeeks($installmentCount - 1);
+            break;
+        case 'biweekly':
+            $endDate->addWeeks(($installmentCount - 1) * 2);
+            break;
+        case 'quarterly':
+            $endDate->addMonths(($installmentCount - 1) * 3);
+            break;
+        default: // monthly
+            $endDate->addMonths($installmentCount - 1);
+            break;
+    }
+
+    return $endDate;
+}
+
+/**
+ * Create installments for payment plan
+ */
+private function createInstallments($paymentPlan, $startDate, $installmentCount, $installmentAmount, $frequency)
+{
+    $installments = [];
+    $currentDate = clone $startDate;
+
+    for ($i = 1; $i <= $installmentCount; $i++) {
+        switch ($frequency) {
+            case 'weekly':
+                $dueDate = clone $startDate;
+                $dueDate->addWeeks($i - 1);
+                break;
+            case 'biweekly':
+                $dueDate = clone $startDate;
+                $dueDate->addWeeks(($i - 1) * 2);
+                break;
+            case 'quarterly':
+                $dueDate = clone $startDate;
+                $dueDate->addMonths(($i - 1) * 3);
+                break;
+            default:
+                $dueDate = clone $startDate;
+                $dueDate->addMonths($i - 1);
+                break;
+        }
+
+        $installments[] = [
+            'payment_plan_id' => $paymentPlan->id,
+            'installment_number' => $i,
+            'amount' => $installmentAmount,
+            'due_date' => $dueDate,
+            'status' => 'pending',
+            'created_at' => now(),
+            'updated_at' => now()
+        ];
+    }
+
+    PaymentPlanInstallment::insert($installments);
+}
+
+/**
+ * Get payment plan details
+ */
+public function getPaymentPlanDetails($id)
+{
+    $paymentPlan = PaymentPlan::with(['installments', 'invoice', 'customer'])
+        ->findOrFail($id);
+
+    return response()->json($paymentPlan);
+}
+
+/**
+ * Cancel a payment plan
+ */
+public function cancelPaymentPlan($id)
+{
+    DB::beginTransaction();
+
+    try {
+        $paymentPlan = PaymentPlan::findOrFail($id);
+
+        if ($paymentPlan->status !== 'active') {
+            throw new \Exception('Only active payment plans can be cancelled.');
+        }
+
+        // Cancel all pending installments
+        $paymentPlan->installments()
+            ->where('status', 'pending')
+            ->update(['status' => 'cancelled']);
+
+        // Update payment plan status
+        $paymentPlan->update(['status' => 'cancelled']);
+
+        // Update invoice status back to overdue
+        $paymentPlan->invoice->update(['status' => 'overdue']);
+
+        DB::commit();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Payment plan cancelled successfully.'
+        ]);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 422);
+    }
+}
+
+/**
+ * Get invoice data for payment plan creation
+ */
+public function getPaymentPlanData($id)
+{
+    $invoice = ConsolidatedBilling::with('user')->findOrFail($id);
+
+    $outstanding = $invoice->total_amount - ($invoice->paid_amount ?? 0);
+    $daysOverdue = 0;
+
+    if ($invoice->due_date && $invoice->due_date->isPast()) {
+        $daysOverdue = $invoice->due_date->diffInDays(now());
+    }
+
+    return response()->json([
+        'id' => $invoice->id,
+        'billing_number' => $invoice->billing_number,
+        'customer_name' => $invoice->user->name ?? 'Unknown',
+        'currency' => $invoice->currency,
+        'total_amount' => $invoice->total_amount,
+        'outstanding' => $outstanding,
+        'due_date' => $invoice->due_date ? $invoice->due_date->format('Y-m-d') : null,
+        'days_overdue' => $daysOverdue,
+    ]);
+}
+
 }

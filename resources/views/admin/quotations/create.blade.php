@@ -74,6 +74,49 @@
         </div>
     </div>
 
+    <!-- Customer Original Requirements (Design Request Defaults) -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list me-2"></i>Customer Original Requirements (From Design Request)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="alert alert-light mb-0 border">
+                                <strong><i class="fas fa-microchip me-2"></i>Requested Cores:</strong>
+                                <span class="h5">{{ $designRequest->cores_required ?? 2 }}</span> cores
+                                <small class="text-muted d-block">Customer's core requirement</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="alert alert-light mb-0 border">
+                                <strong><i class="fas fa-calendar-alt me-2"></i>Requested Contract Term:</strong>
+                                <span class="h5">{{ $designRequest->terms ?? 12 }}</span> months
+                                <small class="text-muted d-block">Customer's preferred duration</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="alert alert-light mb-0 border">
+                                <strong><i class="fas fa-ruler me-2"></i>Estimated Distance:</strong>
+                                <span class="h5">{{ number_format($designRequest->distance ?? 0, 2) }}</span> km
+                                <small class="text-muted d-block">Approximate route distance</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning mt-3 mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        <strong>Note:</strong> The cores and duration fields below are pre-filled with the customer's requirements.
+                        You can edit them as needed for this quotation.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <form action="{{ route('admin.quotations.store') }}" method="POST" id="quotationForm">
         @csrf
         <input type="hidden" name="design_request_id" value="{{ $designRequest->id }}">
@@ -81,11 +124,11 @@
         <div class="row">
             <!-- LEFT COLUMN: Service Selection (70%) -->
             <div class="col-lg-8">
-                <!-- Customer Requirements - Compact -->
+                <!-- Customer Notes -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-header bg-info text-white py-2">
                         <h6 class="mb-0">
-                            <i class="fas fa-list-check me-2"></i>Customer Requirements
+                            <i class="fas fa-list-check me-2"></i>Customer Notes
                         </h6>
                     </div>
                     <div class="card-body py-2">
@@ -127,6 +170,8 @@
                                             $groupedRoutes[$groupKey][] = $route;
                                         }
                                     }
+                                    $defaultCores = $designRequest->cores_required ?? 2;
+                                    $defaultDuration = $designRequest->terms ?? 12;
                                 @endphp
 
                                 @foreach($groupedRoutes as $groupName => $routes)
@@ -142,7 +187,98 @@
                                         </div>
                                         <div class="route-group-body p-2" id="group-{{ $loop->index }}" style="display: none;">
                                             @foreach($routes as $route)
-                                                <x-commercial-route-card :route="$route" :designRequest="$designRequest" />
+                                                @php
+                                                    $routeUnitCost = $route->unit_cost_per_core_km_per_month
+                                                        ?? $route->unit_cost_per_core_per_km_per_month
+                                                        ?? $route->unit_cost
+                                                        ?? match($route->option ?? null) {
+                                                            'Non Premium' => 18,
+                                                            'Premium' => 19,
+                                                            'Metro' => 20,
+                                                            default => 0,
+                                                        };
+                                                    $routeDistance = (float) ($route->approx_distance_km ?? 0);
+                                                    $monthlyBaseCost = (float) $routeUnitCost * $routeDistance;
+                                                @endphp
+                                                <div class="card route-card mb-3">
+                                                    <div class="card-body">
+                                                        <div class="form-check mb-2">
+                                                            <input class="form-check-input route-select"
+                                                                   type="checkbox"
+                                                                   name="selected_routes[]"
+                                                                   value="{{ $route->id }}"
+                                                                   id="route_{{ $route->id }}"
+                                                                   data-route-id="{{ $route->id }}"
+                                                                   data-monthly-cost="{{ $monthlyBaseCost }}"
+                                                                   data-capex="{{ $route->capital_expenditure ?? 0 }}">
+                                                            <label class="form-check-label fw-bold" for="route_{{ $route->id }}">
+                                                                {{ $route->name_of_route }}
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <small class="text-muted">
+                                                                    <i class="fas fa-wifi me-1"></i>{{ $route->tech_type }}<br>
+                                                                    <i class="fas fa-ruler me-1"></i>{{ number_format($routeDistance, 2) }} km<br>
+                                                                    <i class="fas fa-toggle-on me-1"></i>{{ $route->availability }}<br>
+                                                                    <i class="fas fa-dollar-sign me-1"></i>
+                                                                    Unit: ${{ number_format($routeUnitCost, 2) }} / core / km / month
+                                                                </small>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="route-configuration" style="display: none;">
+                                                                    <div class="mb-2">
+                                                                        <label class="form-label small">
+                                                                            Cores Required
+                                                                            <span class="text-muted">(Default: {{ $defaultCores }})</span>
+                                                                        </label>
+                                                                        <input type="number"
+                                                                               name="route_cores[{{ $route->id }}]"
+                                                                               class="form-control form-control-sm cores-input"
+                                                                               value="{{ $defaultCores }}"
+                                                                               min="1"
+                                                                               data-route-id="{{ $route->id }}">
+                                                                    </div>
+
+                                                                    <div class="mb-2">
+                                                                        <label class="form-label small">
+                                                                            Duration (Months)
+                                                                            <span class="text-muted">(Default: {{ $defaultDuration }})</span>
+                                                                        </label>
+                                                                        <input type="number"
+                                                                               name="route_duration[{{ $route->id }}]"
+                                                                               class="form-control form-control-sm duration-input"
+                                                                               value="{{ $defaultDuration }}"
+                                                                               min="1"
+                                                                               data-route-id="{{ $route->id }}">
+                                                                    </div>
+
+                                                                    <div class="route-cost small">
+                                                                        <strong>
+                                                                            Monthly:
+                                                                            <span class="monthly-cost" data-route-id="{{ $route->id }}">
+                                                                                ${{ number_format($monthlyBaseCost * $defaultCores, 2) }}
+                                                                            </span>
+                                                                        </strong>
+                                                                        <br>
+                                                                        <strong>
+                                                                            Total:
+                                                                            <span class="total-cost" data-route-id="{{ $route->id }}">
+                                                                                ${{ number_format(
+                                                                                    ($monthlyBaseCost * $defaultCores * $defaultDuration)
+                                                                                    + ($route->capital_expenditure ?? 0),
+                                                                                    2
+                                                                                ) }}
+                                                                            </span>
+                                                                        </strong>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endforeach
                                         </div>
                                     </div>
@@ -190,6 +326,7 @@
                                 </button>
                             </div>
                             <div class="card-body p-2" style="max-height: 400px; overflow-y: auto;">
+                                @php $defaultDuration = $designRequest->terms ?? 12; @endphp
                                 @if(isset($customRoutes) && $customRoutes->count())
                                     @foreach($customRoutes as $route)
                                         <div class="card mb-2 border-warning">
@@ -202,7 +339,7 @@
                                                            id="custom_route_{{ $route->id }}"
                                                            data-monthly-cost="{{ $route->monthly_cost }}"
                                                            data-capex="{{ $route->capital_expenditure }}"
-                                                           data-duration="{{ $route->contract_duration_months }}">
+                                                           data-duration="{{ $route->contract_duration_months ?? $defaultDuration }}">
                                                     <label class="form-check-label w-100" for="custom_route_{{ $route->id }}">
                                                         <div class="d-flex justify-content-between">
                                                             <span class="fw-bold small">{{ $route->name_of_route }}</span>
@@ -266,6 +403,7 @@
                                                 $groupKey = "{$serviceType}-{$serviceCategory}";
                                                 $groupedServices[$groupKey][] = $service;
                                             }
+                                            $defaultDuration = $designRequest->terms ?? 12;
                                         @endphp
 
                                         @foreach($groupedServices as $groupName => $services)
@@ -284,7 +422,6 @@
                                                         @php
                                                             $serviceId = $service->service_id ?? $service->id ?? $service->serviceid ?? uniqid();
                                                             $serviceType = $service->service_type ?? $service->servicetype ?? $service->type ?? $service->name ?? 'Unknown Service';
-                                                            $serviceCategory = $service->service_category ?? $service->servicecategory ?? $service->category ?? 'Uncategorized';
                                                             $monthlyPriceUsd = floatval($service->monthly_price_usd ?? $service->monthly_price ?? $service->monthly_rate ?? 0);
                                                             $recurrentPerAnnum = floatval($service->recurrent_per_Annum ?? $service->recurrent_per_annum ?? $service->annual_rate ?? 0);
                                                             $setupFeeUsd = floatval($service->setup_fee_usd ?? $service->setup_fee ?? 0);
@@ -309,15 +446,28 @@
                                                                             <strong class="small">{{ $serviceType }}</strong>
                                                                             <span class="text-success small">${{ number_format($monthlyRateNumeric, 2) }}/mo</span>
                                                                         </div>
+                                                                        <input type="hidden" name="service_source[{{ $serviceId }}]" value="list">
                                                                         <div class="service-configuration mt-2 p-2 bg-light rounded" style="display: none;">
                                                                             <div class="row g-1">
                                                                                 <div class="col-6">
-                                                                                    <label class="small">Duration (Months)</label>
-                                                                                    <input type="number" name="service_duration[{{ $serviceId }}]" class="form-control form-control-sm service-duration-input" value="{{ $minContractMonths }}" min="{{ $minContractMonths }}" data-service-id="{{ $serviceId }}">
+                                                                                    <label class="small">Duration (Months)
+                                                                                        <span class="text-muted">(Default: {{ $defaultDuration }})</span>
+                                                                                    </label>
+                                                                                    <input type="number"
+                                                                                           name="service_duration[{{ $serviceId }}]"
+                                                                                           class="form-control form-control-sm service-duration-input"
+                                                                                           value="{{ $defaultDuration }}"
+                                                                                           min="{{ $minContractMonths }}"
+                                                                                           data-service-id="{{ $serviceId }}">
                                                                                 </div>
                                                                                 <div class="col-6">
                                                                                     <label class="small">Quantity</label>
-                                                                                    <input type="number" name="service_quantity[{{ $serviceId }}]" class="form-control form-control-sm service-quantity-input" value="1" min="1" data-service-id="{{ $serviceId }}">
+                                                                                    <input type="number"
+                                                                                           name="service_quantity[{{ $serviceId }}]"
+                                                                                           class="form-control form-control-sm service-quantity-input"
+                                                                                           value="1"
+                                                                                           min="1"
+                                                                                           data-service-id="{{ $serviceId }}">
                                                                                 </div>
                                                                             </div>
                                                                             <div class="d-flex justify-content-between mt-1 small">
@@ -380,10 +530,6 @@
                                 <span class="small">Commercial/Custom Routes</span>
                                 <strong id="routesTotal">$0.00</strong>
                             </div>
-                            {{-- <div class="d-flex justify-content-between mb-2 pb-1 border-bottom">
-                                <span class="small">Custom Routes</span>
-                                <strong class="text-warning" id="customRoutesTotal">$0.00</strong>
-                            </div> --}}
                             <div class="d-flex justify-content-between mb-2 pb-1 border-bottom">
                                 <span class="small">Colocation Services</span>
                                 <strong id="servicesTotal">$0.00</strong>
@@ -506,8 +652,8 @@
     </form>
 </div>
 
-    <!-- Scope of Work Templates Modal -->
-    <div class="modal fade" id="scopeTemplatesModal" tabindex="-1" aria-labelledby="scopeTemplatesModalLabel" aria-hidden="true">
+<!-- Scope of Work Templates Modal -->
+<div class="modal fade" id="scopeTemplatesModal" tabindex="-1" aria-labelledby="scopeTemplatesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-kp-blue text-white">
@@ -666,55 +812,49 @@
             </div>
         </div>
     </div>
-    </div>
+</div>
 
-    <div class="modal fade" id="customRouteModal" tabindex="-1" aria-hidden="true">
+<!-- Custom Route Modal -->
+<div class="modal fade" id="customRouteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <form action="{{ route('designer.custom-routes.store') }}" method="POST" class="modal-content">
             @csrf
-
             <input type="hidden" name="design_request_id" value="{{ $designRequest->id }}">
-
             <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-drafting-compass me-2"></i>Create Designer Custom Route
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body">
                 <div class="alert alert-info">
                     Use this when the route does not exist in the commercial routes table.
                 </div>
-
                 <div class="row">
                     <div class="col-md-8 mb-3">
                         <label class="form-label">Route Name</label>
                         <input type="text" name="name_of_route" class="form-control" required
                                placeholder="Example: EADC to New Customer POP">
                     </div>
-
                     <div class="col-md-4 mb-3">
-    <label class="form-label">Region / County</label>
-    <select name="region" class="form-select" required>
-        <option value="">Select Region</option>
-        @foreach($counties as $county)
-            <option value="{{ $county->region ?? $county->name }}">
-                {{ $county->name }} {{ $county->code ? '(' . $county->code . ')' : '' }}
-            </option>
-        @endforeach
-    </select>
-    </div>
-
+                        <label class="form-label">Region / County</label>
+                        <select name="region" class="form-select" required>
+                            <option value="">Select Region</option>
+                            @foreach($counties as $county)
+                                <option value="{{ $county->region ?? $county->name }}">
+                                    {{ $county->name }} {{ $county->code ? '(' . $county->code . ')' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="col-md-4 mb-3">
-    <label class="form-label">Route Option</label>
-    <select name="option" id="custom_route_option" class="form-select" required>
-        <option value="Non Premium" data-unit-cost="18">Non Premium - USD 18</option>
-        <option value="Premium" data-unit-cost="19">Premium - USD 19</option>
-        <option value="Metro" data-unit-cost="20">Metro - USD 20</option>
-    </select>
-    </div>
-
+                        <label class="form-label">Route Option</label>
+                        <select name="option" id="custom_route_option" class="form-select" required>
+                            <option value="Non Premium" data-unit-cost="18">Non Premium - USD 18</option>
+                            <option value="Premium" data-unit-cost="19">Premium - USD 19</option>
+                            <option value="Metro" data-unit-cost="20">Metro - USD 20</option>
+                        </select>
+                    </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Technology</label>
                         <select name="tech_type" class="form-select" required>
@@ -724,7 +864,6 @@
                             <option value="OPGW/ADSS">OPGW/ADSS</option>
                         </select>
                     </div>
-
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Currency</label>
                         <select name="currency" class="form-select" required>
@@ -732,51 +871,30 @@
                             <option value="KES">KES</option>
                         </select>
                     </div>
-
-                   <div class="col-md-3 mb-3">
-    <label class="form-label">Total Fiber Cores</label>
-    <input type="number" name="fiber_cores" class="form-control" min="1" value="48">
-    </div>
-
-    <div class="col-md-3 mb-3">
-    <label class="form-label">Contract Duration Months</label>
-    <input type="number"
-           name="contract_duration_months"
-           id="custom_route_duration"
-           class="form-control"
-           value="12"
-           min="1"
-           max="360"
-           required>
-    </div>
-
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Total Fiber Cores</label>
+                        <input type="number" name="fiber_cores" class="form-control" min="1" value="48">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Contract Duration Months</label>
+                        <input type="number" name="contract_duration_months" id="custom_route_duration" class="form-control" value="12" min="1" max="360" required>
+                    </div>
                     <div class="col-md-3 mb-3">
                         <label class="form-label">Cores Required</label>
                         <input type="number" name="no_of_cores_required" class="form-control" value="1" min="1" required>
                     </div>
-
                     <div class="col-md-3 mb-3">
                         <label class="form-label">Distance KM</label>
                         <input type="number" name="approx_distance_km" class="form-control" step="0.01" min="0" required>
                     </div>
-
                     <div class="col-md-3 mb-3">
-    <label class="form-label">Unit Cost / Core / KM / Month</label>
-    <input type="number"
-           name="unit_cost_per_core_per_km_per_month"
-           id="custom_route_unit_cost"
-           class="form-control"
-           step="0.01"
-           min="0"
-           required
-           readonly>
-    </div>
-
+                        <label class="form-label">Unit Cost / Core / KM / Month</label>
+                        <input type="number" name="unit_cost_per_core_per_km_per_month" id="custom_route_unit_cost" class="form-control" step="0.01" min="0" required readonly>
+                    </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label">CAPEX</label>
                         <input type="number" name="capital_expenditure" class="form-control" step="0.01" min="0" value="0">
                     </div>
-
                     <div class="col-md-4 mb-3">
                         <label class="form-label">Availability</label>
                         <select name="availability" class="form-select" required>
@@ -784,36 +902,26 @@
                             <option value="NO">NO</option>
                         </select>
                     </div>
-
                     <div class="col-md-4 mb-3">
-    <label class="form-label">Estimated Monthly Cost</label>
-    <input type="text" id="customRoutePreviewCost" class="form-control bg-light" readonly value="0.00">
-    </div>
-
-    <div class="col-md-4 mb-3">
-    <label class="form-label">Estimated Contract Value</label>
-    <input type="text" id="customRoutePreviewTotal" class="form-control bg-light" readonly value="0.00">
-    </div>
-
+                        <label class="form-label">Estimated Monthly Cost</label>
+                        <input type="text" id="customRoutePreviewCost" class="form-control bg-light" readonly value="0.00">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Estimated Contract Value</label>
+                        <input type="text" id="customRoutePreviewTotal" class="form-control bg-light" readonly value="0.00">
+                    </div>
                     <div class="col-md-12 mb-3">
                         <label class="form-label">Route Description</label>
-                        <textarea name="route_description" class="form-control" rows="2"
-                                  placeholder="Describe start point, end point, route assumptions..."></textarea>
+                        <textarea name="route_description" class="form-control" rows="2" placeholder="Describe start point, end point, route assumptions..."></textarea>
                     </div>
-
                     <div class="col-md-12">
                         <label class="form-label">Designer Notes</label>
-                        <textarea name="design_notes" class="form-control" rows="2"
-                                  placeholder="Add design assumptions, risks, missing survey details, or special instructions..."></textarea>
+                        <textarea name="design_notes" class="form-control" rows="2" placeholder="Add design assumptions, risks, missing survey details, or special instructions..."></textarea>
                     </div>
                 </div>
             </div>
-
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                    Cancel
-                </button>
-
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-warning">
                     <i class="fas fa-save me-1"></i>Save Custom Route
                 </button>
@@ -826,283 +934,268 @@
 @push('styles')
 <style>
     .route-group, .service-group {
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
-
-.route-group-header, .service-group-header {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.route-group-header:hover, .service-group-header:hover {
-    background-color: #f1f3f4 !important;
-}
-
-.route-group-body, .service-group-body {
-    padding: 0 15px;
-}
-
-.route-group-body .route-card, .service-group-body .service-card {
-    margin-bottom: 10px;
-    border: 1px solid #dee2e6 !important;
-}
-.route-group-card {
-    border-left: 4px solid #ffc107;
-    transition: all 0.3s ease;
-}
-
-.route-group-card:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.route-card {
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-}
-
-.route-card:hover {
-    border-color: #17a2b8;
-    background-color: #f8f9fa;
-}
-
-.group-toggle {
-    transition: transform 0.3s ease;
-}
-
-.route-info {
-    font-size: 0.8rem;
-}
-
-.route-configuration {
-    border-top: 1px dashed #dee2e6;
-    padding-top: 8px;
-    margin-top: 8px;
-}
-
-/* Indeterminate checkbox styling */
-.group-select:indeterminate {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-/* Smooth collapse transitions */
-.collapse {
-    transition: all 0.3s ease;
-}
-
-/* Search highlight */
-.highlight {
-    background-color: #ffeb3b;
-    padding: 1px 2px;
-    border-radius: 2px;
-    font-weight: bold;
-}
-
-.route-group-card .card-header {
-    cursor: pointer;
-}
-
-.collapsing {
-    transition: height 0.35s ease;
-}
-
-/* Route and service cards */
-.route-card, .service-card {
-    border-left: 4px solid #28a745;
-}
-.service-card {
-    border-left-color: #ffc107;
-}
-.route-configuration, .service-configuration {
-    transition: all 0.3s ease;
-}
-.custom-item {
-    padding: 10px;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-
-.card-header {
-    border-bottom: 2px solid rgba(255,255,255,0.1);
-}
-
-.form-label {
-    color: #2c3e50;
-}
-
-.form-control:focus {
-    border-color: #17a2b8;
-    box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
-}
-
-.scope-textarea, .terms-textarea {
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-.form-text {
-    font-size: 0.875rem;
-}
-
-.badge {
-    font-size: 0.75rem;
-}
-
-.template-card {
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.template-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-}
-
-.template-features {
-    min-height: 40px;
-}
-
-.modal-header {
-    border-bottom: 2px solid rgba(255,255,255,0.1);
-}
-
-.btn-group-sm .btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.875rem;
-}
-
-.input-group-text {
-    background-color: #f8f9fa;
-    border-color: #ced4da;
-}
-
-.alert {
-    animation: slideInRight 0.3s ease;
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 15px;
     }
-    to {
-        transform: translateX(0);
-        opacity: 1;
+
+    .route-group-header, .service-group-header {
+        cursor: pointer;
+        transition: background-color 0.2s ease;
     }
-}
 
-.text-kp-yellow {
-    color: #ffc107 !important;
-}
+    .route-group-header:hover, .service-group-header:hover {
+        background-color: #f1f3f4 !important;
+    }
 
-/* Service Card Specific Styles */
-.service-card {
-    transition: all 0.3s ease;
-    border-left-width: 3px !important;
-}
+    .route-group-body, .service-group-body {
+        padding: 0 15px;
+    }
 
-.service-card:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
-}
+    .route-group-body .route-card, .service-group-body .service-card {
+        margin-bottom: 10px;
+        border: 1px solid #dee2e6 !important;
+    }
 
-.service-header h6 {
-    font-size: 0.95rem;
-}
+    .route-card, .service-card {
+        border-left: 4px solid #28a745;
+    }
 
-.service-details {
-    font-size: 0.85rem;
-}
+    .service-card {
+        border-left-color: #ffc107;
+    }
 
-.border-left-primary {
-    border-left-color: #0d6efd !important;
-}
+    .route-configuration, .service-configuration {
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
 
-.border-left-info {
-    border-left-color: #0dcaf0 !important;
-}
+    .custom-item {
+        background: #f8f9fa;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
 
-.service-configuration {
-    animation: fadeIn 0.3s ease;
-}
+    .cursor-pointer {
+        cursor: pointer;
+    }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-.cursor-pointer {
-    cursor: pointer;
-}
-
-.sticky-top {
-    position: sticky;
-    z-index: 1020;
-}
-
-/* Compact cards */
-.card-header .btn-sm {
-    padding: 0.2rem 0.5rem;
-    font-size: 0.75rem;
-}
-
-/* Better spacing for mobile */
-@media (max-width: 768px) {
     .sticky-top {
-        position: relative;
-        top: 0;
+        position: sticky;
+        z-index: 1020;
     }
 
-    .btn-group-sm .btn {
-        padding: 0.2rem 0.4rem;
-        font-size: 0.7rem;
+    .alert-light.border {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6 !important;
     }
-}
 
-/* Route and service group styling */
-.route-group, .service-group {
-    border: 1px solid #e9ecef;
-    border-radius: 6px;
-    margin-bottom: 8px;
-}
+    /* Scrollbar styling */
+    .routes-container::-webkit-scrollbar,
+    .services-container::-webkit-scrollbar {
+        width: 6px;
+    }
 
-.route-group-header, .service-group-header {
-    background-color: #f8f9fa;
-}
+    .routes-container::-webkit-scrollbar-track,
+    .services-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
 
-/* Custom item styling */
-.custom-item {
-    background: #f8f9fa;
-    padding: 8px;
-    border-radius: 6px;
-    margin-bottom: 8px;
-}
+    .routes-container::-webkit-scrollbar-thumb,
+    .services-container::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+    }
 
-/* Scrollbar styling */
-.routes-container::-webkit-scrollbar,
-.services-container::-webkit-scrollbar {
-    width: 6px;
-}
+    @media (max-width: 768px) {
+        .sticky-top {
+            position: relative;
+            top: 0;
+        }
+    }
 
-.routes-container::-webkit-scrollbar-track,
-.services-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
+     /* ===== PROMINENT CHECKBOX STYLES ===== */
 
-.routes-container::-webkit-scrollbar-thumb,
-.services-container::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-}
+    /* Custom checkbox container for better visibility */
+    .form-check {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    /* Make checkboxes large and bold */
+    .form-check-input {
+        width: 20px !important;
+        height: 20px !important;
+        margin: 0 !important;
+        cursor: pointer !important;
+        background-color: #ffffff !important;
+        border: 2px solid #3b82f6 !important;
+        border-radius: 6px !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        position: relative !important;
+        transition: all 0.2s ease !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Checked state with bold color */
+    .form-check-input:checked {
+        background-color: #3b82f6 !important;
+        border-color: #3b82f6 !important;
+    }
+
+    /* Checkmark icon */
+    .form-check-input:checked::before {
+        content: "✓" !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        color: white !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+    }
+
+    /* Hover effect */
+    .form-check-input:hover {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* Focus state */
+    .form-check-input:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+        border-color: #2563eb !important;
+    }
+
+    /* Disabled state */
+    .form-check-input:disabled {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+    }
+
+    /* Specific styles for route and service checkboxes */
+    .route-select,
+    .custom-route-select,
+    .service-select {
+        width: 20px !important;
+        height: 20px !important;
+        border: 2px solid #10b981 !important;
+        border-radius: 6px !important;
+    }
+
+    .route-select:checked,
+    .custom-route-select:checked,
+    .service-select:checked {
+        background-color: #10b981 !important;
+        border-color: #10b981 !important;
+    }
+
+    /* Select All checkboxes - more prominent */
+    #selectAllRoutes,
+    #selectAllColocationServices,
+    #selectAllCheckbox {
+        width: 22px !important;
+        height: 22px !important;
+        border: 2px solid #0066B3 !important;
+        border-radius: 6px !important;
+        background-color: #ffffff !important;
+    }
+
+    #selectAllRoutes:checked,
+    #selectAllColocationServices:checked,
+    #selectAllCheckbox:checked {
+        background-color: #0066B3 !important;
+        border-color: #0066B3 !important;
+    }
+
+    /* Route group header checkboxes */
+    .route-group-header .form-check-input {
+        width: 18px !important;
+        height: 18px !important;
+        border: 2px solid #6366f1 !important;
+    }
+
+    .route-group-header .form-check-input:checked {
+        background-color: #6366f1 !important;
+        border-color: #6366f1 !important;
+    }
+
+    /* Label styling to align with checkboxes */
+    .form-check-label {
+        cursor: pointer !important;
+        font-weight: 500 !important;
+        user-select: none !important;
+    }
+
+    /* Hover effect on labels */
+    .form-check-label:hover {
+        color: #3b82f6 !important;
+    }
+
+    /* Card checkbox section */
+    .card .form-check {
+        padding-left: 0 !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* Make sure checkboxes are always visible */
+    input[type="checkbox"] {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: inline-block !important;
+        pointer-events: auto !important;
+    }
+
+    /* Dark background checkboxes (for colored headers) */
+    .bg-dark .form-check-input,
+    .bg-kp-blue .form-check-input,
+    .bg-info .form-check-input {
+        border-color: #ffffff !important;
+        background-color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .bg-dark .form-check-input:checked,
+    .bg-kp-blue .form-check-input:checked,
+    .bg-info .form-check-input:checked {
+        background-color: #ffffff !important;
+    }
+
+    .bg-dark .form-check-input:checked::before,
+    .bg-kp-blue .form-check-input:checked::before,
+    .bg-info .form-check-input:checked::before {
+        color: #0066B3 !important;
+    }
+
+    /* Custom checkbox for dark backgrounds */
+    .bg-dark .form-check-input,
+    .bg-secondary .form-check-input {
+        border: 2px solid #ffc107 !important;
+    }
+
+    .bg-dark .form-check-input:checked,
+    .bg-secondary .form-check-input:checked {
+        background-color: #ffc107 !important;
+    }
+
+    .bg-dark .form-check-input:checked::before,
+    .bg-secondary .form-check-input:checked::before {
+        color: #1e293b !important;
+    }
 </style>
 @endpush
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -1137,7 +1230,6 @@ function initializeSearch() {
             document.querySelectorAll('.route-group').forEach(group => {
                 const hasVisible = Array.from(group.querySelectorAll('.route-card'))
                     .some(card => card.style.display !== 'none');
-
                 group.style.display = hasVisible ? 'block' : 'none';
             });
 
@@ -1161,7 +1253,6 @@ function initializeSearch() {
             document.querySelectorAll('.service-group').forEach(group => {
                 const hasVisible = Array.from(group.querySelectorAll('.service-card'))
                     .some(card => card.style.display !== 'none');
-
                 group.style.display = hasVisible ? 'block' : 'none';
             });
 
@@ -1176,11 +1267,8 @@ function initializeGroupToggles() {
         button.addEventListener('click', function () {
             const targetElement = document.getElementById(this.dataset.target);
             const icon = this.querySelector('i');
-
             if (!targetElement || !icon) return;
-
             const isHidden = targetElement.style.display === 'none';
-
             targetElement.style.display = isHidden ? 'block' : 'none';
             icon.classList.toggle('fa-chevron-down', isHidden);
             icon.classList.toggle('fa-chevron-up', !isHidden);
@@ -1190,15 +1278,11 @@ function initializeGroupToggles() {
 
 function initializeCharacterCounters() {
     updateCharacterCount('scope_counter', document.getElementById('scope_of_work'));
-    updateCharacterCount('terms_counter', document.getElementById('terms_and_conditions'));
-    updateCharacterCount('pricing_counter', document.getElementById('pricing_notes'));
-    updateCharacterCount('instructions_counter', document.getElementById('special_instructions'));
 }
 
 function initializeDateSync() {
     const validUntil = document.getElementById('valid_until');
     const validityDays = document.getElementById('validity_days');
-
     if (validUntil) validUntil.addEventListener('change', updateValidityDays);
     if (validityDays) validityDays.addEventListener('change', updateValidUntilDate);
 }
@@ -1206,53 +1290,36 @@ function initializeDateSync() {
 function calculateRouteCost(routeId) {
     const checkbox = document.querySelector(`#route_${routeId}`);
     if (!checkbox) return 0;
-
     const monthlyCost = parseFloat(checkbox.dataset.monthlyCost) || 0;
     const capitalExpenditure = parseFloat(checkbox.dataset.capitalExpenditure) || 0;
-
     const coresInput = document.querySelector(`input[name="route_cores[${routeId}]"]`);
     const durationInput = document.querySelector(`input[name="route_duration[${routeId}]"]`);
-
     const cores = parseInt(coresInput?.value) || 1;
     const duration = parseInt(durationInput?.value) || 12;
-
     const newMonthlyCost = monthlyCost * cores;
     const total = (newMonthlyCost * duration) + capitalExpenditure;
-
     const monthlyCostElement = document.querySelector(`.monthly-cost[data-route-id="${routeId}"]`);
     const totalCostElement = document.querySelector(`.total-cost[data-route-id="${routeId}"]`);
-
     if (monthlyCostElement) monthlyCostElement.textContent = `$${newMonthlyCost.toFixed(2)}`;
     if (totalCostElement) totalCostElement.textContent = `$${total.toFixed(2)}`;
-
     return total;
 }
 
 function calculateServiceCost(serviceId) {
     const checkbox = document.querySelector(`#service_${serviceId}`);
     if (!checkbox) return 0;
-
     const monthlyRate = parseFloat(checkbox.dataset.monthlyRate) || 0;
     const setupFee = parseFloat(checkbox.dataset.setupFee) || 0;
-    const oneoffFee = parseFloat(checkbox.dataset.oneoffFee) || 0;
-
     const durationInput = document.querySelector(`input[name="service_duration[${serviceId}]"]`);
     const quantityInput = document.querySelector(`input[name="service_quantity[${serviceId}]"]`);
-
     const duration = parseInt(durationInput?.value) || 12;
     const quantity = parseInt(quantityInput?.value) || 1;
-
     const monthlyCost = monthlyRate * quantity;
-    const setupCost = setupFee * quantity;
-    const oneoffCost = oneoffFee * quantity;
-    const totalCost = (monthlyCost * duration) + setupCost + oneoffCost;
-
+    const totalCost = (monthlyCost * duration) + (setupFee * quantity);
     const monthlyCostElement = document.querySelector(`.monthly-cost[data-service-id="${serviceId}"]`);
     const totalCostElement = document.querySelector(`.total-cost[data-service-id="${serviceId}"]`);
-
     if (monthlyCostElement) monthlyCostElement.textContent = `$${monthlyCost.toFixed(2)}`;
     if (totalCostElement) totalCostElement.textContent = `$${totalCost.toFixed(2)}`;
-
     return totalCost;
 }
 
@@ -1267,12 +1334,11 @@ function calculateTotals() {
     });
 
     document.querySelectorAll('.custom-route-select:checked').forEach(checkbox => {
-    const monthlyCost = parseFloat(checkbox.dataset.monthlyCost || 0);
-    const capex = parseFloat(checkbox.dataset.capex || 0);
-    const duration = parseInt(checkbox.dataset.duration || 12);
-
-    routesTotal += (monthlyCost * duration) + capex;
-});
+        const monthlyCost = parseFloat(checkbox.dataset.monthlyCost || 0);
+        const capex = parseFloat(checkbox.dataset.capex || 0);
+        const duration = parseInt(checkbox.dataset.duration || 12);
+        routesTotal += (monthlyCost * duration) + capex;
+    });
 
     document.querySelectorAll('.service-select:checked').forEach(checkbox => {
         const serviceId = checkbox.dataset.serviceId;
@@ -1288,30 +1354,19 @@ function calculateTotals() {
     const taxAmount = subtotal * taxRate;
     const totalAmount = subtotal + taxAmount;
 
-    setText('routesTotal', `$${routesTotal.toFixed(2)}`);
-    setText('servicesTotal', `$${servicesTotal.toFixed(2)}`);
-    setText('customItemsTotal', `$${customItemsTotal.toFixed(2)}`);
-    setText('subtotal', `$${subtotal.toFixed(2)}`);
-    setText('tax_amount', `$${taxAmount.toFixed(2)}`);
-    setText('total_amount', `$${totalAmount.toFixed(2)}`);
-
-    setValue('hidden_routes_total', routesTotal.toFixed(2));
-    setValue('hidden_services_total', servicesTotal.toFixed(2));
-    setValue('hidden_custom_items_total', customItemsTotal.toFixed(2));
-    setValue('hidden_subtotal', subtotal.toFixed(2));
-    setValue('hidden_tax_amount', taxAmount.toFixed(2));
-    setValue('hidden_total_amount', totalAmount.toFixed(2));
+    document.getElementById('routesTotal').textContent = `$${routesTotal.toFixed(2)}`;
+    document.getElementById('servicesTotal').textContent = `$${servicesTotal.toFixed(2)}`;
+    document.getElementById('customItemsTotal').textContent = `$${customItemsTotal.toFixed(2)}`;
+    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById('tax_amount').textContent = `$${taxAmount.toFixed(2)}`;
+    document.getElementById('total_amount').textContent = `$${totalAmount.toFixed(2)}`;
 }
 
 function initializeRouteSelection() {
     document.querySelectorAll('.route-select').forEach(checkbox => {
         checkbox.addEventListener('change', function () {
-            const routeId = this.dataset.routeId;
             const configDiv = this.closest('.route-card')?.querySelector('.route-configuration');
-
             if (configDiv) configDiv.style.display = this.checked ? 'block' : 'none';
-            if (this.checked && routeId) calculateRouteCost(routeId);
-
             calculateTotals();
         });
     });
@@ -1320,82 +1375,52 @@ function initializeRouteSelection() {
         input.addEventListener('input', function () {
             const matches = this.name.match(/\[(\d+)\]/);
             if (!matches) return;
-
             const routeId = matches[1];
             const checkbox = document.querySelector(`#route_${routeId}`);
-
-            if (checkbox?.checked) {
-                calculateRouteCost(routeId);
-                calculateTotals();
-            }
+            if (checkbox?.checked) calculateTotals();
         });
     });
 
-    const selectAllRoutes = document.getElementById('selectAllRoutes');
-
-    if (selectAllRoutes) {
-        selectAllRoutes.addEventListener('change', function () {
-            document.querySelectorAll('.routes-container .route-select').forEach(checkbox => {
-                checkbox.checked = this.checked;
-                checkbox.dispatchEvent(new Event('change'));
-            });
+    document.getElementById('selectAllRoutes')?.addEventListener('change', function () {
+        document.querySelectorAll('.routes-container .route-select').forEach(checkbox => {
+            checkbox.checked = this.checked;
+            checkbox.dispatchEvent(new Event('change'));
         });
-    }
+    });
 }
 
 function initializeCustomRouteSelection() {
     document.querySelectorAll('.custom-route-select').forEach(checkbox => {
-        checkbox.addEventListener('change', calculateTotals);
+        checkbox.addEventListener('change', () => calculateTotals());
     });
 }
 
 function initializeServiceSelection() {
     document.querySelectorAll('.service-select').forEach(checkbox => {
         checkbox.addEventListener('change', function () {
-            const serviceId = this.dataset.serviceId;
             const configDiv = this.closest('.service-card')?.querySelector('.service-configuration');
-
             if (configDiv) configDiv.style.display = this.checked ? 'block' : 'none';
-            if (this.checked && serviceId) calculateServiceCost(serviceId);
-
             calculateTotals();
         });
     });
 
     document.querySelectorAll('.service-duration-input, .service-quantity-input').forEach(input => {
-        input.addEventListener('input', function () {
-            const serviceId = this.dataset.serviceId;
-            const checkbox = document.querySelector(`#service_${serviceId}`);
-
-            if (checkbox?.checked) {
-                calculateServiceCost(serviceId);
-                calculateTotals();
-            }
-        });
+        input.addEventListener('input', () => calculateTotals());
     });
 
-    const selectAllServices = document.getElementById('selectAllColocationServices');
-
-    if (selectAllServices) {
-        selectAllServices.addEventListener('change', function () {
-            document.querySelectorAll('.services-container .service-select').forEach(checkbox => {
-                checkbox.checked = this.checked;
-                checkbox.dispatchEvent(new Event('change'));
-            });
+    document.getElementById('selectAllColocationServices')?.addEventListener('change', function () {
+        document.querySelectorAll('.services-container .service-select').forEach(checkbox => {
+            checkbox.checked = this.checked;
+            checkbox.dispatchEvent(new Event('change'));
         });
-    }
+    });
 }
 
 function initializeCustomItems() {
     let customItemIndex = 0;
-    const addCustomItemBtn = document.getElementById('addCustomItem');
-
-    if (!addCustomItemBtn) return;
-
-    addCustomItemBtn.addEventListener('click', function () {
+    document.getElementById('addCustomItem')?.addEventListener('click', function () {
         const container = document.getElementById('customItemsContainer');
         if (!container) return;
-
         const newItem = document.createElement('div');
         newItem.className = 'custom-item row mb-3';
         newItem.innerHTML = `
@@ -1415,39 +1440,31 @@ function initializeCustomItems() {
                 <button type="button" class="btn btn-danger btn-sm remove-item">Remove</button>
             </div>
         `;
-
         container.appendChild(newItem);
-
         const calculateItemTotal = () => {
             const qty = parseFloat(newItem.querySelector('.custom-item-qty')?.value || 0);
             const price = parseFloat(newItem.querySelector('.custom-item-price')?.value || 0);
-            const total = qty * price;
-
             const totalInput = newItem.querySelector('.custom-item-total');
-            if (totalInput) totalInput.value = total.toFixed(2);
-
+            if (totalInput) totalInput.value = (qty * price).toFixed(2);
             calculateTotals();
         };
-
         newItem.querySelector('.custom-item-qty')?.addEventListener('input', calculateItemTotal);
         newItem.querySelector('.custom-item-price')?.addEventListener('input', calculateItemTotal);
         newItem.querySelector('.remove-item')?.addEventListener('click', function () {
             newItem.remove();
             calculateTotals();
         });
-
         customItemIndex++;
     });
 }
 
 function initializeTaxCalculation() {
-    document.getElementById('tax_rate')?.addEventListener('input', calculateTotals);
+    document.getElementById('tax_rate')?.addEventListener('input', () => calculateTotals());
 }
 
 function initializeCustomRouteModalPreview() {
     const modal = document.getElementById('customRouteModal');
     if (!modal) return;
-
     const optionInput = document.getElementById('custom_route_option');
     const unitCostInput = document.getElementById('custom_route_unit_cost');
     const distanceInput = modal.querySelector('[name="approx_distance_km"]');
@@ -1460,7 +1477,6 @@ function initializeCustomRouteModalPreview() {
     function applyOptionRate() {
         const selected = optionInput.options[optionInput.selectedIndex];
         const unitCost = parseFloat(selected.dataset.unitCost || 0);
-
         unitCostInput.value = unitCost.toFixed(2);
         updateCustomRoutePreview();
     }
@@ -1471,29 +1487,15 @@ function initializeCustomRouteModalPreview() {
         const unitCost = parseFloat(unitCostInput?.value || 0);
         const duration = parseInt(durationInput?.value || 12);
         const capex = parseFloat(capexInput?.value || 0);
-
         const monthly = distance * cores * unitCost;
         const total = (monthly * duration) + capex;
-
-        if (monthlyPreview) {
-            monthlyPreview.value = monthly.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
-
-        if (totalPreview) {
-            totalPreview.value = total.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
+        if (monthlyPreview) monthlyPreview.value = monthly.toFixed(2);
+        if (totalPreview) totalPreview.value = total.toFixed(2);
     }
 
     [distanceInput, coresInput, durationInput, capexInput].forEach(input => {
         if (input) input.addEventListener('input', updateCustomRoutePreview);
     });
-
     if (optionInput) {
         optionInput.addEventListener('change', applyOptionRate);
         applyOptionRate();
@@ -1503,41 +1505,71 @@ function initializeCustomRouteModalPreview() {
 function initializeFormSubmitValidation() {
     const form = document.getElementById('quotationForm');
     if (!form) return;
-
     form.addEventListener('submit', function (e) {
         const scopeTextarea = document.getElementById('scope_of_work');
-
         if (scopeTextarea && scopeTextarea.value.trim() === 'undefined') {
             e.preventDefault();
             alert('Please enter a valid Scope of Work or use the Quick Fill button.');
             scopeTextarea.focus();
-            return;
         }
-
         calculateTotals();
     });
 }
 
-function setText(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
-}
-
-function setValue(id, value) {
-    const element = document.getElementById(id);
-    if (element) element.value = value;
-}
-
 function updateCharacterCount(counterId, textarea) {
     const counter = document.getElementById(counterId);
-
     if (counter && textarea) {
         counter.textContent = textarea.value.length;
     }
 }
 
-const scopeTemplates = {
-    standard_colocation: `SCOPE OF WORK
+function updateValidUntilDate() {
+    const daysInput = document.getElementById('validity_days');
+    const validUntilInput = document.getElementById('valid_until');
+    if (!daysInput || !validUntilInput) return;
+    const days = parseInt(daysInput.value) || 30;
+    const validUntil = new Date();
+    validUntil.setDate(validUntil.getDate() + days);
+    validUntilInput.value = validUntil.toISOString().split('T')[0];
+}
+
+function updateValidityDays() {
+    const validUntilInput = document.getElementById('valid_until');
+    const daysInput = document.getElementById('validity_days');
+    if (!validUntilInput || !daysInput) return;
+    const validUntil = new Date(validUntilInput.value);
+    const today = new Date();
+    const diffDays = Math.ceil((validUntil - today) / (1000 * 60 * 60 * 24));
+    daysInput.value = diffDays > 0 ? diffDays : 30;
+}
+
+function loadDefaultScope() {
+    const scopeTextarea = document.getElementById('scope_of_work');
+    if (scopeTextarea) {
+        scopeTextarea.value = `SCOPE OF WORK
+
+PROJECT OVERVIEW:
+Provision of dedicated dark fibre connectivity between agreed endpoints.
+
+INCLUDED SERVICES:
+• Dark fibre route provisioning
+• Fibre testing
+• Handover documentation
+• SLA support
+
+DELIVERABLES:
+• Fibre route diagram
+• OTDR test results where applicable
+• Service handover certificate`;
+        updateCharacterCount('scope_counter', scopeTextarea);
+    }
+}
+
+function loadTemplate(templateType) {
+    const scopeTextarea = document.getElementById('scope_of_work');
+    if (scopeTextarea) {
+        const templates = {
+            standard_colocation: `SCOPE OF WORK
 
 PROJECT OVERVIEW:
 Provision of standard colocation services including rack space, power allocation, and network connectivity.
@@ -1552,8 +1584,7 @@ DELIVERABLES:
 • Service activation confirmation
 • Access procedures
 • Support and escalation matrix`,
-
-    premium_colocation: `SCOPE OF WORK
+            premium_colocation: `SCOPE OF WORK
 
 PROJECT OVERVIEW:
 Provision of premium colocation services with enhanced support, dedicated cabinet allocation, and higher availability.
@@ -1568,8 +1599,7 @@ DELIVERABLES:
 • Premium service documentation
 • SLA and escalation matrix
 • Installation and handover report`,
-
-    managed_services: `SCOPE OF WORK
+            managed_services: `SCOPE OF WORK
 
 PROJECT OVERVIEW:
 Provision of managed infrastructure services including monitoring, support, maintenance, and reporting.
@@ -1584,8 +1614,7 @@ DELIVERABLES:
 • Monthly reports
 • Support tickets summary
 • Maintenance schedule`,
-
-    dark_fibre: `SCOPE OF WORK
+            dark_fibre: `SCOPE OF WORK
 
 PROJECT OVERVIEW:
 Provision of dedicated dark fibre connectivity between agreed endpoints.
@@ -1600,8 +1629,7 @@ DELIVERABLES:
 • Fibre route diagram
 • OTDR test results where applicable
 • Service handover certificate`,
-
-    custom_solution: `SCOPE OF WORK
+            custom_solution: `SCOPE OF WORK
 
 PROJECT OVERVIEW:
 Provision of a customized network infrastructure solution based on customer-specific requirements.
@@ -1616,8 +1644,7 @@ DELIVERABLES:
 • Custom design documentation
 • Commercial proposal
 • SLA documentation`,
-
-    empty: `SCOPE OF WORK
+            empty: `SCOPE OF WORK
 
 PROJECT OVERVIEW:
 
@@ -1628,120 +1655,27 @@ DELIVERABLES:
 ASSUMPTIONS:
 
 EXCLUSIONS:`
-};
-
-const defaultTerms = `TERMS AND CONDITIONS
-
-1. PAYMENT TERMS:
-   1.1. Payment is due within 30 days of invoice date
-   1.2. Late payments may attract penalties
-   1.3. Prices are quoted in USD unless stated otherwise
-
-2. QUOTATION VALIDITY:
-   2.1. This quotation is valid for 30 days
-   2.2. Acceptance must be in writing
-
-3. SERVICE DELIVERY:
-   3.1. Delivery is subject to site survey and availability
-   3.2. Scope changes may affect pricing and timelines
-
-4. TERMINATION:
-   4.1. Written notice is required for cancellation
-   4.2. Setup fees are non-refundable once work has commenced`;
-
-function loadDefaultScope() {
-    const scopeTextarea = document.getElementById('scope_of_work');
-
-    if (scopeTextarea) {
-        scopeTextarea.value = scopeTemplates.dark_fibre;
+        };
+        scopeTextarea.value = templates[templateType] || templates.dark_fibre;
         updateCharacterCount('scope_counter', scopeTextarea);
-    }
-}
-
-function loadTemplate(templateType) {
-    const scopeTextarea = document.getElementById('scope_of_work');
-
-    if (scopeTextarea) {
-        scopeTextarea.value = scopeTemplates[templateType] || scopeTemplates.dark_fibre;
-        updateCharacterCount('scope_counter', scopeTextarea);
-
         const modalElement = document.getElementById('scopeTemplatesModal');
         const modal = bootstrap.Modal.getInstance(modalElement);
-
         if (modal) modal.hide();
-    }
-}
-
-function loadDefaultTerms() {
-    const termsTextarea = document.getElementById('terms_and_conditions');
-
-    if (termsTextarea) {
-        termsTextarea.value = defaultTerms;
-        updateCharacterCount('terms_counter', termsTextarea);
     }
 }
 
 function formatScopeOfWork() {
     const textarea = document.getElementById('scope_of_work');
     if (!textarea) return;
-
     textarea.value = textarea.value
         .replace(/\n\s*\n\s*\n/g, '\n\n')
         .replace(/^[•\-]\s*/gm, '• ')
         .replace(/\s+$/gm, '');
-
     updateCharacterCount('scope_counter', textarea);
 }
 
-function insertPricingTemplate() {
-    const textarea = document.getElementById('pricing_notes');
-
-    if (textarea) {
-        textarea.value = `PRICING NOTES:
-
-• All prices are exclusive of VAT unless specified
-• Setup fees are one-time and non-refundable
-• Monthly recurring charges are billed in advance
-• Prices are valid within the stated quotation validity period`;
-
-        updateCharacterCount('pricing_counter', textarea);
-    }
-}
-
-function updateValidUntilDate() {
-    const daysInput = document.getElementById('validity_days');
-    const validUntilInput = document.getElementById('valid_until');
-
-    if (!daysInput || !validUntilInput) return;
-
-    const days = parseInt(daysInput.value) || 30;
-    const validUntil = new Date();
-
-    validUntil.setDate(validUntil.getDate() + days);
-    validUntilInput.value = validUntil.toISOString().split('T')[0];
-}
-
-function updateValidityDays() {
-    const validUntilInput = document.getElementById('valid_until');
-    const daysInput = document.getElementById('validity_days');
-
-    if (!validUntilInput || !daysInput) return;
-
-    const validUntil = new Date(validUntilInput.value);
-    const today = new Date();
-    const diffTime = validUntil - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    daysInput.value = diffDays > 0 ? diffDays : 30;
-}
-
-function setDefaultValidity() {
-    const daysInput = document.getElementById('validity_days');
-
-    if (daysInput) {
-        daysInput.value = 30;
-        updateValidUntilDate();
-    }
+function saveCustomTemplate() {
+    alert('Custom template save feature coming soon!');
 }
 </script>
 @endpush

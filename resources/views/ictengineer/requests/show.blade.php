@@ -11,13 +11,13 @@
                 <h1 class="h3 text-gray-800">
                     <i class="fas fa-drafting-compass text-kp-blue"></i> Design Request Details
                 </h1>
-                <a href="{{ route('ictengineer.requests') }}" class="btn btn-secondary">
+                <a href="{{ route('ictengineer.requests.index') }}" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Back to Requests
                 </a>
             </div>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('ictengineer.requests') }}">Design Requests</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('ictengineer.requests.index') }}">Design Requests</a></li>
                     <li class="breadcrumb-item active">{{ $request->request_id }}</li>
                 </ol>
             </nav>
@@ -145,14 +145,14 @@
                                             <small class="text-kp-green d-block">Total: ${{ number_format($totalWithTax, 2) }}</small>
                                         </td>
                                         <td>
-                                            <a href="{{ route('design-items.show', $item->id) }}" class="btn btn-sm btn-outline-kp-primary">
+                                            <a href="{{ route('ictengineer.design-items.show', $item->id) }}" class="btn btn-sm btn-outline-kp-primary">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             @if($request->ict_engineer_id == auth()->id())
-                                            <a href="{{ route('design-items.edit', $item->id) }}" class="btn btn-sm btn-outline-warning">
+                                            <a href="{{ route('ictengineer.design-items.edit', $item->id) }}" class="btn btn-sm btn-outline-warning">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('design-items.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                            <form action="{{ route('ictengineer.design-items.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">

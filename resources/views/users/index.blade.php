@@ -275,7 +275,7 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('users.store') }}" method="POST" id="createUserForm">
+            <form action="{{ route('admin.users.store') }}" method="POST" id="createUserForm">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -342,6 +342,7 @@
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrator</option>
                                 <option value="finance" {{ old('role') == 'finance' ? 'selected' : '' }}>Finance</option>
                                 <option value="designer" {{ old('role') == 'designer' ? 'selected' : '' }}>Designer</option>
+                                 <option value="executive" {{ old('role') == 'executive' ? 'selected' : '' }}>Executive</option>
                                 <option value="surveyor" {{ old('role') == 'surveyor' ? 'selected' : '' }}>Surveyor</option>
                                 <option value="technician" {{ old('role') == 'technician' ? 'selected' : '' }}>Technician</option>
                                 <option value="account_manager" {{ old('role') == 'account_manager' ? 'selected' : '' }}>Account Manager</option>

@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-fluid px-0">
-
     {{-- Hero Section --}}
     <div class="dashboard-hero text-white py-4 py-md-5">
         <div class="container-fluid px-3 px-sm-4 px-md-5">
@@ -154,7 +153,7 @@
                             <h4 class="mb-0 fw-bold">
                                 <i class="fas fa-bolt text-warning me-2"></i>Quick Actions
                             </h4>
-                            <span class="badge bg-kp-yellow text-dark rounded-pill px-3 py-2">9 Actions</span>
+                            <span class="badge bg-kp-yellow text-dark rounded-pill px-3 py-2">10 Actions</span>
                         </div>
                     </div>
                     <div class="card-body p-4 pt-2">
@@ -163,12 +162,13 @@
                                 $quickActions = [
                                     ['title' => 'My Requests', 'icon' => 'list', 'color' => 'primary', 'route' => 'designer.requests.index', 'desc' => 'View assigned requests'],
                                     ['title' => 'Manage Quotations', 'icon' => 'file-invoice', 'color' => 'success', 'route' => 'designer.quotations.index', 'desc' => 'Create & manage quotes'],
-                                    ['title' => 'Darkfire Items', 'icon' => 'fire', 'color' => 'dark', 'route' => 'designer.darkfire-items', 'desc' => 'Manage Darkfire items'],
-                                    ['title' => 'My Profile', 'icon' => 'user-cog', 'color' => 'info', 'route' => 'designer.profile', 'desc' => 'Update profile'],
-                                    ['title' => 'Commercial Routes', 'icon' => 'drafting-compass', 'color' => 'warning', 'route' => 'designer.darkfire-items', 'desc' => 'Manage fiber routes'],
-                                    ['title' => 'Colocation Items', 'icon' => 'server', 'color' => 'info', 'route' => 'designer.darkfire-items', 'desc' => 'Manage colocation'],
+                                    ['title' => 'Conditional Certificates', 'icon' => 'file-contract', 'color' => 'info', 'route' => 'designer.certificates.conditional.index', 'desc' => 'View conditional certificates'],
+                                    ['title' => 'Acceptance Certificates', 'icon' => 'file-signature', 'color' => 'warning', 'route' => 'designer.certificates.acceptance.index', 'desc' => 'Generate acceptance certificates'],
+                                    ['title' => 'Darkfire Items', 'icon' => 'fire', 'color' => 'dark', 'route' => 'designer.darkfire-items.index', 'desc' => 'Manage Darkfire items'],
+                                    // ['title' => 'My Profile', 'icon' => 'user-cog', 'color' => 'info', 'route' => 'designer.profile', 'desc' => 'Update profile'],
+                                    ['title' => 'Commercial Routes', 'icon' => 'drafting-compass', 'color' => 'warning', 'route' => 'designer.darkfire-items.index', 'desc' => 'Manage fiber routes'],
+                                    ['title' => 'Colocation Items', 'icon' => 'server', 'color' => 'info', 'route' => 'designer.darkfire-items.index', 'desc' => 'Manage colocation'],
                                     ['title' => 'ICT Assignments', 'icon' => 'network-wired', 'color' => 'purple', 'route' => 'designer.requests.assignictindex', 'desc' => 'Assign to ICT regional'],
-                                    ['title' => 'Create Quotation', 'icon' => 'file-alt', 'color' => 'danger', 'route' => 'designer.requests.index', 'desc' => 'Create new quotation'],
                                     ['title' => 'Refresh', 'icon' => 'sync-alt', 'color' => 'secondary', 'route' => 'designer.dashboard', 'desc' => 'Refresh dashboard']
                                 ];
                             @endphp
@@ -185,6 +185,200 @@
                                 </div>
                             @endforeach
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Certificates Ready for Acceptance Section --}}
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-file-signature text-warning me-2"></i>Ready for Acceptance Certificate
+                        </h5>
+                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                            <i class="fas fa-clock me-1"></i> 30 Days After Conditional Certificate
+                        </span>
+                    </div>
+                    <div class="card-body p-0">
+                        @php
+                            $readyForAcceptance = $designStats['readyForAcceptance'] ?? [];
+                        @endphp
+                        @if(count($readyForAcceptance) > 0)
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="px-4 py-3">Request #</th>
+                                            <th class="py-3">Customer</th>
+                                            <th class="py-3">Title</th>
+                                            <th class="py-3">Conditional Certificate Date</th>
+                                            <th class="py-3">Days Since Issued</th>
+                                            <th class="py-3">Status</th>
+                                            <th class="px-4 py-3 text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($readyForAcceptance as $request)
+                                            @php
+                                                $conditionalCertDate = $request->conditionalCertificate->certificate_date ?? $request->conditional_certificate_issued_at;
+                                                $daysSinceIssued = $conditionalCertDate ? \Carbon\Carbon::parse($conditionalCertDate)->diffInDays(now()) : 0;
+                                                $canGenerate = $daysSinceIssued >= 30;
+                                                $acceptanceExists = $request->acceptanceCertificate || $request->acceptance_certificate_id;
+                                            @endphp
+                                            <tr>
+                                                <td class="px-4 py-3 fw-bold text-kp-blue">#{{ $request->request_number }}</td>
+                                                <td class="py-3">{{ $request->customer->name ?? 'N/A' }}</td>
+                                                <td class="py-3">{{ Str::limit($request->title, 40) }}</td>
+                                                <td class="py-3">
+                                                    @if($conditionalCertDate)
+                                                        {{ \Carbon\Carbon::parse($conditionalCertDate)->format('M d, Y') }}
+                                                        <br>
+                                                        <small class="text-muted">{{ \Carbon\Carbon::parse($conditionalCertDate)->diffForHumans() }}</small>
+                                                    @else
+                                                        <span class="badge bg-secondary">N/A</span>
+                                                    @endif
+                                                </td>
+                                                <td class="py-3">
+                                                    @if($daysSinceIssued >= 30)
+                                                        <span class="badge bg-success">Ready ({{ $daysSinceIssued }} days)</span>
+                                                    @else
+                                                        <span class="badge bg-warning text-dark">{{ 30 - $daysSinceIssued }} days remaining</span>
+                                                    @endif
+                                                </td>
+                                                <td class="py-3">
+                                                    @if($acceptanceExists)
+                                                        <span class="badge bg-success">Certificate Generated</span>
+                                                    @elseif($canGenerate)
+                                                        <span class="badge bg-primary">Ready for Generation</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Pending</span>
+                                                    @endif
+                                                </td>
+                                                <td class="px-4 py-3 text-center">
+                                                    @if($acceptanceExists)
+                                                        <div class="btn-group gap-1">
+                                                            <a href="{{ route('designer.certificates.acceptance.show', $request->acceptanceCertificate ?? $request->acceptance_certificate_id) }}"
+                                                               class="btn btn-sm btn-outline-info rounded-pill px-3"
+                                                               target="_blank"
+                                                               title="View Certificate">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                            <a href="{{ route('designer.certificates.acceptance.download', $request->acceptanceCertificate ?? $request->acceptance_certificate_id) }}"
+                                                               class="btn btn-sm btn-outline-success rounded-pill px-3"
+                                                               title="Download Certificate">
+                                                                <i class="fas fa-download"></i>
+                                                            </a>
+                                                        </div>
+                                                    @elseif($canGenerate)
+                                                        <a href="{{ route('designer.certificates.acceptance.create', $request) }}"
+                                                           class="btn btn-sm btn-success rounded-pill px-3">
+                                                            <i class="fas fa-file-signature me-1"></i> Generate Acceptance Certificate
+                                                        </a>
+                                                    @else
+                                                        <button class="btn btn-sm btn-secondary rounded-pill px-3" disabled>
+                                                            <i class="fas fa-hourglass-half me-1"></i> Wait {{ 30 - $daysSinceIssued }} days
+                                                        </button>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-5">
+                                <i class="fas fa-file-signature fa-4x text-muted opacity-25 mb-3"></i>
+                                <h6 class="text-muted">No Certificates Ready for Acceptance</h6>
+                                <p class="small text-muted mb-3">Conditional certificates will appear here 30 days after issuance</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Conditional Certificates Section --}}
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="fas fa-file-contract text-info me-2"></i>Conditional Certificates Issued
+                        </h5>
+                        <a href="{{ route('designer.certificates.conditional.index') }}" class="btn btn-sm btn-outline-info rounded-pill px-3">
+                            View All <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="card-body p-0">
+                        @php
+                            $conditionalCertificates = $designStats['conditionalCertificates'] ?? [];
+                        @endphp
+                        @if(count($conditionalCertificates) > 0)
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th class="px-4 py-3">Request #</th>
+                                            <th class="py-3">Certificate Ref</th>
+                                            <th class="py-3">Issue Date</th>
+                                            <th class="py-3">Status</th>
+                                            <th class="px-4 py-3 text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($conditionalCertificates as $cert)
+                                            <tr>
+                                                <td class="px-4 py-3 fw-bold text-kp-blue">#{{ $cert->designRequest->request_number ?? 'N/A' }}</td>
+                                                <td class="py-3">{{ $cert->ref_number }}</td>
+                                                <td class="py-3">
+                                                    {{ $cert->certificate_date ? \Carbon\Carbon::parse($cert->certificate_date)->format('M d, Y') : 'N/A' }}
+                                                </td>
+                                                <td class="py-3">
+                                                    @php
+                                                        $statusColors = [
+                                                            'draft' => 'secondary',
+                                                            'pending_designer' => 'warning',
+                                                            'sent_to_designer' => 'info',
+                                                            'acknowledged' => 'primary',
+                                                            'completed' => 'success',
+                                                            'rejected' => 'danger'
+                                                        ];
+                                                        $color = $statusColors[$cert->certificate_status] ?? 'secondary';
+                                                    @endphp
+                                                    <span class="badge bg-{{ $color }} rounded-pill px-3 py-1">
+                                                        {{ ucfirst(str_replace('_', ' ', $cert->certificate_status)) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3 text-center">
+                                                    <div class="btn-group gap-1">
+                                                        <a href="{{ route('designer.certificates.conditional.show', $cert) }}"
+                                                           class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                                           target="_blank"
+                                                           title="View Certificate">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a href="{{ route('designer.certificates.conditional.download', $cert) }}"
+                                                           class="btn btn-sm btn-outline-success rounded-pill px-3"
+                                                           title="Download Certificate">
+                                                            <i class="fas fa-download"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-5">
+                                <i class="fas fa-file-contract fa-4x text-muted opacity-25 mb-3"></i>
+                                <h6 class="text-muted">No Conditional Certificates Issued</h6>
+                                <p class="small text-muted mb-3">Conditional certificates will appear here once issued by ICT Engineer</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -237,7 +431,9 @@
                                                             'designed' => 'success',
                                                             'quoted' => 'info',
                                                             'completed' => 'success',
-                                                            'in_progress' => 'primary'
+                                                            'in_progress' => 'primary',
+                                                            'conditional_certificate_issued' => 'info',
+                                                            'acceptance_certificate_issued' => 'success'
                                                         ];
                                                         $color = $statusColors[strtolower($request->status)] ?? 'light';
                                                         $displayStatus = ucfirst(str_replace('_', ' ', $request->status));
@@ -272,6 +468,22 @@
                                                                data-bs-toggle="tooltip" title="Create Quotation">
                                                                 <i class="fas fa-file-invoice-dollar"></i>
                                                             </a>
+                                                        @endif
+
+                                                        @if(strtolower($request->status) === 'conditional_certificate_issued')
+                                                            @php
+                                                                $conditionalCert = $request->conditionalCertificate;
+                                                                $daysSince = $conditionalCert && $conditionalCert->certificate_date
+                                                                    ? \Carbon\Carbon::parse($conditionalCert->certificate_date)->diffInDays(now())
+                                                                    : 0;
+                                                            @endphp
+                                                            @if($daysSince >= 30 && !$request->acceptanceCertificate)
+                                                                <a href="{{ route('designer.certificates.acceptance.create', $request) }}"
+                                                                   class="btn btn-sm btn-success rounded-pill px-3 d-none d-md-inline-block"
+                                                                   data-bs-toggle="tooltip" title="Generate Acceptance Certificate">
+                                                                    <i class="fas fa-file-signature"></i>
+                                                                </a>
+                                                            @endif
                                                         @endif
                                                     </div>
 

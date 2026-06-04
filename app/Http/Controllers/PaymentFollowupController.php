@@ -6,6 +6,7 @@ use App\Models\PaymentFollowup;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PaymentFollowupController extends Controller
 {
@@ -42,11 +43,64 @@ class PaymentFollowupController extends Controller
     return view('account-manager.payments.index', compact('followups'));
 }
 
-    public function create()
-    {
-        $customers = Auth::user()->managedCustomers()->get();
-        return view('account-manager.payments.create', compact('customers'));
-    }
+ public function create()
+{
+    // Get only customers assigned to this account manager
+    $customers = User::where('role', 'customer')
+        ->where('account_manager_id', auth()->id())
+        ->orderBy('name')
+        ->get();
+
+    // Get customers with outstanding debt (only assigned to this account manager)
+    $customersWithDebt = User::where('role', 'customer')
+        ->where('account_manager_id', auth()->id())
+        ->where(function($query) {
+            $query->whereExists(function($sub) {
+                $sub->select(DB::raw(1))
+                    ->from('consolidated_billings')
+                    ->whereColumn('consolidated_billings.user_id', 'users.id')
+                    ->whereIn('consolidated_billings.status', ['pending', 'sent', 'partial', 'overdue'])
+                    ->whereRaw('consolidated_billings.total_amount > COALESCE(consolidated_billings.paid_amount, 0)');
+            });
+        })
+        ->get()
+        ->map(function($customer) {
+            $usdOutstanding = DB::table('consolidated_billings')
+                ->where('user_id', $customer->id)
+                ->where('currency', 'USD')
+                ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
+                ->whereRaw('total_amount > COALESCE(paid_amount, 0)')
+                ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
+
+            $kshOutstanding = DB::table('consolidated_billings')
+                ->where('user_id', $customer->id)
+                ->where('currency', 'KSH')
+                ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
+                ->whereRaw('total_amount > COALESCE(paid_amount, 0)')
+                ->sum(DB::raw('total_amount - COALESCE(paid_amount, 0)')) ?: 0;
+
+            $overdueCount = DB::table('consolidated_billings')
+                ->where('user_id', $customer->id)
+                ->where('due_date', '<', now())
+                ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
+                ->whereRaw('total_amount > COALESCE(paid_amount, 0)')
+                ->count();
+
+            $customer->outstanding_usd = $usdOutstanding;
+            $customer->outstanding_ksh = $kshOutstanding;
+            $customer->overdue_count = $overdueCount;
+
+            return $customer;
+        })
+        ->filter(function($customer) {
+            return $customer->outstanding_usd > 0 || $customer->outstanding_ksh > 0;
+        })
+        ->sortByDesc(function($customer) {
+            return $customer->outstanding_usd + ($customer->outstanding_ksh / 130);
+        });
+
+    return view('account-manager.payments.create', compact('customers', 'customersWithDebt'));
+}
 
     public function store(Request $request)
     {
@@ -77,6 +131,7 @@ class PaymentFollowupController extends Controller
 
     public function markReminded(PaymentFollowup $followup)
     {
+        // dd($followup);
         if ($followup->account_manager_id !== Auth::id()) {
             abort(403);
         }
@@ -91,6 +146,7 @@ class PaymentFollowupController extends Controller
 
     public function markPaid(PaymentFollowup $followup)
     {
+
         if ($followup->account_manager_id !== Auth::id()) {
             abort(403);
         }

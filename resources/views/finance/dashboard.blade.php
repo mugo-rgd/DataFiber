@@ -397,28 +397,55 @@ use Carbon\Carbon;
                     <div class="card-body p-4 pt-2">
                         <div class="row g-3">
                             @php
-                                $quickActions = [
-                                    ['title' => 'Manage Billings', 'icon' => 'file-invoice-dollar', 'color' => 'kp-blue', 'route' => 'finance.billing.index'],
-                                    ['title' => 'View Payments', 'icon' => 'credit-card', 'color' => 'kp-green', 'route' => 'finance.payments.followups'],
-                                    ['title' => 'Financial Reports', 'icon' => 'chart-bar', 'color' => 'info', 'route' => 'finance.reports'],
-                                    ['title' => 'Auto Billing', 'icon' => 'robot', 'color' => 'secondary', 'route' => 'finance.auto-billing'],
-                                    ['title' => 'Transactions', 'icon' => 'exchange-alt', 'color' => 'kp-yellow', 'route' => 'finance.transactions.index'],
-                                    ['title' => 'Financial Parameters', 'icon' => 'percentage', 'color' => 'dark', 'route' => 'finance.financial-parameters.index'],
-                                    ['title' => 'Master Data', 'icon' => 'database', 'color' => 'purple', 'route' => 'finance.sap-assignment.index'],
-                                    ['title' => 'Export Reports', 'icon' => 'file-excel', 'color' => 'danger', 'route' => 'finance.financial-reports'],
-                                ];
-                            @endphp
+   $quickActions = [
+    // Billing & Payments
+    ['title' => 'Manage Billings', 'icon' => 'file-invoice', 'color' => 'primary', 'route' => 'finance.billing.index'],
+    ['title' => 'View Payments', 'icon' => 'credit-card', 'color' => 'success', 'route' => 'finance.payments.index'],
+    ['title' => 'Manual Payment Update', 'icon' => 'hand-holding-usd', 'color' => 'kp-yellow', 'route' => 'finance.payments.create'],
+    ['title' => 'Payment Follow-ups', 'icon' => 'bell', 'color' => 'warning', 'route' => 'finance.payments.followups'],
 
-                            @foreach($quickActions as $action)
-                                <div class="col-6 col-md-3">
-                                    <a href="{{ route($action['route']) }}" class="action-card text-center p-3 rounded-3 border h-100 text-decoration-none d-block">
-                                        <div class="action-icon bg-{{ $action['color'] }} rounded-3 mx-auto mb-2">
-                                            <i class="fas fa-{{ $action['icon'] }} fa-fw"></i>
-                                        </div>
-                                        <h6 class="fw-semibold mb-0">{{ $action['title'] }}</h6>
-                                    </a>
-                                </div>
-                            @endforeach
+    // Reports & Analytics
+    ['title' => 'Financial Reports', 'icon' => 'chart-line', 'color' => 'info', 'route' => 'finance.financial-reports'],
+    ['title' => 'Aging Report', 'icon' => 'calendar-alt', 'color' => 'teal', 'route' => 'finance.debt.aging.report'],
+    ['title' => 'Collection Report', 'icon' => 'chart-pie', 'color' => 'purple', 'route' => 'finance.debt.collection.report'],
+
+    // Debt Management
+    ['title' => 'Debt Dashboard', 'icon' => 'exclamation-triangle', 'color' => 'danger', 'route' => 'finance.debt.dashboard'],
+    ['title' => 'Overdue Invoices', 'icon' => 'clock', 'color' => 'danger', 'route' => 'finance.debt.overdue-invoices'],
+    ['title' => 'Debt Customers', 'icon' => 'users', 'color' => 'warning', 'route' => 'finance.debt.customers'],
+
+    // Automation & Configuration
+    ['title' => 'Auto Billing', 'icon' => 'clock', 'color' => 'warning', 'route' => 'finance.auto-billing'],
+    ['title' => 'Financial Parameters', 'icon' => 'sliders-h', 'color' => 'dark', 'route' => 'finance.financial-parameters.index'],
+    ['title' => 'SAP Assignment', 'icon' => 'building', 'color' => 'info', 'route' => 'finance.sap-assignment.index'],
+    ['title' => 'Transactions', 'icon' => 'exchange-alt', 'color' => 'secondary', 'route' => 'finance.transactions.index'],
+
+    // Export
+    ['title' => 'Export Debt Data', 'icon' => 'download', 'color' => 'teal', 'route' => 'finance.debt.export'],
+];
+                            @endphp
+<div class="row g-3">
+    @foreach($quickActions as $action)
+        <div class="col-6 col-md-3">
+            @if(Route::has($action['route']))
+                <a href="{{ route($action['route']) }}" class="action-card text-center p-3 rounded-3 border h-100 text-decoration-none d-block">
+                    <div class="action-icon bg-{{ $action['color'] }} rounded-3 mx-auto mb-2">
+                        <i class="fas fa-{{ $action['icon'] }} fa-fw"></i>
+                    </div>
+                    <h6 class="fw-semibold mb-0">{{ $action['title'] }}</h6>
+                </a>
+            @else
+                <div class="action-card text-center p-3 rounded-3 border h-100 text-decoration-none d-block opacity-50" style="cursor: not-allowed; background-color: #f8f9fa;">
+                    <div class="action-icon bg-secondary rounded-3 mx-auto mb-2">
+                        <i class="fas fa-{{ $action['icon'] }} fa-fw"></i>
+                    </div>
+                    <h6 class="fw-semibold mb-0">{{ $action['title'] }}</h6>
+                    <small class="text-muted">Route not found</small>
+                </div>
+            @endif
+        </div>
+    @endforeach
+</div>
                         </div>
                     </div>
                 </div>
@@ -492,21 +519,68 @@ use Carbon\Carbon;
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-header bg-transparent border-0 pt-4 pb-2 px-4">
-                        <h5 class="mb-0 fw-bold">
-                            <i class="fas fa-chart-pie text-kp-green me-2"></i>Payment Status Distribution
-                        </h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="text-center py-5">
-                            <i class="fas fa-chart-pie fa-4x text-muted opacity-25 mb-3"></i>
-                            <p class="text-muted">Payment distribution chart coming soon</p>
+            <!-- Payment Status Distribution -->
+<div class="card shadow mt-4">
+    <div class="card-header bg-white py-3">
+        <h6 class="mb-0 fw-bold">Payment Distribution</h6>
+    </div>
+    <div class="card-body">
+        @php
+            $paymentDistribution = $paymentDistributionData ?? [];
+            $paymentMethods = $paymentDistribution['payment_methods'] ?? collect();
+            $statusDist = $paymentDistribution['status_distribution'] ?? collect();
+        @endphp
+
+        @if($paymentMethods->count() > 0)
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-3">By Payment Method</h6>
+                    @foreach($paymentMethods as $method)
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>{{ ucfirst(str_replace('_', ' ', $method->payment_method)) }}</span>
+                                <span>${{ number_format($method->total_amount, 2) }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                @php
+                                    $maxAmount = $paymentMethods->max('total_amount');
+                                    $percentage = $maxAmount > 0 ? ($method->total_amount / $maxAmount) * 100 : 0;
+                                @endphp
+                                <div class="progress-bar bg-success" role="progressbar"
+                                     style="width: {{ $percentage }}%"></div>
+                            </div>
+                            <small class="text-muted">{{ $method->count }} transactions</small>
                         </div>
-                    </div>
+                    @endforeach
+                </div>
+                <div class="col-md-6">
+                    <h6 class="text-muted mb-3">By Status</h6>
+                    @foreach($statusDist as $status)
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>{{ ucfirst($status->status) }}</span>
+                                <span>{{ $status->count }} payments</span>
+                            </div>
+                            @php
+                                $totalCount = $statusDist->sum('count');
+                                $percentage = $totalCount > 0 ? ($status->count / $totalCount) * 100 : 0;
+                            @endphp
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-{{ $status->status == 'validated' ? 'success' : ($status->status == 'pending' ? 'warning' : 'danger') }}"
+                                     role="progressbar" style="width: {{ $percentage }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
+        @else
+            <div class="text-center py-4 text-muted">
+                <i class="fas fa-chart-pie fa-2x mb-2"></i>
+                <p>No payment data available yet</p>
+            </div>
+        @endif
+    </div>
+</div>
         </div>
 
         {{-- Overdue Invoices Table --}}

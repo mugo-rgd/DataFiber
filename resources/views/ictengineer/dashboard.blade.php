@@ -165,15 +165,18 @@
                     </div>
                     <div class="card-body p-4 pt-2">
                         <div class="row g-3">
-                            @php
-                                $quickActions = [
-                                    ['title' => 'My Requests', 'icon' => 'list', 'color' => 'primary', 'route' => 'ictengineer.requests.index', 'desc' => 'View assigned requests'],
-                                    ['title' => 'Manage Tickets', 'icon' => 'ticket-alt', 'color' => 'warning', 'route' => 'ictengineer.tickets', 'desc' => 'Resolve support tickets'],
-                                    ['title' => 'My County', 'icon' => 'map-marker-alt', 'color' => 'info', 'route' => 'ictengineer.county', 'desc' => 'County ICT management'],
-                                    ['title' => 'Reports', 'icon' => 'chart-bar', 'color' => 'info', 'route' => 'ictengineer.reports', 'desc' => 'Generate system reports'],
-                                    ['title' => 'Help Desk', 'icon' => 'life-ring', 'color' => 'warning', 'route' => 'ictengineer.helpdesk', 'desc' => 'ICT support']
-                                ];
-                            @endphp
+                           @php
+       $quickActions = [
+        ['title' => 'My Requests', 'icon' => 'list', 'color' => 'primary', 'route' => 'ictengineer.requests.index', 'desc' => 'View assigned requests'],
+        ['title' => 'Manage Tickets', 'icon' => 'ticket-alt', 'color' => 'warning', 'route' => 'ictengineer.tickets.index', 'desc' => 'Resolve support tickets'],
+        ['title' => 'My County', 'icon' => 'map-marker-alt', 'color' => 'info', 'route' => 'ictengineer.county', 'desc' => 'County ICT management'],
+        ['title' => 'All Certificates', 'icon' => 'file-contract', 'color' => 'success', 'route' => 'ictengineer.certificates.conditional.index', 'desc' => 'View all certificates'],
+        ['title' => 'Network Monitor', 'icon' => 'network-wired', 'color' => 'info', 'route' => 'ictengineer.network.monitor', 'desc' => 'Monitor network'],
+        ['title' => 'Reports', 'icon' => 'chart-bar', 'color' => 'warning', 'route' => 'ictengineer.reports.index', 'desc' => 'Generate reports'],
+        ['title' => 'Help Desk', 'icon' => 'life-ring', 'color' => 'danger', 'route' => 'ictengineer.helpdesk', 'desc' => 'ICT support'],
+        ['title' => 'Settings', 'icon' => 'cog', 'color' => 'secondary', 'route' => 'ictengineer.settings.index', 'desc' => 'System settings']
+    ];
+@endphp
 
                             @foreach($quickActions as $action)
                                 <div class="col-6 col-md-4 col-lg-2">

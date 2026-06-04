@@ -8,7 +8,7 @@
         <div class="col-12">
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800">Payment Followups</h1>
-                <a href="{{ route('finance.payments.create') }}" class="btn btn-kp-primary">
+                <a href="{{ route('account-manager.payments.create') }}" class="btn btn-kp-primary">
                     <i class="fas fa-plus"></i> Create New Payment
                 </a>
             </div>
@@ -100,14 +100,14 @@
                                     <td>{{ $payment->created_at->format('M d, Y') }}</td>
                                     <td>
                                         @if($payment->status === 'pending')
-                                        <form action="{{ route('finance.payments.remind', $payment) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('account-manager.payments.remind', $payment) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-kp-warning" title="Mark as Reminded">
                                                 <i class="fas fa-bell"></i>
                                             </button>
                                         </form>
                                         @endif
-                                        <form action="{{ route('finance.payments.paid', $payment) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('account-manager.payments.paid', $payment) }}" method="POST" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-kp-success" title="Mark as Paid">
                                                 <i class="fas fa-check"></i>
@@ -130,7 +130,7 @@
                         <i class="fas fa-money-bill-wave fa-3x text-gray-300 mb-3"></i>
                         <h4 class="text-gray-500">No Payment Followups Found</h4>
                         <p class="text-gray-500">You don't have any payment followups matching your criteria.</p>
-                        <a href="{{ route('finance.payments.create') }}" class="btn btn-kp-primary">Create Your First Payment</a>
+                        <a href="{{ route('account-manager.payments.create') }}" class="btn btn-kp-primary">Create Your First Payment</a>
                     </div>
                     @endif
                 </div>

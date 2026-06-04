@@ -699,7 +699,8 @@
 
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="commercialDocsAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <i class="fas fa-file-alt me-1"></i>
+        <span>Commercial Documents</span>
         <span class="badge bg-kp-primary ms-1 rounded-pill">{{ $leaseCount + $quotationCount + $contractCount }}</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="commercialDocsAdmin">
@@ -849,8 +850,12 @@
                                     @if(Route::has('finance.billing.index'))
                                         <li><a class="dropdown-item py-2" href="{{ route('finance.billing.index') }}"><i class="fas fa-file-invoice-dollar text-kp-green me-2"></i> Lease Billings</a></li>
                                     @endif
-                                    @if(Route::has('finance.payments.followups'))
-                                        <li><a class="dropdown-item py-2" href="{{ route('finance.payments.followups') }}"><i class="fas fa-money-check text-info me-2"></i> Payment Management</a></li>
+                                    @if(Route::has('finance.debt.overdue-invoices'))
+                                        <li><a class="dropdown-item py-2" href="{{ route('finance.debt.overdue-invoices') }}"><i class="fas fa-money-check text-info me-2"></i> Payment Installment Plans</a></li>
+                                    @endif
+
+                                     @if(Route::has('finance.payments.index'))
+                                        <li><a class="dropdown-item py-2" href="{{ route('finance.payments.index') }}"><i class="fas fa-money-check text-info me-2"></i> Payment Followups</a></li>
                                     @endif
                                     <li><hr class="dropdown-divider"></li>
                                     @if(Route::has('finance.transactions.index'))
@@ -865,13 +870,13 @@
                                     @endif
                                     <li class="dropdown-header mt-2">AI Analytics</li>
                                     @if(Route::has('finance.ai.dashboard'))
-                                        <li><a class="dropdown-item py-2" href="{{ route('finance.ai.dashboard') }}"><i class="fas fa-brain text-purple me-2"></i> Debtors Analytics</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ route('finance.ai-analytics.dashboard') }}"><i class="fas fa-brain text-purple me-2"></i> Debtors Analytics</a></li>
                                     @endif
                                     @if(Route::has('finance.ai.predictive'))
-                                        <li><a class="dropdown-item py-2" href="{{ route('finance.ai.predictive') }}"><i class="fas fa-chart-line text-kp-yellow me-2"></i> Predictive Analytics</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ route('finance.ai-analytics.predictive') }}"><i class="fas fa-chart-line text-kp-yellow me-2"></i> Predictive Analytics</a></li>
                                     @endif
                                     @if(Route::has('finance.ai.recommendations'))
-                                        <li><a class="dropdown-item py-2" href="{{ route('finance.ai.recommendations') }}"><i class="fas fa-lightbulb text-kp-green me-2"></i> AI Recommendations</a></li>
+                                        <li><a class="dropdown-item py-2" href="{{ route('finance.ai-analytics.recommendations') }}"><i class="fas fa-lightbulb text-kp-green me-2"></i> AI Recommendations</a></li>
                                     @endif
                                     <li><hr class="dropdown-divider"></li>
                                     @if(Route::has('finance.financial-parameters.index'))
@@ -879,6 +884,14 @@
                                     @endif
                                 </ul>
                             </li>
+
+                            @if(Auth::user()->role === 'finance')
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('finance.payments.index') }}">
+            <i class="fas fa-money-bill-wave me-1"></i>Payments
+        </a>
+    </li>
+@endif
 
                             <!-- Commercial Documents Dropdown (Finance) -->
                             @php
@@ -889,7 +902,8 @@
 
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="commercialDocsFinance" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <i class="fas fa-file-alt me-1"></i>
+        <span>Commercial Documents</span>
         <span class="badge bg-kp-primary ms-1 rounded-pill">{{ $leaseCount + $quotationCount + $contractCount }}</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="commercialDocsFinance">
@@ -984,7 +998,8 @@
 
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="legalDocsAccountManager" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <i class="fas fa-file-alt me-1"></i>
+        <span>Commercial Documents</span>
         <span class="badge bg-kp-primary ms-1 rounded-pill">{{ $leaseCount + $quotationCount + $contractCount }}</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="legalDocsAccountManager">
@@ -1060,33 +1075,101 @@
                                 <a class="nav-link dropdown-toggle" href="#" id="marketingAnalyticsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-chart-pie me-1"></i>Marketing Analytics
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="marketingAnalyticsDropdown">
-                                    @if(Route::has('marketing-admin.dashboard'))
-                                        <li><a class="dropdown-item" href="{{ route('marketing-admin.dashboard') }}">Dashboard</a></li>
-                                    @endif
-                                    @if(Route::has('marketing-admin.analytics'))
-                                        <li><a class="dropdown-item" href="{{ route('marketing-admin.analytics') }}">Performance Analytics</a></li>
-                                    @endif
-                                    @if(Route::has('marketing-admin.campaigns'))
-                                        <li><a class="dropdown-item" href="{{ route('marketing-admin.campaigns') }}">Campaign Management</a></li>
-                                    @endif
-                                    @if(Route::has('marketing-admin.reports'))
-                                        <li><a class="dropdown-item" href="{{ route('marketing-admin.reports') }}">Marketing Reports</a></li>
-                                    @endif
-                                </ul>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="marketingAnalyticsDropdown" style="min-width: 220px;">
+    <li class="dropdown-header bg-light py-2">
+        <i class="fas fa-chart-line me-1"></i> Marketing Analytics
+    </li>
+    @if(Route::has('marketing-admin.dashboard'))
+        <li>
+            <a class="dropdown-item" href="{{ route('marketing-admin.dashboard') }}">
+                <i class="fas fa-tachometer-alt me-2 text-primary"></i> Dashboard
+                <span class="badge bg-primary rounded-pill ms-2">New</span>
+            </a>
+        </li>
+    @endif
+    @if(Route::has('marketing-admin.analytics'))
+        <li>
+            <a class="dropdown-item" href="{{ route('marketing-admin.analytics') }}">
+                <i class="fas fa-chart-bar me-2 text-success"></i> Performance Analytics
+            </a>
+        </li>
+    @endif
+    @if(Route::has('marketing-admin.campaigns'))
+        <li>
+            <a class="dropdown-item" href="{{ route('marketing-admin.campaigns') }}">
+                <i class="fas fa-bullhorn me-2 text-warning"></i> Campaign Management
+            </a>
+        </li>
+    @endif
+    @if(Route::has('marketing-admin.reports'))
+        <li>
+            <a class="dropdown-item" href="{{ route('marketing-admin.reports') }}">
+                <i class="fas fa-file-alt me-2 text-info"></i> Marketing Reports
+            </a>
+        </li>
+    @endif
+    <li><hr class="dropdown-divider"></li>
+    <li class="px-3 py-2">
+        <small class="text-muted">
+            <i class="fas fa-sync-alt me-1"></i> Updated: {{ now()->format('H:i') }}
+        </small>
+    </li>
+</ul>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="teamManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fas fa-user-tie me-1"></i>Team Management
                                 </a>
-                                <ul class="dropdown-menu" aria-labelledby="teamManagementDropdown">
-                                    <li><a class="dropdown-item" href="{{ route('admin.account-managers.index') ?? '#' }}">Account Managers</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.performance') ?? '#' }}">Team Performance</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.targets') ?? '#' }}">Sales Targets</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.commissions') ?? '#' }}">Commission Reports</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.customer-insights') ?? '#' }}">Customer Insights</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('marketing-admin.sales-pipeline') ?? '#' }}">Sales Pipeline</a></li>
-                                </ul>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="teamManagementDropdown" style="min-width: 220px;">
+    <!-- Team Management -->
+    <li>
+        <a class="dropdown-item" href="{{ route('admin.account-managers.index') ?? '#' }}">
+            <i class="fas fa-user-tie me-2 text-primary"></i> Account Managers
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="{{ route('admin.customers.index') ?? '#' }}">
+            <i class="fas fa-exchange-alt me-2 text-success"></i> Assign Managers
+        </a>
+    </li>
+
+    <li><hr class="dropdown-divider my-1"></li>
+
+    <!-- Performance -->
+    <li>
+        <a class="dropdown-item" href="{{ route('marketing-admin.performance') ?? '#' }}">
+            <i class="fas fa-tachometer-alt me-2 text-info"></i> Performance Dashboard
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="{{ route('marketing-admin.sales-pipeline') ?? '#' }}">
+            <i class="fas fa-funnel-dollar me-2 text-warning"></i> Sales Pipeline
+        </a>
+    </li>
+
+    <li><hr class="dropdown-divider my-1"></li>
+
+    <!-- Sales & Targets -->
+    <li>
+        <a class="dropdown-item" href="{{ route('marketing-admin.targets') ?? '#' }}">
+            <i class="fas fa-crosshairs me-2 text-danger"></i> Sales Targets
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item" href="{{ route('marketing-admin.commissions') ?? '#' }}">
+            <i class="fas fa-coins me-2 text-success"></i> Commissions
+        </a>
+    </li>
+
+    <li><hr class="dropdown-divider my-1"></li>
+
+    <!-- Analytics -->
+    <li>
+        <a class="dropdown-item" href="{{ route('marketing-admin.customer-insights') ?? '#' }}">
+            <i class="fas fa-chart-bar me-2 text-purple"></i> Customer Insights
+        </a>
+    </li>
+</ul>
                             </li>
 
                             <!-- Legal Documents Dropdown (Marketing Admin) -->
@@ -1098,7 +1181,8 @@
 
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="legalDocsMarketingAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="fas fa-file-alt me-1"></i> Commercial Documents
+        <i class="fas fa-file-alt me-1"></i>
+        <span>Commercial Documents</span>
         <span class="badge bg-kp-primary ms-1 rounded-pill">{{ $leaseCount + $quotationCount + $contractCount }}</span>
     </a>
     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="legalDocsMarketingAdmin">
@@ -1179,6 +1263,16 @@
                             </li>
                         @endif
 
+                        @if(in_array(Auth::user()->role, ['executive', 'management', 'admin', 'system_admin']))
+    <li class="nav-item">
+        <a href="{{ route('executive.role.dashboard') }}"
+           class="nav-link {{ request()->routeIs('executive.role.dashboard') ? 'active' : '' }}">
+            <i class="fas fa-user-tie me-1"></i>
+            Executive Role Dashboard
+        </a>
+    </li>
+@endif
+
                         <!-- Chat Link -->
                         @can('use-chat')
                             @if(Route::has('chat.index'))
@@ -1194,87 +1288,104 @@
                             @endif
                         @endcan
 
-                        <!-- Notifications Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link position-relative dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-bell"></i>
-                                @php
-                                    $unreadNotificationsCount = auth()->user()->unreadNotifications->count();
-                                    $allNotifications = auth()->user()->notifications()->latest()->take(10)->get();
-                                @endphp
-                                @if($unreadNotificationsCount > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
-                                        {{ $unreadNotificationsCount > 99 ? '99+' : $unreadNotificationsCount }}
-                                    </span>
+<!-- Notifications Dropdown -->
+<!-- Notifications Dropdown -->
+<li class="nav-item dropdown">
+    <a class="nav-link position-relative dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-bell"></i>
+        @php
+            $unreadNotificationsCount = auth()->user()->unreadNotifications->count();
+        @endphp
+        @if($unreadNotificationsCount > 0)
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">
+                {{ $unreadNotificationsCount > 99 ? '99+' : $unreadNotificationsCount }}
+            </span>
+        @endif
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end notifications-menu" aria-labelledby="notificationDropdown" style="width: 350px; max-height: 450px; overflow-y: auto;">
+        <li class="dropdown-header bg-light d-flex justify-content-between align-items-center">
+            <span>Notifications</span>
+           @if($unreadNotificationsCount > 0)
+    <a href="#" class="text-muted small" id="markAllNotificationsRead">
+        Mark all as read ({{ $unreadNotificationsCount }})
+    </a>
+@endif
+        </li>
+        <div id="notificationsList">
+            @forelse(auth()->user()->notifications()->latest()->take(10)->get() as $notification)
+                @php
+                    $data = $notification->data;
+                    $isUnread = is_null($notification->read_at);
+                    $isCertificateNotification = isset($data['type']) && $data['type'] === 'conditional_certificate';
+                @endphp
+                <li class="dropdown-item-text notification-item {{ $isUnread ? 'unread' : 'read' }}" data-id="{{ $notification->id }}">
+                    <div class="d-flex align-items-start">
+                        <div class="avatar me-2 mt-1">
+                            <div class="bg-{{ $isUnread ? 'info' : 'secondary' }} rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 14px;">
+                                <i class="fas {{ $isCertificateNotification ? 'fa-file-contract' : 'fa-bell' }}"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <small class="fw-bold {{ $isUnread ? 'text-dark' : 'text-secondary' }}">
+                                    {{ $data['sender_name'] ?? ($isCertificateNotification ? 'ICT Engineer' : 'System') }}
+                                    @if($isUnread)
+    <a href="#" onclick="event.preventDefault(); markSingleNotificationRead('{{ $notification->id }}')"
+       class="small text-kp-green text-decoration-none mark-notification-read"
+       data-id="{{ $notification->id }}">
+        <i class="fas fa-check-circle"></i> Mark Read
+    </a>
+@endif
+                                </small>
+                                <small class="text-muted">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</small>
+                            </div>
+                            <small class="d-block {{ $isUnread ? 'text-dark' : 'text-muted' }}">
+                                @if($isCertificateNotification)
+                                    <strong>Conditional Certificate Issued</strong><br>
+                                    {{ $data['message_preview'] ?? $data['message'] }}
+                                @else
+                                    {{ $data['message_preview'] ?? 'New notification' }}
                                 @endif
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end notifications-menu" aria-labelledby="notificationDropdown" style="width: 350px; max-height: 450px; overflow-y: auto;">
-                                <li class="dropdown-header bg-light d-flex justify-content-between align-items-center">
-                                    <span>Notifications</span>
-                                    @if($unreadNotificationsCount > 0)
-                                        <span class="badge bg-kp-blue">{{ $unreadNotificationsCount }} new</span>
-                                    @endif
-                                </li>
-                                <div id="notificationsList">
-                                    @forelse($allNotifications as $notification)
-                                        @php
-                                            $data = $notification->data;
-                                            $isUnread = is_null($notification->read_at);
-                                        @endphp
-                                        <li class="dropdown-item-text notification-item {{ $isUnread ? 'unread' : 'read' }}" data-id="{{ $notification->id }}">
-                                            <div class="d-flex align-items-start">
-                                                <div class="avatar me-2 mt-1">
-                                                    <div class="bg-{{ $isUnread ? 'primary' : 'secondary' }} rounded-circle text-white d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 14px;">
-                                                        {{ $data['sender_avatar'] ?? 'N' }}
-                                                    </div>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <div class="d-flex justify-content-between">
-                                                        <small class="fw-bold {{ $isUnread ? 'text-dark' : 'text-secondary' }}">
-                                                            {{ $data['sender_name'] ?? 'Someone' }}
-                                                            @if($isUnread)
-                                                                <span class="badge bg-kp-blue ms-1" style="font-size: 0.5rem;">New</span>
-                                                            @endif
-                                                        </small>
-                                                        <small class="text-muted">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</small>
-                                                    </div>
-                                                    <small class="d-block {{ $isUnread ? 'text-dark' : 'text-muted' }}">{{ $data['message_preview'] ?? 'New message' }}</small>
-                                                    <div class="mt-2 d-flex gap-2">
-                                                        <a href="#" onclick="event.preventDefault(); openChat({{ $data['conversation_id'] ?? 0 }})" class="small text-kp-blue text-decoration-none"><i class="fas fa-comment"></i> Open Chat</a>
-                                                        @if($isUnread)
-                                                            <a href="#" onclick="event.preventDefault(); markAsRead('{{ $notification->id }}')" class="small text-kp-green text-decoration-none"><i class="fas fa-check-circle"></i> Mark Read</a>
-                                                        @else
-                                                            <span class="small text-muted"><i class="fas fa-check-double"></i> Read</span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        @if(!$loop->last)
-                                            <li class="dropdown-divider" style="margin: 0;"></li>
-                                        @endif
-                                    @empty
-                                        <li class="text-center text-muted py-4">
-                                            <i class="fas fa-bell-slash fa-2x mb-2"></i>
-                                            <p class="mb-0">No notifications</p>
-                                        </li>
-                                    @endforelse
-                                </div>
-                                @if($allNotifications->count() > 0)
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li class="text-center p-2">
-                                        <div class="d-flex justify-content-between">
-                                            @if(Route::has('notifications.index'))
-                                                <a href="{{ route('notifications.index') }}" class="btn btn-sm btn-outline-kp-primary"><i class="fas fa-list"></i> View All</a>
-                                            @endif
-                                            @if($unreadNotificationsCount > 0)
-                                                <a href="#" onclick="event.preventDefault(); markAllAsRead()" class="btn btn-sm btn-outline-kp-success"><i class="fas fa-check-double"></i> Mark All Read</a>
-                                            @endif
-                                        </div>
-                                    </li>
+                            </small>
+                            <div class="mt-2 d-flex gap-2">
+                                @if($isCertificateNotification && isset($data['action_url']))
+                                    <a href="{{ $data['action_url'] }}" class="small text-kp-blue text-decoration-none">
+                                        <i class="fas fa-eye"></i> View Certificate
+                                    </a>
                                 @endif
-                            </ul>
-                        </li>
+                                @if($isUnread)
+                                    <a href="#" onclick="event.preventDefault(); markSingleNotificationRead('{{ $notification->id }}')" class="small text-kp-green text-decoration-none">
+                                        <i class="fas fa-check-circle"></i> Mark Read
+                                    </a>
+                                @else
+                                    <span class="small text-muted"><i class="fas fa-check-double"></i> Read</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                @if(!$loop->last)
+                    <li class="dropdown-divider" style="margin: 0;"></li>
+                @endif
+            @empty
+                <li class="text-center text-muted py-4">
+                    <i class="fas fa-bell-slash fa-2x mb-2"></i>
+                    <p class="mb-0">No notifications</p>
+                </li>
+            @endforelse
+        </div>
+        @if(auth()->user()->notifications()->count() > 0)
+            <li><hr class="dropdown-divider"></li>
+            <li class="text-center p-2">
+                @if(Route::has('designer.notifications'))
+                    <a href="{{ route('designer.notifications') }}" class="btn btn-sm btn-outline-kp-primary w-100">
+                        <i class="fas fa-list"></i> View All Notifications
+                    </a>
+                @endif
+            </li>
+        @endif
+    </ul>
+</li>
                     @endauth
                 </ul>
 
@@ -1473,131 +1584,225 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        (function() {
-            // Back to top button
-            document.getElementById('backToTop')?.addEventListener('click', function() {
+    (function() {
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        if (backToTop) {
+            backToTop.addEventListener('click', function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
+        }
 
-            // Initialize all tooltips
-            document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+        // Initialize all tooltips
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function(el) {
+            try {
+                new bootstrap.Tooltip(el);
+            } catch (e) {
+                console.log('Tooltip error:', e);
+            }
+        });
+
+        // Reinitialize all dropdowns to ensure they work
+        document.querySelectorAll('.dropdown-toggle').forEach(function(dropdown) {
+            try {
+                new bootstrap.Dropdown(dropdown);
+            } catch (e) {
+                console.log('Dropdown error:', e);
+            }
+        });
+
+        // Auto-dismiss alerts after 5 seconds
+        document.querySelectorAll('.alert').forEach(function(alert) {
+            setTimeout(function() {
                 try {
-                    new bootstrap.Tooltip(el);
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                    bsAlert.close();
                 } catch (e) {
-                    console.log('Tooltip error:', e);
+                    console.log('Alert error:', e);
                 }
-            });
+            }, 5000);
+        });
 
-            // Reinitialize all dropdowns to ensure they work
-            document.querySelectorAll('.dropdown-toggle').forEach(function(dropdown) {
-                try {
-                    new bootstrap.Dropdown(dropdown);
-                } catch (e) {
-                    console.log('Dropdown error:', e);
-                }
-            });
-
-            // Auto-dismiss alerts after 5 seconds
-            document.querySelectorAll('.alert').forEach(function(alert) {
-                setTimeout(function() {
-                    try {
-                        const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                        bsAlert.close();
-                    } catch (e) {
-                        console.log('Alert error:', e);
+        // Mobile dropdown fix
+        if (window.innerWidth < 992) {
+            document.querySelectorAll('.dropdown-toggle').forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const parent = this.closest('.dropdown');
+                    const menu = parent ? parent.querySelector('.dropdown-menu') : null;
+                    if (menu) {
+                        menu.classList.toggle('show');
                     }
-                }, 5000);
+                });
             });
+        }
 
-            // Mobile dropdown fix
-            if (window.innerWidth < 992) {
-                document.querySelectorAll('.dropdown-toggle').forEach(function(toggle) {
-                    toggle.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const parent = this.closest('.dropdown');
-                        const menu = parent.querySelector('.dropdown-menu');
-                        if (menu) {
-                            menu.classList.toggle('show');
-                        }
-                    });
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
+                    menu.classList.remove('show');
                 });
             }
+        });
 
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!e.target.closest('.dropdown')) {
-                    document.querySelectorAll('.dropdown-menu.show').forEach(function(menu) {
-                        menu.classList.remove('show');
-                    });
+        // ==================== NOTIFICATION FUNCTIONS ====================
+
+        /**
+         * Mark a single notification as read
+         * @param {string|number} notificationId
+         */
+        window.markSingleNotificationRead = function(notificationId) {
+            if (!notificationId) {
+                console.error('Notification ID is required');
+                return;
+            }
+
+            fetch(`/notifications/${notificationId}/read`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Reload to update the notification count
+                    location.reload();
+                } else {
+                    console.error('Failed to mark as read:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error marking notification as read:', error);
             });
+        };
 
-            // ==================== NOTIFICATION FUNCTIONS ====================
-            window.markAsRead = function(notificationId) {
-                fetch(`/notifications/${notificationId}/read`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    }
-                })
-                .catch(error => console.error('Error marking as read:', error));
-            };
-
-            window.markAllAsRead = function() {
-                fetch('/notifications/read-all', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    }
-                })
-                .catch(error => console.error('Error marking all as read:', error));
-            };
-
-            window.openChat = function(conversationId) {
-                if (conversationId && conversationId > 0) {
-                    window.location.href = '{{ route("chat.index") }}?conversation=' + conversationId;
+        /**
+         * Mark all notifications as read
+         */
+        window.markAllNotificationsAsRead = function() {
+            fetch('/notifications/read-all', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 }
-            };
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Reload to update the notification count
+                    location.reload();
+                } else {
+                    console.error('Failed to mark all as read:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error marking all notifications as read:', error);
+            });
+        };
 
-            window.updateNotificationBadge = function() {
-                fetch('/notifications/unread-count', {
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    const badge = document.querySelector('.notification-badge');
-                    if (badge) {
-                        if (data.count > 0) {
-                            badge.textContent = data.count > 99 ? '99+' : data.count;
-                            badge.style.display = 'inline';
-                        } else {
-                            badge.style.display = 'none';
-                        }
-                    }
-                })
-                .catch(error => console.error('Error updating badge:', error));
-            };
+        // Alias for backward compatibility
+        window.markAsRead = window.markSingleNotificationRead;
+        window.markAllAsRead = window.markAllNotificationsAsRead;
 
+        /**
+         * Open chat with a specific conversation
+         * @param {number} conversationId
+         */
+        window.openChat = function(conversationId) {
+            if (conversationId && conversationId > 0) {
+                window.location.href = '/chat?conversation=' + conversationId;
+            } else {
+                window.location.href = '/chat';
+            }
+        };
+
+        /**
+         * Update the notification badge count
+         */
+        window.updateNotificationBadge = function() {
+            fetch('/notifications/unread-count', {
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    if (data.count > 0) {
+                        badge.textContent = data.count > 99 ? '99+' : data.count;
+                        badge.style.display = 'inline';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+
+                // Also update the "Mark All as Read" button text if it exists
+                const markAllBtn = document.getElementById('markAllNotificationsRead');
+                if (markAllBtn && data.count > 0) {
+                    markAllBtn.textContent = `Mark all as read (${data.count})`;
+                } else if (markAllBtn) {
+                    markAllBtn.textContent = 'Mark all as read';
+                }
+            })
+            .catch(error => {
+                console.error('Error updating notification badge:', error);
+            });
+        };
+
+        // Initialize notification badge update
+        if (document.querySelector('.notification-badge')) {
             window.updateNotificationBadge();
-            setInterval(function() { window.updateNotificationBadge(); }, 30000);
-        })();
-    </script>
+            // Update every 30 seconds
+            setInterval(function() {
+                window.updateNotificationBadge();
+            }, 30000);
+        }
+
+        // Add event listener for "Mark All as Read" button if it exists
+        const markAllBtn = document.getElementById('markAllNotificationsRead');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.markAllNotificationsAsRead();
+            });
+        }
+
+        // Add event listeners for individual mark as read buttons (for dynamically added notifications)
+        document.addEventListener('click', function(e) {
+            const markReadBtn = e.target.closest('.mark-notification-read');
+            if (markReadBtn) {
+                e.preventDefault();
+                const notificationId = markReadBtn.dataset.id;
+                if (notificationId) {
+                    window.markSingleNotificationRead(notificationId);
+                }
+            }
+        });
+    })();
+</script>
 
     @if(config('app.use_alpine', false))
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>

@@ -15,9 +15,9 @@
     <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
         <i class="fas fa-print me-1"></i>Print Report
     </button>
-    <a href="{{ request()->fullUrlWithQuery(['export' => 'csv']) }}" class="btn btn-outline-kp-primary btn-sm">
-    <i class="fas fa-download me-1"></i>Export Data
-</a>
+    <button id="exportBtn" class="btn btn-outline-kp-primary btn-sm">
+        <i class="fas fa-download me-1"></i>Export Data
+    </button>
 </div>
                 </div>
                 <div class="card-body">
@@ -557,110 +557,161 @@
                         </div>
 
                     <!-- Revenue Analysis Report with Both Currencies -->
-                    @elseif($reportType === 'revenue_analysis')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Top Customers by Revenue (KSH)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        @forelse(($reportData['revenue_by_customer_ksh'] ?? collect())->take(10) as $customer)
-                                            <div class="mb-3">
-                                                <div class="d-flex justify-content-between">
-                                                    <span>{{ $customer->customer_name ?? 'Unknown Customer' }}</span>
-                                                    <span class="fw-bold">KSH {{ number_format($customer->revenue ?? 0, 2) }}</span>
-                                                </div>
-                                                <div class="progress" style="height: 6px;">
-                                                    @php
-                                                        $revenueByCustomerKsh = $reportData['revenue_by_customer_ksh'] ?? collect();
-                                                        $maxRevenueKsh = $revenueByCustomerKsh->max('revenue') ?? 1;
-                                                        $customerRevenueKsh = $customer->revenue ?? 0;
-                                                        $width = $maxRevenueKsh > 0 ? ($customerRevenueKsh / $maxRevenueKsh) * 100 : 0;
-                                                    @endphp
-                                                    <div class="progress-bar bg-kp-blue" style="width: {{ $width }}%"></div>
-                                                </div>
-                                                <small class="text-muted">{{ $customer->invoice_count ?? 0 }} invoices</small>
-                                            </div>
-                                        @empty
-                                            <p class="text-muted">No KSH revenue data available for this period.</p>
-                                        @endforelse
-                                    </div>
+                    <!-- Revenue Analysis Report with Both Currencies -->
+@elseif($reportType === 'revenue_analysis')
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Top Customers by Revenue (KSH)</h6>
+                </div>
+                <div class="card-body">
+                    @php
+                        $kshCustomers = $reportData['revenue_by_customer_ksh'] ?? collect();
+                    @endphp
+                    @if($kshCustomers->count() > 0)
+                        @foreach($kshCustomers->take(10) as $customer)
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ $customer->customer_name ?? 'Unknown Customer' }}</span>
+                                    <span class="fw-bold">KSH {{ number_format($customer->revenue ?? 0, 2) }}</span>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Top Customers by Revenue (USD)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        @forelse(($reportData['revenue_by_customer_usd'] ?? collect())->take(10) as $customer)
-                                            <div class="mb-3">
-                                                <div class="d-flex justify-content-between">
-                                                    <span>{{ $customer->customer_name ?? 'Unknown Customer' }}</span>
-                                                    <span class="fw-bold">$ {{ number_format($customer->revenue ?? 0, 2) }}</span>
-                                                </div>
-                                                <div class="progress" style="height: 6px;">
-                                                    @php
-                                                        $revenueByCustomerUsd = $reportData['revenue_by_customer_usd'] ?? collect();
-                                                        $maxRevenueUsd = $revenueByCustomerUsd->max('revenue') ?? 1;
-                                                        $customerRevenueUsd = $customer->revenue ?? 0;
-                                                        $width = $maxRevenueUsd > 0 ? ($customerRevenueUsd / $maxRevenueUsd) * 100 : 0;
-                                                    @endphp
-                                                    <div class="progress-bar bg-kp-blue" style="width: {{ $width }}%"></div>
-                                                </div>
-                                                <small class="text-muted">{{ $customer->invoice_count ?? 0 }} invoices</small>
-                                            </div>
-                                        @empty
-                                            <p class="text-muted">No USD revenue data available for this period.</p>
-                                        @endforelse
-                                    </div>
+                                <div class="progress" style="height: 6px;">
+                                    @php
+                                        $maxRevenueKsh = $kshCustomers->max('revenue') ?? 1;
+                                        $customerRevenueKsh = $customer->revenue ?? 0;
+                                        $width = $maxRevenueKsh > 0 ? ($customerRevenueKsh / $maxRevenueKsh) * 100 : 0;
+                                    @endphp
+                                    <div class="progress-bar bg-kp-blue" style="width: {{ $width }}%"></div>
                                 </div>
+                                <small class="text-muted">{{ $customer->invoice_count ?? 0 }} invoices</small>
                             </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-line fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No KSH revenue data available for this period.</p>
+                            <small class="text-muted">Try selecting a different date range.</small>
                         </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Top Customers by Revenue (USD)</h6>
+                </div>
+                <div class="card-body">
+                    @php
+                        $usdCustomers = $reportData['revenue_by_customer_usd'] ?? collect();
+                    @endphp
+                    @if($usdCustomers->count() > 0)
+                        @foreach($usdCustomers->take(10) as $customer)
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ $customer->customer_name ?? 'Unknown Customer' }}</span>
+                                    <span class="fw-bold">$ {{ number_format($customer->revenue ?? 0, 2) }}</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    @php
+                                        $maxRevenueUsd = $usdCustomers->max('revenue') ?? 1;
+                                        $customerRevenueUsd = $customer->revenue ?? 0;
+                                        $width = $maxRevenueUsd > 0 ? ($customerRevenueUsd / $maxRevenueUsd) * 100 : 0;
+                                    @endphp
+                                    <div class="progress-bar bg-kp-blue" style="width: {{ $width }}%"></div>
+                                </div>
+                                <small class="text-muted">{{ $customer->invoice_count ?? 0 }} invoices</small>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-line fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No USD revenue data available for this period.</p>
+                            <small class="text-muted">Try selecting a different date range.</small>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 
-                        <div class="row mt-4">
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Revenue by Service Type (KSH)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        @forelse(($reportData['revenue_by_service_ksh'] ?? collect()) as $service)
-                                            <div class="mb-3">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="text-capitalize">{{ $service->billing_cycle ?? 'Unknown' }}</span>
-                                                    <span class="fw-bold">KSH {{ number_format($service->revenue ?? 0, 2) }}</span>
-                                                </div>
-                                                <small class="text-muted">{{ $service->count ?? 0 }} invoices</small>
-                                            </div>
-                                        @empty
-                                            <p class="text-muted">No KSH service data available.</p>
-                                        @endforelse
-                                    </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Revenue by Service Type (KSH)</h6>
+                </div>
+                <div class="card-body">
+                    @php
+                        $kshServices = $reportData['revenue_by_service_ksh'] ?? collect();
+                    @endphp
+                    @if($kshServices->count() > 0)
+                        @foreach($kshServices as $service)
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-capitalize">{{ $service->service_type ?? $service->billing_cycle ?? 'Standard' }}</span>
+                                    <span class="fw-bold">KSH {{ number_format($service->revenue ?? 0, 2) }}</span>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h6 class="card-title mb-0">Revenue by Service Type (USD)</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        @forelse(($reportData['revenue_by_service_usd'] ?? collect()) as $service)
-                                            <div class="mb-3">
-                                                <div class="d-flex justify-content-between">
-                                                    <span class="text-capitalize">{{ $service->billing_cycle ?? 'Unknown' }}</span>
-                                                    <span class="fw-bold">$ {{ number_format($service->revenue ?? 0, 2) }}</span>
-                                                </div>
-                                                <small class="text-muted">{{ $service->count ?? 0 }} invoices</small>
-                                            </div>
-                                        @empty
-                                            <p class="text-muted">No USD service data available.</p>
-                                        @endforelse
-                                    </div>
+                                <div class="progress" style="height: 6px;">
+                                    @php
+                                        $totalKshServiceRevenue = $kshServices->sum('revenue');
+                                        $serviceRevenue = $service->revenue ?? 0;
+                                        $width = $totalKshServiceRevenue > 0 ? ($serviceRevenue / $totalKshServiceRevenue) * 100 : 0;
+                                    @endphp
+                                    <div class="progress-bar bg-kp-green" style="width: {{ $width }}%"></div>
                                 </div>
+                                <small class="text-muted">{{ $service->invoice_count ?? 0 }} invoices</small>
                             </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-pie fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No KSH service data available for this period.</p>
+                            <small class="text-muted">Try selecting a different date range.</small>
                         </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">Revenue by Service Type (USD)</h6>
+                </div>
+                <div class="card-body">
+                    @php
+                        $usdServices = $reportData['revenue_by_service_usd'] ?? collect();
+                    @endphp
+                    @if($usdServices->count() > 0)
+                        @foreach($usdServices as $service)
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-capitalize">{{ $service->service_type ?? $service->billing_cycle ?? 'Standard' }}</span>
+                                    <span class="fw-bold">$ {{ number_format($service->revenue ?? 0, 2) }}</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    @php
+                                        $totalUsdServiceRevenue = $usdServices->sum('revenue');
+                                        $serviceRevenue = $service->revenue ?? 0;
+                                        $width = $totalUsdServiceRevenue > 0 ? ($serviceRevenue / $totalUsdServiceRevenue) * 100 : 0;
+                                    @endphp
+                                    <div class="progress-bar bg-kp-green" style="width: {{ $width }}%"></div>
+                                </div>
+                                <small class="text-muted">{{ $service->invoice_count ?? 0 }} invoices</small>
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="text-center py-4">
+                            <i class="fas fa-chart-pie fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No USD service data available for this period.</p>
+                            <small class="text-muted">Try selecting a different date range.</small>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
 
                     <!-- Customer Billing Report with Both Currencies -->
                     @elseif($reportType === 'customer_billing')
@@ -2252,6 +2303,19 @@
     </div>
 </div>
 @endsection
+
+<style>
+    .bg-kp-green { background-color: #28a745 !important; }
+    .bg-kp-yellow { background-color: #ffc107 !important; }
+    .bg-kp-blue { background-color: #007bff !important; }
+    .text-kp-green { color: #28a745 !important; }
+    .text-kp-yellow { color: #ffc107 !important; }
+    .text-kp-blue { color: #007bff !important; }
+    .btn-kp-primary { background-color: #007bff; border-color: #007bff; color: white; }
+    .btn-outline-kp-primary { border-color: #007bff; color: #007bff; }
+    .btn-outline-kp-primary:hover { background-color: #007bff; color: white; }
+    .alert-kp-success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+</style>
 
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

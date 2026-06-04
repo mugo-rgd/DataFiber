@@ -9,7 +9,7 @@
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-drafting-compass me-2"></i>Design Requests Management
         </h1>
-        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+        <a href="{{ route('account-manager.dashboard') }}" class="btn btn-secondary">
             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
         </a>
     </div>

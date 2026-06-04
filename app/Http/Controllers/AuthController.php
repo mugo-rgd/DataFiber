@@ -87,6 +87,8 @@ class AuthController extends Controller
 
                 case 'account_manager':
                     return redirect('/account-manager/dashboard');
+                case 'executive':
+                    return redirect('/executive/dashboard');
 
                 default:
                     return redirect('/home');

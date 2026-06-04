@@ -550,5 +550,45 @@ private function calculateDistance($lat1, $lon1, $lat2, $lon2)
     return $earthRadius * $c;
 }
 
+public function roleDashboard(Request $request)
+{
+    $user = auth()->user();
+
+    if (!in_array($user->role, ['executive', 'management', 'admin', 'super_admin'])) {
+        abort(403, 'You are not authorized to access the executive dashboard.');
+    }
+
+    $snapshotDate = $request->date ?: now()->toDateString();
+
+    $latestKpi = \App\Models\ExecutiveKpiSnapshot::whereDate('snapshot_date', '<=', $snapshotDate)
+        ->latest('snapshot_date')
+        ->first();
+
+    if (!$latestKpi) {
+        return view('executive.role-dashboard', [
+            'kpis' => null,
+            'snapshotDate' => $snapshotDate,
+            'insights' => collect(),
+            'forecasts' => collect(),
+        ]);
+    }
+
+    $snapshotDate = \Carbon\Carbon::parse($latestKpi->snapshot_date)->toDateString();
+
+    $insights = \App\Models\ExecutiveInsight::whereDate('snapshot_date', $snapshotDate)
+        ->orderByRaw("FIELD(severity, 'critical', 'warning', 'info')")
+        ->latest()
+        ->get();
+
+    $forecasts = \App\Models\RevenueForecast::whereDate('forecast_date', $snapshotDate)
+        ->get();
+
+    return view('executive.role-dashboard', [
+        'kpis' => $latestKpi,
+        'snapshotDate' => $snapshotDate,
+        'insights' => $insights,
+        'forecasts' => $forecasts,
+    ]);
+}
 
 }

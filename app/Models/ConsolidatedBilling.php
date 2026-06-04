@@ -215,4 +215,69 @@ public function customer()
             'cancelled' => 'secondary'
         ][$this->status] ?? 'secondary';
     }
+
+    /**
+ * Get all payments allocated to this invoice
+ */
+public function paymentAllocations(): HasMany
+{
+    return $this->hasMany(PaymentAllocation::class, 'invoice_id');
+}
+
+/**
+ * Get all payments made for this invoice (through allocations)
+ */
+public function payments()
+{
+    return $this->belongsToMany(
+        Payment::class,
+        'payment_allocations',
+        'invoice_id',
+        'payment_id'
+    )->withPivot('allocated_amount', 'currency')->withTimestamps();
+}
+
+/**
+ * Get total paid amount for this invoice
+ */
+public function getTotalPaidAttribute(): float
+{
+    return $this->paymentAllocations()->sum('allocated_amount');
+}
+
+/**
+ * Get remaining balance for this invoice
+ */
+public function getRemainingBalanceAttribute(): float
+{
+    return $this->total_amount - $this->getTotalPaidAttribute();
+}
+
+/**
+ * Check if invoice is fully paid
+ */
+public function isFullyPaid(): bool
+{
+    return $this->getRemainingBalanceAttribute() <= 0.01;
+}
+
+/**
+ * Update invoice status based on payments
+ */
+public function updatePaymentStatus(): void
+{
+    $remaining = $this->getRemainingBalanceAttribute();
+
+    if ($remaining <= 0.01) {
+        $this->status = 'paid';
+        $this->paid_date = now();
+    } elseif ($this->getTotalPaidAttribute() > 0) {
+        $this->status = 'partial';
+    } else {
+        $this->status = 'pending';
+    }
+
+    $this->paid_amount = $this->getTotalPaidAttribute();
+    $this->save();
+}
 }

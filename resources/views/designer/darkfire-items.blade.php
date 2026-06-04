@@ -26,11 +26,11 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-center">
                         <div class="btn-group" role="group">
-                            <a href="{{ route('designer.darkfire-items', ['table' => 'commercial_routes']) }}"
+                            <a href="{{ route('designer.darkfire-items.index', ['table' => 'commercial_routes']) }}"
                                class="btn btn-{{ $table === 'commercial_routes' ? 'primary' : 'outline-primary' }}">
                                 <i class="fas fa-route me-2"></i> Commercial Routes
                             </a>
-                            <a href="{{ route('designer.darkfire-items', ['table' => 'colocation_list']) }}"
+                            <a href="{{ route('designer.darkfire-items.index', ['table' => 'colocation_list']) }}"
                                class="btn btn-{{ $table === 'colocation_list' ? 'primary' : 'outline-primary' }}">
                                 <i class="fas fa-server me-2"></i> Colocation List
                             </a>

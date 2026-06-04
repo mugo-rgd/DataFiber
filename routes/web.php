@@ -14,12 +14,15 @@ use App\Http\Controllers\Customer\DocumentController;
 use App\Http\Controllers\CustomerCertificateController;
 use App\Http\Controllers\CustomerSapController;
 use App\Http\Controllers\DarkfireController;
+use App\Http\Controllers\DesignerCertificateController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\FinancialSyncController;
 use App\Http\Controllers\HelpController;
 use App\Http\Controllers\ICTEngineerCertificateController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\NfpComplianceController;
+use App\Http\Controllers\NotificationController;
+// use App\Http\Controllers\PaymentCustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SurveyorController;
 use Illuminate\Support\Facades\Route;
@@ -32,7 +35,8 @@ use App\Http\Controllers\DesignItemController;
 use App\Http\Controllers\SurveyResultController;
 use App\Http\Controllers\SurveyRouteController;
 use App\Http\Controllers\Admin\SurveyRequestController;
-use App\Http\Controllers\Customer\PaymentController;
+use App\Http\Controllers\Customer\PaymentCustomerController;
+use App\Http\Controllers\Finance\PaymentController;
 use App\Http\Controllers\CustomerDocumentController;
 use App\Http\Controllers\CustomerLeaseController;
 use App\Http\Controllers\CustomerProfileController;
@@ -40,6 +44,7 @@ use App\Http\Controllers\FinancialParameterController;
 use App\Http\Controllers\LeaseController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\PaymentFollowupController;
+use App\Http\Controllers\Finance\PaymentFollowupController as financePaymentFollowupController;
 use App\Http\Controllers\QuotationController;
 use App\Http\Controllers\SupportTicketController;
 use App\Http\Controllers\TechnicianController;
@@ -223,6 +228,8 @@ Route::middleware(['auth'])->group(function () {
                 redirect()->route('finance.debt.dashboard'),
             'customer' =>
                 redirect()->route('customer.customer-dashboard'),
+            'executive' =>
+                redirect()->route('executive.dashboard'),
             default =>
                 redirect()->route('home'),
         };
@@ -274,13 +281,24 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/settings', [SystemAdminController::class, 'updateSettings'])->name('settings.update');
 
         // User Management
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
 
+    // User management routes
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::get('/users/check-email', [UserController::class, 'checkEmail'])->name('users.check-email');
+    // Additional routes
+    Route::post('/users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password');
+    Route::post('/users/{user}/assign-role/{role}', [UserController::class, 'assignRole'])->name('users.assign-role');
+    Route::delete('/users/{id}/remove-role/{role}', [UserController::class, 'removeRole'])->name('users.remove-role');
+    Route::get('/users/stats', [UserController::class, 'stats'])->name('users.stats');
+    Route::get('/users/check-email', [UserController::class, 'checkEmail'])->name('users.check-email');
+});
         // Role & Permission Management
         Route::prefix('roles')->name('roles.')->group(function () {
             Route::get('/', [SystemAdminController::class, 'roles'])->name('index');
@@ -322,79 +340,94 @@ Route::middleware(['auth'])->group(function () {
     // ==========================
     // ICT Engineer Routes
     // ==========================
-    Route::prefix('ictengineer')->middleware(['can:ictengineerOrDesigner'])->name('ictengineer.')->group(function () {
-        // Dashboard
-        Route::get('/dashboard', [ICTEngineerController::class, 'dashboard'])->name('dashboard');
 
-        // Design Requests
-        Route::get('/requests', [ICTEngineerController::class, 'requests'])->name('requests.index');
-        Route::get('/requests/{request}', [ICTEngineerController::class, 'showRequest'])->name('requests.show');
-        Route::put('/requests/{request}', [ICTEngineerController::class, 'updateRequest'])->name('requests.update');
-        Route::post('/requests/{id}/update-status', [ICTEngineerController::class, 'updateStatus'])->name('requests.update-status');
+Route::prefix('ictengineer')->middleware(['can:ictengineerOrDesigner'])->name('ictengineer.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [ICTEngineerController::class, 'dashboard'])->name('dashboard');
 
-        // Network Management
-        Route::get('/network-monitor', [ICTEngineerController::class, 'networkMonitor'])->name('network-monitor');
+    // Design Requests
+    Route::prefix('requests')->name('requests.')->group(function () {
+        Route::get('/', [ICTEngineerController::class, 'requests'])->name('index');
+        Route::get('/{request}', [ICTEngineerController::class, 'showRequest'])->name('show');
+        Route::put('/{request}', [ICTEngineerController::class, 'updateRequest'])->name('update');
+        Route::post('/{id}/update-status', [ICTEngineerController::class, 'updateStatus'])->name('update-status');
+    });
 
-        // Tickets Management
-        Route::get('/tickets', [ICTEngineerController::class, 'tickets'])->name('tickets');
-        Route::get('/tickets/{ticket}', [ICTEngineerController::class, 'showTicket'])->name('tickets.show');
-        Route::put('/tickets/{ticket}/resolve', [ICTEngineerController::class, 'resolveTicket'])->name('tickets.resolve');
+    // Tickets Management
+    Route::prefix('tickets')->name('tickets.')->group(function () {
+        Route::get('/', [ICTEngineerController::class, 'tickets'])->name('index');
+        Route::get('/stats', [ICTEngineerController::class, 'ticketStats'])->name('stats');
+        Route::get('/{ticket}', [ICTEngineerController::class, 'showTicket'])->name('show');
+        Route::put('/{ticket}/resolve', [ICTEngineerController::class, 'resolveTicket'])->name('resolve');
+    });
 
-        // Quotation view
-        Route::get('/quotations/{quotation}', [ICTEngineerController::class, 'showQuotation'])->name('quotations.show');
+    // Certificate Routes
+    Route::prefix('certificates')->name('certificates.')->group(function () {
 
-        // User Management
-        Route::get('/users', [ICTEngineerController::class, 'users'])->name('users');
-
-        // Infrastructure Management
-        Route::get('/servers', [ICTEngineerController::class, 'servers'])->name('servers');
-        Route::get('/equipment', [ICTEngineerController::class, 'equipment'])->name('equipment');
-
-        // County Management
-        Route::get('/county', [ICTEngineerController::class, 'county'])->name('county');
-
-        // Reports & Analytics
-        Route::get('/reports', [ICTEngineerController::class, 'reports'])->name('reports');
-        Route::get('/reports/network', [ICTEngineerController::class, 'networkReport'])->name('reports.network');
-        Route::get('/reports/performance', [ICTEngineerController::class, 'performanceReport'])->name('reports.performance');
-
-        // System Management
-        Route::get('/backups', [ICTEngineerController::class, 'backups'])->name('backups');
-        Route::get('/security', [ICTEngineerController::class, 'security'])->name('security');
-
-        // Settings
-        Route::get('/settings', [ICTEngineerController::class, 'settings'])->name('settings');
-        Route::put('/settings/profile', [ICTEngineerController::class, 'updateProfile'])->name('settings.profile.update');
-        Route::put('/settings/password', [ICTEngineerController::class, 'updatePassword'])->name('settings.password.update');
-
-        // Documentation & Help
-        Route::get('/docs', [ICTEngineerController::class, 'docs'])->name('docs');
-        Route::get('/helpdesk', [ICTEngineerController::class, 'helpdesk'])->name('helpdesk');
-
-        // Certificate routes
-        Route::prefix('certificates')->name('certificates.')->group(function () {
-            // Conditional certificates
-            Route::get('/conditional/{request}/create', [ICTEngineerCertificateController::class, 'createConditionalCertificate'])->name('conditional.create');
-            Route::post('/conditional/{request}', [ICTEngineerCertificateController::class, 'storeConditionalCertificate'])->name('conditional.store');
-            Route::get('/conditional/{certificate}', [ICTEngineerCertificateController::class, 'showConditionalCertificate'])->name('conditional.show');
-            Route::get('/conditional/{certificate}/download', [ICTEngineerCertificateController::class, 'downloadConditionalCertificate'])->name('conditional.download');
-            Route::get('/conditional/{certificate}/preview', [ICTEngineerCertificateController::class, 'previewConditionalCertificate'])->name('conditional.preview');
-
-            // Acceptance certificates
-            Route::get('/acceptance/{request}/create', [ICTEngineerCertificateController::class, 'createAcceptanceCertificate'])->name('acceptance.create');
-            Route::post('/acceptance/{request}', [ICTEngineerCertificateController::class, 'storeAcceptanceCertificate'])->name('acceptance.store');
-            Route::get('/acceptance/{certificate}', [ICTEngineerCertificateController::class, 'showAcceptanceCertificate'])->name('acceptance.show');
-            Route::get('/acceptance/{certificate}/download', [ICTEngineerCertificateController::class, 'downloadAcceptanceCertificate'])->name('acceptance.download');
-            Route::get('/acceptance/{certificate}/preview', [ICTEngineerCertificateController::class, 'previewAcceptanceCertificate'])->name('acceptance.preview');
-        });
-
-        // AJAX/API Routes
-        Route::prefix('api')->name('api.')->group(function () {
-            Route::get('/network-status', [ICTEngineerController::class, 'networkStatus'])->name('network.status');
-            Route::get('/ticket-stats', [ICTEngineerController::class, 'ticketStats'])->name('ticket.stats');
-            Route::get('/server-status', [ICTEngineerController::class, 'serverStatus'])->name('server.status');
+        // Conditional Certificates
+        Route::prefix('conditional')->name('conditional.')->group(function () {
+ Route::get('/', [ICTEngineerCertificateController::class, 'conditionalIndex'])->name('index'); // Add this line
+            Route::get('/{request}/create', [ICTEngineerCertificateController::class, 'createConditionalCertificate'])->name('create');
+            Route::post('/{request}', [ICTEngineerCertificateController::class, 'storeConditionalCertificate'])->name('store');
+            Route::get('/{certificate}', [ICTEngineerCertificateController::class, 'showConditionalCertificate'])->name('show');
+            Route::get('/{certificate}/download', [ICTEngineerCertificateController::class, 'downloadConditionalCertificate'])->name('download');
+            Route::get('/{certificate}/preview', [ICTEngineerCertificateController::class, 'previewConditionalCertificate'])->name('preview');
         });
     });
+
+    // Quotation view
+    Route::get('/quotations/{quotation}', [ICTEngineerController::class, 'showQuotation'])->name('quotations.show');
+
+    // Network Management
+    Route::prefix('network')->name('network.')->group(function () {
+        Route::get('/monitor', [ICTEngineerController::class, 'networkMonitor'])->name('monitor');
+        Route::get('/status', [ICTEngineerController::class, 'networkStatus'])->name('status');
+    });
+
+    // County Management
+    Route::get('/county', [ICTEngineerController::class, 'county'])->name('county');
+
+    // User Management
+    Route::get('/users', [ICTEngineerController::class, 'users'])->name('users');
+
+    // Infrastructure Management
+    Route::prefix('infrastructure')->name('infrastructure.')->group(function () {
+        Route::get('/servers', [ICTEngineerController::class, 'servers'])->name('servers');
+        Route::get('/equipment', [ICTEngineerController::class, 'equipment'])->name('equipment');
+        Route::get('/server-status', [ICTEngineerController::class, 'serverStatus'])->name('server-status');
+    });
+
+    // Reports & Analytics
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ICTEngineerController::class, 'reports'])->name('index');
+        Route::get('/network', [ICTEngineerController::class, 'networkReport'])->name('network');
+        Route::get('/performance', [ICTEngineerController::class, 'performanceReport'])->name('performance');
+    });
+
+    // System Management
+    Route::prefix('system')->name('system.')->group(function () {
+        Route::get('/backups', [ICTEngineerController::class, 'backups'])->name('backups');
+        Route::get('/security', [ICTEngineerController::class, 'security'])->name('security');
+    });
+
+    // Settings
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [ICTEngineerController::class, 'settings'])->name('index');
+        Route::put('/profile', [ICTEngineerController::class, 'updateProfile'])->name('profile.update');
+        Route::put('/password', [ICTEngineerController::class, 'updatePassword'])->name('password.update');
+    });
+
+    // Documentation & Help
+    Route::get('/docs', [ICTEngineerController::class, 'docs'])->name('docs');
+    Route::get('/helpdesk', [ICTEngineerController::class, 'helpdesk'])->name('helpdesk');
+
+    // AJAX/API Routes
+    Route::prefix('api')->name('api.')->group(function () {
+        Route::get('/network-status', [ICTEngineerController::class, 'networkStatusApi'])->name('network.status');
+        Route::get('/ticket-stats', [ICTEngineerController::class, 'ticketStatsApi'])->name('ticket.stats');
+        Route::get('/server-status', [ICTEngineerController::class, 'serverStatusApi'])->name('server.status');
+    });
+});
 
     // ==========================
     // Legacy Admin Routes (Backward Compatibility)
@@ -656,12 +689,12 @@ Route::middleware(['auth'])->group(function () {
             });
 
             	  // customer Billing Routes
-        Route::controller(FinanceBillingController::class)->prefix('billing')->name('billing.')->group(function () {
+         Route::controller(FinanceBillingController::class)->prefix('billing')->name('billing.')->group(function () {
            Route::get('/{id}', 'show')->name('show');
 		   Route::get('/{id}/download', 'download')->name('download');
 		   Route::get('/{id}/preview', 'preview')->name('preview');
 
-        });
+         });
 
             // Print billing
             Route::get('/billing/{id}/print', [FinanceController::class, 'printBilling'])->name('billing.print');
@@ -690,12 +723,9 @@ Route::middleware(['auth'])->group(function () {
             // });
 
             // Payments Routes
-            Route::prefix('payments')->name('payments.')->controller(PaymentController::class)->group(function () {
-                Route::get('/', 'index')->name('index');
-                Route::get('/create/{lease}', 'create')->name('create');
-                Route::post('/store/{billingId}', 'store')->name('store');
-                Route::get('/{id}', 'show')->name('show');
-            });
+              Route::get('/payments', [PaymentCustomerController::class, 'index'])->name('payments.index');
+            Route::get('/payments/{payment}', [PaymentCustomerController::class, 'show'])->name('payments.show');
+            Route::get('/payments', [PaymentCustomerController::class, 'create'])->name('payments.create');
 
             // Support Tickets Routes
             Route::prefix('support')->name('support.')->controller(App\Http\Controllers\SupportController::class)->group(function () {
@@ -761,14 +791,83 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // Payment Followups
-        Route::prefix('payments')->name('payments.')->controller(PaymentFollowupController::class)->group(function () {
-            Route::get('/', 'index')->name('followups');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/', 'store')->name('store');
-            Route::post('/{id}/remind', 'remind')->name('remind');
-            Route::post('/{id}/paid', 'markPaid')->name('paid');
-            Route::delete('/{id}', 'destroy')->name('destroy');
-        });
+        // Route::prefix('payments')->name('payments.')->controller(PaymentFollowupController::class)->group(function () {
+        //     Route::get('/', 'index')->name('followups');
+        //     Route::get('/create', 'create')->name('create');
+        //     Route::post('/', 'store')->name('store');
+        //     Route::post('/{id}/remind', 'remind')->name('remind');
+        //     Route::post('/{id}/paid', 'markPaid')->name('paid');
+        //     Route::delete('/{id}', 'destroy')->name('destroy');
+        // });
+
+      // Payment Followups Routes
+    Route::prefix('payments')->name('payments.')->group(function () {
+
+        // ============ MAIN CRUD ROUTES ============
+        // List all payment followups
+        Route::get('/', [financePaymentFollowupController::class, 'index'])->name('index');
+
+        // Create new payment followup
+        Route::get('/create', [financePaymentFollowupController::class, 'create'])->name('create');
+        Route::post('/', [financePaymentFollowupController::class, 'store'])->name('store');
+
+        // View specific payment followup
+        Route::get('/{payment}', [financePaymentFollowupController::class, 'show'])->name('show');
+
+        // Edit payment followup
+        Route::get('/{payment}/edit', [financePaymentFollowupController::class, 'edit'])->name('edit');
+        Route::put('/{payment}', [financePaymentFollowupController::class, 'update'])->name('update');
+
+        // Delete payment followup
+        Route::delete('/{payment}', [financePaymentFollowupController::class, 'destroy'])->name('destroy');
+
+        // ============ ACTION ROUTES ============
+        // Send reminder to customer
+        Route::post('/{payment}/remind', [financePaymentFollowupController::class, 'sendReminder'])->name('send-reminder');
+
+        // Mark payment as paid
+        Route::post('/{payment}/mark-paid', [financePaymentFollowupController::class, 'markAsPaid'])->name('mark-paid');
+
+        // Reschedule payment due date
+        Route::post('/{payment}/reschedule', [financePaymentFollowupController::class, 'reschedule'])->name('reschedule');
+
+        // ============ BULK ACTION ROUTES ============
+        // Send reminders to multiple customers
+        Route::post('/bulk/send-reminders', [financePaymentFollowupController::class, 'bulkSendReminders'])->name('bulk.send-reminders');
+
+        // Delete multiple payment followups
+        Route::delete('/bulk', [financePaymentFollowupController::class, 'bulkDestroy'])->name('bulk.destroy');
+
+        // ============ UTILITY ROUTES ============
+        // Export payment followups
+        Route::get('/export', [financePaymentFollowupController::class, 'export'])->name('export');
+
+        // Search payment followups
+        Route::get('/search', [financePaymentFollowupController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/status/{status}', [financePaymentFollowupController::class, 'filterByStatus'])->name('filter.status');
+
+        // Filter by customer
+        Route::get('/customer/{customerId}', [financePaymentFollowupController::class, 'filterByCustomer'])->name('filter.customer');
+
+        // Statistics dashboard
+        Route::get('/statistics', [financePaymentFollowupController::class, 'statistics'])->name('statistics');
+
+        // Calendar view
+        Route::get('/calendar', [financePaymentFollowupController::class, 'calendar'])->name('calendar');
+
+        // Upcoming payments
+        Route::get('/upcoming', [financePaymentFollowupController::class, 'upcoming'])->name('upcoming');
+
+        // Overdue payments
+        Route::get('/overdue', [financePaymentFollowupController::class, 'overdue'])->name('overdue');
+    });
+
+         // Auto Billing Routes - Add these
+        Route::get('/auto-billing', [FinanceController::class, 'autoBilling'])->name('auto-billing.index');
+        Route::post('/auto-billing/generate', [FinanceController::class, 'generateInvoicesManually'])->name('auto-billing.generate');
+        Route::post('/auto-billing/settings/{customerId}', [FinanceController::class, 'updateBillingSettings'])->name('auto-billing.settings');
 
         // Debt Management Routes
         Route::prefix('debt')->name('debt.')->group(function () {
@@ -782,8 +881,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/reports/aging', [DebtManagementController::class, 'agingReport'])->name('reports.aging');
             Route::get('/collection', [DebtManagementController::class, 'collectionReport'])->name('collection');
             Route::put('/payments/{payment}', [DebtManagementController::class, 'paymentUpdate'])->name('payments.update');
-Route::get('/export', [DebtManagementController::class, 'export'])->name('export');
-            // Payment Management Routes
+            Route::get('/export', [DebtManagementController::class, 'export'])->name('export');
+            Route::get('/invoice/{id}/payment-plan-data', [DebtManagementController::class, 'getPaymentPlanData'])->name('payment-plan-data');
+            Route::post('/payment-plan/{id}', [DebtManagementController::class, 'createPaymentPlan'])->name('payment-plan.create');
+     // Payment Management Routes
             Route::prefix('payments')->name('payments.')->group(function () {
                 Route::get('/', [DebtManagementController::class, 'paymentIndex'])->name('index');
                 Route::get('/{payment}/edit', [DebtManagementController::class, 'paymentEdit'])->name('edit');
@@ -857,6 +958,19 @@ Route::get('/export', [DebtManagementController::class, 'export'])->name('export
             Route::delete('/{financialParameter}', [FinancialParameterController::class, 'destroy'])->name('destroy');
             Route::get('/api/current-rates', [FinancialParameterController::class, 'getCurrentRates'])->name('current-rates');
         });
+
+        Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+        Route::get('/payments/create', [PaymentController::class, 'create'])->name('payments.create');
+        Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+        Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
+        Route::post('/payments/{payment}/validate', [PaymentController::class, 'validatePayment'])->name('payments.validate');
+        Route::post('/payments/{payment}/reject', [PaymentController::class, 'rejectPayment'])->name('payments.reject');
+        Route::get('/payments/{payment}/download-slip', [PaymentController::class, 'downloadSlip'])->name('payments.download-slip');
+        Route::get('/payments/customer/{customerId}/invoices', [PaymentController::class, 'getCustomerInvoices'])->name('payments.customer.invoices');
+        Route::get('/payments/followups', [PaymentController::class, 'followups'])->name('payments.followups');
+        Route::get('/payments/customer/{customer}/invoices', [PaymentController::class, 'getCustomerInvoices'])->name('payments.customer.invoices');
+
+
     });
 
     // Additional debt routes outside the main finance group
@@ -865,6 +979,9 @@ Route::get('/export', [DebtManagementController::class, 'export'])->name('export
         Route::get('/reports/currency', [DebtManagementController::class, 'currencyReport'])->name('currency-report');
         Route::get('/overdue-invoices', [DebtManagementController::class, 'overdueInvoices'])->name('overdue-invoices');
         Route::get('/customer/{id}', [DebtManagementController::class, 'customerDebt'])->name('customer');
+ Route::post('/send-reminder/{id}', [DebtManagementController::class, 'sendReminder'])->name('send-reminder');
+Route::post('/bulk-send-reminder', [DebtManagementController::class, 'bulkSendReminder'])->name('bulk-send-reminder');
+
     });
 
     // Customer Portal Routes
@@ -877,15 +994,19 @@ Route::get('/export', [DebtManagementController::class, 'export'])->name('export
         Route::get('/statements/{id}', [StatementController::class, 'show'])->name('statements.show');
     });
 
-    // AI Analytics Routes - Single definition
-Route::prefix('finance/ai-analytics')->name('finance.ai.')->middleware(['auth'])->group(function () {
+// AI Analytics Routes
+// AI Analytics Routes
+Route::prefix('finance/ai-analytics')->name('finance.ai-analytics.')->group(function () {
     Route::get('/dashboard', [AiAnalyticsController::class, 'dashboard'])->name('dashboard');
-    Route::get('/customer/{id}', [AiAnalyticsController::class, 'customerIntelligence'])->name('customer');
     Route::get('/predictive', [AiAnalyticsController::class, 'predictiveAnalytics'])->name('predictive');
+    Route::get('/customer/{id}', [AiAnalyticsController::class, 'customerIntelligence'])->name('customer');
     Route::get('/recommendations', [AiAnalyticsController::class, 'recommendations'])->name('recommendations');
-    Route::match(['get', 'post'], '/report', [AiAnalyticsController::class, 'generateReport'])->name('report');
+    Route::post('/send-reminder/{id}', [AiAnalyticsController::class, 'sendReminder'])->name('send-reminder');
+    Route::get('/generate-report', [AiAnalyticsController::class, 'generateReport'])->name('generate-report');
+    Route::get('/export', [AiAnalyticsController::class, 'exportReport'])->name('export');
 });
-
+// Also keep the old route for backward compatibility
+Route::get('/finance/ai-analytics/report', [AiAnalyticsController::class, 'generateReport'])->name('finance.ai-analytics.report');
 // Financial Analytics Routes
     Route::prefix('finance/financial-analytics')->name('finance.financial-analytics.')->middleware(['auth'])->group(function () {
         Route::get('/dashboard', [FinancialAnalyticsController::class, 'dashboard'])->name('dashboard');
@@ -901,60 +1022,86 @@ Route::prefix('finance/ai-analytics')->name('finance.ai.')->middleware(['auth'])
     // ==========================
     // Designer Routes
     // ==========================
-    Route::prefix('designer')->middleware(['can:accountManagerOrDesigner'])->name('designer.')->group(function () {
-        Route::get('/dashboard', [DesignerController::class, 'dashboard'])->name('dashboard');
-        Route::get('/profile', [DesignerController::class, 'profile'])->name('profile');
-        Route::post('/design-requests/{designRequest}/update-status', [DesignerController::class, 'updateStatus'])->name('design-requests.update-status');
+   Route::prefix('designer')->middleware(['can:accountManagerOrDesigner'])->name('designer.')->group(function () {
 
-        // Certificate Routes
-        Route::post('/requests/{id}/certificate/conditional', [DesignerController::class, 'storeConditionalCertificate'])->name('requests.certificate.conditional');
-        Route::post('/requests/{id}/certificate/acceptance', [DesignerController::class, 'storeAcceptanceCertificate'])->name('requests.certificate.acceptance');
-        Route::get('/requests/assign-ict', [DesignerController::class, 'assignICTIndex'])->name('requests.assignictindex');
-        Route::post('/requests/assign-ict', [DesignerController::class, 'assignICTRequest'])->name('requests.assignict');
-        Route::get('/api/ict-engineer/{id}', [DesignerController::class, 'getICTEngineerDetails']);
+    // Dashboard & Profile
+    Route::get('/dashboard', [DesignerController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [DesignerController::class, 'profile'])->name('profile');
 
-        // Design Requests
-        Route::prefix('requests')->name('requests.')->group(function () {
-            Route::get('/', [DesignerController::class, 'requests'])->name('index');
-            Route::get('/{designRequest}', [DesignerController::class, 'showRequest'])->name('show');
-            Route::put('/{designRequest}', [DesignerController::class, 'updateDesign'])->name('update');
-            Route::put('/{designRequest}/specifications', [DesignItemController::class, 'updateDesignSpecifications'])->name('update-specifications');
-            Route::put('/{designRequest}/update-status', [DesignerController::class, 'updateRequestStatus'])->name('update-status');
-            Route::post('/{designRequest}/upload-design', [DesignerController::class, 'uploadDesign'])->name('upload-design');
-        });
+    // ICT Assignment
+    Route::get('/requests/assign-ict', [DesignerController::class, 'assignICTIndex'])->name('requests.assignictindex');
+    Route::post('/requests/assign-ict', [DesignerController::class, 'assignICTRequest'])->name('requests.assignict');
+    Route::get('/api/ict-engineer/{id}', [DesignerController::class, 'getICTEngineerDetails']);
 
-        Route::get('/colocation/create', [DesignerController::class, 'createColocation'])->name('colocation.create');
-
-        // Darkfire Items Management
-        Route::get('/darkfire-items', [DarkfireController::class, 'index'])->name('darkfire-items');
-        Route::get('/darkfire-items/{table}/create', [DarkfireController::class, 'create'])->name('darkfire-items.create');
-        Route::post('/darkfire-items/{table}', [DarkfireController::class, 'store'])->name('darkfire-items.store');
-        Route::get('/darkfire-items/{table}/{id}/edit', [DarkfireController::class, 'edit'])->name('darkfire-items.edit');
-        Route::put('/darkfire-items/{table}/{id}', [DarkfireController::class, 'update'])->name('darkfire-items.update');
-        Route::delete('/darkfire-items/{table}/{id}', [DarkfireController::class, 'destroy'])->name('darkfire-items.destroy');
-        Route::patch('/darkfire-items/{table}/{id}/toggle', [DarkfireController::class, 'toggleAvailability'])->name('darkfire-items.toggle');
-
-        // Quotations
-        Route::prefix('quotations')->name('quotations.')->group(function () {
-            Route::get('/', [QuotationController::class, 'index'])->name('index');
-            Route::get('/create', [QuotationController::class, 'create'])->name('create');
-            Route::post('/', [QuotationController::class, 'store'])->name('store');
-            Route::get('/{quotation}', [QuotationController::class, 'show'])->name('show');
-            Route::get('/{quotation}/edit', [QuotationController::class, 'edit'])->name('edit');
-            Route::put('/{quotation}', [QuotationController::class, 'update'])->name('update');
-            Route::delete('/{quotation}', [QuotationController::class, 'destroy'])->name('destroy');
-            Route::post('/{quotation}/send-for-approval', [QuotationController::class, 'sendForApproval'])->name('send-for-approval');
-            Route::get('/{quotation}/preview', [QuotationController::class, 'preview'])->name('preview');
-        });
-
-        // Design Items
-        Route::post('/design-items', [DesignItemController::class, 'storeDesignItems'])->name('design-items.store');
-        Route::delete('/design-items/{designItem}', [DesignItemController::class, 'destroyDesignItem'])->name('design-items.destroy');
-
-        // Colocation
-        Route::post('/colocation', [DesignerController::class, 'storeColocation'])->name('colocation.store');
-        Route::delete('/colocation/{colocationService}', [DesignerController::class, 'destroyColocation'])->name('colocation.destroy');
+    // Design Requests
+    Route::prefix('requests')->name('requests.')->group(function () {
+        Route::get('/', [DesignerController::class, 'requests'])->name('index');
+        Route::get('/{designRequest}', [DesignerController::class, 'showRequest'])->name('show');
+        Route::put('/{designRequest}', [DesignerController::class, 'updateDesign'])->name('update');
+        Route::put('/{designRequest}/specifications', [DesignItemController::class, 'updateDesignSpecifications'])->name('update-specifications');
+        Route::put('/{designRequest}/update-status', [DesignerController::class, 'updateRequestStatus'])->name('update-status');
+        Route::post('/{designRequest}/upload-design', [DesignerController::class, 'uploadDesign'])->name('upload-design');
     });
+
+    // Certificate Routes
+    Route::prefix('certificates')->name('certificates.')->group(function () {
+
+        // Conditional Certificates (View & Acknowledge)
+        Route::prefix('conditional')->name('conditional.')->group(function () {
+            Route::get('/', [DesignerCertificateController::class, 'conditionalIndex'])->name('index');
+            Route::get('/{certificate}', [DesignerCertificateController::class, 'showConditional'])->name('show');
+            Route::get('/{certificate}/download', [DesignerCertificateController::class, 'downloadConditional'])->name('download');
+            Route::put('/{certificate}/acknowledge', [DesignerCertificateController::class, 'acknowledgeConditional'])->name('acknowledge');
+        });
+
+        // Acceptance Certificates (Create, Store, View, Download)
+        Route::prefix('acceptance')->name('acceptance.')->group(function () {
+            Route::get('/', [DesignerCertificateController::class, 'acceptanceIndex'])->name('index');
+            Route::get('/create/{request}', [DesignerCertificateController::class, 'createAcceptance'])->name('create');
+            Route::post('/store/{request}', [DesignerCertificateController::class, 'storeAcceptance'])->name('store');
+            Route::get('/{certificate}', [DesignerCertificateController::class, 'showAcceptance'])->name('show');
+            Route::get('/{certificate}/download', [DesignerCertificateController::class, 'downloadAcceptance'])->name('download');
+        });
+    });
+
+    // Colocation
+    Route::get('/colocation/create', [DesignerController::class, 'createColocation'])->name('colocation.create');
+    Route::post('/colocation', [DesignerController::class, 'storeColocation'])->name('colocation.store');
+    Route::delete('/colocation/{colocationService}', [DesignerController::class, 'destroyColocation'])->name('colocation.destroy');
+
+    // Darkfire Items Management
+    Route::prefix('darkfire-items')->name('darkfire-items.')->group(function () {
+        Route::get('/', [DarkfireController::class, 'index'])->name('index');
+        Route::get('/{table}/create', [DarkfireController::class, 'create'])->name('create');
+        Route::post('/{table}', [DarkfireController::class, 'store'])->name('store');
+        Route::get('/{table}/{id}/edit', [DarkfireController::class, 'edit'])->name('edit');
+        Route::put('/{table}/{id}', [DarkfireController::class, 'update'])->name('update');
+        Route::delete('/{table}/{id}', [DarkfireController::class, 'destroy'])->name('destroy');
+        Route::patch('/{table}/{id}/toggle', [DarkfireController::class, 'toggleAvailability'])->name('toggle');
+    });
+
+    // Quotations
+    Route::prefix('quotations')->name('quotations.')->group(function () {
+        Route::get('/', [QuotationController::class, 'index'])->name('index');
+        Route::get('/create', [QuotationController::class, 'create'])->name('create');
+        Route::post('/', [QuotationController::class, 'store'])->name('store');
+        Route::get('/{quotation}', [QuotationController::class, 'show'])->name('show');
+        Route::get('/{quotation}/edit', [QuotationController::class, 'edit'])->name('edit');
+        Route::put('/{quotation}', [QuotationController::class, 'update'])->name('update');
+        Route::delete('/{quotation}', [QuotationController::class, 'destroy'])->name('destroy');
+        Route::post('/{quotation}/send-for-approval', [QuotationController::class, 'sendForApproval'])->name('send-for-approval');
+        Route::get('/{quotation}/preview', [QuotationController::class, 'preview'])->name('preview');
+    });
+
+    // Design Items
+    Route::post('/design-items', [DesignItemController::class, 'storeDesignItems'])->name('design-items.store');
+    Route::delete('/design-items/{designItem}', [DesignItemController::class, 'destroyDesignItem'])->name('design-items.destroy');
+// Notification routes
+    Route::get('/notifications', [DesignerController::class, 'notifications'])->name('notifications');
+    Route::post('/notifications/mark-all-read', [DesignerController::class, 'markAllNotificationsRead'])->name('notifications.mark-all-read');
+    Route::post('/notifications/{notification}/mark-read', [DesignerController::class, 'markNotificationRead'])->name('notifications.mark-read');
+
+});
 
     // ==========================
     // Surveyor Routes
@@ -1560,10 +1707,27 @@ Route::middleware(['auth'])->group(function () {
         ->name('executive.dashboard.refresh');
         Route::get('/executive-dashboard/gis', [ExecutiveDashboardController::class, 'gis'])
     ->name('executive.dashboard.gis');
+     Route::get('/executive/dashboard', [ExecutiveDashboardController::class, 'roleDashboard'])
+        ->name('executive.role.dashboard');
 });
 
+// Send payment reminder to customer
+Route::post('/account-manager/customers/{customer}/send-reminder', [CustomerController::class, 'sendReminder'])
+    ->name('account-manager.customers.send-reminder');
 
-    // Route::get('/executive-dashboard', [ExecutiveDashboardController::class, 'index'])->name('executive.dashboard');
+// Send specific invoice reminder
+Route::post('/account-manager/customers/{customer}/send-invoice-reminder', [CustomerController::class, 'sendInvoiceReminder'])
+    ->name('account-manager.customers.send-invoice-reminder');
+
+  // Notification Routes (Authenticated users only)
+Route::middleware(['auth'])->group(function () {
+    Route::post('/notifications/{notification}/read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/read-all', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::get('/notifications/unread-count', [App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('notifications.unreadCount');
+
+    // Optional: Notifications index page
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+});
 
 // Include API routes
 require __DIR__.'/api.php';

@@ -10,51 +10,61 @@ class QuotationPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
-
-        // return in_array($user->role, [
-        //     'admin',
-        //     'system_admin',
-        //     'account_manager',
-        //     'accountmanager_admin',
-        //     'customer',
-        //     'designer','finance', 'technical_admin'
-        // ]);
+        return in_array($user->role, [
+            'admin',
+            'system_admin',
+            'account_manager',
+            'accountmanager_admin',
+            'customer',
+            'designer',
+            'finance',
+            'technical_admin'
+        ]);
     }
-
-    // In app/Policies/QuotationPolicy.php
-
-// In app/Policies/QuotationPolicy.php
-
-public function review(User $user, Quotation $quotation)
-{
-    // Admins can review any quotation
-    if ($user->role === 'admin') {
-        return true;
-    }
-
-    // Account managers can review quotations for their customers
-    if ($user->role === 'account_manager' &&
-        $quotation->customer->account_manager_id === $user->id) {
-        return true;
-    }
-
-    // Designers can review quotations they created
-    if ($user->role === 'designer' &&
-        $quotation->designRequest->designer_id === $user->id) {
-        return true;
-    }
-
-    return false;
-}
 
     /**
- * Determine whether the user can view the model.
- */
+     * Determine whether the user can review a quotation.
+     * Fixed version with proper null checks
+     */
+    public function review(User $user, Quotation $quotation): bool
+    {
+        // Admins can review any quotation
+        if (in_array($user->role, ['admin', 'account_manager', 'system_admin', 'technical_admin'])) {
+            return true;
+        }
+
+        // Account managers can review quotations for their customers
+        if (in_array($user->role, ['account_manager', 'accountmanager_admin'])) {
+            // Load the relationship if not already loaded
+            if (!$quotation->relationLoaded('customer')) {
+                $quotation->load('customer');
+            }
+
+            // Check if the account manager is assigned to this customer
+            return $quotation->customer && $quotation->customer->account_manager_id === $user->id;
+        }
+
+        // Designers can review quotations they created
+        if ($user->role === 'designer') {
+            // Load the relationship if not already loaded
+            if (!$quotation->relationLoaded('designRequest')) {
+                $quotation->load('designRequest');
+            }
+
+            // Check if the designer is assigned to this design request
+            return $quotation->designRequest && $quotation->designRequest->designer_id === $user->id;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     */
     public function view(User $user, Quotation $quotation): bool
     {
         // System admin and admin can view all quotations
-        if (in_array($user->role, ['system_admin', 'admin'])) {
+        if (in_array($user->role, ['system_admin', 'admin', 'technical_admin'])) {
             return true;
         }
 
@@ -74,13 +84,12 @@ public function review(User $user, Quotation $quotation)
                    ($quotation->designRequest && $quotation->designRequest->customer_id === $user->id);
         }
 
-          return $user->hasAnyRole([
-        'admin',
-        'account_manager',
-        'designer',
-        'finance',
-        'technical_admin', 'accountmanager_admin'
-    ]);
+        // Finance can view all quotations
+        if ($user->role === 'finance') {
+            return true;
+        }
+
+        return false;
     }
 
     public function create(User $user): bool
@@ -90,19 +99,20 @@ public function review(User $user, Quotation $quotation)
             'system_admin',
             'account_manager',
             'accountmanager_admin',
-            'designer'
+            'designer',
+            'technical_admin'
         ]);
     }
 
     public function update(User $user, Quotation $quotation): bool
     {
-        // Only draft quotations can be updated
+        // Only draft or rejected quotations can be updated
         if (!in_array($quotation->status, ['draft', 'rejected'])) {
-    return false;
-}
+            return false;
+        }
 
         // System admin and admin can update any draft quotation
-        if (in_array($user->role, ['system_admin', 'admin'])) {
+        if (in_array($user->role, ['system_admin', 'admin', 'technical_admin'])) {
             return true;
         }
 
@@ -127,7 +137,7 @@ public function review(User $user, Quotation $quotation)
         }
 
         // System admin and admin can delete any draft quotation
-        if (in_array($user->role, ['system_admin', 'admin'])) {
+        if (in_array($user->role, ['system_admin', 'admin', 'technical_admin'])) {
             return true;
         }
 
@@ -151,10 +161,11 @@ public function review(User $user, Quotation $quotation)
             return false;
         }
 
-        // System admin, admin, and account managers can send quotations
+        // System admin, admin, technical admin, and account managers can send quotations
         return in_array($user->role, [
             'admin',
             'system_admin',
+            'technical_admin',
             'account_manager',
             'accountmanager_admin'
         ]);
@@ -162,19 +173,20 @@ public function review(User $user, Quotation $quotation)
 
     public function approve(User $user, Quotation $quotation): bool
     {
-        // System admin, admin and account managers can approve internally
-        if (in_array($user->role, ['admin', 'system_admin', 'account_manager', 'accountmanager_admin'])) {
-            return $quotation->status === 'draft';
+        // Can only approve customer-approved quotations
+        if ($quotation->status !== 'customer_approved') {
+            return false;
         }
 
-        return false;
+        // System admin, admin, technical admin can approve
+        return in_array($user->role, ['admin', 'system_admin', 'technical_admin']);
     }
 
     public function reject(User $user, Quotation $quotation): bool
     {
-        // System admin, admin and account managers can reject internally
-        if (in_array($user->role, ['admin', 'system_admin', 'account_manager', 'accountmanager_admin'])) {
-            return $quotation->status === 'draft';
+        // System admin, admin, technical admin, and account managers can reject internally
+        if (in_array($user->role, ['admin', 'system_admin', 'technical_admin', 'account_manager', 'accountmanager_admin'])) {
+            return $quotation->status === 'draft' || $quotation->status === 'sent';
         }
 
         return false;

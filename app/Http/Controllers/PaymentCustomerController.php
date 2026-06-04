@@ -7,7 +7,7 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PaymentController extends Controller
+class PaymentCustomerController extends Controller
 {
      public function create(Lease $lease)
     {

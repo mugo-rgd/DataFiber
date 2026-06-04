@@ -26,7 +26,7 @@
             <button class="btn btn-kp-primary" onclick="exportToExcel()">
                 <i class="fas fa-file-excel me-2"></i>Export to Excel
             </button>
-            <a href="{{ route('finance.debt.dashboard') }}" class="btn btn-secondary">
+            <a href="{{ route('finance.dashboard') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
             </a>
         </div>

@@ -853,15 +853,7 @@ public function assignedICTEngineer()
 {
     return $this->belongsTo(User::class, 'assigned_ict_engineer_id');
 }
-//   public function conditionalCertificate()
-//     {
-//         return $this->belongsTo(ConditionalCertificate::class, 'conditional_certificate_id');
-//     }
-
-//       public function acceptanceCertificate()
-//     {
-//         return $this->hasOne(AcceptanceCertificate::class, 'request_id');
-//     }
+// app/Models/DesignRequest.php
 
 public function lease()
 {
@@ -1002,13 +994,36 @@ public function customRoutes()
 public function accountManager()
 {
     return $this->hasOneThrough(
-        User::class,
-        User::class,
-        'id', // Foreign key on users table (customer)
-        'id', // Foreign key on users table (account manager)
-        'customer_id', // Local key on design_requests
-        'account_manager_id' // Foreign key on users table for customer's account manager
+        User::class,        // Target model (Account Manager)
+        User::class,        // Intermediate model (Customer)
+        'id',               // Foreign key on intermediate table (users.id for customer)
+        'id',               // Foreign key on target table (users.id for account manager)
+        'customer_id',      // Local key on design_requests
+        'account_manager_id' // Local key on intermediate table (customers.account_manager_id)
     )->where('users.role', 'account_manager');
+}
+
+// app/Models/DesignRequest.php
+
+protected $appends = ['account_manager_name'];
+
+public function getAccountManagerNameAttribute()
+{
+    if (!$this->customer) {
+        return null;
+    }
+
+    $accountManager = User::find($this->customer->account_manager_id);
+    return $accountManager ? $accountManager->name : null;
+}
+
+public function getAccountManagerAttribute()
+{
+    if (!$this->customer || !$this->customer->account_manager_id) {
+        return null;
+    }
+
+    return User::find($this->customer->account_manager_id);
 }
 
 }

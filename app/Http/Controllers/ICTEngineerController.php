@@ -186,7 +186,7 @@ public function updateStatus(Request $request, $id)
     return response()->json([
         'success' => true,
         'message' => 'Status updated successfully',
-        'new_status' => $validated['technical_status'], 
+        'new_status' => $validated['technical_status'],
     ]);
 }
     // Show individual design request
@@ -439,5 +439,20 @@ public function updateTicket(Request $request, Ticket $ticket)
         return view('ictengineer.equipment', compact('equipment'));
     }
 
+/**
+ * Show quotation for ICT engineer
+ */
+public function showQuotation($quotationId)
+{
+    $quotation = \App\Models\Quotation::with(['designRequest', 'customer', 'commercialRoutes', 'colocationServices', 'customRoutes'])
+        ->findOrFail($quotationId);
 
+    // Check if the ICT engineer has access to this quotation
+    $designRequest = $quotation->designRequest;
+    if ($designRequest->ict_engineer_id != Auth::id() && $designRequest->designer_id != Auth::id()) {
+        abort(403, 'Unauthorized access to this quotation.');
+    }
+
+    return view('ictengineer.quotations.show', compact('quotation'));
+}
 }

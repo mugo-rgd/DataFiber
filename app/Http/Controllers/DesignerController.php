@@ -715,17 +715,55 @@ public function assignICTIndex()
         'Nyanza Region'
     ];
 
-    // Get all regional engineers (not just ICT)
+    // Get all regional engineers with their county/region information
     $regionalEngineers = User::whereIn('role', ['engineer', 'regional_engineer', 'ict_engineer', 'designer'])
         ->where('status', true)
         ->with('county')
         ->orderBy('name')
-        ->get();
+        ->get()
+        ->map(function($engineer) {
+            // Determine engineer's region from their county
+            if ($engineer->county) {
+                $engineer->region = $engineer->county->region ?? $engineer->assigned_region ?? 'Unassigned';
+                $engineer->region_name = $engineer->county->region ?? 'Unassigned';
+                $engineer->county_name = $engineer->county->name;
+            } else {
+                $engineer->region = $engineer->assigned_region ?? 'Unassigned';
+                $engineer->region_name = $engineer->assigned_region ?? 'Unassigned';
+                $engineer->county_name = 'No County Assigned';
+            }
+            return $engineer;
+        });
 
-    // Get all counties
+    // Group engineers by region
+    $engineersByRegion = [];
+    foreach ($regionalEngineers as $engineer) {
+        $region = $engineer->region;
+        if (!isset($engineersByRegion[$region])) {
+            $engineersByRegion[$region] = [];
+        }
+        $engineersByRegion[$region][] = $engineer;
+    }
+
+    // Get all counties with their regions
     $counties = County::active()
         ->orderBy('name')
-        ->get();
+        ->get()
+        ->map(function($county) {
+            // Ensure county has a region mapped
+            $county->region = $county->region ?? $county->assigned_region ?? 'Unassigned';
+            return $county;
+        });
+
+    // Group counties by region for easier filtering
+    $countiesByRegion = [];
+    foreach ($counties as $county) {
+        $region = $county->region;
+        if (!isset($countiesByRegion[$region])) {
+            $countiesByRegion[$region] = [];
+        }
+        $countiesByRegion[$region][] = $county;
+    }
 
     // Get requests grouped by REGION through county relationship
     $regionRequests = [];
@@ -735,60 +773,43 @@ public function assignICTIndex()
         $regionRequests[$region] = 0;
     }
 
-    // First, let's see what counties are actually being used
-    $usedCountyIds = DesignRequest::whereIn('status', ['pending', 'assigned', 'assigned_to_regional', 'ICT assigned'])
-        ->whereNotNull('county_id')
-        ->distinct('county_id')
-        ->pluck('county_id');
+    // Count requests for each region
+    $allRequests = DesignRequest::whereIn('status', ['pending', 'assigned', 'assigned_to_regional', 'ICT assigned'])
+        ->with('county')
+        ->get();
 
-    \Log::info('Used county IDs: ' . $usedCountyIds->implode(', '));
-
-    if ($usedCountyIds->count() > 0) {
-        // Get the counties and their regions
-        $usedCounties = County::whereIn('id', $usedCountyIds)->get(['id', 'name', 'region']);
-
-        \Log::info('Used counties with regions:', $usedCounties->toArray());
-
-        // Count requests for each of these counties
-        foreach ($usedCounties as $county) {
-            $count = DesignRequest::whereIn('status', ['pending', 'assigned', 'assigned_to_regional', 'ICT assigned'])
-                ->where('county_id', $county->id)
-                ->count();
-
-            if (isset($regionRequests[$county->region])) {
-                $regionRequests[$county->region] += $count;
-            } else {
-                $regionRequests[$county->region] = $count;
+    foreach ($allRequests as $request) {
+        if ($request->county && $request->county->region) {
+            $region = $request->county->region;
+            if (isset($regionRequests[$region])) {
+                $regionRequests[$region]++;
             }
+        } else {
+            // Handle requests without county
+            $regionRequests['Unassigned'] = ($regionRequests['Unassigned'] ?? 0) + 1;
         }
     }
-
-    // Also count requests without county for statistics
-    $requestsWithoutCounty = DesignRequest::whereIn('status', ['pending', 'assigned', 'assigned_to_regional', 'ICT assigned'])
-        ->whereNull('county_id')
-        ->count();
-
-    \Log::info("Design requests WITHOUT county_id: " . $requestsWithoutCounty);
-    \Log::info("Design requests WITH county_id: " . $usedCountyIds->count());
-    \Log::info('Final region counts:', $regionRequests);
 
     // Statistics
     $totalRequestsCount = DesignRequest::count();
     $pendingRequestsCount = DesignRequest::whereIn('status', ['pending', 'assigned', 'assigned_to_regional'])->count();
 
     // Count ICT requests (requests not assigned to ICT yet)
-    $ictRequestsCount = DesignRequest::where(function($query) {
-            $query->whereNull('assigned_ict_engineer_id')
-                  ->orWhereNull('ict_engineer_id');
-        })
+    $ictRequestsCount = DesignRequest::whereNull('assigned_ict_engineer_id')
         ->whereIn('status', ['pending', 'assigned', 'assigned_to_regional'])
+        ->count();
+
+    $requestsWithoutCounty = DesignRequest::whereIn('status', ['pending', 'assigned', 'assigned_to_regional', 'ICT assigned'])
+        ->whereNull('county_id')
         ->count();
 
     return view('designer.ict-assign', compact(
         'requests',
         'regions',
         'regionalEngineers',
+        'engineersByRegion',
         'counties',
+        'countiesByRegion',
         'regionRequests',
         'totalRequestsCount',
         'pendingRequestsCount',
@@ -828,10 +849,6 @@ private function getRegionCounts()
     return $counts;
 }
 
-
-/**
- * Assign design request to regional engineer (for all requests)
- */
 /**
  * Assign design request to regional ICT engineer
  */
@@ -903,7 +920,7 @@ public function assignICTRequest(Request $request)
                     }
 
                     $designRequest->ict_status = 'assigned';
-                    $designRequest->status = 'assigned';
+                    $designRequest->status = 'ict_assigned';
 
                     // Save and check result
                     $saved = $designRequest->save();
@@ -995,4 +1012,25 @@ public function getRegionalEngineerDetails($id)
         'specialization' => $engineer->specialization
     ]);
  }
+
+ public function notifications()
+{
+    $notifications = auth()->user()->notifications()->paginate(20);
+    return view('designer.notifications.index', compact('notifications'));
+}
+
+public function markAllNotificationsRead()
+{
+    auth()->user()->unreadNotifications->markAsRead();
+    return response()->json(['success' => true]);
+}
+
+public function markNotificationRead($notificationId)
+{
+    $notification = auth()->user()->notifications()->find($notificationId);
+    if ($notification) {
+        $notification->markAsRead();
+    }
+    return response()->json(['success' => true]);
+}
 }

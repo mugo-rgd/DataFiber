@@ -203,7 +203,7 @@ class User extends Authenticatable
 public function customers()
 {
     // Make sure 'account_manager_id' is the correct foreign key
-    return $this->hasMany(Customer::class, 'account_manager_id');
+    return $this->hasMany(User::class, 'account_manager_id');
 }
     public function isDebtManager(): bool
     {
@@ -1394,7 +1394,7 @@ public function totalUnreadMessages()
         $this->save();
     }
 
-    
+
 }
 
 

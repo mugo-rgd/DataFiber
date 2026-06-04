@@ -63,7 +63,7 @@ $customers = User::where('account_manager_id', Auth::id())
         ]);
 
         // Verify the customer is managed by the current account manager
-        $customer = User::where('user_id', $request->customer_id)
+        $customer = User::where('id', $request->customer_id)
             ->where('account_manager_id', Auth::id())
             ->where('role', 'customer')
             ->firstOrFail();

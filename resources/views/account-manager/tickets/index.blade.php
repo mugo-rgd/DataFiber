@@ -7,7 +7,12 @@
     <div class="row">
         <div class="col-12">
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h1 class="h3 mb-0 text-gray-800">Support Tickets</h1>
+                <div>
+                    <a href="{{ route('account-manager.dashboard') }}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                    <h1 class="h3 mb-0 text-gray-800 d-inline-block align-middle ms-2">Support Tickets</h1>
+                </div>
                 <a href="{{ route('account-manager.tickets.create') }}" class="btn btn-kp-primary">
                     <i class="fas fa-plus"></i> Create New Ticket
                 </a>
@@ -141,4 +146,81 @@
         </div>
     </div>
 </div>
+
+<style>
+/* Priority Badge Styles */
+.badge {
+    padding: 6px 12px !important;
+    border-radius: 30px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    display: inline-block !important;
+}
+
+/* Priority Colors */
+.badge-priority-low {
+    background-color: #10b981 !important;
+    color: white !important;
+}
+
+.badge-priority-medium {
+    background-color: #f59e0b !important;
+    color: white !important;
+}
+
+.badge-priority-high {
+    background-color: #ef4444 !important;
+    color: white !important;
+}
+
+.badge-priority-urgent {
+    background-color: #7c1e3f !important;
+    color: white !important;
+}
+
+/* Status Colors */
+.badge-status-open {
+    background-color: #3b82f6 !important;
+    color: white !important;
+}
+
+.badge-status-in_progress {
+    background-color: #8b5cf6 !important;
+    color: white !important;
+}
+
+.badge-status-resolved {
+    background-color: #10b981 !important;
+    color: white !important;
+}
+
+.badge-status-closed {
+    background-color: #6b7280 !important;
+    color: white !important;
+}
+
+/* Overdue Badge */
+.badge-danger {
+    background-color: #dc2626 !important;
+    color: white !important;
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    margin-left: 6px !important;
+}
+
+/* Table row hover effect */
+.table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .badge {
+        padding: 4px 8px !important;
+        font-size: 10px !important;
+    }
+}
+</style>
 @endsection

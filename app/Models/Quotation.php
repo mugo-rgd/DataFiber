@@ -576,6 +576,43 @@ public function colocationServices()
         ->withTimestamps();
 }
 
+// In app/Models/Quotation.php
+
+/**
+ * Get the design request defaults for this quotation
+ */
+public function getDesignRequestDefaults(): array
+{
+    $designRequest = $this->designRequest;
+
+    return [
+        'cores' => (int) ($designRequest->cores_required ?? 2),
+        'duration' => (int) ($designRequest->terms ?? 12),
+        'distance' => (float) ($designRequest->distance ?? 0),
+        'technology_type' => $designRequest->technology_type ?? 'ADSS',
+        'link_class' => $designRequest->link_class ?? 'Standard',
+    ];
+}
+
+/**
+ * Check if quotation values match design request defaults
+ */
+public function matchesDesignRequestDefaults(): array
+{
+    $defaults = $this->getDesignRequestDefaults();
+    $matches = [];
+
+    foreach ($this->line_items as $item) {
+        if (isset($item['metadata']['cores']) && $item['metadata']['cores'] != $defaults['cores']) {
+            $matches['cores_mismatch'] = true;
+        }
+        if (isset($item['metadata']['duration_months']) && $item['metadata']['duration_months'] != $defaults['duration']) {
+            $matches['duration_mismatch'] = true;
+        }
+    }
+
+    return $matches;
+}
     // Add scope for currency filtering
     public function scopeCurrency($query, $currency)
     {
