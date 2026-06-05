@@ -21,14 +21,22 @@
                             <p class="lead mb-0 opacity-90">Track and manage overdue invoices and collections</p>
                         </div>
                     </div>
-                    <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
-                        <span class="badge bg-white text-kp-blue px-3 py-2 rounded-pill">
-                            <i class="far fa-calendar-alt me-1"></i>{{ now()->format('l, F j, Y') }}
-                        </span>
-                        <span class="badge bg-white text-kp-blue px-3 py-2 rounded-pill">
-                            <i class="fas fa-chart-line me-1"></i>Real-time Data
-                        </span>
-                    </div>
+                   <div class="d-flex flex-wrap align-items-center gap-3 mt-3">
+    <!-- Date Badge -->
+    <span class="badge px-3 py-2 rounded-pill shadow-sm" style="background: linear-gradient(135deg, #0066B3, #005199); color: white;">
+        <i class="far fa-calendar-alt me-1"></i>{{ now()->format('l, F j, Y') }}
+    </span>
+
+    <!-- Status Badge -->
+    <span class="badge px-3 py-2 rounded-pill shadow-sm" style="background: linear-gradient(135deg, #009639, #00802c); color: white;">
+        <i class="fas fa-chart-line me-1"></i>Real-time Data
+    </span>
+
+    <!-- Live Indicator -->
+    <span class="badge px-3 py-2 rounded-pill shadow-sm" style="background: linear-gradient(135deg, #fd79a8, #e84393); color: white;">
+        <i class="fas fa-circle text-white me-1" style="font-size: 0.6rem;"></i>Live
+    </span>
+</div>
                 </div>
 
                 <div class="col-12 col-lg-5">

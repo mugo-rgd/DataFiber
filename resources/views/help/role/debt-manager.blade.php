@@ -78,7 +78,7 @@
                     <li><strong>Collection Priority</strong> - Rank customers by collection urgency</li>
                     <li><strong>Trend Analysis</strong> - Track payment patterns over time</li>
                 </ul>
-                <a href="{{ route('finance.ai.predictive') }}" class="btn btn-sm btn-kp-primary">
+                <a href="{{ route('finance.ai-analytics.predictive') }}" class="btn btn-sm btn-kp-primary">
                     <i class="fas fa-brain"></i> Open AI Analytics
                 </a>
             </div>
