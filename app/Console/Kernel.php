@@ -64,9 +64,15 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:prune-failed')->daily();
         $schedule->command('queue:flush')->weekly();
         $schedule->command('exchange:sync')->dailyAt('00:00');
-        
+
+         $schedule->command('reports:generate-executive')
+             ->dailyAt('01:00')
+             ->appendOutputTo(storage_path('logs/executive-reports.log'));
+
 // Run KPI snapshot on the 1st of each month at midnight
         $schedule->command('kpi:snapshot')->monthlyOn(1, '00:00');
+
+
     }
 
     /**
