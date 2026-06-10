@@ -1,312 +1,183 @@
-@php
-    $previousUrl = url()->previous();
-    $currentUrl = url()->current();
-
-    // If previous URL is the same as current or empty, use customer show route as fallback
-    if ($previousUrl === $currentUrl || empty($previousUrl)) {
-        $backUrl = route('account-manager.customers.show', $customer);
-    } else {
-        $backUrl = $previousUrl;
-    }
-@endphp
-
 @extends('layouts.app')
 
-@section('title', $customer->name . ' - Customer Details')
+@section('title', 'Customer Details - ' . ($customer->company_name ?? $customer->name))
 
 @section('content')
 <div class="container-fluid">
-    <!-- Customer Header -->
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-12">
-            <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <h1 class="h3 mb-0 text-gray-800">Customer Details</h1>
-                <div class="btn-group">
-                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary">
-                        <i class="fas fa-plus"></i> New Ticket
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-user-circle me-2" style="color: #0066B3;"></i>
+                    Customer Details: {{ $customer->company_name ?? $customer->name }}
+                </h1>
+                <div>
+                    <a href="{{ route('account-manager.customers.index') }}" class="btn btn-outline-secondary me-2">
+                        <i class="fas fa-arrow-left me-2"></i>Back
                     </a>
-                    <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-success">
-                        <i class="fas fa-money-bill-wave"></i> New Payment
-                    </a>
-                    <a href="{{ route('account-manager.leases.create', ['customer_id' => $customer->id]) }}" class="btn btn-kp-primary ms-2">
-                        <i class="fas fa-file-contract"></i> New Lease
-                    </a>
-                </div>
-                <a href="{{ $backUrl }}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    @if($backUrl === route('account-manager.customers.index', $customer))
-                        Back to Customer
-                    @else
-                        Back to Previous
-                    @endif
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Customer Information -->
-    <div class="row">
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card shadow">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-kp-blue">Customer Information</h6>
-                </div>
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <td><strong>Name:</strong></td>
-                            <td>{{ $customer->name }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Email:</strong></td>
-                            <td>{{ $customer->email }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Phone:</strong></td>
-                            <td>{{ $customer->phone ?? 'N/A' }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Assigned Since:</strong></td>
-                            <td>{{ $customer->assigned_at ? $customer->assigned_at->format('M d, Y') : 'N/A' }}</td>
-                        </tr>
-                        @if($customer->assignment_notes)
-                        <tr>
-                            <td><strong>Notes:</strong></td>
-                            <td>{{ $customer->assignment_notes }}</td>
-                        </tr>
-                        @endif
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="col-xl-8 col-md-6 mb-4">
-            <div class="row">
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-warning shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-kp-yellow text-uppercase mb-1">
-                                        Open Tickets</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        {{ $customer->supportTickets->whereIn('status', ['open', 'in_progress'])->count() }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-ticket-alt fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-info shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                        Pending Payments</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        {{ $customer->paymentFollowups->whereIn('status', ['pending', 'reminded'])->count() }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-money-bill-wave fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-success shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-kp-green text-uppercase mb-1">
-                                        Total Tickets</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        {{ $customer->supportTickets->count() }}
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-6 col-md-6 mb-4">
-                    <div class="card border-left-primary shadow h-100 py-2">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-kp-blue text-uppercase mb-1">
-                                        Total Leases
-                                    </div>
-                                    <div class="h5 mb-2 font-weight-bold text-gray-800">
-                                        {{ App\Models\Lease::where('customer_id', $customer->id)->count() }}
-                                    </div>
-                                    <a href="{{ route('account-manager.leases.index', ['customer_id' => $customer->id]) }}" class="btn btn-outline-kp-success btn-sm">Manage Leases</a>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="fas fa-file-contract fa-2x text-gray-300"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <button type="button" class="btn btn-danger" onclick="sendReminder()">
+                        <i class="fas fa-bell me-2"></i>Send Reminder
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Support Tickets -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-kp-blue">Support Tickets</h6>
-                    <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary btn-sm">
-                        <i class="fas fa-plus"></i> New Ticket
-                    </a>
-                </div>
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
                 <div class="card-body">
-                    @if($customer->supportTickets->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Priority</th>
-                                    <th>Status</th>
-                                    <th>Type</th>
-                                    <th>Due Date</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($customer->supportTickets as $ticket)
-                                <tr>
-                                    <td>{{ Str::limit($ticket->title, 50) }}</td>
-                                    <td>
-                                        <span class="badge {{ $ticket->getPriorityBadgeClass() }}">
-                                            {{ ucfirst($ticket->priority) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $ticket->getStatusBadgeClass() }}">
-                                            {{ ucfirst(str_replace('_', ' ', $ticket->status)) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ ucfirst($ticket->type) }}</td>
-                                    <td>
-                                        @if($ticket->due_date)
-                                        <span class="{{ $ticket->isOverdue() ? 'text-danger' : '' }}">
-                                            {{ $ticket->due_date->format('M d, Y') }}
-                                        </span>
-                                        @else
-                                        N/A
-                                        @endif
-                                    </td>
-                                    <td>{{ $ticket->created_at->format('M d, Y') }}</td>
-                                    <td>
-                                        <a href="{{ route('account-manager.tickets.show', $ticket) }}" class="btn btn-sm btn-kp-primary">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    @else
-                    <div class="text-center py-4">
-                        <i class="fas fa-ticket-alt fa-3x text-gray-300 mb-3"></i>
-                        <p class="text-muted">No support tickets for this customer.</p>
-                        <a href="{{ route('account-manager.tickets.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary">Create First Ticket</a>
-                    </div>
-                    @endif
+                    <h6 class="card-title">Outstanding Balance</h6>
+                    <h3 class="mb-0">${{ number_format($debtSummary->outstanding ?? 0, 2) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Overdue Amount</h6>
+                    <h3 class="mb-0">${{ number_format($debtSummary->overdue_amount ?? 0, 2) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Total Paid</h6>
+                    <h3 class="mb-0">${{ number_format($debtSummary->total_paid ?? 0, 2) }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title">Open Tickets</h6>
+                    <h3 class="mb-0">{{ $stats['open_tickets'] }}</h3>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Payment Followups -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow">
-                <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                    <h6 class="m-0 font-weight-bold text-kp-blue">Payment Followups</h6>
-                    <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary btn-sm">
-                        <i class="fas fa-plus"></i> New Payment
-                    </a>
-                </div>
-                <div class="card-body">
-                    @if($customer->paymentFollowups->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Amount</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                    <th>Notes</th>
-                                    <th>Created</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($customer->paymentFollowups as $payment)
-                                <tr>
-                                    <td class="font-weight-bold">${{ number_format($payment->amount, 2) }}</td>
-                                    <td>
-                                        <span class="{{ $payment->isOverdue() ? 'text-danger' : ($payment->isDueSoon() ? 'text-kp-yellow' : '') }}">
-                                            {{ $payment->due_date->format('M d, Y') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge {{ $payment->getStatusBadgeClass() }}">
-                                            {{ ucfirst($payment->status) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $payment->notes ? Str::limit($payment->notes, 50) : 'N/A' }}</td>
-                                    <td>{{ $payment->created_at->format('M d, Y') }}</td>
-                                    <td>
-                                        @if($payment->status === 'pending')
-                                        <form action="{{ route('account-manager.payments.remind', $payment) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-kp-warning" title="Mark as Reminded">
-                                                <i class="fas fa-bell"></i>
-                                            </button>
-                                        </form>
-                                        @endif
-                                        <form action="{{ route('account-manager.payments.paid', $payment) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-kp-success" title="Mark as Paid">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    @else
-                    <div class="text-center py-4">
-                        <i class="fas fa-money-bill-wave fa-3x text-gray-300 mb-3"></i>
-                        <p class="text-muted">No payment followups for this customer.</p>
-                        <a href="{{ route('account-manager.payments.create') }}?customer_id={{ $customer->id }}" class="btn btn-kp-primary">Create First Payment</a>
-                    </div>
-                    @endif
+    <!-- Additional Stats Row -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card border">
+                <div class="card-body text-center">
+                    <h5 class="mb-0">{{ $stats['active_leases'] }}</h5>
+                    <small class="text-muted">Active Leases</small>
                 </div>
             </div>
         </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border">
+                <div class="card-body text-center">
+                    <h5 class="mb-0">{{ $stats['pending_payments'] }}</h5>
+                    <small class="text-muted">Pending Payments</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border">
+                <div class="card-body text-center">
+                    <h5 class="mb-0">{{ $stats['total_tickets'] }}</h5>
+                    <small class="text-muted">Total Tickets</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card border">
+                <div class="card-body text-center">
+                    <h5 class="mb-0">{{ $stats['profile_completion'] }}%</h5>
+                    <small class="text-muted">Profile Complete</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoices Table -->
+    <div class="card">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Invoices</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Date</th>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Paid</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($billings as $billing)
+                            @php
+                                $balance = $billing->total_amount - ($billing->paid_amount ?? 0);
+                                $isOverdue = $billing->due_date && $billing->due_date < now() && $balance > 0;
+                            @endphp
+                            <tr class="{{ $isOverdue ? 'table-danger' : '' }}">
+                                <td class="fw-bold">{{ $billing->billing_number }}</td>
+                                <td>{{ $billing->billing_date ? $billing->billing_date->format('M d, Y') : 'N/A' }}</td>
+                                <td class="{{ $isOverdue ? 'text-danger fw-bold' : '' }}">
+                                    {{ $billing->due_date ? $billing->due_date->format('M d, Y') : 'N/A' }}
+                                    @if($isOverdue)
+                                        <span class="badge bg-danger ms-1">Overdue</span>
+                                    @endif
+                                </td>
+                                <td>{{ $billing->currency }} {{ number_format($billing->total_amount, 2) }}</td>
+                                <td>{{ $billing->currency }} {{ number_format($billing->paid_amount ?? 0, 2) }}</td>
+                                <td class="fw-bold {{ $balance > 0 ? 'text-danger' : 'text-success' }}">
+                                    {{ $billing->currency }} {{ number_format($balance, 2) }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ $billing->status === 'paid' ? 'success' : ($billing->status === 'overdue' ? 'danger' : 'warning') }}">
+                                        {{ ucfirst($billing->status) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-4">No invoices found.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @if($billings->hasPages())
+            <div class="card-footer bg-white">
+                {{ $billings->links() }}
+            </div>
+        @endif
     </div>
 </div>
+
+<script>
+function sendReminder() {
+    if (confirm('Send payment reminder to {{ $customer->name }}?')) {
+        fetch('{{ route("account-manager.customers.send-reminder", $customer->id) }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message || 'Reminder sent successfully!');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to send reminder. Please try again.');
+        });
+    }
+}
+</script>
 @endsection

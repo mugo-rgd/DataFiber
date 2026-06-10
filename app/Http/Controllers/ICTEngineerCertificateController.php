@@ -180,31 +180,36 @@ public function storeConditionalCertificate(Request $httpRequest, DesignRequest 
     }
 }
 
-    /**
-     * Show conditional certificate
-     */
-    public function showConditionalCertificate(ConditionalCertificate $certificate)
-    {
-        $designRequest = DesignRequest::find($certificate->request_id);
-        // if ($designRequest && $designRequest->ict_engineer_id != Auth::id() && $designRequest->designer_id != Auth::id()) {
-        //     abort(403, 'Unauthorized access to this certificate.');
-        // }
-
-        return view('ictengineer.certificates.conditional.show', compact('certificate'));
+   /**
+ * Show conditional certificate - Allow all authenticated users for now
+ */
+public function showConditionalCertificate(ConditionalCertificate $certificate)
+{
+    // Allow any authenticated user to view (temporary)
+    if (!Auth::check()) {
+        abort(403, 'You must be logged in to view this certificate.');
     }
 
-    /**
-     * Download conditional certificate
-     */
-    public function downloadConditionalCertificate(ConditionalCertificate $certificate)
-    {
-        $pdfContent = $this->generateConditionalPDF($certificate);
-        $pdfFileName = 'conditional_certificate_' . str_replace('/', '_', $certificate->ref_number) . '.pdf';
+    return view('ictengineer.certificates.conditional.show', compact('certificate'));
+}
 
-        return response($pdfContent)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="' . $pdfFileName . '"');
+   /**
+ * Download conditional certificate - Allow all authenticated users for now
+ */
+public function downloadConditionalCertificate(ConditionalCertificate $certificate)
+{
+    // Allow any authenticated user to download (temporary)
+    if (!Auth::check()) {
+        abort(403, 'You must be logged in to download this certificate.');
     }
+
+    $pdfContent = $this->generateConditionalPDF($certificate);
+    $pdfFileName = 'conditional_certificate_' . str_replace('/', '_', $certificate->ref_number) . '.pdf';
+
+    return response($pdfContent)
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'attachment; filename="' . $pdfFileName . '"');
+}
 
     /**
  * Display list of conditional certificates

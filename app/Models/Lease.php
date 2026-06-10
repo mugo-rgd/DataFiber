@@ -597,4 +597,53 @@ public function documents()
 
         return now()->diffInDays($this->next_billing_date, false);
     }
+
+    ///////////////////////////
+     /**
+     * Get the customer/user for this lease
+     */
+    // public function customer(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class, 'user_id');
+    // }
+
+    /**
+     * Get the user for this lease (alias for customer)
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the network for this lease
+     */
+    public function network(): BelongsTo
+    {
+        return $this->belongsTo(FiberNetwork::class, 'network_id');
+    }
+
+    /**
+     * Get the design request for this lease
+     */
+    // public function designRequest(): BelongsTo
+    // {
+    //     return $this->belongsTo(DesignRequest::class, 'design_request_id');
+    // }
+
+    /**
+     * Get the support tickets for this lease
+     */
+    // public function supportTickets(): HasMany
+    // {
+    //     return $this->hasMany(SupportTicket::class, 'lease_id');
+    // }
+
+    /**
+     * Get the contract for this lease
+     */
+    // public function contract(): HasOne
+    // {
+    //     return $this->hasOne(Contract::class, 'lease_id');
+    // }
 }

@@ -529,12 +529,6 @@ public function billingLineItems()
     {
         return $this->hasMany(SurveyRoute::class, 'surveyor_id');
     }
-
-    public function supportTickets(): HasMany
-    {
-        return $this->hasMany(CustomerSupportTicket::class, 'customer_id');
-    }
-
     public function assignedSupportTickets(): HasMany
     {
         return $this->hasMany(CustomerSupportTicket::class, 'account_manager_id');
@@ -1394,6 +1388,32 @@ public function totalUnreadMessages()
         $this->save();
     }
 
+// Add these relationships to your User model
+
+/**
+ * Get quotations for this user (as customer)
+ */
+public function quotations(): HasMany
+{
+    return $this->hasMany(Quotation::class, 'user_id');
+}
+
+/**
+ * Get contracts for this user (as customer)
+ */
+public function contracts(): HasMany
+{
+    return $this->hasMany(Contract::class, 'customer_id');
+}
+
+/**
+ * Get support tickets for this user (as customer)
+ * Note: Your existing supportTickets uses CustomerSupportTicket model
+ */
+public function supportTickets(): HasMany
+{
+    return $this->hasMany(CustomerSupportTicket::class, 'customer_id');
+}
 
 }
 

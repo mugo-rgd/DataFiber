@@ -237,6 +237,7 @@
                                     ['title' => 'Add User', 'icon' => 'user-plus', 'color' => 'primary', 'link' => route('admin.users.create'), 'desc' => 'Create new system users'],
                                     ['title' => 'System Settings', 'icon' => 'cogs', 'color' => 'success', 'link' => route('admin.settings'), 'desc' => 'Configure system parameters'],
                                     ['title' => 'System Reports', 'icon' => 'chart-bar', 'color' => 'info', 'link' => route('admin.reports'), 'desc' => 'View analytics & insights'],
+                                    ['title' => 'Customer List', 'icon' => 'users-viewfinder', 'color' => 'secondary', 'link' => route('admin.customers.index'), 'desc' => 'View all customer details'],
                                     ['title' => 'Manage Users', 'icon' => 'users', 'color' => 'warning', 'link' => route('admin.users'), 'desc' => 'View & manage users'],
                                     ['title' => 'Link Inventory', 'icon' => 'tachometer-alt', 'color' => 'danger', 'desc' => 'Fibre link management', 'links' => [
                                         ['label' => 'View All', 'route' => route('conversion-data.index'), 'icon' => 'list'],
@@ -248,7 +249,8 @@
                                     ['title' => 'Manage Leases', 'icon' => 'network-wired', 'color' => 'primary', 'link' => route('admin.leases.index'), 'desc' => 'View & manage all leases'],
                                     ['title' => 'Design Requests', 'icon' => 'pencil-ruler', 'color' => 'success', 'link' => route('admin.design-requests.index'), 'desc' => 'Handle design requests'],
                                     ['title' => 'Quotations', 'icon' => 'file-invoice', 'color' => 'info', 'link' => route('admin.quotations.index'), 'desc' => 'Manage quotations'],
-                                    ['title' => 'Manage Users', 'icon' => 'users', 'color' => 'warning', 'link' => route('admin.users'), 'desc' => 'View & manage users'],
+  ['title' => 'Customer List', 'icon' => 'users-viewfinder', 'color' => 'secondary', 'link' => route('admin.customers.index'), 'desc' => 'View all customer details'],
+                                    // ['title' => 'Manage Users', 'icon' => 'users', 'color' => 'warning', 'link' => route('admin.users'), 'desc' => 'View & manage users'],
                                     ['title' => 'Link Inventory', 'icon' => 'tachometer-alt', 'color' => 'danger', 'desc' => 'Fibre link management', 'links' => [
                                         ['label' => 'View All', 'route' => route('conversion-data.index'), 'icon' => 'list'],
                                         ['label' => 'Summary', 'route' => route('conversion-data.summary'), 'icon' => 'chart-bar'],
@@ -686,6 +688,9 @@ document.addEventListener('DOMContentLoaded', function() {
     .dashboard-hero, .action-card, .btn, .badge { display: none !important; }
     .card { border: 1px solid #ddd !important; box-shadow: none !important; }
 }
+
+.action-purple { background: #6f42c1; }
+.action-secondary { background: #6c757d; }
 </style>
 
 <script>

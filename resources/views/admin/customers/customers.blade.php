@@ -232,6 +232,11 @@
                 </a>
             </li>
             <li>
+                <a class="dropdown-item" href="{{ route('admin.customers.details', $customer->id) }}">
+                    <i class="fas fa-id-card me-2"></i>View All Details
+                </a>
+            </li>
+            <li>
                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#assignManagerModal"
                    onclick="prepareAssignManager({{ $customer->id }}, '{{ $customer->name }}')">
                     <i class="fas fa-user-tie me-2"></i>
@@ -259,7 +264,7 @@
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-                @if($customer->is_active)
+                @if($customer->status === 'active')
                     <a class="dropdown-item text-warning" href="#"
                        onclick="toggleStatus({{ $customer->id }}, 0)">
                         <i class="fas fa-ban me-2"></i>Deactivate
@@ -270,6 +275,13 @@
                         <i class="fas fa-check me-2"></i>Activate
                     </a>
                 @endif
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item text-danger" href="#"
+                   onclick="deleteCustomer({{ $customer->id }}, '{{ $customer->name }}')">
+                    <i class="fas fa-trash me-2"></i>Delete Customer
+                </a>
             </li>
         </ul>
     </div>

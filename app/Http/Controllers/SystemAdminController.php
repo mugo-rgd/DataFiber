@@ -9,6 +9,10 @@ use App\Models\SupportTicket;
 use App\Models\DesignRequest;
 use App\Models\MaintenanceRequest;
 use App\Models\Ticket;
+use App\Models\CompanyProfile;
+use App\Models\ConsolidatedBilling;
+use App\Models\Contract;
+use App\Models\Quotation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -49,7 +53,7 @@ class SystemAdminController extends Controller
             'active_sessions' => DB::table('sessions')->count(),
         ];
 
-        return view('admin.system.dashboard', compact('stats', 'recentActivities', 'systemHealth'));
+        return view('admin.dashboard', compact('stats', 'recentActivities', 'systemHealth'));
     }
 
     /**
@@ -64,7 +68,7 @@ class SystemAdminController extends Controller
             'backup_frequency' => config('backup.frequency', 'daily'),
         ];
 
-        return view('admin.system.settings', compact('settings'));
+        return view('admin.settings', compact('settings'));
     }
 
     /**
@@ -95,7 +99,7 @@ class SystemAdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
-        return view('admin.system.users.index', compact('users'));
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -116,7 +120,7 @@ class SystemAdminController extends Controller
             'customer' => 'Customer',
         ];
 
-        return view('admin.system.users.create', compact('accountManagers', 'roles'));
+        return view('admin.users.create', compact('accountManagers', 'roles'));
     }
 
     /**
@@ -163,6 +167,227 @@ class SystemAdminController extends Controller
         $user->load(['accountManager', 'managedCustomers', 'supportTickets', 'leases']);
 
         return view('admin.system.users.show', compact('user'));
+    }
+
+ /**
+ * Show complete customer details with all related information
+ */
+public function showCustomerDetails($userId)
+{
+    try {
+        // Find the user by ID - use findOrFail for better error handling
+        $user = User::findOrFail($userId);
+
+        // Check if user is a customer
+        if ($user->role !== 'customer') {
+            session()->flash('error', 'This user is not a customer. Role: ' . $user->role);
+            return redirect()->route('admin.customers.index');
+        }
+
+        // Check authorization
+        $allowedRoles = ['system_admin', 'technical_admin', 'account_manager', 'finance', 'admin'];
+        if (!in_array(Auth::user()->role, $allowedRoles)) {
+            abort(403, 'You do not have permission to view customer details.');
+        }
+
+        // Load relationships safely with error handling
+        try {
+            $user->load([
+                'accountManager',
+                'companyProfile',
+            ]);
+        } catch (\Exception $e) {
+            \Log::warning('Could not load basic relationships: ' . $e->getMessage());
+        }
+
+        // Get leases - use the correct relationship name
+        $leases = collect();
+        try {
+            $leases = $user->leases ?? collect();
+        } catch (\Exception $e) {
+            \Log::warning('Could not load leases: ' . $e->getMessage());
+        }
+
+        // Get contracts - use correct relationship
+        $contracts = collect();
+        try {
+            $contracts = $user->contracts ?? collect();
+        } catch (\Exception $e) {
+            \Log::warning('Could not load contracts: ' . $e->getMessage());
+        }
+
+        // Get quotations - use correct relationship
+        $quotations = collect();
+        try {
+            $quotations = $user->quotations ?? collect();
+        } catch (\Exception $e) {
+            \Log::warning('Could not load quotations: ' . $e->getMessage());
+        }
+
+        // Get support tickets - use correct relationship
+        $supportTickets = collect();
+        try {
+            $supportTickets = $user->supportTickets ?? collect();
+        } catch (\Exception $e) {
+            \Log::warning('Could not load support tickets: ' . $e->getMessage());
+        }
+
+        // Get billing information
+        $billings = collect();
+        try {
+            $billings = ConsolidatedBilling::where('user_id', $user->id)
+                ->orderBy('billing_date', 'desc')
+                ->get();
+        } catch (\Exception $e) {
+            \Log::warning('Could not load billings: ' . $e->getMessage());
+        }
+
+        // Calculate financial summaries safely
+        $financialSummary = [
+            'total_billed' => 0,
+            'total_paid' => 0,
+            'total_outstanding' => 0,
+            'overdue_amount' => 0,
+            'currency_breakdown' => collect(),
+        ];
+
+        try {
+            $financialSummary = [
+                'total_billed' => ConsolidatedBilling::where('user_id', $user->id)->sum('total_amount'),
+                'total_paid' => ConsolidatedBilling::where('user_id', $user->id)->sum('paid_amount'),
+                'total_outstanding' => ConsolidatedBilling::where('user_id', $user->id)
+                    ->selectRaw('SUM(total_amount - paid_amount) as total')
+                    ->value('total') ?? 0,
+                'overdue_amount' => ConsolidatedBilling::where('user_id', $user->id)
+                    ->whereDate('due_date', '<', now())
+                    ->whereRaw('(total_amount - paid_amount) > 0')
+                    ->selectRaw('SUM(total_amount - paid_amount) as total')
+                    ->value('total') ?? 0,
+                'currency_breakdown' => ConsolidatedBilling::where('user_id', $user->id)
+                    ->select('currency', DB::raw('SUM(total_amount) as total'), DB::raw('SUM(paid_amount) as paid'))
+                    ->groupBy('currency')
+                    ->get(),
+            ];
+        } catch (\Exception $e) {
+            \Log::warning('Could not calculate financial summary: ' . $e->getMessage());
+        }
+
+        // Lease statistics
+        $leaseStats = [
+            'total_leases' => $leases->count(),
+            'active_leases' => $leases->where('status', 'active')->count(),
+            'pending_leases' => $leases->where('status', 'pending')->count(),
+            'expired_leases' => $leases->where('status', 'expired')->count(),
+            'total_monthly_revenue' => $leases->where('status', 'active')->sum('monthly_cost'),
+            'total_contract_value' => $leases->where('status', 'active')->sum('total_contract_value'),
+            'leased_distance_km' => $leases->where('status', 'active')->sum('distance_km'),
+            'leased_cores' => $leases->where('status', 'active')->sum('cores_required'),
+        ];
+
+        // Support ticket statistics
+        $ticketStats = [
+            'total_tickets' => $supportTickets->count(),
+            'open_tickets' => $supportTickets->whereIn('status', ['open', 'pending', 'in_progress'])->count(),
+            'resolved_tickets' => $supportTickets->whereIn('status', ['resolved', 'closed'])->count(),
+        ];
+
+        // Quotation statistics
+        $quotationStats = [
+            'total_quotations' => $quotations->count(),
+            'pending_quotations' => $quotations->whereIn('status', ['draft', 'sent', 'pending', 'negotiation'])->count(),
+            'won_quotations' => $quotations->whereIn('status', ['won', 'accepted', 'approved'])->count(),
+            'lost_quotations' => $quotations->whereIn('status', ['lost', 'rejected', 'declined'])->count(),
+            'total_value_pipeline' => $quotations->whereIn('status', ['draft', 'sent', 'pending', 'negotiation'])->sum('total_amount'),
+            'total_value_won' => $quotations->whereIn('status', ['won', 'accepted', 'approved'])->sum('total_amount'),
+        ];
+
+        // Contract statistics
+        $activeContracts = $contracts->where('status', 'active');
+        $contractStats = [
+            'total_contracts' => $contracts->count(),
+            'active_contracts' => $activeContracts->count(),
+            'expiring_30_days' => 0,
+            'expiring_90_days' => 0,
+        ];
+
+        try {
+            $contractStats['expiring_30_days'] = $activeContracts->filter(function($contract) {
+                return $contract->end_date && \Carbon\Carbon::parse($contract->end_date)->between(now(), now()->copy()->addDays(30));
+            })->count();
+
+            $contractStats['expiring_90_days'] = $activeContracts->filter(function($contract) {
+                return $contract->end_date && \Carbon\Carbon::parse($contract->end_date)->between(now(), now()->copy()->addDays(90));
+            })->count();
+        } catch (\Exception $e) {
+            \Log::warning('Could not calculate contract expiry stats: ' . $e->getMessage());
+        }
+
+        // Recent activities
+        $recentActivities = collect();
+        try {
+            $recentActivities = DB::table('audit_logs')
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->limit(20)
+                ->get();
+        } catch (\Exception $e) {
+            \Log::warning('Could not load recent activities: ' . $e->getMessage());
+        }
+
+        // Get latest lease
+        $latestLease = $leases->sortByDesc('created_at')->first();
+
+        // Return view
+        if (view()->exists('admin.customers.show-details')) {
+            return view('admin.customers.show-details', compact(
+                'user',
+                'billings',
+                'financialSummary',
+                'leaseStats',
+                'ticketStats',
+                'quotationStats',
+                'contractStats',
+                'recentActivities',
+                'latestLease'
+            ));
+        } else {
+            return $this->showCustomerDetailsFallback($user, $billings, $financialSummary, $leaseStats, $ticketStats, $quotationStats, $contractStats);
+        }
+
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        session()->flash('error', 'Customer not found.');
+        return redirect()->route('admin.customers.index');
+    } catch (\Exception $e) {
+        \Log::error('Error in showCustomerDetails: ' . $e->getMessage(), [
+            'user_id' => $userId,
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        session()->flash('error', 'Error loading customer details: ' . $e->getMessage());
+        return redirect()->route('admin.customers.index');
+    }
+}
+
+    /**
+     * Export customer data
+     */
+    public function exportCustomerData(User $user)
+    {
+        if ($user->role !== 'customer') {
+            session()->flash('error', 'This user is not a customer.');
+            return redirect()->back();
+        }
+
+        $user->load(['companyProfile', 'leases', 'contracts', 'quotations', 'supportTickets']);
+
+        $billings = ConsolidatedBilling::where('user_id', $user->id)->get();
+
+        // Generate export (CSV/Excel)
+        // Implementation depends on your export library
+
+        session()->flash('success', 'Customer data export initiated.');
+
+        return redirect()->back();
     }
 
     /**

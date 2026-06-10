@@ -64,6 +64,16 @@
                             </div>
                         </div>
 
+                        <!-- Display company name as read-only (from logged-in user) -->
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Company Name</label>
+        <input type="text" class="form-control bg-light"
+               value="{{ auth()->user()->name }}" readonly disabled>
+        <small class="form-text text-muted">This is your registered company name from your account</small>
+    </div>
+</div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="kra_pin" class="form-label">KRA Pin *</label>

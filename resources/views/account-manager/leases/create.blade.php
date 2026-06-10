@@ -27,12 +27,6 @@
         </div>
     </div>
 
-    <!-- Debug Section (Hidden) -->
-    <div style="display: none;">
-        Customer ID: {{ $customerId ?? 'Not set' }}<br>
-        Design Request ID from URL: {{ request('design_request_id') ?? 'Not set' }}
-    </div>
-
     @if($errors->any())
     <div class="row">
         <div class="col-12">
@@ -64,42 +58,35 @@
                     <form action="{{ route('account-manager.leases.store') }}" method="POST" id="leaseForm">
                         @csrf
 
-                        <!-- Customer Selection -->
+                        <!-- Customer Selection - Always Show Dropdown -->
                         <div class="row mb-3">
                             <div class="col-md-12">
-                                @if($customerId && $selectedCustomer)
-                                    <div class="mb-3">
-                                        <label class="form-label">Customer <span class="text-danger">*</span></label>
-                                        <div class="form-control bg-light">
-                                            <strong>{{ $selectedCustomer->name }}</strong>
-                                            @if($selectedCustomer->company_name)
-                                                <br><small class="text-muted">Company: {{ $selectedCustomer->company_name }}</small>
+                                <label for="customer_id" class="form-label">Select Customer <span class="text-danger">*</span></label>
+                                <select class="form-select @error('customer_id') is-invalid @enderror"
+                                        id="customer_id"
+                                        name="customer_id"
+                                        required>
+                                    <option value="">-- Select a Customer --</option>
+                                    @foreach($customers as $customerOption)
+                                        <option value="{{ $customerOption->id }}"
+                                            {{ (old('customer_id', $customerId ?? '') == $customerOption->id) ? 'selected' : '' }}>
+                                            {{ $customerOption->company_name ?? $customerOption->name }}
+                                            ({{ $customerOption->email }})
+                                            @if($customerOption->company_name)
+                                                - {{ $customerOption->company_name }}
                                             @endif
-                                            <br><small class="text-muted">Email: {{ $selectedCustomer->email }}</small>
-                                        </div>
-                                        <input type="hidden" name="customer_id" value="{{ $customerId }}">
-                                        <div class="form-text text-kp-green">
-                                            <i class="fas fa-check-circle"></i> Customer automatically assigned.
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="alert alert-danger">
-                                        <i class="fas fa-exclamation-triangle"></i> No customer selected. Please go back and select a customer first.
-                                        <div class="mt-2">
-                                            <a href="{{ route('account-manager.customers.index') }}" class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-arrow-left me-1"></i>Back to Customers
-                                            </a>
-                                        </div>
-                                    </div>
-                                @endif
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('customer_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <div class="form-text text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Select the customer for this lease. You can only select customers assigned to you.
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Only show the rest of the form if customer is selected -->
-                        @if($customerId && $selectedCustomer)
 
                         <!-- Lease Identification -->
                         <div class="row mb-3">
@@ -324,84 +311,39 @@
                             </div>
                         </div>
 
-                        <!-- Technical Specifications with Preloaded Content -->
+                        <!-- Technical Specifications -->
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label for="technical_specifications" class="form-label">Technical Specifications</label>
                                 <textarea class="form-control @error('technical_specifications') is-invalid @enderror"
                                           id="technical_specifications" name="technical_specifications" rows="6"
-                                          placeholder="Enter technical specifications...">{{ old('technical_specifications', "• Fibre Type: ITU-T G.652.D Single Mode Fibre
-• Wavelength: 1310nm / 1550nm
-• Maximum Distance: 80km without amplification
-• Connector Type: APC/PC as required
-• Insertion Loss: ≤ 0.3dB per connector pair
-• Return Loss: ≥ 55dB (APC), ≥ 40dB (PC)
-• Operating Temperature: -40°C to +75°C
-• Cable Construction: Loose tube, gel-filled, double-jacketed
-• Installation: Underground duct or aerial as specified
-• Testing: OTDR testing with results provided
-• Splice Points: All splice points documented with loss measurements
-• Documentation: As-built drawings and fibre characterization report") }}</textarea>
+                                          placeholder="Enter technical specifications...">{{ old('technical_specifications', "• Fibre Type: ITU-T G.652.D Single Mode Fibre\n• Wavelength: 1310nm / 1550nm\n• Maximum Distance: 80km without amplification\n• Connector Type: APC/PC as required\n• Insertion Loss: ≤ 0.3dB per connector pair\n• Return Loss: ≥ 55dB (APC), ≥ 40dB (PC)\n• Operating Temperature: -40°C to +75°C\n• Cable Construction: Loose tube, gel-filled, double-jacketed\n• Installation: Underground duct or aerial as specified\n• Testing: OTDR testing with results provided\n• Splice Points: All splice points documented with loss measurements\n• Documentation: As-built drawings and fibre characterization report") }}</textarea>
                                 @error('technical_specifications')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
-                        <!-- Service Level Agreement with Preloaded Content -->
+                        <!-- Service Level Agreement -->
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label for="service_level_agreement" class="form-label">Service Level Agreement (SLA)</label>
                                 <textarea class="form-control @error('service_level_agreement') is-invalid @enderror"
                                           id="service_level_agreement" name="service_level_agreement" rows="6"
-                                          placeholder="Enter SLA terms...">{{ old('service_level_agreement', "• Service Availability: 99.99% monthly uptime guarantee
-• Mean Time To Repair (MTTR): 4 hours for critical faults
-• Emergency Response: 24/7/365 network operations center
-• Scheduled Maintenance: 30 days advance notice for planned maintenance
-• Performance Monitoring: Continuous link monitoring and alerting
-• Fault Reporting: Dedicated hotline and online portal for fault reporting
-• Credit Policy: Service credits for SLA violations as per agreement
-• Escalation Procedure: Defined escalation path for unresolved issues
-• Response Times:
-  - Critical (Service Down): 15 minutes
-  - High (Major Impact): 1 hour
-  - Normal (Minor Impact): 4 hours
-  - Low (Information): 24 hours") }}</textarea>
+                                          placeholder="Enter SLA terms...">{{ old('service_level_agreement', "• Service Availability: 99.99% monthly uptime guarantee\n• Mean Time To Repair (MTTR): 4 hours for critical faults\n• Emergency Response: 24/7/365 network operations center\n• Scheduled Maintenance: 30 days advance notice for planned maintenance\n• Performance Monitoring: Continuous link monitoring and alerting\n• Fault Reporting: Dedicated hotline and online portal for fault reporting\n• Credit Policy: Service credits for SLA violations as per agreement\n• Escalation Procedure: Defined escalation path for unresolved issues\n• Response Times:\n  - Critical (Service Down): 15 minutes\n  - High (Major Impact): 1 hour\n  - Normal (Minor Impact): 4 hours\n  - Low (Information): 24 hours") }}</textarea>
                                 @error('service_level_agreement')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
-                        <!-- Terms and Conditions with Preloaded Content -->
+                        <!-- Terms and Conditions -->
                         <div class="row mb-3">
                             <div class="col-12">
                                 <label for="terms_and_conditions" class="form-label">Terms & Conditions</label>
                                 <textarea class="form-control @error('terms_and_conditions') is-invalid @enderror"
                                           id="terms_and_conditions" name="terms_and_conditions" rows="8"
-                                          placeholder="Enter lease terms and conditions...">{{ old('terms_and_conditions', "1. TERM: This agreement shall commence on the start date and continue for the contract term specified. Either party may terminate this agreement with 30 days written notice upon expiration of the initial term.
-
-2. PAYMENT: Monthly invoices payable within 30 days of invoice date. Late payments subject to 1.5% monthly interest. Invoices shall be delivered via email to customer's designated billing contact.
-
-3. TAXES: Customer is responsible for all applicable taxes, fees, and duties associated with the services provided.
-
-4. TERMINATION: Either party may terminate for material breach with 30 days written notice. Upon termination, customer shall return all equipment and pay all outstanding amounts.
-
-5. CONFIDENTIALITY: Both parties agree to maintain confidentiality of proprietary information, including pricing, network topology, and customer data.
-
-6. LIMITATION OF LIABILITY: Liability limited to direct damages, excluding consequential damages, not exceeding total amounts paid in prior 12 months.
-
-7. FORCE MAJEURE: Neither party liable for delays due to circumstances beyond reasonable control including natural disasters, war, strikes, or government actions.
-
-8. GOVERNING LAW: This agreement shall be governed by the laws of the jurisdiction specified in the service order.
-
-9. INSURANCE: Service provider maintains appropriate insurance coverage including general liability and professional indemnity.
-
-10. ACCESS: Customer shall provide reasonable access to premises for installation, maintenance, and repair of services.
-
-11. ASSIGNMENT: Neither party may assign this agreement without prior written consent, except to affiliates or in merger/acquisition.
-
-12. ENTIRE AGREEMENT: This document constitutes the entire agreement between parties, superseding all prior negotiations and understandings.") }}</textarea>
+                                          placeholder="Enter lease terms and conditions...">{{ old('terms_and_conditions', "1. TERM: This agreement shall commence on the start date and continue for the contract term specified. Either party may terminate this agreement with 30 days written notice upon expiration of the initial term.\n\n2. PAYMENT: Monthly invoices payable within 30 days of invoice date. Late payments subject to 1.5% monthly interest. Invoices shall be delivered via email to customer's designated billing contact.\n\n3. TAXES: Customer is responsible for all applicable taxes, fees, and duties associated with the services provided.\n\n4. TERMINATION: Either party may terminate for material breach with 30 days written notice. Upon termination, customer shall return all equipment and pay all outstanding amounts.\n\n5. CONFIDENTIALITY: Both parties agree to maintain confidentiality of proprietary information, including pricing, network topology, and customer data.\n\n6. LIMITATION OF LIABILITY: Liability limited to direct damages, excluding consequential damages, not exceeding total amounts paid in prior 12 months.\n\n7. FORCE MAJEURE: Neither party liable for delays due to circumstances beyond reasonable control including natural disasters, war, strikes, or government actions.\n\n8. GOVERNING LAW: This agreement shall be governed by the laws of the jurisdiction specified in the service order.\n\n9. INSURANCE: Service provider maintains appropriate insurance coverage including general liability and professional indemnity.\n\n10. ACCESS: Customer shall provide reasonable access to premises for installation, maintenance, and repair of services.\n\n11. ASSIGNMENT: Neither party may assign this agreement without prior written consent, except to affiliates or in merger/acquisition.\n\n12. ENTIRE AGREEMENT: This document constitutes the entire agreement between parties, superseding all prior negotiations and understandings.") }}</textarea>
                                 @error('terms_and_conditions')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -438,7 +380,7 @@
                         <div class="row mt-4">
                             <div class="col-12">
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('account-manager.leases.index', ['customer_id' => $customerId]) }}" class="btn btn-secondary">
+                                    <a href="{{ route('account-manager.leases.index') }}" class="btn btn-secondary">
                                         <i class="fas fa-arrow-left me-2"></i>Cancel
                                     </a>
                                     <button type="submit" class="btn btn-kp-primary">
@@ -447,7 +389,6 @@
                                 </div>
                             </div>
                         </div>
-                        @endif
                     </form>
                 </div>
             </div>
@@ -555,101 +496,95 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateTechnologyByServiceType() {
-    if (!serviceTypeSelect || !technologySelect) return;
+        if (!serviceTypeSelect || !technologySelect) return;
 
-    const serviceType = serviceTypeSelect.value;
+        const serviceType = serviceTypeSelect.value;
 
-    // Remove any existing hidden input
-    const existingHidden = document.getElementById('hidden_technology_input');
-    if (existingHidden) existingHidden.remove();
+        // Remove any existing hidden input
+        const existingHidden = document.getElementById('hidden_technology_input');
+        if (existingHidden) existingHidden.remove();
 
-    // Clear current options
-    technologySelect.innerHTML = '';
+        // Clear current options
+        technologySelect.innerHTML = '';
 
-    if (serviceType === 'colocation') {
-        const option = document.createElement('option');
-        option.value = 'colocation';
-        option.textContent = 'COLOCATION';
-        option.selected = true;
-        technologySelect.appendChild(option);
-        technologySelect.disabled = true;
-        technologySelect.required = false;  // Remove required
-        if (techHint) {
-            techHint.innerHTML = 'COLOCATION: Physical space, power, and cooling for optical equipment';
+        if (serviceType === 'colocation') {
+            const option = document.createElement('option');
+            option.value = 'colocation';
+            option.textContent = 'COLOCATION';
+            option.selected = true;
+            technologySelect.appendChild(option);
+            technologySelect.disabled = true;
+            technologySelect.required = false;
+            if (techHint) {
+                techHint.innerHTML = 'COLOCATION: Physical space, power, and cooling for optical equipment';
+            }
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'technology';
+            hidden.id = 'hidden_technology_input';
+            hidden.value = 'colocation';
+            technologySelect.parentNode.appendChild(hidden);
+
+        } else if (serviceType === 'wavelength') {
+            const option = document.createElement('option');
+            option.value = 'dwdm';
+            option.textContent = 'DWDM (Dense Wavelength Division Multiplexing)';
+            option.selected = true;
+            technologySelect.appendChild(option);
+            technologySelect.disabled = true;
+            technologySelect.required = false;
+            if (techHint) {
+                techHint.innerHTML = 'DWDM: Dense Wavelength Division Multiplexing for high-capacity lit service';
+            }
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'technology';
+            hidden.id = 'hidden_technology_input';
+            hidden.value = 'dwdm';
+            technologySelect.parentNode.appendChild(hidden);
+
+        } else if (serviceType === 'dark_fibre') {
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Select Technology --';
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            technologySelect.appendChild(placeholder);
+
+            const metro = document.createElement('option');
+            metro.value = 'metro';
+            metro.textContent = 'METRO';
+            technologySelect.appendChild(metro);
+
+            const nonPremium = document.createElement('option');
+            nonPremium.value = 'non_premium';
+            nonPremium.textContent = 'NON PREMIUM';
+            technologySelect.appendChild(nonPremium);
+
+            const premium = document.createElement('option');
+            premium.value = 'premium';
+            premium.textContent = 'PREMIUM';
+            technologySelect.appendChild(premium);
+
+            technologySelect.disabled = false;
+            technologySelect.required = true;
+            if (techHint) {
+                techHint.innerHTML = 'Select one: METRO (urban/short distance), NON PREMIUM (standard service), or PREMIUM (high-priority service)';
+            }
+
+        } else {
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = '-- Select Technology --';
+            placeholder.disabled = true;
+            placeholder.selected = true;
+            technologySelect.appendChild(placeholder);
+            technologySelect.disabled = false;
+            technologySelect.required = true;
+            if (techHint) {
+                techHint.innerHTML = 'Select a service type above to see available technologies';
+            }
         }
-        // Add hidden input
-        const hidden = document.createElement('input');
-        hidden.type = 'hidden';
-        hidden.name = 'technology';
-        hidden.id = 'hidden_technology_input';
-        hidden.value = 'colocation';
-        technologySelect.parentNode.appendChild(hidden);
-
-    } else if (serviceType === 'wavelength') {
-        const option = document.createElement('option');
-        option.value = 'dwdm';
-        option.textContent = 'DWDM (Dense Wavelength Division Multiplexing)';
-        option.selected = true;
-        technologySelect.appendChild(option);
-        technologySelect.disabled = true;
-        technologySelect.required = false;  // Remove required
-        if (techHint) {
-            techHint.innerHTML = 'DWDM: Dense Wavelength Division Multiplexing for high-capacity lit service';
-        }
-        // Add hidden input
-        const hidden = document.createElement('input');
-        hidden.type = 'hidden';
-        hidden.name = 'technology';
-        hidden.id = 'hidden_technology_input';
-        hidden.value = 'dwdm';
-        technologySelect.parentNode.appendChild(hidden);
-
-    } else if (serviceType === 'dark_fibre') {
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.textContent = '-- Select Technology --';
-        placeholder.disabled = true;
-        placeholder.selected = true;
-        technologySelect.appendChild(placeholder);
-
-        const metro = document.createElement('option');
-        metro.value = 'metro';
-        metro.textContent = 'METRO';
-        technologySelect.appendChild(metro);
-
-        const nonPremium = document.createElement('option');
-        nonPremium.value = 'non_premium';
-        nonPremium.textContent = 'NON PREMIUM';
-        technologySelect.appendChild(nonPremium);
-
-        const premium = document.createElement('option');
-        premium.value = 'premium';
-        premium.textContent = 'PREMIUM';
-        technologySelect.appendChild(premium);
-
-        technologySelect.disabled = false;
-        technologySelect.required = true;  // Add required back
-        if (techHint) {
-            techHint.innerHTML = 'Select one: METRO (urban/short distance), NON PREMIUM (standard service), or PREMIUM (high-priority service)';
-        }
-
-    } else {
-        const placeholder = document.createElement('option');
-        placeholder.value = '';
-        placeholder.textContent = '-- Select Technology --';
-        placeholder.disabled = true;
-        placeholder.selected = true;
-        technologySelect.appendChild(placeholder);
-        technologySelect.disabled = false;
-        technologySelect.required = true;  // Add required back
-        if (techHint) {
-            techHint.innerHTML = 'Select a service type above to see available technologies';
-        }
-    }
-
-        // =============================================
-        // FIELD DISABLING BASED ON SERVICE TYPE
-        // =============================================
 
         // Reset all fields to enabled first
         if (startLocation) startLocation.disabled = false;
@@ -672,10 +607,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Apply specific disabling rules
         switch (serviceType) {
             case 'dark_fibre':
-                // Disable: Host Location, Bandwidth
                 if (hostLocation) hostLocation.disabled = true;
                 if (bandwidth) bandwidth.disabled = true;
-                // Make Start Location and End Location required
                 if (startLocation) startLocation.required = true;
                 if (endLocation) endLocation.required = true;
                 if (startLocationLabel) startLocationLabel.innerHTML = 'Start Location *';
@@ -683,28 +616,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
 
             case 'colocation':
-                // Disable: Core(s), Bandwidth, Start Location, End Location, Distance (KM)
                 if (coresRequired) coresRequired.disabled = true;
                 if (bandwidth) bandwidth.disabled = true;
                 if (startLocation) startLocation.disabled = true;
                 if (endLocation) endLocation.disabled = true;
                 if (distanceKm) distanceKm.disabled = true;
-                // Make Host Location required
                 if (hostLocation) hostLocation.required = true;
                 if (hostLocationLabel) hostLocationLabel.innerHTML = 'Host Location *';
                 break;
 
             case 'wavelength':
-                // Disable: Core(s), Distance (KM), Host Location
-                // Start Location and End Location remain ENABLED
                 if (coresRequired) coresRequired.disabled = true;
                 if (distanceKm) distanceKm.disabled = true;
                 if (hostLocation) hostLocation.disabled = true;
-                // No required fields for wavelength
-                break;
-
-            default:
-                // No fields disabled
                 break;
         }
 

@@ -775,7 +775,7 @@
 
                         @if(Auth::user()->role === 'finance' && Route::has('finance.dashboard'))
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('finance.dashboard') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Finance Dashboard">
+                                <a class="nav-link" href="{{ route('finance.dashboard') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Financial Dashboard - Revenue, KPIs & Analytics">
                                     <i class="fas fa-chart-line"></i>
                                     <span class="nav-text">Finance</span>
                                 </a>
@@ -1022,11 +1022,11 @@
                         @if(Auth::user()->role === 'finance')
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="financeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Finance Operations">
-                                    <i class="fas fa-chart-line"></i>
-                                    <span class="nav-text">Finance</span>
+                                    <i class="fas fa-university"></i>
+                                    <span class="nav-text">Financial Hub</span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" style="min-width: 260px;">
-                                    <li class="dropdown-header"><i class="fas fa-chart-line me-2"></i> Finance Dashboard</li>
+                                    <li class="dropdown-header"><i class="fas fa-chart-line me-2"></i> Finance Actions</li>
                                     <li><hr class="dropdown-divider"></li>
                                     @if(Route::has('leases.finance.index'))
                                         <li><a class="dropdown-item" href="{{ route('leases.finance.index') }}"><i class="fas fa-file-contract me-2"></i> Leases Mgt</a></li>
@@ -1273,7 +1273,7 @@
                             @if(in_array(Auth::user()->role, ['admin','technical_admin','accountmanager_admin', 'system_admin', 'executive', 'finance', 'management']))
                                 <li class="nav-item">
                                     <a href="{{ route('executive.dashboard') }}" class="nav-link {{ request()->routeIs('executive.dashboard') ? 'active' : '' }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Executive Dashboard">
-                                        <i class="fas fa-chart-line"></i>
+                                        <i class="fas fa-chart-pie"></i>
                                         <span class="nav-text">Exec Dash</span>
                                     </a>
                                 </li>

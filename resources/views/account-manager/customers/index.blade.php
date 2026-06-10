@@ -46,7 +46,6 @@
         }
     }
 @endphp
-
 <div class="container-fluid">
 
     {{-- Header --}}
@@ -61,48 +60,55 @@
                     <p class="text-muted mb-0">Manage and support assigned customers</p>
                 </div>
                 <span class="badge rounded-pill px-4 py-2" style="background: #0066B3;">
-                    Total: {{ $customers->count() }} Customers
+                    Total: {{ $customers->total() }} Customers
                 </span>
             </div>
+        </div>
+    </div>
+
+    {{-- Search and Filter Bar --}}
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-body">
+            <form method="GET" action="{{ route('account-manager.customers.index') }}" class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search by name, email or company..."
+                           value="{{ request('search') }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All Status</option>
+                        <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                        <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i> Filter
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <a href="{{ route('account-manager.customers.index') }}" class="btn btn-outline-secondary w-100">
+                        <i class="fas fa-sync-alt me-1"></i> Reset
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 
     <div class="row">
         @forelse($customers as $customer)
             @php
+                // Use pre-loaded data from controller - NO NEW QUERIES HERE!
                 $formattedPhone = formatPhoneNumber($customer->phone);
-                $pendingCount = \App\Models\Document::where('user_id', $customer->id)
-                    ->where('source','customer')
-                    ->where('status','pending_review')
-                    ->count();
-
-                // Calculate total debt from consolidated_billings
-                $totalDebt = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                    ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
-                    ->sum('total_amount');
-
-                $overdueDebt = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                    ->where('status', 'overdue')
-                    ->sum('total_amount');
-
-                $pendingInvoices = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                    ->whereIn('status', ['pending', 'sent'])
-                    ->count();
-
-                $overdueInvoices = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                    ->where('status', 'overdue')
-                    ->count();
-
-                $oldestOverdue = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                    ->where('status', 'overdue')
-                    ->where('due_date', '<', now())
-                    ->orderBy('due_date', 'asc')
-                    ->first();
-
-                $recentBillings = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                    ->orderBy('created_at', 'desc')
-                    ->limit(5)
-                    ->get();
+                $totalDebt = $customer->total_debt ?? 0;
+                $overdueDebt = $customer->overdue_debt ?? 0;
+                $pendingInvoices = $customer->pending_invoices ?? 0;
+                $overdueInvoices = $customer->overdue_invoices ?? 0;
+                $pendingCount = $customer->pending_documents_count ?? 0;
+                $openTickets = $customer->open_tickets_count ?? 0;
+                $pendingPayments = $customer->pending_payments_count ?? 0;
+                $oldestOverdueDate = $customer->oldest_overdue_date ?? null;
             @endphp
 
             <div class="col-xl-4 col-md-6 mb-4">
@@ -115,7 +121,7 @@
                             </div>
                             <div class="ms-3 flex-grow-1">
                                 <h5 class="fw-bold mb-1" style="color: #0066B3;">
-                                    {{ $customer->name }}
+                                    {{ $customer->company_name ?? $customer->name }}
                                 </h5>
                                 <div class="small text-muted">Customer ID: #{{ $customer->id }}</div>
                             </div>
@@ -135,7 +141,7 @@
                             @endif
                             <div class="detail-item">
                                 <i class="fas fa-calendar" style="color: #FFD700;"></i>
-                                <span>Assigned: {{ $customer->assigned_at ? $customer->assigned_at->format('M d, Y') : 'N/A' }}</span>
+                                <span>Assigned: {{ $customer->assigned_at ? \Carbon\Carbon::parse($customer->assigned_at)->format('M d, Y') : 'N/A' }}</span>
                             </div>
                         </div>
 
@@ -168,13 +174,13 @@
                         <div class="row text-center mt-3">
                             <div class="col-4">
                                 <div class="stats-box" style="background: #FFF8E1;">
-                                    <div class="fw-bold" style="color: #FFD700;">{{ $customer->open_tickets_count ?? 0 }}</div>
+                                    <div class="fw-bold" style="color: #FFD700;">{{ $openTickets }}</div>
                                     <small>Open Tickets</small>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="stats-box" style="background: #EAF6FF;">
-                                    <div class="fw-bold" style="color: #0066B3;">{{ $customer->pending_payments_count ?? 0 }}</div>
+                                    <div class="fw-bold" style="color: #0066B3;">{{ $pendingPayments }}</div>
                                     <small>Pending Payments</small>
                                 </div>
                             </div>
@@ -187,10 +193,10 @@
                         </div>
 
                         {{-- Warning for overdue --}}
-                        @if($overdueDebt > 0 && $oldestOverdue)
+                        @if($overdueDebt > 0 && $oldestOverdueDate)
                             <div class="alert alert-warning alert-sm mt-2 mb-0 py-1 px-2" style="font-size: 0.7rem;">
                                 <i class="fas fa-exclamation-triangle me-1"></i>
-                                Overdue since {{ $oldestOverdue->due_date->format('M d, Y') }}
+                                Overdue since {{ \Carbon\Carbon::parse($oldestOverdueDate)->format('M d, Y') }}
                             </div>
                         @endif
 
@@ -202,44 +208,43 @@
                                     <i class="fas fa-bell me-1"></i> Send Payment Reminder
                                 </button>
                             @endif
-                            <a href="{{ route('account-manager.customers.show',$customer) }}"
+                            <a href="{{ route('account-manager.customers.show', $customer->id) }}"
                                class="btn btn-sm text-white" style="background: #0066B3;">
                                 <i class="fas fa-eye me-1"></i> View Details
                             </a>
-                            <div class="row g-1">
-                                <div class="col-6">
-                                    <a href="{{ route('account-manager.documents.approve',$customer) }}"
-                                       class="btn btn-sm text-dark w-100" style="background: #FFD700;">
-                                        <i class="fas fa-check-circle me-1"></i> Documents
-                                        @if($pendingCount > 0)
-                                            <span class="badge bg-danger ms-1" style="background: #dc3545;">{{ $pendingCount }}</span>
-                                        @endif
-                                    </a>
-                                </div>
-                                <div class="col-6">
-                                    <a href="{{ route('account-manager.customers.documents.manage',$customer) }}"
-                                       class="btn btn-sm text-white w-100" style="background: #009639;">
-                                        <i class="fas fa-file-upload me-1"></i> Manage
-                                    </a>
-                                </div>
-                            </div>
+                          <div class="row g-1">
+    <div class="col-6">
+        <a href="{{ route('account-manager.documents.approve', ['user' => $customer->id]) }}"
+           class="btn btn-sm text-dark w-100" style="background: #FFD700;">
+            <i class="fas fa-check-circle me-1"></i> Documents
+            @if($customer->pending_documents_count ?? 0 > 0)
+                <span class="badge bg-danger ms-1">{{ $customer->pending_documents_count }}</span>
+            @endif
+        </a>
+    </div>
+    <div class="col-6">
+        <a href="{{ route('account-manager.customers.documents.manage', ['customer' => $customer->id]) }}"
+           class="btn btn-sm text-white w-100" style="background: #009639;">
+            <i class="fas fa-file-upload me-1"></i> Manage
+        </a>
+    </div>
+</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Debt Details Modal --}}
+            {{-- Debt Details Modal - Only load once with pre-fetched data --}}
             <div class="modal fade" id="debtModal{{ $customer->id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                             <h5 class="modal-title text-white">
-                                <i class="fas fa-chart-line me-2"></i> Debt Summary - {{ $customer->name }}
+                                <i class="fas fa-chart-line me-2"></i> Debt Summary - {{ $customer->company_name ?? $customer->name }}
                             </h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            {{-- Summary Cards --}}
                             <div class="row mb-4">
                                 <div class="col-md-3">
                                     <div class="card bg-light border-0 shadow-sm">
@@ -275,130 +280,15 @@
                                 </div>
                             </div>
 
-                            {{-- Send Reminder Button in Modal --}}
-                            @if($totalDebt > 0)
-                                <div class="mb-3 text-end">
-                                    <button type="button" class="btn btn-danger"
-                                            onclick="sendReminder({{ $customer->id }}, '{{ addslashes($customer->name) }}', {{ $totalDebt }}, {{ $overdueDebt }})">
-                                        <i class="fas fa-bell me-2"></i> Send Payment Reminder to Customer
-                                    </button>
-                                </div>
-                            @endif
-
-                            {{-- Invoices Table --}}
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Invoice #</th>
-                                            <th>Billing Date</th>
-                                            <th>Due Date</th>
-                                            <th>Total Amount</th>
-                                            <th>Paid Amount</th>
-                                            <th>Balance</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php
-                                            $allBillings = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                                                ->whereIn('status', ['pending', 'sent', 'partial', 'overdue'])
-                                                ->orderBy('due_date', 'asc')
-                                                ->get();
-                                        @endphp
-                                        @forelse($allBillings as $billing)
-                                            @php
-                                                $balance = $billing->total_amount - ($billing->paid_amount ?? 0);
-                                                $isOverdue = $billing->due_date < now() && $balance > 0;
-                                            @endphp
-                                            <tr class="{{ $isOverdue ? 'table-danger' : '' }}">
-                                                <td class="fw-bold">{{ $billing->billing_number }}</td>
-                                                <td>{{ $billing->billing_date->format('M d, Y') }}</td>
-                                                <td class="{{ $isOverdue ? 'text-danger fw-bold' : '' }}">
-                                                    {{ $billing->due_date->format('M d, Y') }}
-                                                    @if($isOverdue)
-                                                        <span class="badge bg-danger ms-1">Overdue</span>
-                                                    @endif
-                                                </td>
-                                                <td>{{ $billing->currency }} {{ number_format($billing->total_amount, 2) }}</td>
-                                                <td>{{ $billing->currency }} {{ number_format($billing->paid_amount ?? 0, 2) }}</td>
-                                                <td class="fw-bold {{ $balance > 0 ? 'text-danger' : 'text-success' }}">
-                                                    {{ $billing->currency }} {{ number_format($balance, 2) }}
-                                                </td>
-                                                <td>
-                                                    @php
-                                                        $statusColors = [
-                                                            'pending' => 'warning',
-                                                            'sent' => 'info',
-                                                            'partial' => 'primary',
-                                                            'overdue' => 'danger',
-                                                            'paid' => 'success',
-                                                        ];
-                                                        $statusColor = $statusColors[$billing->status] ?? 'secondary';
-                                                    @endphp
-                                                    <span class="badge bg-{{ $statusColor }}">
-                                                        {{ ucfirst($billing->status) }}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    @if($balance > 0)
-                                                        <button type="button" class="btn btn-sm btn-outline-danger"
-                                                                onclick="sendInvoiceReminder({{ $customer->id }}, '{{ addslashes($customer->name) }}', '{{ $billing->billing_number }}', {{ $balance }})">
-                                                            <i class="fas fa-bell"></i>
-                                                        </button>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="8" class="text-center py-4">
-                                                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
-                                                    <p class="mb-0">No outstanding invoices for this customer.</p>
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Click "View Details" to see complete invoice history
                             </div>
-
-                            {{-- Payment History Section --}}
-                            @php
-                                $paidBillings = \App\Models\ConsolidatedBilling::where('user_id', $customer->id)
-                                    ->where('paid_amount', '>', 0)
-                                    ->orderBy('payment_date', 'desc')
-                                    ->limit(10)
-                                    ->get();
-                            @endphp
-                            @if($paidBillings->count() > 0)
-                            <div class="mt-4">
-                                <h6 class="fw-bold mb-3">
-                                    <i class="fas fa-history me-2 text-success"></i> Recent Payment History
-                                </h6>
-                                <div class="table-responsive">
-                                    <table class="table table-sm">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Invoice #</th>
-                                                <th>Payment Date</th>
-                                                <th>Amount Paid</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($paidBillings as $billing)
-                                                <tr>
-                                                    <td>{{ $billing->billing_number }}</td>
-                                                    <td>{{ $billing->payment_date ? \Carbon\Carbon::parse($billing->payment_date)->format('M d, Y') : 'N/A' }}</td>
-                                                    <td class="text-success">{{ $billing->currency }} {{ number_format($billing->paid_amount, 2) }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            @endif
                         </div>
                         <div class="modal-footer">
+                            <a href="{{ route('account-manager.customers.show', $customer->id) }}" class="btn btn-primary">
+                                <i class="fas fa-eye me-1"></i> View Full Details
+                            </a>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                 <i class="fas fa-times me-1"></i> Close
                             </button>
@@ -419,6 +309,15 @@
             </div>
         @endforelse
     </div>
+
+    {{-- Pagination --}}
+    @if($customers->hasPages())
+        <div class="row mt-4">
+            <div class="col-12">
+                {{ $customers->links() }}
+            </div>
+        </div>
+    @endif
 </div>
 
 <!-- Success/Error Toast Notification -->
@@ -450,36 +349,6 @@ function sendReminder(customerId, customerName, totalDebt, overdueDebt) {
             total_debt: totalDebt,
             overdue_debt: overdueDebt,
             reminder_type: 'general'
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        showToast(data.message || 'Reminder sent successfully!', data.success ? 'success' : 'danger');
-        if (data.success) {
-            // Optionally reload or update UI
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('Failed to send reminder. Please try again.', 'danger');
-    });
-}
-
-function sendInvoiceReminder(customerId, customerName, invoiceNumber, amount) {
-    if (!confirm(`Send reminder for invoice ${invoiceNumber} to ${customerName}?\n\nAmount Due: $${amount.toFixed(2)}\n\nThe customer will receive an email notification about this specific invoice.`)) {
-        return;
-    }
-
-    fetch(`/account-manager/customers/${customerId}/send-invoice-reminder`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-            invoice_number: invoiceNumber,
-            amount_due: amount
         })
     })
     .then(response => response.json())
@@ -588,72 +457,17 @@ function showToast(message, type = 'success') {
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-.btn:active {
-    transform: translateY(0);
-}
-
-/* Badge styling */
-.badge {
-    font-weight: 500;
-    padding: 0.35rem 0.65rem;
-}
-
-/* Table styling */
-.table-hover tbody tr:hover {
-    background-color: rgba(0,102,179,0.05);
-}
-
 /* Alert small */
 .alert-sm {
     font-size: 0.7rem;
     padding: 0.25rem 0.5rem;
 }
 
-/* Kenya Power themed scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #0066B3;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #009639;
-}
-
-/* Modal animations */
-.modal-content {
-    border-radius: 16px;
-    overflow: hidden;
-}
-
-.modal-header {
-    border-bottom: none;
-}
-
-.modal-footer {
-    border-top: none;
-}
-
-/* Toast positioning */
-.toast {
-    min-width: 300px;
-}
-
-/* Responsive adjustments */
+/* Responsive */
 @media (max-width: 768px) {
     .debt-summary .fs-5 {
         font-size: 1rem;
     }
-
     .stats-box .fw-bold {
         font-size: 1rem;
     }

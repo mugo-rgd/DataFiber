@@ -40,19 +40,27 @@ public function conditionalIndex()
 }
 
 /**
- * Display a specific conditional certificate
+ * Show conditional certificate
  */
-public function showConditional($certificateId)
+public function showConditional($certificate)
 {
-    $certificate = ConditionalCertificate::with(['designRequest.customer', 'ictEngineer'])
-        ->findOrFail($certificateId);
+    // Find the certificate
+    $certificate = ConditionalCertificate::findOrFail($certificate);
 
-    // Verify ownership through design request
-    // if ($certificate->designRequest->designer_id != Auth::id()) {
-    //     abort(403, 'Unauthorized access to this certificate.');
-    // }
+    // Get the associated design request
+    $designRequest = $certificate->designRequest;
 
-    return view('designer.certificates.conditional.show', compact('certificate'));
+    // Check if the designer has access
+    $user = Auth::user();
+    $isDesigner = $designRequest && $designRequest->designer_id == $user->id;
+    $isICTEngineer = $designRequest && $designRequest->ict_engineer_id == $user->id;
+    $isAdmin = in_array($user->role, ['admin', 'system_admin']);
+
+    if (!$isDesigner && !$isICTEngineer && !$isAdmin) {
+        abort(403, 'You are not authorized to view this certificate.');
+    }
+
+    return view('designer.certificates.conditional.show', compact('certificate', 'designRequest'));
 }
 
     /**

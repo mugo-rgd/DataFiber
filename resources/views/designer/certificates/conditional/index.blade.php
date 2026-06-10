@@ -138,9 +138,9 @@
                                                title="View Certificate">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('designer.certificates.conditional.download', $certificate->id) }}"
+                                            <a href="{{ route('ictengineer.certificates.conditional.download', $certificate->id) }}"
                                                class="btn btn-sm btn-outline-success rounded-pill px-3"
-                                               title="Download Inspection Report">
+                                               title="Download conditional certificate">
                                                 <i class="fas fa-download"></i>
                                             </a>
                                             @if($certificate->certificate_status === 'sent_to_designer' && $designRequest->designer_id == Auth::id())

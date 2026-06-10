@@ -10,7 +10,9 @@ use App\Http\Controllers\CAK\ComplianceController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ConversionDataController;
 use App\Http\Controllers\Customer\BillingController;
+use App\Http\Controllers\Customer\DashboardController;
 use App\Http\Controllers\Customer\DocumentController;
+use App\Http\Controllers\Customer\SimpleDashboardController;
 use App\Http\Controllers\CustomerCertificateController;
 use App\Http\Controllers\CustomerSapController;
 use App\Http\Controllers\DarkfireController;
@@ -269,21 +271,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/statements/{id}/send', [PaymentStatementController::class, 'sendStatement'])->name('statements.send');
     Route::get('/statements/{id}/download', [PaymentStatementController::class, 'downloadStatement'])->name('statements.download');
 
-    // ==========================
-    // System Admin Routes (Full System Access)
-    // ==========================
-    Route::prefix('admin')->middleware(['can:isSystemAdmin'])->name('admin.')->group(function () {
-        // Dashboard
-        Route::get('/dashboard', [SystemAdminController::class, 'dashboard'])->name('dashboard');
+ // ==========================
+// System Admin Routes (Full System Access)
+// ==========================
+Route::prefix('admin')->middleware(['auth', 'can:isSystemAdmin'])->name('admin.')->group(function () {
 
-        // System Settings
-        Route::get('/settings', [SystemAdminController::class, 'settings'])->name('settings');
-        Route::put('/settings', [SystemAdminController::class, 'updateSettings'])->name('settings.update');
+    // Dashboard
+    Route::get('/dashboard', [SystemAdminController::class, 'dashboard'])->name('dashboard');
 
-        // User Management
- Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    // System Settings
+    Route::get('/settings', [SystemAdminController::class, 'settings'])->name('settings');
+    Route::put('/settings', [SystemAdminController::class, 'updateSettings'])->name('settings.update');
 
-    // User management routes
+    // User Management - Using UserController
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
@@ -291,26 +291,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-Route::get('/users/check-email', [UserController::class, 'checkEmail'])->name('users.check-email');
-    // Additional routes
-    Route::post('/users/{user}/password', [UserController::class, 'updatePassword'])->name('users.password');
-    Route::post('/users/{user}/assign-role/{role}', [UserController::class, 'assignRole'])->name('users.assign-role');
-    Route::delete('/users/{id}/remove-role/{role}', [UserController::class, 'removeRole'])->name('users.remove-role');
-    Route::get('/users/stats', [UserController::class, 'stats'])->name('users.stats');
-    Route::get('/users/check-email', [UserController::class, 'checkEmail'])->name('users.check-email');
-});
-        // Role & Permission Management
-        Route::prefix('roles')->name('roles.')->group(function () {
-            Route::get('/', [SystemAdminController::class, 'roles'])->name('index');
-            Route::put('/permissions', [SystemAdminController::class, 'updatePermissions'])->name('update-permissions');
-        });
 
-        // System Reports
-        Route::get('/system-reports', [SystemAdminController::class, 'systemReports'])->name('system-reports');
-        Route::get('/audit-logs', [SystemAdminController::class, 'auditLogs'])->name('audit-logs');
+    // // Customer Management Routes - Add these
+    // Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    // Route::get('/customers/{user}/details', [SystemAdminController::class, 'showCustomerDetails'])->name('customers.details');
+    // Route::get('/customers/{user}/export', [SystemAdminController::class, 'exportCustomerData'])->name('customers.export');
+    // Route::get('/customers/{user}/profile', [CustomerController::class, 'getProfile'])->name('customers.profile');
+
+    // Role & Permission Management
+    Route::prefix('roles')->name('roles.')->group(function () {
+        Route::get('/', [SystemAdminController::class, 'roles'])->name('index');
+        Route::put('/permissions', [SystemAdminController::class, 'updatePermissions'])->name('update-permissions');
     });
 
-    // ==========================
+    // System Reports
+    Route::get('/system-reports', [SystemAdminController::class, 'systemReports'])->name('system-reports');
+    Route::get('/audit-logs', [SystemAdminController::class, 'auditLogs'])->name('audit-logs');
+});
+
+  // ==========================
     // Marketing Admin Routes
     // ==========================
     Route::prefix('marketing-admin')->middleware(['can:isMarketingAdmin'])->name('marketing-admin.')->group(function () {
@@ -467,6 +466,13 @@ Route::prefix('ictengineer')->middleware(['can:ictengineerOrDesigner'])->name('i
             Route::post('/{id}/disassign-manager', [AdminController::class, 'disassignManager'])->name('disassign-manager');
             Route::post('/{id}/toggle-status', [AdminController::class, 'toggleStatus'])->name('toggle-status');
             Route::get('/{customer}/approved-quotations', [LeaseController::class, 'getApprovedQuotations'])->name('approved-quotations');
+         // Customer Management Routes - Add these
+    Route::get('/customers', [CustomerController::class, 'index'])->name('index');
+    Route::get('/customers/{user}/details', [SystemAdminController::class, 'showCustomerDetails'])->name('details');
+    Route::get('/customers/{user}/export', [SystemAdminController::class, 'exportCustomerData'])->name('export');
+    Route::get('/customers/{user}/profile', [CustomerController::class, 'getProfile'])->name('profile');
+
+
         });
 
         // Account Managers Management
@@ -591,11 +597,21 @@ Route::prefix('ictengineer')->middleware(['can:ictengineerOrDesigner'])->name('i
     // ==========================
     Route::prefix('customer')->middleware(['can:isCustomer'])->name('customer.')->group(function () {
         // Dashboard
-        Route::get('/customer-dashboard', [CustomerController::class, 'dashboard'])->name('customer-dashboard');
-        Route::get('/', [CustomerController::class, 'index'])->name('index');
+        // Dashboard - matches your blade view name
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/customer-dashboard', [DashboardController::class, 'index'])->name('customer-dashboard');
+//  // Simple dashboard - lightweight, no heavy queries
+//     Route::get('/simple-dashboard', [SimpleDashboardController::class, 'index'])->name('simple-dashboard');
+
+//     // Also redirect the main dashboard to simple dashboard temporarily
+//     Route::get('/dashboard', [SimpleDashboardController::class, 'index'])->name('dashboard');
+//     Route::get('/customer-dashboard', [SimpleDashboardController::class, 'index'])->name('customer-dashboard');
+
 
         // Public customer routes (no profile completion check)
         Route::get('/welcome', [App\Http\Controllers\Customer\CustomerDashboardController::class, 'welcome'])->name('welcome');
+
+
 
         // Profile routes
         Route::prefix('profile')->name('profile.')->group(function () {
@@ -1210,8 +1226,9 @@ Route::get('/finance/ai-analytics/report', [AiAnalyticsController::class, 'gener
 
         Route::prefix('customers')->name('customers.')->group(function () {
             Route::get('/', [AccountManagerController::class, 'myCustomers'])->name('index');
-            Route::get('/{customer}', [AccountManagerController::class, 'customerDetail'])->name('show');
+             Route::get('/{id}', [AccountManagerController::class, 'customerDetail'])->name('show');
             Route::get('/{customer}/approved-quotations', [LeaseController::class, 'getApprovedQuotations'])->name('approved-quotations');
+             Route::post('/{id}/send-reminder', [AccountManagerController::class, 'sendReminder'])->name('send-reminder');
         });
 
         Route::get('/reports/performance', [AccountManagerController::class, 'performanceReport'])->name('reports.performance');

@@ -50,25 +50,58 @@ protected $table = 'consolidated_billings';
     ];
 
     protected $casts = [
-        'metadata' => 'array',
-        'kra_response' => 'array',
-        'tevin_response' => 'array',
-        'total_amount' => 'decimal:2',
-        'billing_date' => 'date',
-        'exchange_rate_date' => 'date',
-        'due_date' => 'date',
-        'tevin_committed_at' => 'datetime',
-         'tevin_job_started_at' => 'datetime',
-        'tevin_job_failed_at' => 'datetime',
-        'tevin_submitted_at' => 'datetime',
-        'tev_committed_timestamp' => 'datetime',
-        'tev_transmission_timestamp' => 'datetime',
-        'total_amount_kes' => 'decimal:2',
-        'exchange_rate' => 'decimal:2',
-         'payment_date' => 'datetime',
-        'paid_amount' => 'decimal:2',
-        'paid_amount_kes' => 'decimal:2',
-            ];
+    'metadata' => 'array',
+    'kra_response' => 'array',
+    'tevin_response' => 'array',
+    'total_amount' => 'decimal:2',
+    'billing_date' => 'datetime',  // Change from 'date' to 'datetime'
+    'exchange_rate_date' => 'datetime',
+    'due_date' => 'datetime',
+    'tevin_committed_at' => 'datetime',
+    'tevin_job_started_at' => 'datetime',
+    'tevin_job_failed_at' => 'datetime',
+    'tevin_submitted_at' => 'datetime',
+    'tev_committed_timestamp' => 'datetime',
+    'tev_transmission_timestamp' => 'datetime',
+    'total_amount_kes' => 'decimal:2',
+    'exchange_rate' => 'decimal:2',
+    'payment_date' => 'datetime',
+    'paid_amount' => 'decimal:2',
+    'paid_amount_kes' => 'decimal:2',
+];
+
+// Add this method to handle invalid dates
+protected function asDateTime($value)
+{
+    try {
+        // Handle null or empty values
+        if (empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
+            return null;
+        }
+
+        // Handle string dates
+        if (is_string($value)) {
+            // Check for invalid date strings
+            if ($value === '0000-00-00' || $value === '0000-00-00 00:00:00' || $value === '') {
+                return null;
+            }
+
+            // Try to parse the date
+            try {
+                return parent::asDateTime($value);
+            } catch (\Exception $e) {
+                \Log::warning('Date parsing failed:', ['value' => $value, 'error' => $e->getMessage()]);
+                return null;
+            }
+        }
+
+        return parent::asDateTime($value);
+
+    } catch (\Exception $e) {
+        \Log::warning('Date casting error:', ['value' => $value, 'error' => $e->getMessage()]);
+        return null;
+    }
+}
 
      public function getTevinStatusLabelAttribute(): string
     {
@@ -279,5 +312,50 @@ public function updatePaymentStatus(): void
 
     $this->paid_amount = $this->getTotalPaidAttribute();
     $this->save();
+}
+
+// app/Models/ConsolidatedBilling.php
+
+public function getSafeBillingDateAttribute()
+{
+    try {
+        return $this->billing_date ? \Carbon\Carbon::parse($this->billing_date) : null;
+    } catch (\Exception $e) {
+        return null;
+    }
+}
+
+public function getSafeDueDateAttribute()
+{
+    try {
+        return $this->due_date ? \Carbon\Carbon::parse($this->due_date) : null;
+    } catch (\Exception $e) {
+        return null;
+    }
+}
+
+// Safe getters for dates
+public function getSafePaymentDateAttribute()
+{
+    return $this->payment_date ? $this->payment_date : null;
+}
+
+// Custom setters to handle invalid dates
+public function setBillingDateAttribute($value)
+{
+    if (empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
+        $this->attributes['billing_date'] = null;
+    } else {
+        $this->attributes['billing_date'] = $value;
+    }
+}
+
+public function setDueDateAttribute($value)
+{
+    if (empty($value) || $value === '0000-00-00' || $value === '0000-00-00 00:00:00') {
+        $this->attributes['due_date'] = null;
+    } else {
+        $this->attributes['due_date'] = $value;
+    }
 }
 }

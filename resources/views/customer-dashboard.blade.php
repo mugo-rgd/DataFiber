@@ -4,6 +4,18 @@
 
 @section('content')
 @php
+// Add this helper function if not exists
+    if (!function_exists('formatCurrency')) {
+        function formatCurrency($amount, $currency) {
+            if ($currency === 'USD') {
+                return '$' . number_format($amount, 2);
+            } elseif ($currency === 'KSH' || $currency === 'KES') {
+                return 'KSh ' . number_format($amount, 2);
+            }
+            return number_format($amount, 2) . ' ' . $currency;
+        }
+    }
+    
     $user = Auth::user();
     $accountManager = $user->accountManager ?? null;
     $requiredProfileDocs = [
@@ -28,10 +40,86 @@
 
     $profileComplete = count($missingDocs) === 0 && $approvedDocs === count($requiredProfileDocs);
 
+    // Currency handling for both USD and KSH
     $defaultCurrency = 'USD';
+    $currencies = ['USD', 'KSH'];
+    $currencyData = [];
 
-    if(isset($consolidatedBillings) && $consolidatedBillings->count() > 0){
-        $defaultCurrency = $consolidatedBillings->first()->currency ?? 'USD';
+    // Initialize currency data
+    foreach ($currencies as $currency) {
+        $currencyData[$currency] = [
+            'total_invoices' => 0,
+            'paid_invoices' => 0,
+            'pending_invoices' => 0,
+            'overdue_invoices' => 0,
+            'total_amount' => 0,
+            'paid_amount' => 0,
+            'outstanding_amount' => 0,
+        ];
+    }
+
+    // Process billing data by currency if consolidatedBillings exists
+    if(isset($consolidatedBillings) && $consolidatedBillings->count() > 0) {
+        // Set default currency from first billing
+        $firstBilling = $consolidatedBillings->first();
+        $defaultCurrency = $firstBilling->currency ?? 'USD';
+
+        // Calculate statistics by currency
+        foreach ($consolidatedBillings as $billing) {
+            $currency = $billing->currency ?? 'USD';
+
+            if (!isset($currencyData[$currency])) {
+                $currencyData[$currency] = [
+                    'total_invoices' => 0,
+                    'paid_invoices' => 0,
+                    'pending_invoices' => 0,
+                    'overdue_invoices' => 0,
+                    'total_amount' => 0,
+                    'paid_amount' => 0,
+                    'outstanding_amount' => 0,
+                ];
+            }
+
+            $currencyData[$currency]['total_invoices']++;
+
+            // Check if overdue (due date passed and not paid)
+            $isOverdue = $billing->due_date &&
+                        $billing->due_date->lt(now()) &&
+                        $billing->status !== 'paid';
+
+            // Status counts
+            if ($billing->status === 'paid') {
+                $currencyData[$currency]['paid_invoices']++;
+            } elseif ($isOverdue) {
+                $currencyData[$currency]['overdue_invoices']++;
+            } elseif ($billing->status === 'pending') {
+                $currencyData[$currency]['pending_invoices']++;
+            }
+
+            // Amount calculations
+            $currencyData[$currency]['total_amount'] += $billing->total_amount ?? 0;
+            $currencyData[$currency]['paid_amount'] += $billing->paid_amount ?? 0;
+            $currencyData[$currency]['outstanding_amount'] += ($billing->total_amount - $billing->paid_amount);
+        }
+    }
+
+    // Helper function to format currency
+    function formatCurrencyByCurrency($amount, $currency) {
+        if ($currency === 'USD') {
+            return '$' . number_format($amount, 2);
+        } elseif ($currency === 'KSH' || $currency === 'KES') {
+            return 'KSh ' . number_format($amount, 2);
+        }
+        return number_format($amount, 2) . ' ' . $currency;
+    }
+
+    // Get available currencies from data
+    $availableCurrencies = array_keys(array_filter($currencyData, function($data) {
+        return $data['total_invoices'] > 0;
+    }));
+
+    if (empty($availableCurrencies)) {
+        $availableCurrencies = ['USD'];
     }
 @endphp
 
@@ -214,75 +302,87 @@
 
         {{-- Invoice Statistics Cards --}}
         <div class="row g-4 mb-5">
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card rounded-4 p-4 h-100">
-                    <div>
-                        <small class="text-uppercase fw-bold text-kp-blue">Total Invoices</small>
-                        <div class="stat-value fw-bold">{{ $billingStats['total'] ?? 0 }}</div>
-                    </div>
-                    <i class="fas fa-file-invoice fa-2x text-kp-blue opacity-25"></i>
-                </div>
-            </div>
+    @foreach($availableCurrencies as $currency)
+        <div class="col-12">
+            <h5 class="mb-3">
+                <span class="badge bg-primary rounded-pill px-3 py-2">
+                    {{ $currency }} Portfolio
+                </span>
+            </h5>
+        </div>
 
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card rounded-4 p-4 h-100">
-                    <div>
-                        <small class="text-uppercase fw-bold text-kp-green">Paid</small>
-                        <div class="stat-value fw-bold text-kp-green">{{ $billingStats['paid'] ?? 0 }}</div>
-                    </div>
-                    <i class="fas fa-check-circle fa-2x text-kp-green opacity-25"></i>
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card rounded-4 p-4 h-100">
+                <div>
+                    <small class="text-uppercase fw-bold text-kp-blue">Total Invoices ({{ $currency }})</small>
+                    <div class="stat-value fw-bold">{{ $currencyData[$currency]['total_invoices'] }}</div>
                 </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card rounded-4 p-4 h-100">
-                    <div>
-                        <small class="text-uppercase fw-bold text-warning">Pending</small>
-                        <div class="stat-value fw-bold text-warning">{{ $billingStats['pending'] ?? 0 }}</div>
-                    </div>
-                    <i class="fas fa-clock fa-2x text-warning opacity-25"></i>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stat-card rounded-4 p-4 h-100">
-                    <div>
-                        <small class="text-uppercase fw-bold text-danger">Overdue</small>
-                        <div class="stat-value fw-bold text-danger">{{ $billingStats['overdue'] ?? 0 }}</div>
-                    </div>
-                    <i class="fas fa-exclamation-triangle fa-2x text-danger opacity-25"></i>
-                </div>
+                <i class="fas fa-file-invoice fa-2x text-kp-blue opacity-25"></i>
             </div>
         </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card rounded-4 p-4 h-100">
+                <div>
+                    <small class="text-uppercase fw-bold text-kp-green">Paid ({{ $currency }})</small>
+                    <div class="stat-value fw-bold text-kp-green">{{ $currencyData[$currency]['paid_invoices'] }}</div>
+                </div>
+                <i class="fas fa-check-circle fa-2x text-kp-green opacity-25"></i>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card rounded-4 p-4 h-100">
+                <div>
+                    <small class="text-uppercase fw-bold text-warning">Pending ({{ $currency }})</small>
+                    <div class="stat-value fw-bold text-warning">{{ $currencyData[$currency]['pending_invoices'] }}</div>
+                </div>
+                <i class="fas fa-clock fa-2x text-warning opacity-25"></i>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card rounded-4 p-4 h-100">
+                <div>
+                    <small class="text-uppercase fw-bold text-danger">Overdue ({{ $currency }})</small>
+                    <div class="stat-value fw-bold text-danger">{{ $currencyData[$currency]['overdue_invoices'] }}</div>
+                </div>
+                <i class="fas fa-exclamation-triangle fa-2x text-danger opacity-25"></i>
+            </div>
+        </div>
+    @endforeach
+</div>
 
         {{-- Amount Summary Cards --}}
         <div class="row g-4 mb-5">
-            <div class="col-lg-6">
-                <div class="amount-card amount-card-danger rounded-4 p-4">
-                    <div>
-                        <small class="text-uppercase tracking-wide">Total Outstanding</small>
-                        <div class="amount-value fw-bold display-6 mb-2">
-                            {{ formatCurrency($billingStats['total_amount'] ?? 0, $defaultCurrency) }}
-                        </div>
-                        <p class="mb-0 opacity-75">Amount pending for payment</p>
+    @foreach($availableCurrencies as $currency)
+        <div class="col-lg-6">
+            <div class="amount-card amount-card-danger rounded-4 p-4">
+                <div>
+                    <small class="text-uppercase tracking-wide">Total Outstanding ({{ $currency }})</small>
+                    <div class="amount-value fw-bold display-6 mb-2">
+                        {{ formatCurrencyByCurrency($currencyData[$currency]['outstanding_amount'], $currency) }}
                     </div>
-                    <i class="fas fa-money-bill-wave fa-3x opacity-25"></i>
+                    <p class="mb-0 opacity-75">Amount pending for payment</p>
                 </div>
-            </div>
-
-            <div class="col-lg-6">
-                <div class="amount-card amount-card-success rounded-4 p-4">
-                    <div>
-                        <small class="text-uppercase tracking-wide">Total Paid</small>
-                        <div class="amount-value fw-bold display-6 mb-2">
-                            {{ formatCurrency($billingStats['paid_amount'] ?? 0, $defaultCurrency) }}
-                        </div>
-                        <p class="mb-0 opacity-75">Amount successfully paid</p>
-                    </div>
-                    <i class="fas fa-check-circle fa-3x opacity-25"></i>
-                </div>
+                <i class="fas fa-money-bill-wave fa-3x opacity-25"></i>
             </div>
         </div>
+
+        <div class="col-lg-6">
+            <div class="amount-card amount-card-success rounded-4 p-4">
+                <div>
+                    <small class="text-uppercase tracking-wide">Total Paid ({{ $currency }})</small>
+                    <div class="amount-value fw-bold display-6 mb-2">
+                        {{ formatCurrencyByCurrency($currencyData[$currency]['paid_amount'], $currency) }}
+                    </div>
+                    <p class="mb-0 opacity-75">Amount successfully paid</p>
+                </div>
+                <i class="fas fa-check-circle fa-3x opacity-25"></i>
+            </div>
+        </div>
+    @endforeach
+</div>
 
         {{-- Quick Actions Section --}}
         <div class="row g-4 mb-5">

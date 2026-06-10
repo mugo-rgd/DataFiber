@@ -17,8 +17,8 @@
                     <a href="{{ route('designer.certificates.conditional.index') }}" class="btn btn-outline-secondary me-2">
                         <i class="fas fa-arrow-left me-2"></i>Back to List
                     </a>
-                    <a href="{{ route('designer.certificates.conditional.download', $certificate) }}" class="btn btn-success">
-                        <i class="fas fa-download me-2"></i>Download
+                    <a href="{{ route('ictengineer.certificates.conditional.download', $certificate) }}" class="btn btn-success">
+                        <i class="fas fa-download me-2"></i>Download certificate
                     </a>
                 </div>
             </div>
