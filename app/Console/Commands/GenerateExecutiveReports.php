@@ -125,75 +125,77 @@ $this->generateTopCustomers($snapshotDate);
         );
     }
 
-    private function generateDebtAging(string $snapshotDate): void
-    {
-        DebtAgingSnapshot::where('snapshot_date', $snapshotDate)->delete();
+  private function generateDebtAging(string $snapshotDate): void
+{
+    // Delete existing records
+    DB::statement('DELETE FROM debt_aging_snapshots WHERE snapshot_date = ?', [$snapshotDate]);
 
-        foreach (['KSH', 'USD'] as $currency) {
-            $customers = ConsolidatedBilling::where('currency', $currency)
-                ->whereRaw('(total_amount - paid_amount) > 0')
-                ->select('user_id')
-                ->distinct()
-                ->pluck('user_id');
-
-            foreach ($customers as $customerId) {
-                $billings = ConsolidatedBilling::where('user_id', $customerId)
-                    ->where('currency', $currency)
-                    ->whereRaw('(total_amount - paid_amount) > 0')
-                    ->get();
-
-                $current = 0;
-                $d1_30 = 0;
-                $d31_60 = 0;
-                $d61_90 = 0;
-                $d91_120 = 0;
-                $d120Plus = 0;
-
-                foreach ($billings as $billing) {
-                    $outstanding = $billing->total_amount - $billing->paid_amount;
-
-                    $days = $billing->due_date
-                        ? Carbon::parse($billing->due_date)->diffInDays(now(), false)
-                        : 0;
-
-                    if ($days <= 0) {
-                        $current += $outstanding;
-                    } elseif ($days <= 30) {
-                        $d1_30 += $outstanding;
-                    } elseif ($days <= 60) {
-                        $d31_60 += $outstanding;
-                    } elseif ($days <= 90) {
-                        $d61_90 += $outstanding;
-                    } elseif ($days <= 120) {
-                        $d91_120 += $outstanding;
-                    } else {
-                        $d120Plus += $outstanding;
-                    }
-                }
-
-                DebtAgingSnapshot::create([
-                    'snapshot_date' => $snapshotDate,
-                    'customer_id' => $customerId,
-                    'currency' => $currency,
-                    'current_amount' => $current,
-                    'days_1_30' => $d1_30,
-                    'days_31_60' => $d31_60,
-                    'days_61_90' => $d61_90,
-                    'days_91_120' => $d91_120,
-                    'days_120_plus' => $d120Plus,
-                    'total_outstanding' => $billings->sum(fn ($billing) =>
-                        $billing->total_amount - $billing->paid_amount
-                    ),
-                    'billing_count' => $billings->count(),
-                    'overdue_count' => $billings->filter(fn ($billing) =>
-                        $billing->due_date &&
-                        Carbon::parse($billing->due_date)->isPast() &&
-                        ($billing->total_amount - $billing->paid_amount) > 0
-                    )->count(),
-                ]);
-            }
-        }
-    }
+    // Direct SQL insert - single query
+    DB::statement("
+        INSERT INTO debt_aging_snapshots (
+            snapshot_date,
+            customer_id,
+            currency,
+            current_amount,
+            days_1_30,
+            days_31_60,
+            days_61_90,
+            days_91_120,
+            days_120_plus,
+            total_outstanding,
+            billing_count,
+            overdue_count,
+            created_at,
+            updated_at
+        )
+        SELECT
+            ? as snapshot_date,
+            user_id,
+            currency,
+            COALESCE(SUM(CASE
+                WHEN due_date IS NULL OR due_date >= CURDATE()
+                THEN total_amount - COALESCE(paid_amount, 0)
+                ELSE 0
+            END), 0) as current_amount,
+            COALESCE(SUM(CASE
+                WHEN due_date IS NOT NULL AND DATEDIFF(CURDATE(), due_date) BETWEEN 1 AND 30
+                THEN total_amount - COALESCE(paid_amount, 0)
+                ELSE 0
+            END), 0) as days_1_30,
+            COALESCE(SUM(CASE
+                WHEN due_date IS NOT NULL AND DATEDIFF(CURDATE(), due_date) BETWEEN 31 AND 60
+                THEN total_amount - COALESCE(paid_amount, 0)
+                ELSE 0
+            END), 0) as days_31_60,
+            COALESCE(SUM(CASE
+                WHEN due_date IS NOT NULL AND DATEDIFF(CURDATE(), due_date) BETWEEN 61 AND 90
+                THEN total_amount - COALESCE(paid_amount, 0)
+                ELSE 0
+            END), 0) as days_61_90,
+            COALESCE(SUM(CASE
+                WHEN due_date IS NOT NULL AND DATEDIFF(CURDATE(), due_date) BETWEEN 91 AND 120
+                THEN total_amount - COALESCE(paid_amount, 0)
+                ELSE 0
+            END), 0) as days_91_120,
+            COALESCE(SUM(CASE
+                WHEN due_date IS NOT NULL AND DATEDIFF(CURDATE(), due_date) > 120
+                THEN total_amount - COALESCE(paid_amount, 0)
+                ELSE 0
+            END), 0) as days_120_plus,
+            COALESCE(SUM(total_amount - COALESCE(paid_amount, 0)), 0) as total_outstanding,
+            COUNT(*) as billing_count,
+            COUNT(CASE
+                WHEN due_date IS NOT NULL AND due_date < CURDATE()
+                AND (total_amount - COALESCE(paid_amount, 0)) > 0
+                THEN 1
+            END) as overdue_count,
+            NOW() as created_at,
+            NOW() as updated_at
+        FROM consolidated_billings
+        WHERE (total_amount - COALESCE(paid_amount, 0)) > 0
+        GROUP BY user_id, currency
+    ", [$snapshotDate]);
+}
 
  private function generateRevenueSnapshots(string $snapshotDate): void
 {

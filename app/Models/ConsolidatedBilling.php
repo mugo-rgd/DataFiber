@@ -43,6 +43,7 @@ protected $table = 'consolidated_billings';
         'tev_committed_timestamp',
         'tevin_submitted_at',
         'tevin_status',
+        'tevin_job_started_at',
         'tevin_response',
         'tevin_error_message',
         'tevin_error_code',
