@@ -534,6 +534,7 @@ Route::prefix('ictengineer')->middleware(['can:ictengineerOrDesigner'])->name('i
         // Lease Management
         Route::prefix('leases')->name('leases.')->group(function () {
             Route::patch('/{lease}/approve', [LeaseController::class, 'approve'])->name('approve');
+            Route::patch('/batch-approve', [LeaseController::class, 'batchApprove'])->name('batch-approve');
             Route::get('/{lease}/pdf', [LeaseController::class, 'generatePdf'])->name('pdf');
             Route::put('/leases/{lease}/terminate', [LeaseController::class, 'terminate'])->name('terminate');
             Route::put('/leases/{lease}/activate', [LeaseController::class, 'activate'])->name('activate');
@@ -550,6 +551,8 @@ Route::prefix('ictengineer')->middleware(['can:ictengineerOrDesigner'])->name('i
         Route::post('/leases', [LeaseController::class, 'store'])->name('leases.store');
         Route::patch('/leases/{lease}/reject', [LeaseController::class, 'reject'])->name('leases.reject');
         Route::patch('/leases/{lease}/approve', [LeaseController::class, 'approve'])->name('leases.approve');
+        Route::get('leases/fix-inconsistent', [LeaseController::class, 'fixInconsistentLeases'])->name('leases.fix-inconsistent');
+
         // Invoice Management
         Route::prefix('invoices')->name('invoices.')->group(function () {
             Route::get('/{invoice}', [AdminController::class, 'showInvoice'])->name('show');

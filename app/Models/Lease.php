@@ -598,15 +598,47 @@ public function documents()
         return now()->diffInDays($this->next_billing_date, false);
     }
 
-    ///////////////////////////
-     /**
-     * Get the customer/user for this lease
-     */
-    // public function customer(): BelongsTo
-    // {
-    //     return $this->belongsTo(User::class, 'user_id');
-    // }
+   // Add accessors for the relationships
+public function approvedBy()
+{
+    return $this->belongsTo(User::class, 'approved_by');
+}
 
+public function rejectedBy()
+{
+    return $this->belongsTo(User::class, 'rejected_by');
+}
+
+// In app/Models/Lease.php
+
+/**
+ * Check if lease is properly approved
+ */
+public function isProperlyApproved(): bool
+{
+    if ($this->status !== 'active') {
+        return false;
+    }
+
+    return !is_null($this->approved_at)
+        && !is_null($this->approved_by)
+        && !is_null($this->activated_at);
+}
+
+/**
+ * Get approval status with details
+ */
+public function getApprovalStatusAttribute(): array
+{
+    return [
+        'is_approved' => !is_null($this->approved_at),
+        'approved_at' => $this->approved_at,
+        'approved_by' => $this->approvedBy?->name,
+        'is_activated' => !is_null($this->activated_at),
+        'activated_at' => $this->activated_at,
+        'needs_fix' => $this->status === 'active' && is_null($this->approved_at)
+    ];
+}
     /**
      * Get the user for this lease (alias for customer)
      */
