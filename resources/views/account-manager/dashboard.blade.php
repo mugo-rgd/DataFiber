@@ -191,6 +191,7 @@
                 ['title' => 'Quotations', 'icon' => 'file-invoice-dollar', 'color' => 'danger', 'link' => route('admin.quotations.index'), 'desc' => 'Create quotations'],
                 ['title' => 'Leases', 'icon' => 'network-wired', 'color' => 'dark', 'link' => route('account-manager.leases.index'), 'desc' => 'Manage leases'],
                 ['title' => 'Reports', 'icon' => 'chart-bar', 'color' => 'secondary', 'link' => route('account-manager.reports.performance'), 'desc' => 'Analytics & performance'],
+['title' => 'Maintainance requests', 'icon' => 'toolbox', 'color' => 'secondary', 'link' => route('maintenance.admin-dashboard'), 'desc' => 'Maintenance requests'],
             ];
         @endphp
 

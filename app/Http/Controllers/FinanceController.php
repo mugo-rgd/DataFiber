@@ -2315,7 +2315,94 @@ private function getEmptyFinancialMetrics(): array
     public function bulkUpdateStatus(Request $request) { return redirect()->back()->with('success', 'Statuses updated.'); }
     public function generateInvoicesManually(AutomatedBillingService $billingService) { return redirect()->route('finance.auto-billing.generate')->with('success', 'Invoices generated.'); }
     public function updateBillingSettings(Request $request, $customerId) { return redirect()->back()->with('success', 'Settings updated.'); }
-    public function autoBilling(AutomatedBillingService $billingService) { return view('finance.auto-billing.index'); }
+    // public function autoBilling(AutomatedBillingService $billingService) { return view('finance.auto-billing.index'); }
+
+    /**
+ * Display auto-billing dashboard
+ */
+public function autoBilling(AutomatedBillingService $billingService = null)
+{
+    // Get due customers with their billings
+    $dueCustomers = LeaseBilling::whereIn('status', ['pending', 'sent', 'overdue'])
+        ->where('due_date', '<=', now()->addDays(7))
+        ->with(['lease.customer'])
+        ->get()
+        ->groupBy('lease.customer_id')
+        ->map(function ($billings, $customerId) {
+            $customer = $billings->first()->lease->customer ?? null;
+
+            // Calculate pending amount correctly
+            $pendingAmount = $billings->whereIn('status', ['pending', 'sent', 'overdue'])->sum('total_amount');
+
+            return (object)[
+                'id' => $customerId,
+                'name' => $customer->name ?? 'N/A',
+                'email' => $customer->email ?? 'N/A',
+                'customer_id' => $customerId,
+                'customer_name' => $customer->name ?? 'N/A',
+                'customer_email' => $customer->email ?? 'N/A',
+                'customer_company' => $customer->company ?? 'N/A',
+                'total_due' => $billings->sum('total_amount'),
+                'pending_amount' => $pendingAmount,  // Add this
+                'total_due_usd' => $billings->where('currency', 'USD')->sum('total_amount'),
+                'total_due_ksh' => $billings->where('currency', 'KSH')->sum('total_amount'),
+                'invoices_count' => $billings->count(),
+                'oldest_due_date' => $billings->min('due_date'),
+                'next_billing_date' => $billings->first()->due_date ?? null,
+                'leaseBillings' => $billings,
+                'billings' => $billings
+            ];
+        })
+        ->sortByDesc(function ($customer) {
+            return $customer->total_due;
+        });
+
+    // Get auto billing customers
+    $autoBillingCustomers = User::where('role', 'customer')
+        ->where('auto_billing_enabled', true)
+        ->select('id', 'name', 'email', 'company_name', 'auto_billing_enabled', 'next_billing_date')
+        ->paginate(20);
+
+    // Get scheduled billings with proper relations
+    $scheduledBillings = LeaseBilling::whereIn('status', ['pending', 'sent'])
+        ->where('due_date', '>', now())
+        ->with(['lease.customer'])
+        ->orderBy('due_date', 'asc')
+        ->limit(20)
+        ->get()
+        ->map(function ($billing) {
+            return (object)[
+                'id' => $billing->id,
+                'billing_number' => $billing->billing_number,
+                'customer' => $billing->lease->customer ?? null,
+                'lease' => $billing->lease,
+                'due_date' => $billing->due_date,
+                'total_amount' => $billing->total_amount,
+                'status' => $billing->status,
+            ];
+        });
+
+    // Get statistics
+    $stats = [
+        'due_customers_count' => $dueCustomers->count(),
+        'auto_billing_count' => User::where('role', 'customer')->where('auto_billing_enabled', true)->count(),
+        'overdue_count' => LeaseBilling::where('status', 'overdue')
+            ->where('due_date', '<', now())
+            ->count(),
+        'monthly_revenue' => Lease::where('status', 'active')->sum('monthly_cost'),
+        'total_auto_billing' => User::where('role', 'customer')->where('auto_billing_enabled', true)->count(),
+        'scheduled_count' => LeaseBilling::whereIn('status', ['pending', 'sent'])
+            ->where('due_date', '>', now())
+            ->count(),
+    ];
+
+    return view('finance.auto-billing.index', compact(
+        'dueCustomers',
+        'autoBillingCustomers',
+        'scheduledBillings',
+        'stats'
+    ));
+}
     private function getScheduledBillings() { return collect(); }
     private function getAutoBillingCustomers() { return collect(); }
     private function getDueCustomers() { return collect(); }

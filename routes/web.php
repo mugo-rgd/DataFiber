@@ -91,6 +91,31 @@ use App\Http\Controllers\CAK\ASPController;
 use App\Http\Controllers\CAK\CSPController;
 use App\Http\Controllers\CAK\NFPController;
 use App\Http\Controllers\ExecutiveDashboardController;
+
+// ==================== API ROUTES ====================
+// API endpoint for fetching customer leases
+use App\Http\Controllers\MaintenanceRequestController;
+
+// API route for fetching customer leases
+// Route::middleware(['auth'])->get('/api/customers/{customer}/leases', [MaintenanceController::class, 'getCustomerLeases']);
+
+// API route for fetching customer leases
+Route::middleware(['auth'])->get('/api/customers/{customer}/leases', function ($customerId) {
+    $leases = Lease::where('customer_id', $customerId)
+        ->where('status', 'active')
+        ->select('id', 'lease_number', 'title', 'monthly_cost', 'currency')
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'leases' => $leases,
+        'count' => $leases->count()
+    ]);
+});
+// ==================== WEB ROUTES ====================
+// Auth::routes();
+// ==================== AUTH ROUTES ====================
+// Auth::routes();
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -1188,38 +1213,58 @@ Route::get('/finance/ai-analytics/report', [AiAnalyticsController::class, 'gener
     // ==========================
     // Maintenance Routes
     // ==========================
-    Route::prefix('maintenance')->name('maintenance.')->group(function () {
-        Route::get('/dashboard', [MaintenanceController::class, 'dashboard'])->name('dashboard')->middleware(['can:view-maintenance']);
+    Route::prefix('maintenance')->name('maintenance.')->middleware(['auth'])->group(function () {
 
-        Route::prefix('work-orders')->name('work-orders.')->group(function () {
-            Route::get('/', [MaintenanceController::class, 'workOrders'])->name('index');
-            Route::get('/create', [MaintenanceController::class, 'createWorkOrder'])->name('create');
-            Route::post('/', [MaintenanceController::class, 'storeWorkOrder'])->name('store');
-            Route::get('/{id}', [MaintenanceController::class, 'showWorkOrder'])->name('show');
-            Route::put('/{id}/status', [MaintenanceController::class, 'updateWorkOrderStatus'])->name('update-status')->middleware(['can:update-work-order-status']);
-            Route::put('/{id}/complete', [MaintenanceController::class, 'completeWorkOrder'])->name('complete')->middleware(['can:complete-work-orders']);
-        });
+    // Dashboard
+    Route::get('/dashboard', [MaintenanceController::class, 'dashboard'])->name('dashboard');
+    Route::get('/admin-dashboard', [MaintenanceController::class, 'dashboard'])->name('admin-dashboard');
 
-        Route::prefix('equipment')->name('equipment.')->group(function () {
-            Route::get('/', [MaintenanceController::class, 'equipment'])->name('index');
-            Route::get('/create', [MaintenanceController::class, 'createEquipment'])->name('create');
-            Route::post('/', [MaintenanceController::class, 'storeEquipment'])->name('store');
-            Route::get('/{id}', [MaintenanceController::class, 'showEquipment'])->name('show');
-            Route::get('/{id}/edit', [MaintenanceController::class, 'editEquipment'])->name('edit');
-            Route::put('/{id}', [MaintenanceController::class, 'updateEquipment'])->name('update');
-        });
-
-        Route::prefix('requests')->name('requests.')->group(function () {
-            Route::get('/', [MaintenanceController::class, 'index'])->name('index');
-            Route::get('/create', [MaintenanceController::class, 'create'])->name('create');
-            Route::post('/', [MaintenanceController::class, 'store'])->name('store');
-            Route::get('/{id}', [MaintenanceController::class, 'show'])->name('show');
-        });
-
-        Route::get('/api/stats', [MaintenanceController::class, 'getStats'])->name('api.stats');
-        Route::get('/api/open-requests', [MaintenanceController::class, 'getOpenRequests'])->name('api.open-requests');
-        Route::get('/reports', [MaintenanceController::class, 'reports'])->name('reports');
+    // ==================== MAINTENANCE REQUESTS (Full CRUD) ====================
+    Route::prefix('requests')->name('requests.')->group(function () {
+        Route::get('/', [MaintenanceController::class, 'index'])->name('index');
+        Route::get('/create', [MaintenanceController::class, 'create'])->name('create');
+        Route::post('/', [MaintenanceController::class, 'store'])->name('store');
+        Route::get('/{id}', [MaintenanceController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [MaintenanceController::class, 'edit'])->name('edit');      // ADD THIS
+        Route::put('/{id}', [MaintenanceController::class, 'update'])->name('update');      // ADD THIS
+        Route::delete('/{id}', [MaintenanceController::class, 'destroy'])->name('destroy');  // ADD THIS (optional)
+        Route::post('/{id}/add-compensation', [MaintenanceController::class, 'addCompensation'])->name('add-compensation');
     });
+
+    Route::get('/customer/{customerId}/leases', [MaintenanceController::class, 'getCustomerLeases'])
+        ->name('customer.leases');
+
+    // ==================== WORK ORDERS ====================
+    Route::prefix('work-orders')->name('work-orders.')->group(function () {
+        Route::get('/', [MaintenanceController::class, 'workOrders'])->name('index');
+        Route::get('/create', [MaintenanceController::class, 'createWorkOrder'])->name('create');
+        Route::post('/', [MaintenanceController::class, 'storeWorkOrder'])->name('store');
+        Route::get('/{id}', [MaintenanceController::class, 'showWorkOrder'])->name('show');
+        Route::get('/{id}/edit', [MaintenanceController::class, 'editWorkOrder'])->name('edit');
+        Route::put('/{id}', [MaintenanceController::class, 'updateWorkOrder'])->name('update');
+        Route::patch('/{id}/status', [MaintenanceController::class, 'updateWorkOrderStatus'])->name('update-status');
+        Route::patch('/{id}/complete', [MaintenanceController::class, 'completeWorkOrder'])->name('complete');
+    });
+
+    // ==================== EQUIPMENT ====================
+    Route::prefix('equipment')->name('equipment.')->group(function () {
+        Route::get('/', [MaintenanceController::class, 'equipment'])->name('index');
+        Route::get('/create', [MaintenanceController::class, 'createEquipment'])->name('create');
+        Route::post('/', [MaintenanceController::class, 'storeEquipment'])->name('store');
+        Route::get('/{id}', [MaintenanceController::class, 'showEquipment'])->name('show');
+        Route::get('/{id}/edit', [MaintenanceController::class, 'editEquipment'])->name('edit');
+        Route::put('/{id}', [MaintenanceController::class, 'updateEquipment'])->name('update');
+        Route::delete('/{id}', [MaintenanceController::class, 'destroyEquipment'])->name('destroy');
+    });
+
+
+    // ==================== API ENDPOINTS ====================
+    Route::get('/api/stats', [MaintenanceController::class, 'getStats'])->name('api.stats');
+    Route::get('/api/open-requests', [MaintenanceController::class, 'getOpenRequests'])->name('api.open-requests');
+
+    // ==================== REPORTS ====================
+    Route::get('/reports', [MaintenanceController::class, 'reports'])->name('reports');
+});
 
     // ==========================
     // Account Manager Routes
@@ -1747,6 +1792,27 @@ Route::middleware(['auth'])->group(function () {
 
     // Optional: Notifications index page
     Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+});
+
+// Add this temporarily to routes/web.php
+Route::get('/test-customer-leases/{id}', function ($id) {
+    $leases = App\Models\Lease::where('customer_id', $id)
+        ->where('status', 'active')
+        ->get();
+
+    return response()->json([
+        'customer_id' => $id,
+        'lease_count' => $leases->count(),
+        'leases' => $leases->map(function($lease) {
+            return [
+                'id' => $lease->id,
+                'lease_number' => $lease->lease_number,
+                'title' => $lease->title,
+                'monthly_cost' => $lease->monthly_cost,
+                'currency' => $lease->currency,
+            ];
+        })
+    ]);
 });
 
 // Include API routes

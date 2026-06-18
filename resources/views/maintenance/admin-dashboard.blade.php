@@ -5,17 +5,48 @@
 @section('content')
 <div class="container-fluid">
     <!-- Header -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Maintenance Admin Dashboard</h1>
-        <div class="d-flex">
-            <a href="{{ route('maintenance.work-orders.create') }}" class="btn btn-kp-primary mr-2">
-                <i class="fas fa-plus-circle mr-2"></i> Create Work Order
-            </a>
-            <a href="{{ route('maintenance.requests.create') }}" class="btn btn-kp-success">
-                <i class="fas fa-plus mr-2"></i> New Request
-    </a>
+   <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+
+        <div class="d-lg-flex justify-content-between align-items-center">
+
+            <div>
+                <h2 class="fw-bold text-primary mb-1">
+                    <i class="fas fa-tools me-2"></i>
+                    Maintenance Operations Center
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Monitor fibre faults, maintenance activities, work orders and technician assignments.
+                </p>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mt-3 mt-lg-0">
+
+                <a href="{{ route('maintenance.requests.index') }}"
+                   class="btn btn-outline-primary">
+                    <i class="fas fa-list"></i>
+                    Requests
+                </a>
+
+                <a href="{{ route('maintenance.work-orders.create') }}"
+                   class="btn btn-primary">
+                    <i class="fas fa-clipboard-check"></i>
+                    Work Order
+                </a>
+
+                <a href="{{ route('maintenance.requests.create') }}"
+                   class="btn btn-success">
+                    <i class="fas fa-plus"></i>
+                    New Request
+                </a>
+
+            </div>
+
         </div>
+
     </div>
+</div>
 
     <!-- Statistics Cards -->
     <div class="row">

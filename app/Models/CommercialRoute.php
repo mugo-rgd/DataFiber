@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CommercialRoute extends Model
 {
     use HasFactory;
+protected $table = 'commercial_routes';
 
     protected $fillable = [
         'option',
@@ -20,17 +21,20 @@ class CommercialRoute extends Model
         'capital_expenditure',
         'availability',
         'currency',
-        'tech_type'
+        'tech_type',
     ];
 
     protected $casts = [
-        'fiber_cores' => 'integer',
-        'no_of_cores_required' => 'integer',
         'unit_cost_per_core_per_km_per_month' => 'decimal:2',
         'approx_distance_km' => 'decimal:2',
         'capital_expenditure' => 'decimal:2',
     ];
 
+    // Relationship with maintenance requests
+    public function maintenanceRequests()
+    {
+        return $this->hasMany(MaintenanceRequest::class, 'commercial_route_id');
+    }
     /**
      * Calculate monthly cost for a given number of cores
      */

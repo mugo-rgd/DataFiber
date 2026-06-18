@@ -376,12 +376,12 @@
                                         </a>
                                     </td>
                                     <td class="text-end">
-                                        @if($customer->current_amount_usd > 0)
-                                            <span class="text-kp-green">${{ number_format($customer->current_amount_usd, 2) }}</span>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
+    @if(($customer->current_amount_usd ?? 0) > 0)
+        <span class="text-kp-green">${{ number_format($customer->current_amount_usd, 2) }}</span>
+    @else
+        <span class="text-muted">-</span>
+    @endif
+</td>
                                     <td class="text-end">
                                         @if($customer->current_amount_ksh > 0)
                                             <span class="text-kp-green">KSH {{ number_format($customer->current_amount_ksh, 2) }}</span>

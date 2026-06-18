@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CommercialRoute;
 use App\Models\DesignRequest;
+use App\Models\Lease;
 use App\Models\MaintenanceEquipment;
 use App\Models\MaintenanceRequest;
 use App\Models\MaintenanceWorkOrder;
@@ -12,26 +14,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class MaintenanceController extends Controller
 {
-public function dashboard()
-{
-    $user = Auth::user();
+ public function dashboard()
+    {
+        $user = Auth::user();
 
-    // Role-based dashboard routing using direct role checks
-    if ($user->role === 'customer') {
-        return $this->customerDashboard();
-    } elseif ($user->role === 'designer') {
-        return $this->designerDashboard();
-    } elseif ($user->role === 'surveyor') {
-        return $this->surveyorDashboard();
-    } elseif ($user->role === 'admin') {
-        return $this->adminDashboard();
-    } else {
-        return $this->technicianDashboard();
+        // Role-based dashboard routing
+        $adminRoles = ['admin', 'account_manager', 'finance_manager'];
+        $techRoles = ['technician', 'maintenance_tech', 'field_tech'];
+
+        if ($user->role === 'customer') {
+            return $this->customerDashboard();
+        } elseif ($user->role === 'designer') {
+            return $this->designerDashboard();
+        } elseif ($user->role === 'surveyor') {
+            return $this->surveyorDashboard();
+        } elseif (in_array($user->role, $adminRoles)) {
+            return $this->adminDashboard();
+        } elseif (in_array($user->role, $techRoles)) {
+            return $this->technicianDashboard();
+        } else {
+            \Log::warning('Unauthorized maintenance dashboard access', [
+                'user_id' => $user->id,
+                'user_role' => $user->role,
+                'user_email' => $user->email
+            ]);
+            abort(403, 'You do not have permission to access the maintenance dashboard.');
+        }
     }
-}
 
 private function technicianDashboard()
 {
@@ -140,101 +154,87 @@ private function surveyorDashboard()
     return view('maintenance.surveyor-dashboard', compact('assignedWorkOrders', 'recentSurveys'));
 }
 
-// private function adminDashboard()
-// {
-//     // Full maintenance statistics
-//     $stats = $this->getMaintenanceStats();
-
-//     $criticalRequests = MaintenanceRequest::with(['designRequest.customer'])
-//         ->where('priority', 'critical')
-//         ->whereIn('status', ['open', 'assigned'])
-//         ->orderBy('created_at', 'desc')
-//         ->get();
-
-//     $equipmentStatus = MaintenanceEquipment::select('status', DB::raw('count(*) as count'))
-//         ->groupBy('status')
-//         ->get();
-
-//     return view('maintenance.admin-dashboard', compact('stats', 'criticalRequests', 'equipmentStatus'));
-// }
-
-// Update the index method to be role-aware
 public function index(Request $request)
-    {
-        $user = Auth::user();
-        $status = $request->get('status', 'all');
-        $priority = $request->get('priority', 'all');
-        $type = $request->get('type', 'all');
+{
+    $user = Auth::user();
+    $status = $request->get('status', 'all');
+    $priority = $request->get('priority', 'all');
+    $type = $request->get('type', 'all');
 
-        // Build the query with relationships
-        $query = MaintenanceRequest::with([
-            'designRequest.customer',
-            'reporter',
-            'workOrders',
-            'equipment',
-            'requestedBy'
-        ]);
+    // Build the query with relationships - USE LEASE instead of commercialRoute
+    $query = MaintenanceRequest::with([
+        'lease',              // Changed from commercialRoute to lease
+        'lease.customer',     // Eager load the customer through lease
+        'reporter',           // Keep this
+        'customer',           // Keep if you have customer relationship
+        'workOrders'          // Keep this
+    ]);
 
-        // Apply role-based filters
-        if ($user->role === 'customer') {
-            $query->whereHas('designRequest', function($q) use ($user) {
+    // Apply role-based filters
+    if ($user->role === 'customer') {
+        // Filter by customer_id if column exists, or through lease
+        if (Schema::hasColumn('maintenance_requests', 'customer_id')) {
+            $query->where('customer_id', $user->id);
+        } else {
+            // Filter through lease relationship
+            $query->whereHas('lease', function($q) use ($user) {
                 $q->where('customer_id', $user->id);
             });
-        } elseif ($user->role === 'surveyor') {
-            // Surveyors see requests related to their survey routes
-            $query->whereHas('workOrders.surveyRoute', function($q) use ($user) {
-                $q->where('surveyor_id', $user->id);
-            });
-        } elseif ($user->role === 'technician') {
-            // FIXED: Technicians see requests where they have work orders assigned
-            $query->whereHas('workOrders', function($q) use ($user) {
-                $q->where('assigned_technician', $user->id);
-            });
-        } elseif ($user->role === 'designer') {
-            // Designers see requests related to their design requests
-            $query->whereHas('designRequest', function($q) use ($user) {
-                $q->where('designer_id', $user->id);
-            });
         }
-        // Admin and finance can see all requests (no additional filtering)
-
-        // Apply status filter
-        if ($status !== 'all') {
-            $query->where('status', $status);
-        }
-
-        // Apply priority filter
-        if ($priority !== 'all') {
-            $query->where('priority', $priority);
-        }
-
-        // Apply maintenance type filter
-        if ($type !== 'all') {
-            $query->where('maintenance_type', $type);
-        }
-
-        // Search functionality
-        if ($request->has('search') && $request->search) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhereHas('equipment', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('model', 'like', "%{$search}%")
-                        ->orWhere('serial_number', 'like', "%{$search}%");
-                  })
-                  ->orWhereHas('designRequest.customer', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%")
-                        ->orWhere('company_name', 'like', "%{$search}%");
-                  });
-            });
-        }
-
-        $requests = $query->orderBy('created_at', 'desc')->paginate(20);
-
-        return view('maintenance.requests-index', compact('requests', 'status', 'priority', 'type'));
+    } elseif ($user->role === 'technician') {
+        // Technicians see requests where they have work orders assigned
+        $query->whereHas('workOrders', function($q) use ($user) {
+            $q->where('assigned_technician', $user->id);
+        });
     }
+    // Admin, finance, designer can see all requests (no additional filtering)
+
+    // Apply status filter
+    if ($status !== 'all') {
+        $query->where('status', $status);
+    }
+
+    // Apply priority filter
+    if ($priority !== 'all') {
+        $query->where('priority', $priority);
+    }
+
+    // Apply issue type filter
+    if ($type !== 'all') {
+        $query->where('issue_type', $type);
+    }
+
+    // Search functionality - Updated to search lease information
+    if ($request->has('search') && $request->search) {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('title', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%")
+              ->orWhere('request_number', 'like', "%{$search}%")
+              ->orWhere('location', 'like', "%{$search}%")
+              // Search lease information
+              ->orWhereHas('lease', function($q) use ($search) {
+                  $q->where('lease_number', 'like', "%{$search}%")
+                    ->orWhere('title', 'like', "%{$search}%");
+              })
+              // Search customer information through lease
+              ->orWhereHas('lease.customer', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('company_name', 'like', "%{$search}%");
+              });
+        });
+    }
+
+    $requests = $query->orderBy('created_at', 'desc')->paginate(20);
+
+    // Get technicians for the assign modal
+    $technicians = User::where('role', 'technician')
+        ->where('status', 'active')
+        ->orderBy('name')
+        ->get();
+
+    return view('maintenance.requests-index', compact('requests', 'status', 'priority', 'type', 'technicians'));
+}
 
     public function equipment(Request $request)
 {
@@ -298,15 +298,34 @@ public function storeEquipment(Request $request)
         ->with('success', 'Equipment added successfully!');
 }
 
-public function create()
+public function create(Request $request)
 {
-    // Get available equipment for the form
-    $availableEquipment = MaintenanceEquipment::where('status', 'available')->get();
+    // Get only customers assigned to the logged-in account manager
+    $customers = User::where('role', 'customer')
+        ->where('account_manager_id', Auth::id())
+        ->where('status', 'active')
+        ->orderBy('name')
+        ->get(['id', 'name', 'company_name']);
 
-    // Get design requests that might need maintenance
-    $designRequests = DesignRequest::where('status', 'completed')->get();
+    // Get selected customer ID from URL parameter
+    $selectedCustomerId = $request->get('customer_id');
 
-    return view('maintenance.requests.create', compact('availableEquipment', 'designRequests'));
+    // Get leases for selected customer
+    $leases = collect();
+    $selectedCustomer = null;
+
+    if ($selectedCustomerId) {
+        // Verify the customer belongs to this account manager
+        $selectedCustomer = $customers->firstWhere('id', $selectedCustomerId);
+
+        if ($selectedCustomer) {
+            $leases = Lease::where('customer_id', $selectedCustomerId)
+                ->where('status', 'active')
+                ->get(['id', 'lease_number', 'title', 'monthly_cost', 'currency']);
+        }
+    }
+
+    return view('maintenance.requests.create', compact('customers', 'leases', 'selectedCustomerId', 'selectedCustomer'));
 }
 
 private function getMaintenanceStats()
@@ -370,50 +389,50 @@ private function getMaintenanceStats()
      * Admin Dashboard with comprehensive maintenance overview
      */
     private function adminDashboard()
-    {
-        // Full maintenance statistics
-        $stats = $this->getMaintenanceStats();
+{
+    // Full maintenance statistics
+    $stats = $this->getMaintenanceStats();
 
-        $criticalRequests = MaintenanceRequest::with(['designRequest.customer', 'workOrders.technician'])
-            ->where('priority', 'critical')
-            ->whereIn('status', ['open', 'assigned'])
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
+    $criticalRequests = MaintenanceRequest::with(['designRequest.customer', 'workOrders.technician'])
+        ->where('priority', 'critical')
+        ->whereIn('status', ['open', 'assigned'])
+        ->orderBy('created_at', 'desc')
+        ->limit(10)
+        ->get();
 
-        $equipmentStatus = MaintenanceEquipment::select('status', DB::raw('count(*) as count'))
-            ->groupBy('status')
-            ->get();
+    $equipmentStatus = MaintenanceEquipment::select('status', DB::raw('count(*) as count'))
+        ->groupBy('status')
+        ->get();
 
-        // Recent activity
-        $recentWorkOrders = MaintenanceWorkOrder::with(['maintenanceRequest.designRequest', 'technician'])
-            ->orderBy('created_at', 'desc')
-            ->limit(10)
-            ->get();
+    // Recent activity
+    $recentWorkOrders = MaintenanceWorkOrder::with(['maintenanceRequest.designRequest', 'technician'])
+        ->orderBy('created_at', 'desc')
+        ->limit(10)
+        ->get();
 
-        // Technician performance
-        $technicianPerformance = DB::table('maintenance_work_orders')
-            ->join('users', 'maintenance_work_orders.assigned_technician', '=', 'users.id')
-            ->where('maintenance_work_orders.status', 'completed')
-            ->select(
-                'users.name',
-                'users.id as user_id',
-                DB::raw('COUNT(maintenance_work_orders.id) as completed_orders'),
-                DB::raw('AVG(maintenance_work_orders.actual_duration_minutes) as avg_completion_time'),
-                DB::raw('SUM(maintenance_work_orders.labor_cost) as total_labor_cost')
-            )
-            ->groupBy('users.id', 'users.name')
-            ->orderBy('completed_orders', 'desc')
-            ->get();
+    // Technician performance
+    $technicianPerformance = DB::table('maintenance_work_orders')
+        ->join('users', 'maintenance_work_orders.assigned_technician', '=', 'users.id')
+        ->where('maintenance_work_orders.status', 'completed')
+        ->select(
+            'users.name',
+            'users.id as user_id',
+            DB::raw('COUNT(maintenance_work_orders.id) as completed_orders'),
+            DB::raw('AVG(maintenance_work_orders.actual_duration_minutes) as avg_completion_time'),
+            DB::raw('SUM(maintenance_work_orders.labor_cost) as total_labor_cost')
+        )
+        ->groupBy('users.id', 'users.name')
+        ->orderBy('completed_orders', 'desc')
+        ->get();
 
-        return view('maintenance.admin-dashboard', compact(
-            'stats',
-            'criticalRequests',
-            'equipmentStatus',
-            'recentWorkOrders',
-            'technicianPerformance'
-        ));
-    }
+    return view('maintenance.admin-dashboard', compact(
+        'stats',
+        'criticalRequests',
+        'equipmentStatus',
+        'recentWorkOrders',
+        'technicianPerformance'
+    ));
+}
 
     private function notifyCriticalIssue(MaintenanceRequest $maintenanceRequest)
 {
@@ -473,54 +492,70 @@ private function notifyMaintenanceTeam(MaintenanceRequest $maintenanceRequest)
 }
 
 // In your MaintenanceController
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'design_request_id' => 'required|exists:design_requests,id',
-        'title' => 'required|string|max:255',
-        'description' => 'required|string',
-        'priority' => 'required|in:low,medium,high,critical',
-        'issue_type' => 'required|in:fibre_cut,equipment_failure,signal_degradation,power_issue,environmental,preventive_maintenance,other',
-        'location' => 'required|string|max:255',
-        'latitude' => 'nullable|numeric',
-        'longitude' => 'nullable|numeric',
-    ]);
-
-    try {
-        $maintenanceRequest = MaintenanceRequest::create([
-            'design_request_id' => $validated['design_request_id'],
-            'reported_by' => Auth::id(),
-            'title' => $validated['title'],
-            'description' => $validated['description'],
-            'priority' => $validated['priority'],
-            'status' => 'open',
-            'issue_type' => $validated['issue_type'],
-            'location' => $validated['location'],
-            'latitude' => $validated['latitude'],
-            'longitude' => $validated['longitude'],
-            'reported_at' => now(),
+ public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_id' => 'required|exists:users,id',
+            'lease_id' => 'required|exists:leases,id',
+            'priority' => 'required|in:low,medium,high,critical',
+            'issue_type' => 'required|string',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'location' => 'nullable|string|max:500',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
-        // Notify relevant users based on priority
-        if ($maintenanceRequest->priority === 'critical') {
-            $this->notifyCriticalIssue($maintenanceRequest);
+        try {
+            $maintenanceRequest = MaintenanceRequest::create([
+                'request_number' => $this->generateRequestNumber(),
+                'customer_id' => $validated['customer_id'],
+                'lease_id' => $validated['lease_id'],
+                'priority' => $validated['priority'],
+                'issue_type' => $validated['issue_type'],
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'location' => $validated['location'] ?? null,
+                'latitude' => $validated['latitude'] ?? null,
+                'longitude' => $validated['longitude'] ?? null,
+                'status' => 'open',
+                'reported_by' => Auth::id(),
+                'reported_at' => now(),
+            ]);
+
+            return redirect()->route('maintenance.requests.show', $maintenanceRequest->id)
+                ->with('success', 'Maintenance request created successfully.');
+
+        } catch (\Exception $e) {
+            Log::error('Error creating maintenance request: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Failed to create maintenance request: ' . $e->getMessage());
+        }
+    }
+
+/**
+ * Generate unique request number
+ */
+private function generateRequestNumber()
+    {
+        $prefix = 'MR';
+        $year = date('Y');
+        $month = date('m');
+
+        $lastRequest = MaintenanceRequest::where('request_number', 'like', "{$prefix}-{$year}{$month}-%")
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($lastRequest) {
+            $parts = explode('-', $lastRequest->request_number);
+            $lastSeq = (int) end($parts);
+            $newSeq = str_pad($lastSeq + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $newSeq = '0001';
         }
 
-        // Notify customer
-        $this->notifyCustomer($maintenanceRequest);
-
-        // Notify designers/admins for new requests
-        $this->notifyMaintenanceTeam($maintenanceRequest);
-
-        return redirect()->route('maintenance.requests.show', $maintenanceRequest->id)
-            ->with('success', 'Maintenance request created successfully!');
-
-    } catch (\Exception $e) {
-        return redirect()->back()
-            ->withInput()
-            ->with('error', 'Failed to create maintenance request: ' . $e->getMessage());
+        return "{$prefix}-{$year}{$month}-{$newSeq}";
     }
-}
+
 
 public function reports(Request $request)
 {
@@ -727,8 +762,10 @@ public function createWorkOrder()
         ->with('equipment', 'designRequest.customer')
         ->get();
 
+    // Fix: Use 'is_active' instead of 'status', or remove the where clause
     $technicians = User::where('role', 'technician')
-        ->where('status', 'active')  // Changed from 'status' to 'is_active'
+        // ->where('status', 'active')  // Comment this out if the column doesn't exist
+        // Or use: ->where('is_active', true)
         ->orderBy('name')
         ->get();
 
@@ -741,7 +778,7 @@ public function editWorkOrder($id)
 {
     $workOrder = MaintenanceWorkOrder::with(['maintenanceRequest', 'technician'])->findOrFail($id);
     $technicians = User::where('role', 'technician')
-        ->where('status', 'active') 
+        ->where('status', 'active')
         ->orderBy('name')
         ->get();
 
@@ -803,4 +840,172 @@ public function updateWorkOrderStatus(Request $request, $id)
         return redirect()->back()->with('error', 'Failed to update work order status.');
     }
 }
+/**
+ * Display the specified maintenance request.
+ */
+public function show($id)
+{
+    $maintenanceRequest = MaintenanceRequest::with([
+        'commercialRoute',
+        'customer',  // Add this
+        'reporter',
+        'workOrders.technician'
+    ])->findOrFail($id);
+
+    // Get technicians for the create work order modal
+    $technicians = User::where('role', 'technician')
+        ->where('status', 'active')
+        ->orderBy('name')
+        ->get();
+
+    return view('maintenance.requests.show', compact('maintenanceRequest', 'technicians'));
+}
+
+/**
+ * Show the form for editing the specified maintenance request.
+ */
+public function edit($id)
+{
+    $maintenanceRequest = MaintenanceRequest::with(['commercialRoute', 'customer'])->findOrFail($id);
+
+    // Only allow editing if request is open or assigned
+    if (!in_array($maintenanceRequest->status, ['open', 'assigned'])) {
+        return redirect()->route('maintenance.requests.show', $maintenanceRequest->id)
+            ->with('error', 'This maintenance request cannot be edited because it is already ' . $maintenanceRequest->status);
+    }
+
+    // Get commercial routes for the dropdown
+    $routes = CommercialRoute::orderBy('region')
+        ->orderBy('name_of_route')
+        ->get();
+
+    // Get customers for the dropdown
+    $customers = User::where('role', 'customer')
+        ->where('status', 'active')
+        ->orderBy('name')
+        ->get(['id', 'name', 'company_name']);
+
+    return view('maintenance.requests.edit', compact('maintenanceRequest', 'routes', 'customers'));
+}
+
+/**
+ * Update the specified maintenance request.
+ */
+public function update(Request $request, $id)
+{
+    $maintenanceRequest = MaintenanceRequest::findOrFail($id);
+
+    // Only allow editing if request is open or assigned
+    if (!in_array($maintenanceRequest->status, ['open', 'assigned'])) {
+        return redirect()->route('maintenance.requests.show', $maintenanceRequest->id)
+            ->with('error', 'This maintenance request cannot be edited because it is already ' . $maintenanceRequest->status);
+    }
+
+    $validated = $request->validate([
+        'customer_id' => 'nullable|exists:users,id',
+        'commercial_route_id' => 'required|exists:commercial_routes,id',
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'priority' => 'required|in:low,medium,high,critical',
+        'issue_type' => 'required|in:fibre_cut,equipment_failure,signal_degradation,power_issue,environmental,preventive_maintenance,other',
+        'location' => 'nullable|string|max:255',
+        'latitude' => 'nullable|numeric',
+        'longitude' => 'nullable|numeric',
+    ]);
+
+    try {
+        $maintenanceRequest->update($validated);
+
+        Log::info('Maintenance request updated', [
+            'request_id' => $maintenanceRequest->id,
+            'request_number' => $maintenanceRequest->request_number,
+            'user_id' => Auth::id()
+        ]);
+
+        return redirect()->route('maintenance.requests.show', $maintenanceRequest->id)
+            ->with('success', 'Maintenance request #' . $maintenanceRequest->request_number . ' updated successfully!');
+
+    } catch (\Exception $e) {
+        Log::error('Failed to update maintenance request: ' . $e->getMessage());
+
+        return redirect()->back()
+            ->withInput()
+            ->with('error', 'Failed to update maintenance request: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Remove the specified maintenance request.
+ */
+public function destroy($id)
+{
+    $maintenanceRequest = MaintenanceRequest::findOrFail($id);
+
+    // Only allow deletion if request is open
+    if ($maintenanceRequest->status !== 'open') {
+        return redirect()->route('maintenance.requests.index')
+            ->with('error', 'Only open maintenance requests can be deleted.');
+    }
+
+    try {
+        $requestNumber = $maintenanceRequest->request_number;
+        $maintenanceRequest->delete();
+
+        Log::info('Maintenance request deleted', [
+            'request_number' => $requestNumber,
+            'user_id' => Auth::id()
+        ]);
+
+        return redirect()->route('maintenance.requests.index')
+            ->with('success', 'Maintenance request #' . $requestNumber . ' deleted successfully!');
+
+    } catch (\Exception $e) {
+        Log::error('Failed to delete maintenance request: ' . $e->getMessage());
+
+        return redirect()->back()
+            ->with('error', 'Failed to delete maintenance request: ' . $e->getMessage());
+    }
+}
+
+public function addCompensation(Request $request, $id)
+{
+    $maintenanceRequest = MaintenanceRequest::findOrFail($id);
+
+    // Add compensation note to description
+    $newDescription = $maintenanceRequest->description . "\n" . $request->compensation_note;
+    $maintenanceRequest->update(['description' => $newDescription]);
+
+    // Store compensation amount if you have a column for it
+    $maintenanceRequest->compensation_amount = $request->compensation_amount;
+    $maintenanceRequest->compensation_currency = $request->compensation_currency;
+    $maintenanceRequest->save();
+
+    return response()->json(['success' => true]);
+}
+
+/**
+ * Get active leases for a specific customer (AJAX endpoint)
+ */
+public function getCustomerLeases($customerId)
+    {
+        try {
+            $leases = Lease::where('customer_id', $customerId)
+                ->where('status', 'active')
+                ->select('id', 'lease_number', 'title', 'monthly_cost', 'currency', 'customer_id')
+                ->orderBy('lease_number')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'leases' => $leases,
+                'count' => $leases->count()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

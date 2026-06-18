@@ -23,98 +23,143 @@
                 </div>
                 <div class="card-body">
                     <!-- Statistics Cards -->
-                    <div class="row mb-4">
-                        <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-info text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="mb-0">{{ $stats['due_customers_count'] ?? 0 }}</h4>
-                                            <p class="mb-0 small">Due Customers</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-clock fa-2x opacity-75"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-kp-green text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="mb-0">{{ $stats['auto_billing_count'] ?? 0 }}</h4>
-                                            <p class="mb-0 small">Auto Billing Enabled</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-bolt fa-2x opacity-75"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-kp-yellow text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="mb-0">{{ $stats['overdue_count'] ?? 0 }}</h4>
-                                            <p class="mb-0 small">Overdue Bills</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-exclamation-triangle fa-2x opacity-75"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-secondary text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="mb-0">${{ number_format($stats['monthly_revenue'] ?? 0, 2) }}</h4>
-                                            <p class="mb-0 small">Monthly Revenue</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-dollar-sign fa-2x opacity-75"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-kp-blue text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="mb-0">{{ $stats['total_auto_billing'] ?? 0 }}</h4>
-                                            <p class="mb-0 small">Total Auto Billing</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-users fa-2x opacity-75"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
-                            <div class="card bg-dark text-white">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <h4 class="mb-0">{{ $stats['scheduled_count'] ?? 0 }}</h4>
-                                            <p class="mb-0 small">Scheduled</p>
-                                        </div>
-                                        <div class="align-self-center">
-                                            <i class="fas fa-calendar fa-2x opacity-75"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                   <style>
+.card-stats {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+.card-stats:hover {
+    transform: translateY(-5px);
+}
+.card-stats .card-body {
+    padding: 1rem;
+}
+.card-stats h4 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+.card-stats p {
+    font-size: 0.75rem;
+    margin-bottom: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.card-stats i {
+    opacity: 0.6;
+}
+/* Custom card colors */
+.card-due {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+}
+.card-auto {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    color: white;
+}
+.card-overdue {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    color: #212529;
+}
+.card-revenue {
+    background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+    color: white;
+}
+.card-total {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+.card-scheduled {
+    background: linear-gradient(135deg, #343a40 0%, #23272b 100%);
+    color: white;
+}
+</style>
+
+<div class="row mb-4">
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card card-stats card-due h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">{{ $stats['due_customers_count'] ?? 0 }}</h4>
+                        <p>Due Customers</p>
                     </div>
+                    <i class="fas fa-clock fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card card-stats card-auto h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">{{ $stats['auto_billing_count'] ?? 0 }}</h4>
+                        <p>Auto Billing Enabled</p>
+                    </div>
+                    <i class="fas fa-bolt fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card card-stats card-overdue h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">{{ $stats['overdue_count'] ?? 0 }}</h4>
+                        <p>Overdue Bills</p>
+                    </div>
+                    <i class="fas fa-exclamation-triangle fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card card-stats card-revenue h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">${{ number_format($stats['monthly_revenue'] ?? 0, 2) }}</h4>
+                        <p>Monthly Revenue</p>
+                    </div>
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card card-stats card-total h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">{{ $stats['total_auto_billing'] ?? 0 }}</h4>
+                        <p>Total Auto Billing</p>
+                    </div>
+                    <i class="fas fa-users fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 col-sm-6 mb-3">
+        <div class="card card-stats card-scheduled h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">{{ $stats['scheduled_count'] ?? 0 }}</h4>
+                        <p>Scheduled</p>
+                    </div>
+                    <i class="fas fa-calendar fa-2x"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
                     <!-- Due Customers Section -->
                     <div class="row">
@@ -163,11 +208,23 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            @php
-                                                                $pendingAmount = $customer->leaseBillings->where('status', 'pending')->sum('total_amount');
-                                                            @endphp
-                                                            <strong>${{ number_format($pendingAmount, 2) }}</strong>
-                                                        </td>
+    @php
+        // Calculate pending amount safely
+        $pendingAmount = 0;
+        if(isset($customer->pending_amount)) {
+            $pendingAmount = $customer->pending_amount;
+        } elseif(isset($customer->leaseBillings) && $customer->leaseBillings) {
+            $pendingAmount = $customer->leaseBillings->whereIn('status', ['pending', 'sent', 'overdue'])->sum('total_amount');
+        } elseif(isset($customer->billings) && $customer->billings) {
+            $pendingAmount = $customer->billings->whereIn('status', ['pending', 'sent', 'overdue'])->sum('total_amount');
+        }
+    @endphp
+    @if($pendingAmount > 0)
+        <strong class="text-danger">${{ number_format($pendingAmount, 2) }}</strong>
+    @else
+        <span class="text-muted">$0.00</span>
+    @endif
+</td>
                                                         <td>
                                                             <a href="{{ route('finance.billing.create', ['customer_id' => $customer->id]) }}"
                                                                class="btn btn-sm btn-kp-primary" title="Create Bill">

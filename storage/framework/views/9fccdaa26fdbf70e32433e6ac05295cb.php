@@ -727,6 +727,49 @@
         color: var(--kp-yellow) !important;
         transform: scale(1.1);
     }
+
+    /*new kp color */
+    /* Custom color classes */
+.bg-kp-blue {
+    background-color: #1e3a5f !important;
+}
+
+.bg-kp-green {
+    background-color: #2e7d32 !important;
+}
+
+.bg-kp-yellow {
+    background-color: #f9a825 !important;
+}
+
+.bg-kp-primary {
+    background-color: #0d6efd !important;
+}
+
+.bg-kp-success {
+    background-color: #198754 !important;
+}
+
+.bg-kp-warning {
+    background-color: #ffc107 !important;
+}
+
+.text-kp-blue {
+    color: #1e3a5f !important;
+}
+
+.text-kp-green {
+    color: #2e7d32 !important;
+}
+
+.text-kp-yellow {
+    color: #f9a825 !important;
+}
+
+/* Optional: Add gradient variants */
+.bg-kp-blue-gradient {
+    background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+}
     </style>
 
     <?php echo $__env->yieldPushContent('styles'); ?>

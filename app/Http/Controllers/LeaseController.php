@@ -382,19 +382,21 @@ class LeaseController extends Controller
 
             $nextBillingDate = $this->calculateNextBillingDateFromStart($lockedLease, $startDate);
 
-            $lockedLease->update([
-                'status' => 'active',
-                'approved_at' => now(),
-                'approved_by' => Auth::id(),
-                'rejection_reason' => null,
-                'rejected_at' => null,
-                'rejected_by' => null,
-                'activated_at' => now(),
-                'sent_at' => now(),
-                'next_billing_date' => $nextBillingDate,
-                'last_billed_at' => null,
-                'start_date' => $startDate,
-            ]);
+            // Method A: Direct assignment (bypasses mass assignment)
+            $lockedLease->status = 'active';
+            $lockedLease->approved_at = now();
+            $lockedLease->approved_by = Auth::user()->id;
+            $lockedLease->rejection_reason = null;
+            $lockedLease->rejected_at = null;
+            $lockedLease->rejected_by = null;
+            $lockedLease->activated_at = now();
+            $lockedLease->sent_at = now();
+            $lockedLease->next_billing_date = $nextBillingDate;
+            $lockedLease->last_billed_at = null;
+            $lockedLease->start_date = $startDate;
+
+            // Save the changes
+            $lockedLease->save();
 
             return $lockedLease->load('customer');
         });
@@ -416,11 +418,9 @@ class LeaseController extends Controller
                     'lease_number' => $approvedLease->lease_number,
                     'status' => $approvedLease->status,
                     'status_class' => 'success',
-                    'status_badge' => '<span class="badge bg-success">Active</span>',
                     'approved_at' => $approvedLease->approved_at ? $approvedLease->approved_at->format('Y-m-d H:i:s') : null,
-                    'next_billing_date' => $approvedLease->next_billing_date ? $approvedLease->next_billing_date->format('Y-m-d') : null,
+                    'approved_by' => $approvedLease->approved_by,
                     'customer_name' => $approvedLease->customer->name ?? 'N/A',
-                    'row_html' => view('admin.leases.partials.lease_row', ['lease' => $approvedLease])->render()
                 ]
             ]);
         }
@@ -435,7 +435,6 @@ class LeaseController extends Controller
             'trace' => $e->getTraceAsString()
         ]);
 
-        // FIXED: Proper error response, not using undefined $approvedLease
         if ($request->ajax()) {
             return response()->json([
                 'success' => false,
@@ -491,7 +490,7 @@ private function calculateNextBillingDateFromStart($lease, $startDate)
                 // Rejection tracking
                 'rejection_reason' => $validated['rejection_reason'],
                 'rejected_at' => now(),
-                'rejected_by' => Auth::id(),
+                'rejected_by' => Auth::user()->id,
 
                 // Clear approval data
                 'approved_at' => null,
@@ -558,7 +557,7 @@ private function calculateNextBillingDateFromStart($lease, $startDate)
                 return Lease::whereIn('id', $pendingLeases->pluck('id'))->update([
                     'status' => 'active',
                     'approved_at' => now(),
-                    'approved_by' => Auth::id(),
+                    'approved_by' => Auth::user()->id,
                     'rejection_reason' => null,
                     'rejected_at' => null,
                     'rejected_by' => null,

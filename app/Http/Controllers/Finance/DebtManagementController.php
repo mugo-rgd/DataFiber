@@ -561,80 +561,152 @@ class DebtManagementController extends Controller
     /**
      * Aging report
      */
-    public function agingReport(Request $request)
-    {
-        $asOfDate = $request->get('as_of_date', now()->format('Y-m-d'));
-        $customerId = $request->get('customer_id');
-        $status = $request->get('status');
-        $currency = $request->get('currency', 'all');
+   public function agingReport(Request $request)
+{
+    $asOfDate = $request->get('as_of_date', now()->format('Y-m-d'));
+    $customerId = $request->get('customer_id');
+    $status = $request->get('status');
+    $currency = $request->get('currency', 'all');
 
-        // Build base query
-        $baseQuery = DB::table('consolidated_billings as cb')
-            ->join('users as u', 'cb.user_id', '=', 'u.id')
-            ->select(
-                'cb.*',
-                'u.name as customer_name',
-                DB::raw('DATEDIFF("' . $asOfDate . '", cb.due_date) as days_overdue'),
-                DB::raw('cb.total_amount - COALESCE(cb.paid_amount, 0) as outstanding')
-            )
-            ->whereRaw('cb.total_amount > COALESCE(cb.paid_amount, 0)')
-            ->whereIn('cb.status', ['pending', 'sent', 'overdue', 'payment_plan']);
+    // Build base query
+    $baseQuery = DB::table('consolidated_billings as cb')
+        ->join('users as u', 'cb.user_id', '=', 'u.id')
+        ->select(
+            'cb.*',
+            'u.name as customer_name',
+            DB::raw('DATEDIFF("' . $asOfDate . '", cb.due_date) as days_overdue'),
+            DB::raw('cb.total_amount - COALESCE(cb.paid_amount, 0) as outstanding')
+        )
+        ->whereRaw('cb.total_amount > COALESCE(cb.paid_amount, 0)')
+        ->whereIn('cb.status', ['pending', 'sent', 'overdue', 'payment_plan']);
 
-        // Apply filters
-        if ($customerId) {
-            $baseQuery->where('cb.user_id', $customerId);
-        }
-
-        if ($status) {
-            $baseQuery->where('cb.status', $status);
-        }
-
-        if ($currency !== 'all') {
-            $baseQuery->where('cb.currency', $currency);
-        }
-
-        // Get all invoices for detailed view
-        $invoices = $baseQuery->orderBy('cb.due_date')->get();
-
-        // Calculate summary
-        $summary = DB::table(DB::raw("({$baseQuery->toSql()}) as filtered"))
-            ->mergeBindings($baseQuery)
-            ->select(
-                DB::raw('SUM(outstanding) as total_outstanding'),
-                DB::raw('COUNT(*) as total_invoices'),
-                DB::raw('SUM(CASE WHEN currency = "USD" THEN outstanding ELSE 0 END) as total_outstanding_usd'),
-                DB::raw('SUM(CASE WHEN currency = "KSH" THEN outstanding ELSE 0 END) as total_outstanding_ksh'),
-                DB::raw('SUM(CASE WHEN days_overdue <= 30 THEN outstanding ELSE 0 END) as current_amount'),
-                DB::raw('SUM(CASE WHEN days_overdue > 30 AND days_overdue <= 60 THEN outstanding ELSE 0 END) as days_31_60_amount'),
-                DB::raw('SUM(CASE WHEN days_overdue > 60 AND days_overdue <= 90 THEN outstanding ELSE 0 END) as days_61_90_amount'),
-                DB::raw('SUM(CASE WHEN days_overdue > 90 THEN outstanding ELSE 0 END) as days_90_plus_amount')
-            )
-            ->first();
-
-        // Get aging by customer
-        $agingByCustomer = DB::table(DB::raw("({$baseQuery->toSql()}) as filtered"))
-            ->mergeBindings($baseQuery)
-            ->select(
-                'user_id as customer_id',
-                'customer_name',
-                DB::raw('COUNT(*) as invoices_count'),
-                DB::raw('SUM(outstanding) as total_amount'),
-                DB::raw('SUM(CASE WHEN currency = "USD" THEN outstanding ELSE 0 END) as total_amount_usd'),
-                DB::raw('SUM(CASE WHEN currency = "KSH" THEN outstanding ELSE 0 END) as total_amount_ksh')
-            )
-            ->groupBy('user_id', 'customer_name')
-            ->orderBy('total_amount', 'desc')
-            ->get();
-
-        // Get all customers for filter dropdown
-        $customers = User::where('role', 'customer')
-            ->orderBy('name')
-            ->get();
-
-        return view('finance.debt.reports.aging', compact(
-            'invoices', 'summary', 'agingByCustomer', 'customers'
-        ));
+    // Apply filters
+    if ($customerId) {
+        $baseQuery->where('cb.user_id', $customerId);
     }
+
+    if ($status) {
+        $baseQuery->where('cb.status', $status);
+    }
+
+    if ($currency !== 'all') {
+        $baseQuery->where('cb.currency', $currency);
+    }
+
+    // Get all invoices for detailed view
+    $invoices = $baseQuery->orderBy('cb.due_date')->get();
+
+    // Calculate summary with currency separation
+    $summaryRaw = DB::table(DB::raw("({$baseQuery->toSql()}) as filtered"))
+        ->mergeBindings($baseQuery)
+        ->select(
+            DB::raw('SUM(outstanding) as total_outstanding'),
+            DB::raw('COUNT(*) as total_invoices'),
+            DB::raw('COUNT(CASE WHEN currency = "USD" THEN 1 END) as total_invoices_usd'),
+            DB::raw('COUNT(CASE WHEN currency = "KSH" THEN 1 END) as total_invoices_ksh'),
+            DB::raw('SUM(CASE WHEN currency = "USD" THEN outstanding ELSE 0 END) as total_outstanding_usd'),
+            DB::raw('SUM(CASE WHEN currency = "KSH" THEN outstanding ELSE 0 END) as total_outstanding_ksh'),
+            DB::raw('SUM(CASE WHEN days_overdue <= 30 AND currency = "USD" THEN outstanding ELSE 0 END) as current_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue <= 30 AND currency = "KSH" THEN outstanding ELSE 0 END) as current_amount_ksh'),
+            DB::raw('COUNT(CASE WHEN days_overdue <= 30 AND currency = "USD" THEN 1 END) as current_count_usd'),
+            DB::raw('COUNT(CASE WHEN days_overdue <= 30 AND currency = "KSH" THEN 1 END) as current_count_ksh'),
+            DB::raw('SUM(CASE WHEN days_overdue > 30 AND days_overdue <= 60 AND currency = "USD" THEN outstanding ELSE 0 END) as days_31_60_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue > 30 AND days_overdue <= 60 AND currency = "KSH" THEN outstanding ELSE 0 END) as days_31_60_amount_ksh'),
+            DB::raw('COUNT(CASE WHEN days_overdue > 30 AND days_overdue <= 60 AND currency = "USD" THEN 1 END) as days_31_60_count_usd'),
+            DB::raw('COUNT(CASE WHEN days_overdue > 30 AND days_overdue <= 60 AND currency = "KSH" THEN 1 END) as days_31_60_count_ksh'),
+            DB::raw('SUM(CASE WHEN days_overdue > 60 AND days_overdue <= 90 AND currency = "USD" THEN outstanding ELSE 0 END) as days_61_90_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue > 60 AND days_overdue <= 90 AND currency = "KSH" THEN outstanding ELSE 0 END) as days_61_90_amount_ksh'),
+            DB::raw('COUNT(CASE WHEN days_overdue > 60 AND days_overdue <= 90 AND currency = "USD" THEN 1 END) as days_61_90_count_usd'),
+            DB::raw('COUNT(CASE WHEN days_overdue > 60 AND days_overdue <= 90 AND currency = "KSH" THEN 1 END) as days_61_90_count_ksh'),
+            DB::raw('SUM(CASE WHEN days_overdue > 90 AND currency = "USD" THEN outstanding ELSE 0 END) as days_90_plus_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue > 90 AND currency = "KSH" THEN outstanding ELSE 0 END) as days_90_plus_amount_ksh'),
+            DB::raw('COUNT(CASE WHEN days_overdue > 90 AND currency = "USD" THEN 1 END) as days_90_plus_count_usd'),
+            DB::raw('COUNT(CASE WHEN days_overdue > 90 AND currency = "KSH" THEN 1 END) as days_90_plus_count_ksh')
+        )
+        ->first();
+
+    // Convert to object with default values if null
+    $summary = new \stdClass();
+    $summary->total_outstanding = $summaryRaw->total_outstanding ?? 0;
+    $summary->total_invoices = $summaryRaw->total_invoices ?? 0;
+    $summary->total_invoices_usd = $summaryRaw->total_invoices_usd ?? 0;
+    $summary->total_invoices_ksh = $summaryRaw->total_invoices_ksh ?? 0;
+    $summary->total_outstanding_usd = $summaryRaw->total_outstanding_usd ?? 0;
+    $summary->total_outstanding_ksh = $summaryRaw->total_outstanding_ksh ?? 0;
+    $summary->current_amount_usd = $summaryRaw->current_amount_usd ?? 0;
+    $summary->current_amount_ksh = $summaryRaw->current_amount_ksh ?? 0;
+    $summary->current_count_usd = $summaryRaw->current_count_usd ?? 0;
+    $summary->current_count_ksh = $summaryRaw->current_count_ksh ?? 0;
+    $summary->days_31_60_amount_usd = $summaryRaw->days_31_60_amount_usd ?? 0;
+    $summary->days_31_60_amount_ksh = $summaryRaw->days_31_60_amount_ksh ?? 0;
+    $summary->days_31_60_count_usd = $summaryRaw->days_31_60_count_usd ?? 0;
+    $summary->days_31_60_count_ksh = $summaryRaw->days_31_60_count_ksh ?? 0;
+    $summary->days_61_90_amount_usd = $summaryRaw->days_61_90_amount_usd ?? 0;
+    $summary->days_61_90_amount_ksh = $summaryRaw->days_61_90_amount_ksh ?? 0;
+    $summary->days_61_90_count_usd = $summaryRaw->days_61_90_count_usd ?? 0;
+    $summary->days_61_90_count_ksh = $summaryRaw->days_61_90_count_ksh ?? 0;
+    $summary->days_90_plus_amount_usd = $summaryRaw->days_90_plus_amount_usd ?? 0;
+    $summary->days_90_plus_amount_ksh = $summaryRaw->days_90_plus_amount_ksh ?? 0;
+    $summary->days_90_plus_count_usd = $summaryRaw->days_90_plus_count_usd ?? 0;
+    $summary->days_90_plus_count_ksh = $summaryRaw->days_90_plus_count_ksh ?? 0;
+
+    // Get aging by customer with currency breakdown
+    $agingByCustomerRaw = DB::table(DB::raw("({$baseQuery->toSql()}) as filtered"))
+        ->mergeBindings($baseQuery)
+        ->select(
+            'user_id as customer_id',
+            'customer_name',
+            DB::raw('COUNT(*) as invoices_count'),
+            DB::raw('SUM(outstanding) as total_amount'),
+            DB::raw('SUM(CASE WHEN currency = "USD" THEN outstanding ELSE 0 END) as total_amount_usd'),
+            DB::raw('SUM(CASE WHEN currency = "KSH" THEN outstanding ELSE 0 END) as total_amount_ksh'),
+            // Current (0-30 days) by currency
+            DB::raw('SUM(CASE WHEN days_overdue <= 30 AND currency = "USD" THEN outstanding ELSE 0 END) as current_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue <= 30 AND currency = "KSH" THEN outstanding ELSE 0 END) as current_amount_ksh'),
+            // 31-60 days by currency
+            DB::raw('SUM(CASE WHEN days_overdue > 30 AND days_overdue <= 60 AND currency = "USD" THEN outstanding ELSE 0 END) as days_31_60_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue > 30 AND days_overdue <= 60 AND currency = "KSH" THEN outstanding ELSE 0 END) as days_31_60_amount_ksh'),
+            // 61-90 days by currency
+            DB::raw('SUM(CASE WHEN days_overdue > 60 AND days_overdue <= 90 AND currency = "USD" THEN outstanding ELSE 0 END) as days_61_90_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue > 60 AND days_overdue <= 90 AND currency = "KSH" THEN outstanding ELSE 0 END) as days_61_90_amount_ksh'),
+            // 90+ days by currency
+            DB::raw('SUM(CASE WHEN days_overdue > 90 AND currency = "USD" THEN outstanding ELSE 0 END) as days_90_plus_amount_usd'),
+            DB::raw('SUM(CASE WHEN days_overdue > 90 AND currency = "KSH" THEN outstanding ELSE 0 END) as days_90_plus_amount_ksh')
+        )
+        ->groupBy('user_id', 'customer_name')
+        ->orderBy('total_amount', 'desc')
+        ->get();
+
+    // Convert to objects with all required properties
+    $agingByCustomer = [];
+    foreach ($agingByCustomerRaw as $customer) {
+        $obj = new \stdClass();
+        $obj->customer_id = $customer->customer_id;
+        $obj->customer_name = $customer->customer_name;
+        $obj->invoices_count = $customer->invoices_count ?? 0;
+        $obj->total_amount = $customer->total_amount ?? 0;
+        $obj->total_amount_usd = $customer->total_amount_usd ?? 0;
+        $obj->total_amount_ksh = $customer->total_amount_ksh ?? 0;
+        $obj->current_amount_usd = $customer->current_amount_usd ?? 0;
+        $obj->current_amount_ksh = $customer->current_amount_ksh ?? 0;
+        $obj->days_31_60_amount_usd = $customer->days_31_60_amount_usd ?? 0;
+        $obj->days_31_60_amount_ksh = $customer->days_31_60_amount_ksh ?? 0;
+        $obj->days_61_90_amount_usd = $customer->days_61_90_amount_usd ?? 0;
+        $obj->days_61_90_amount_ksh = $customer->days_61_90_amount_ksh ?? 0;
+        $obj->days_90_plus_amount_usd = $customer->days_90_plus_amount_usd ?? 0;
+        $obj->days_90_plus_amount_ksh = $customer->days_90_plus_amount_ksh ?? 0;
+        $agingByCustomer[] = $obj;
+    }
+
+    // Get all customers for filter dropdown
+    $customers = User::where('role', 'customer')
+        ->orderBy('name')
+        ->get(['id', 'name', 'email']);
+
+    return view('finance.debt.reports.aging', compact(
+        'invoices', 'summary', 'agingByCustomer', 'customers'
+    ));
+}
 
     /**
      * Export overdue invoices to CSV

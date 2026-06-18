@@ -402,7 +402,7 @@ use Carbon\Carbon;
     ['title' => 'Manage Billings', 'icon' => 'file-invoice', 'color' => 'primary', 'route' => 'finance.billing.index'],
     ['title' => 'View Payments', 'icon' => 'credit-card', 'color' => 'success', 'route' => 'finance.payments.index'],
     ['title' => 'Manual Payment Update', 'icon' => 'hand-holding-usd', 'color' => 'kp-yellow', 'route' => 'finance.payments.create'],
-    ['title' => 'Payment Follow-ups', 'icon' => 'bell', 'color' => 'warning', 'route' => 'finance.payments.followups'],
+    ['title' => 'Payment Follow-ups', 'icon' => 'bell', 'color' => 'warning', 'route' => 'finance.payments.index'],
 
     // Reports & Analytics
     ['title' => 'Financial Reports', 'icon' => 'chart-line', 'color' => 'info', 'route' => 'finance.financial-reports'],

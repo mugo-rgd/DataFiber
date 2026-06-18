@@ -1126,60 +1126,97 @@ public function sendReminder(Request $request, $id)
     /**
      * Get manager performance comparison (for admin view)
      */
-    private function getManagerPerformanceComparison($startDate, $endDate)
-    {
-        $managers = User::accountManagers()->withCount([
-            'managedCustomers as active_customers_count' => function($query) {
-                $query->where('users.status', 'active');
-            },
-            'managedLeases as active_leases_count' => function($query) {
-                $query->where('leases.status', 'active');
-            }
-        ])->get();
-
-        $performanceData = [];
-        foreach ($managers as $manager) {
-            $managerQuery = fn($query) => $query->where('account_manager_id', $manager->id);
-
-            $revenue = LeaseBilling::whereHas('customer', $managerQuery)
-                ->where('lease_billings.status', 'paid')
-                ->whereBetween('paid_at', [$startDate, $endDate])
-                ->sum('total_amount');
-
-            $resolvedTickets = CustomerSupportTicket::where('account_manager_id', $manager->id)
-                ->where('status', 'resolved')
-                ->whereBetween('resolved_at', [$startDate, $endDate])
-                ->count();
-
-            $totalTickets = CustomerSupportTicket::where('account_manager_id', $manager->id)
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->count();
-
-            $conversionRate = $totalTickets > 0 ? ($resolvedTickets / $totalTickets) * 100 : 0;
-
-            $newCustomers = $manager->managedCustomers()
-                ->whereBetween('users.created_at', [$startDate, $endDate])
-                ->count();
-
-            $newLeases = $manager->managedLeases()
-                ->whereBetween('leases.created_at', [$startDate, $endDate])
-                ->count();
-
-            $avgDealSize = $manager->managedLeases()
-                ->whereBetween('leases.created_at', [$startDate, $endDate])
-                ->avg('monthly_cost') ?? 0;
-
-            $performanceData[] = compact(
-                'id', 'name', 'email', 'revenue', 'conversionRate',
-                'newCustomers', 'newLeases', 'avgDealSize'
-            ) + [
-                'active_customers' => $manager->active_customers_count,
-                'active_leases' => $manager->active_leases_count,
-            ];
+   private function getManagerPerformanceComparison($startDate, $endDate)
+{
+    $managers = User::accountManagers()->withCount([
+        'managedCustomers as active_customers_count' => function($query) {
+            $query->where('users.status', 'active');
+        },
+        'managedLeases as active_leases_count' => function($query) {
+            $query->where('leases.status', 'active');
         }
+    ])->get();
 
-        return $performanceData;
+    $performanceData = [];
+    foreach ($managers as $manager) {
+        $managerQuery = fn($query) => $query->where('account_manager_id', $manager->id);
+
+        // Revenue metrics
+        $totalRevenue = LeaseBilling::whereHas('customer', $managerQuery)
+            ->where('lease_billings.status', 'paid')
+            ->whereBetween('paid_at', [$startDate, $endDate])
+            ->sum('total_amount');
+
+        $usdRevenue = LeaseBilling::whereHas('customer', $managerQuery)
+            ->where('lease_billings.status', 'paid')
+            ->where('currency', 'USD')
+            ->whereBetween('paid_at', [$startDate, $endDate])
+            ->sum('total_amount');
+
+        $kshRevenue = LeaseBilling::whereHas('customer', $managerQuery)
+            ->where('lease_billings.status', 'paid')
+            ->where('currency', 'KSH')
+            ->whereBetween('paid_at', [$startDate, $endDate])
+            ->sum('total_amount');
+
+        // Support ticket metrics
+        $resolvedTickets = CustomerSupportTicket::where('account_manager_id', $manager->id)
+            ->where('status', 'resolved')
+            ->whereBetween('resolved_at', [$startDate, $endDate])
+            ->count();
+
+        $totalTickets = CustomerSupportTicket::where('account_manager_id', $manager->id)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->count();
+
+        $conversionRate = $totalTickets > 0 ? ($resolvedTickets / $totalTickets) * 100 : 0;
+
+        // Customer and lease metrics
+        $newCustomers = $manager->managedCustomers()
+            ->whereBetween('users.created_at', [$startDate, $endDate])
+            ->count();
+
+        $newLeases = $manager->managedLeases()
+            ->whereBetween('leases.created_at', [$startDate, $endDate])
+            ->count();
+
+        $avgDealSize = $manager->managedLeases()
+            ->whereBetween('leases.created_at', [$startDate, $endDate])
+            ->avg('monthly_cost') ?? 0;
+
+        // Calculate average response time (if you have that data)
+        $avgResponseTime = CustomerSupportTicket::where('account_manager_id', $manager->id)
+            ->whereNotNull('resolved_at')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('AVG(TIMESTAMPDIFF(HOUR, created_at, resolved_at)) as avg_hours')
+            ->value('avg_hours') ?? 0;
+
+        $performanceData[] = [
+            'id' => $manager->id,
+            'name' => $manager->name,
+            'email' => $manager->email,
+            'total_revenue' => $totalRevenue,
+            'usd_revenue' => $usdRevenue,
+            'ksh_revenue' => $kshRevenue,
+            'conversion_rate' => round($conversionRate, 2),
+            'new_customers' => $newCustomers,
+            'new_leases' => $newLeases,
+            'avg_deal_size' => round($avgDealSize, 2),
+            'active_customers' => $manager->active_customers_count,
+            'active_leases' => $manager->active_leases_count,
+            'resolved_tickets' => $resolvedTickets,
+            'total_tickets' => $totalTickets,
+            'avg_response_time_hours' => round($avgResponseTime, 1),
+        ];
     }
+
+    // Sort by total revenue descending
+    usort($performanceData, function($a, $b) {
+        return $b['total_revenue'] <=> $a['total_revenue'];
+    });
+
+    return $performanceData;
+}
 
     // ==================== ADMIN ACCOUNT MANAGER MANAGEMENT ====================
 

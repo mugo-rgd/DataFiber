@@ -175,7 +175,7 @@ Gate::define('accountManagerOrDesigner', function ($user) {
 
         // View maintenance module
         Gate::define('view-maintenance', function ($user) {
-            return in_array($user->role, ['admin', 'technician', 'designer', 'surveyor', 'customer']);
+            return in_array($user->role, ['admin', 'technician', 'designer', 'surveyor', 'customer', 'account_manager']);
         });
 
         // Create maintenance requests
